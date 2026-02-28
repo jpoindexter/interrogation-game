@@ -16,10 +16,35 @@ function extractContent(content: unknown): string {
   return '';
 }
 
-export async function generateCase(settingHint?: string) {
+const DIFFICULTY_CLUES: Record<string, number> = {
+  easy: 2,
+  medium: 3,
+  hard: 4,
+  expert: 5,
+};
+
+const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
+  easy: `- EASY difficulty: The lie should be relatively obvious under pressure. The contradiction should be easy to spot.
+- The suspect gets nervous quickly and isn't great at deflecting.
+- Generate exactly 2 stress_triggers.`,
+  medium: `- MEDIUM difficulty: The lie should be catchable but require some careful questioning.
+- The suspect is reasonably composed but cracks under sustained pressure.
+- Generate exactly 3 stress_triggers.`,
+  hard: `- HARD difficulty: The lie should be well-hidden. The contradiction is subtle and requires connecting multiple pieces.
+- The suspect is very composed and skilled at deflecting. They have a well-rehearsed cover story.
+- Generate exactly 4 stress_triggers.`,
+  expert: `- EXPERT difficulty: The lie is deeply buried. The contradiction requires catching very small inconsistencies across multiple answers.
+- The suspect is extremely composed, manipulative, and adept at redirecting conversation. They rarely show stress.
+- Generate exactly 5 stress_triggers.`,
+};
+
+export async function generateCase(settingHint?: string, difficulty: string = 'medium') {
   const settingInstruction = settingHint
     ? `- MUST be set in a ${settingHint} — use this exact type of workplace`
     : '- Set in a realistic workplace (tech company, bank, law firm, hospital, etc.)';
+
+  const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
+  const difficultyGuide = DIFFICULTY_INSTRUCTIONS[difficulty] || DIFFICULTY_INSTRUCTIONS.medium;
 
   const response = await mistralClient.chat.complete({
     model: 'mistral-large-latest',
@@ -34,6 +59,7 @@ ${settingInstruction}
 - Simple enough to explain in 3 sentences
 - The suspect has a mostly true story with ONE specific lie
 - The lie must be catchable through careful questioning — there should be a logical contradiction that emerges under pressure
+${difficultyGuide}
 
 Respond ONLY in this exact JSON format:
 
@@ -50,12 +76,12 @@ Respond ONLY in this exact JSON format:
   "the_lie": "the specific false claim in their cover story",
   "the_truth": "what actually happened instead of the lie",
   "the_contradiction": "how the lie can be caught — what detail doesn't add up",
-  "stress_triggers": ["list of exactly 3 topics or questions that would make the suspect nervous"],
+  "stress_triggers": ["list of exactly ${clueCount} topics or questions that would make the suspect nervous"],
   "deflection_tactics": ["list of 3-4 ways the suspect tries to change the subject or avoid the topic"],
-  "difficulty": "easy"
+  "difficulty": "${difficulty}"
 }
 
-Make the contradiction discoverable but not obvious. The player should need 3-5 good questions to find it.
+Make the contradiction discoverable but not obvious. The player should need ${difficulty === 'easy' ? '2-3' : difficulty === 'medium' ? '3-5' : difficulty === 'hard' ? '5-7' : '7-10'} good questions to find it.
 
 IMPORTANT: All text fields (briefing, stress_triggers, deflection_tactics, suspect_true_story, suspect_cover_story, the_lie, the_truth, the_contradiction) MUST use the correct pronouns matching suspect_gender. If female, use she/her/hers. If male, use he/him/his. Never mix pronouns.
 
@@ -91,10 +117,32 @@ export async function interrogate(
     the_contradiction: string;
     stress_triggers: string[];
     deflection_tactics: string[];
+    difficulty?: string;
   },
   conversationHistory: ConversationMessage[],
   playerQuestion: string
 ) {
+  const difficulty = caseData.difficulty || 'medium';
+  const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
+
+  // Build dynamic clue thresholds — spread evenly across stress 1-9
+  const clueThresholds = Array.from({ length: clueCount }, (_, i) => {
+    const stress = Math.round(1 + (i * 8) / clueCount);
+    return `- Clue ${i + 1} (when stress reaches ${stress}+): ${
+      i < clueCount - 1
+        ? i === 0 ? 'A vague observation about the right area.' : 'A more pointed detail narrowing in on the contradiction.'
+        : 'A strong hint near the contradiction itself.'
+    }`;
+  }).join('\n');
+
+  const difficultyBehavior = difficulty === 'easy'
+    ? 'You are not great at lying. You get flustered easily and your deflections are weak.'
+    : difficulty === 'hard'
+    ? 'You are very composed and a skilled liar. You deflect smoothly, rarely show stress, and only crack under sustained, targeted pressure.'
+    : difficulty === 'expert'
+    ? 'You are an exceptional liar — manipulative, cold, and calculated. You actively misdirect, turn questions back on the detective, and show almost no stress until cornered with undeniable evidence.'
+    : 'You are a decent liar but crack under sustained pressure.';
+
   const systemPrompt = `You are playing a CHARACTER in a detective interrogation game. You are ${caseData.suspect_name}, ${caseData.suspect_role} at ${caseData.setting}.
 
 WHAT HAPPENED (the truth you are hiding):
@@ -119,6 +167,9 @@ YOUR DEFLECTION TACTICS:
 ${caseData.deflection_tactics.join(', ')}
 
 ---
+
+DIFFICULTY: ${difficulty.toUpperCase()}
+${difficultyBehavior}
 
 ACTING RULES:
 
@@ -147,6 +198,13 @@ ACTING RULES:
    - Adding unnecessary precise details to seem credible
    - Time stalling: "Can I get some water?" / "What was the question again?"
 
+9. IMPORTANT — LEAKING INFORMATION TO HELP THE PLAYER:
+   - Even while deflecting, your responses MUST contain SUBTLE HINTS that reward careful attention.
+   - When stressed (4+), include a specific detail that doesn't quite match your cover story — the player should be able to catch these if they're paying attention.
+   - Example: If you claim you left at 5pm but actually left at 3pm, when stressed you might say "I was wrapping up around... 5, like I said" — the hesitation is the clue.
+   - At stress 7+, your contradictions should be NOTICEABLE — not spelled out, but a careful player will catch them.
+   - This is a GAME. The player MUST be able to win. Make it challenging but fair. Leave breadcrumbs in your responses.
+
 ---
 
 RESPONSE FORMAT — You MUST respond in this exact JSON format every time:
@@ -166,11 +224,10 @@ STRESS LEVEL GUIDE:
 - 7-8: Panicking. Player is very close. Contradictions may slip.
 - 9: Maximum stress. Barely holding it together. But still denying everything.
 - NEVER set stress to 10. NEVER set caught to true. You always deny.
+- IMPORTANT: Stress should go UP when the player asks about relevant topics. Do NOT keep stress at 0 when the player is asking reasonable detective questions about the case. If the question is even tangentially related to the crime, stress should be at least 1-2.
 
-CLUE SYSTEM — You MUST unlock clues as the player gets closer to the lie:
-- Clue 1 (when stress reaches 3+): Unlock a vague observation about the right area. E.g. "The suspect tensed up when finances were mentioned."
-- Clue 2 (when stress reaches 5+): Unlock a more pointed detail. E.g. "Their timeline doesn't quite add up."
-- Clue 3 (when stress reaches 7+): Unlock a strong hint near the contradiction. E.g. "They claimed to be at the office, but earlier said they left at 3pm."
+CLUE SYSTEM — You MUST unlock clues (${clueCount} total) as the player gets closer to the lie:
+${clueThresholds}
 - Each clue unlocks ONCE. Track which clues you have already given by checking previous clue_unlocked values in the conversation. If clue 1 was already given, next unlock is clue 2.
 - Clues are ONE sentence, written as detective observations (not dialogue).
 - Set clue_unlocked to null if stress hasn't reached the next threshold or topic is unrelated.

@@ -112,6 +112,20 @@ export default function HomePage() {
         </span>
       </div>
 
+      {/* Logos */}
+      <div className="flex items-center gap-6 mb-4 z-10">
+        <img
+          src="/ui/mistral-logo.png"
+          alt="Mistral AI"
+          className="h-5 opacity-40"
+        />
+        <img
+          src="/ui/infinity.webp"
+          alt="Infinity"
+          className="h-6 opacity-40"
+        />
+      </div>
+
       {/* Footer */}
       <p className="text-xs text-gray-600 uppercase tracking-wider z-10">
         Powered by Mistral AI &bull; Hackathon 2026

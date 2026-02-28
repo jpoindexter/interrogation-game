@@ -6,7 +6,8 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   try {
     const setting = request.nextUrl.searchParams.get('setting') || undefined;
-    const caseData = await generateCase(setting);
+    const difficulty = request.nextUrl.searchParams.get('difficulty') || 'medium';
+    const caseData = await generateCase(setting, difficulty);
     return NextResponse.json(caseData);
   } catch (error) {
     console.error('Error generating case:', error);

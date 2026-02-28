@@ -6,7 +6,15 @@ import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/mistral';
 import SuspectAvatar from './SuspectAvatar';
 
-// Pool of evidence icons — 3 random ones are picked per case
+// Difficulty → clues needed
+const DIFFICULTY_CLUES: Record<string, number> = {
+  easy: 2,
+  medium: 3,
+  hard: 4,
+  expert: 5,
+};
+
+// Pool of evidence icons — random ones are picked per case
 const EVIDENCE_ICONS = [
   '/clues/folder.png',
   '/clues/recorder.png',
@@ -76,7 +84,9 @@ function GameContent() {
   const [showHelp, setShowHelp] = useState(false);
   const [helpPos, setHelpPos] = useState<{ x: number; y: number } | null>(null);
   const [clueNotification, setClueNotification] = useState<number | null>(null);
-  const [clueIcons, setClueIcons] = useState<string[]>(() => pickRandomIcons(3));
+  const difficulty = searchParams.get('difficulty') || 'medium';
+  const cluesNeeded = DIFFICULTY_CLUES[difficulty] || 3;
+  const [clueIcons, setClueIcons] = useState<string[]>(() => pickRandomIcons(cluesNeeded));
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -144,6 +154,7 @@ function GameContent() {
         const setting = searchParams.get('setting');
         const params = new URLSearchParams();
         if (setting && setting !== 'random') params.set('setting', setting);
+        if (difficulty) params.set('difficulty', difficulty);
         params.set('t', Date.now().toString());
         const res = await fetch(`/api/generate-case?${params}`, { cache: 'no-store' });
         const data = await res.json();
@@ -634,9 +645,20 @@ function GameContent() {
       >
         <div className="absolute inset-0 bg-black/70" />
         <div className="max-w-2xl text-center relative z-10">
-          <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E] mb-4">
-            Case #{caseData.case_number}
-          </p>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E]">
+              Case #{caseData.case_number}
+            </p>
+            <span
+              className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm"
+              style={{
+                color: difficulty === 'easy' ? '#4CAF50' : difficulty === 'medium' ? '#F59E0B' : difficulty === 'hard' ? '#C41E1E' : '#9333EA',
+                border: `1px solid ${difficulty === 'easy' ? '#4CAF5040' : difficulty === 'medium' ? '#F59E0B40' : difficulty === 'hard' ? '#C41E1E40' : '#9333EA40'}`,
+              }}
+            >
+              {difficulty.toUpperCase()}
+            </span>
+          </div>
           <h1 className="text-4xl font-bold mb-8">BRIEFING</h1>
           <div className="flex justify-center mb-6">
             <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={0} size="sm" />
@@ -851,7 +873,7 @@ function GameContent() {
                       <img
                         src={icon}
                         alt={`Evidence ${i + 1}`}
-                        className={`w-14 h-14 object-contain transition-all duration-500 ${
+                        className={`w-20 h-20 object-contain transition-all duration-500 ${
                           clues.length >= i + 1
                             ? 'opacity-100'
                             : 'opacity-20 grayscale'
@@ -874,7 +896,7 @@ function GameContent() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-600">Find 3 clues to unlock accusation.</p>
+                  <p className="text-sm text-gray-600">Find {cluesNeeded} clues to unlock accusation.</p>
                 )}
               </div>
 
@@ -926,11 +948,11 @@ function GameContent() {
             <img
               src={clueIcons[clueNotification - 1] || clueIcons[0]}
               alt={`Evidence ${clueNotification}`}
-              className="w-28 h-28 object-contain drop-shadow-2xl"
+              className="w-36 h-36 object-contain drop-shadow-2xl"
               style={{ imageRendering: 'pixelated' }}
             />
             <span className="text-xs uppercase tracking-[0.3em] text-[#C8A050] font-bold">
-              Clue {clueNotification} of 3
+              Clue {clueNotification} of {cluesNeeded}
             </span>
           </div>
         </div>
@@ -1229,7 +1251,7 @@ function GameContent() {
                 <p className="text-[11px] text-gray-400 leading-relaxed">As you press on the right topics, the stress meter rises and you unlock detective badges.</p>
                 <div className="flex items-center gap-3 mt-2">
                   {clueIcons.map((icon, i) => (
-                    <img key={i} src={icon} alt="" className="w-12 h-12 object-contain" style={{ imageRendering: 'pixelated' }} />
+                    <img key={i} src={icon} alt="" className="w-16 h-16 object-contain" style={{ imageRendering: 'pixelated' }} />
                   ))}
                 </div>
               </div>
@@ -1238,7 +1260,7 @@ function GameContent() {
               <span className="text-sm font-bold text-[#C41E1E] shrink-0">03</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Make Your Accusation</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all 3 clues, the ACCUSE button unlocks. Call out the lie. You get 3 attempts.</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all {cluesNeeded} clues, the ACCUSE button unlocks. Call out the lie. You get 3 attempts.</p>
               </div>
             </div>
             <div className="border-t border-[#2A2A2A] pt-3">
@@ -1326,14 +1348,14 @@ function GameContent() {
           {/* Hint */}
           <button
             onClick={() => {
-              if (caseData && hintsUsed < Math.min(3, caseData.stress_triggers.length)) {
+              if (caseData && hintsUsed < Math.min(cluesNeeded, caseData.stress_triggers.length)) {
                 setHintsUsed((prev) => prev + 1);
               }
             }}
-            disabled={!caseData || hintsUsed >= Math.min(3, caseData?.stress_triggers?.length ?? 0)}
-            data-tooltip={`Hint (${hintsUsed}/3)`}
+            disabled={!caseData || hintsUsed >= Math.min(cluesNeeded, caseData?.stress_triggers?.length ?? 0)}
+            data-tooltip={`Hint (${hintsUsed}/${cluesNeeded})`}
             className={`dock-icon ${
-              !caseData || hintsUsed >= Math.min(3, caseData?.stress_triggers?.length ?? 0)
+              !caseData || hintsUsed >= Math.min(cluesNeeded, caseData?.stress_triggers?.length ?? 0)
                 ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
                 : 'bg-[#2A2A2A] text-[#F59E0B]'
             }`}
@@ -1348,10 +1370,10 @@ function GameContent() {
           {/* Accuse */}
           <button
             onClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
-            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || clues.length < 3 || showAccuseConfirm)) || (isAccusing && !isListening)}
-            data-tooltip={isAccusing && isListening ? 'Stop' : clues.length < 3 ? `Find ${3 - clues.length} more clue${3 - clues.length === 1 ? '' : 's'}` : `Accuse (${accusationsLeft})`}
+            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || clues.length < cluesNeeded || showAccuseConfirm)) || (isAccusing && !isListening)}
+            data-tooltip={isAccusing && isListening ? 'Stop' : clues.length < cluesNeeded ? `Find ${cluesNeeded - clues.length} more clue${cluesNeeded - clues.length === 1 ? '' : 's'}` : `Accuse (${accusationsLeft})`}
             className={`dock-icon ${
-              (accusationsLeft <= 0 || clues.length < 3) && !isAccusing
+              (accusationsLeft <= 0 || clues.length < cluesNeeded) && !isAccusing
                 ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
                 : isAccusing
                   ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'

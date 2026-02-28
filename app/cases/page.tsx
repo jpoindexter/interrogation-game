@@ -3,27 +3,29 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+const DIFFICULTY_CONFIG: Record<string, { label: string; color: string; clues: number; stars: number }> = {
+  easy: { label: 'EASY', color: '#4CAF50', clues: 2, stars: 1 },
+  medium: { label: 'MEDIUM', color: '#F59E0B', clues: 3, stars: 2 },
+  hard: { label: 'HARD', color: '#C41E1E', clues: 4, stars: 3 },
+  expert: { label: 'EXPERT', color: '#9333EA', clues: 5, stars: 5 },
+};
+
 const CASES = [
+  {
+    id: 'startup',
+    title: 'STARTUP',
+    subtitle: 'Fraud, stolen code, faked metrics',
+    bg: '/bg/startup.png',
+    setting: 'startup',
+    difficulty: 'easy',
+  },
   {
     id: 'office',
     title: 'CORPORATE OFFICE',
     subtitle: 'Embezzlement, fraud, cover-ups',
     bg: '/bg/office.png',
     setting: 'corporate office',
-  },
-  {
-    id: 'trade',
-    title: 'TRADING FLOOR',
-    subtitle: 'Insider trading, market manipulation',
-    bg: '/bg/trade.png',
-    setting: 'bank or financial trading firm',
-  },
-  {
-    id: 'lawfirm',
-    title: 'LAW FIRM',
-    subtitle: 'Evidence tampering, witness fraud',
-    bg: '/bg/lawfirm.png',
-    setting: 'law firm',
+    difficulty: 'easy',
   },
   {
     id: 'medical',
@@ -31,6 +33,15 @@ const CASES = [
     subtitle: 'Record falsification, malpractice cover-up',
     bg: '/bg/medical.png',
     setting: 'hospital or medical facility',
+    difficulty: 'medium',
+  },
+  {
+    id: 'lawfirm',
+    title: 'LAW FIRM',
+    subtitle: 'Evidence tampering, witness fraud',
+    bg: '/bg/lawfirm.png',
+    setting: 'law firm',
+    difficulty: 'medium',
   },
   {
     id: 'server',
@@ -38,13 +49,15 @@ const CASES = [
     subtitle: 'Data theft, sabotage, IP leaks',
     bg: '/bg/server.png',
     setting: 'tech company',
+    difficulty: 'hard',
   },
   {
-    id: 'startup',
-    title: 'STARTUP',
-    subtitle: 'Fraud, stolen code, faked metrics',
-    bg: '/bg/startup.png',
-    setting: 'startup',
+    id: 'trade',
+    title: 'TRADING FLOOR',
+    subtitle: 'Insider trading, market manipulation',
+    bg: '/bg/trade.png',
+    setting: 'bank or financial trading firm',
+    difficulty: 'hard',
   },
   {
     id: 'police',
@@ -52,6 +65,7 @@ const CASES = [
     subtitle: 'Corruption, planted evidence, internal affairs',
     bg: '/bg/police.png',
     setting: 'police precinct',
+    difficulty: 'expert',
   },
 ];
 
@@ -64,8 +78,8 @@ export default function CaseSelectPage() {
     setSolvedCases(solved);
   }, []);
 
-  const selectCase = (setting: string) => {
-    router.push(`/game?setting=${encodeURIComponent(setting)}`);
+  const selectCase = (setting: string, difficulty: string) => {
+    router.push(`/game?setting=${encodeURIComponent(setting)}&difficulty=${difficulty}`);
   };
 
   return (
@@ -94,7 +108,7 @@ export default function CaseSelectPage() {
             return (
               <button
                 key={c.id}
-                onClick={() => selectCase(c.setting)}
+                onClick={() => selectCase(c.setting, c.difficulty)}
                 className="group relative overflow-hidden rounded-sm border border-[#2A2A2A] hover:border-[#C41E1E] transition-all text-left"
                 style={{ aspectRatio: '16 / 10' }}
               >
@@ -110,6 +124,18 @@ export default function CaseSelectPage() {
                 />
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:from-black/80 transition-colors" />
+                {/* Difficulty stars */}
+                <div className="absolute top-3 left-3 flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <img
+                      key={i}
+                      src={i < DIFFICULTY_CONFIG[c.difficulty].stars ? '/ui/star_filled.png' : '/ui/star_empty.png'}
+                      alt=""
+                      className="w-4 h-4"
+                      style={{ imageRendering: 'pixelated' }}
+                    />
+                  ))}
+                </div>
                 {/* Solved stamp */}
                 {solved && (
                   <div className="absolute inset-0 flex items-center justify-center">
