@@ -112,12 +112,20 @@ export default function HomePage() {
             background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.4) 2px, rgba(0,0,0,0.4) 4px)',
           }}
         />
-        {/* Drifting scan line */}
+        {/* Red glow pulse behind image */}
         <div
-          className="absolute left-0 right-0 h-[1px] pointer-events-none opacity-15"
+          className="absolute inset-0 pointer-events-none rounded-sm"
           style={{
-            background: 'rgba(255,255,255,0.5)',
-            animation: 'scanDrift 3s linear infinite',
+            boxShadow: '0 0 80px rgba(196,30,30,0.15), 0 0 160px rgba(196,30,30,0.05)',
+            animation: 'glowPulse 3s ease-in-out infinite',
+          }}
+        />
+        {/* Interference flicker — random opacity jitter */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            animation: 'interference 0.15s steps(2) infinite',
+            background: 'rgba(255,255,255,0.01)',
           }}
         />
         {/* REC indicator */}

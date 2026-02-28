@@ -338,6 +338,23 @@ body {
   100% { top: 100%; }
 }
 
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes interference {
+  0% { opacity: 0.03; }
+  25% { opacity: 0; }
+  50% { opacity: 0.02; }
+  75% { opacity: 0; }
+  100% { opacity: 0.01; }
+}
+
 @keyframes breathe {
   0%, 100% {
     transform: translateY(0px);
