@@ -7,7 +7,7 @@ export default function HomePage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-6 font-mono bg-[#0A0A0A] relative overflow-hidden"
+      className="min-h-screen flex flex-col items-center justify-center p-6 font-mono bg-black relative overflow-hidden"
     >
       {/* Animated pixel particles */}
       <div className="absolute inset-0 pointer-events-none z-0">
