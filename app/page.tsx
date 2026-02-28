@@ -100,8 +100,31 @@ export default function HomePage() {
           src="/logo/main3.png"
           alt="INTERROGATION"
           className="w-[500px] md:w-[640px] max-w-full"
-          style={{ imageRendering: 'pixelated' }}
+          style={{
+            imageRendering: 'pixelated',
+            animation: 'flicker 4s infinite',
+          }}
         />
+        {/* Scanlines overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-10"
+          style={{
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.4) 2px, rgba(0,0,0,0.4) 4px)',
+          }}
+        />
+        {/* Drifting scan line */}
+        <div
+          className="absolute left-0 right-0 h-[1px] pointer-events-none opacity-15"
+          style={{
+            background: 'rgba(255,255,255,0.5)',
+            animation: 'scanDrift 3s linear infinite',
+          }}
+        />
+        {/* REC indicator */}
+        <div className="absolute top-3 right-3 flex items-center gap-1">
+          <span className="w-[5px] h-[5px] bg-[#C41E1E] animate-pulse rounded-full" />
+          <span className="text-[9px] text-[#C41E1E]/50 uppercase tracking-wider">Rec</span>
+        </div>
       </div>
 
       {/* Primary CTA */}
