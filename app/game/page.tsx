@@ -71,12 +71,26 @@ function GameContent() {
   const [showTextInput, setShowTextInput] = useState(false);
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [settings, setSettings] = useState({
-    ttsEnabled: process.env.NODE_ENV !== 'development',
-    fontSize: 'medium' as 'small' | 'medium' | 'large',
-    fontFamily: 'mono' as 'mono' | 'dyslexia' | 'sans',
-    highContrast: false,
+  const [settings, setSettings] = useState(() => {
+    const defaults = {
+      ttsEnabled: process.env.NODE_ENV !== 'development',
+      fontSize: 'medium' as 'small' | 'medium' | 'large',
+      fontFamily: 'mono' as 'mono' | 'dyslexia' | 'sans',
+      highContrast: false,
+    };
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('appSettings');
+        if (stored) return { ...defaults, ...JSON.parse(stored) };
+      } catch { /* ignore */ }
+    }
+    return defaults;
   });
+  // Persist settings changes to localStorage
+  const updateSettings = useCallback((next: typeof settings) => {
+    setSettings(next);
+    localStorage.setItem('appSettings', JSON.stringify(next));
+  }, []);
   // Refs
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -756,7 +770,7 @@ function GameContent() {
       <SettingsPanel
         show={showSettings}
         settings={settings}
-        onSettingsChange={setSettings}
+        onSettingsChange={updateSettings}
         onClose={() => setShowSettings(false)}
       />
 

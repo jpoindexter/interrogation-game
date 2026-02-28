@@ -1,13 +1,44 @@
 @import "tailwindcss";
 
 :root {
+  /* Core palette */
   --background: #0a0a0a;
   --foreground: #e8e8e8;
+  --accent: #C41E1E;
+  --accent-hover: #ff4444;
+  --gold: #C8A050;
+  --gold-hover: #ffcc55;
+  --warn: #F59E0B;
+
+  /* Surfaces */
+  --surface: #2A2A2A;
+  --surface-dark: #1A1A1A;
+  --surface-darker: #111111;
+
+  /* Text */
+  --text-primary: #E8E8E8;
+  --text-secondary: #B8B8C8;
+  --text-muted: #6B7280;
+  --text-dim: #4B5563;
+
+  /* Difficulty */
+  --diff-easy: #4CAF50;
+  --diff-medium: #F59E0B;
+  --diff-hard: #C41E1E;
+  --diff-expert: #9333EA;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-gold: var(--gold);
+  --color-gold-hover: var(--gold-hover);
+  --color-warn: var(--warn);
+  --color-surface: var(--surface);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-darker: var(--surface-darker);
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-pixel: var(--font-pixel), 'Press Start 2P', cursive;
 }
@@ -19,8 +50,8 @@ body {
 }
 
 ::selection {
-  background: #C41E1E;
-  color: #E8E8E8;
+  background: var(--accent);
+  color: var(--text-primary);
 }
 
 @keyframes spin {
@@ -70,10 +101,10 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #111111;
+  background: var(--surface-darker);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2A2A2A;
+  background: var(--surface);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -83,7 +114,7 @@ body {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2A2A2A #111111;
+  scrollbar-color: var(--surface) var(--surface-darker);
 }
 
 /* Styled tooltips */
@@ -97,9 +128,9 @@ body {
   left: 50%;
   transform: translateX(-50%);
   padding: 4px 10px;
-  background: #1A1A1A;
-  border: 1px solid #2A2A2A;
-  color: #B8B8C8;
+  background: var(--surface-dark);
+  border: 1px solid var(--surface);
+  color: var(--text-secondary);
   font-size: 11px;
   font-family: var(--font-mono);
   letter-spacing: 0.05em;
@@ -117,7 +148,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: #2A2A2A;
+  border-top-color: var(--surface);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;

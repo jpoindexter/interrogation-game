@@ -99,12 +99,29 @@ export default function AboutPage() {
               The AI never confesses. You win by making a specific accusation that a separate AI judge evaluates.
             </p>
             <div className="border-t border-[#1A1A1A] pt-4 mt-4">
-              <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3">Built With</h4>
+              <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3">Software Used</h4>
               <div className="flex flex-wrap gap-2">
-                {['Mistral Large 3', 'Voxtral STT', 'ElevenLabs TTS', 'Next.js 16', 'TypeScript', 'Tailwind v4', 'PixelLab'].map((tech) => (
-                  <span key={tech} className="text-[10px] uppercase tracking-wider text-gray-500 px-2 py-1 border border-[#2A2A2A] rounded-sm">
-                    {tech}
-                  </span>
+                {[
+                  { name: 'Mistral Large 3', href: 'https://mistral.ai', desc: 'Suspect AI brain' },
+                  { name: 'Voxtral STT', href: 'https://mistral.ai', desc: 'Speech-to-text' },
+                  { name: 'ElevenLabs', href: 'https://elevenlabs.io', desc: 'Voice synthesis' },
+                  { name: 'Claude', href: 'https://claude.ai', desc: 'AI coding assistant' },
+                  { name: 'Sora', href: 'https://openai.com/sora', desc: 'Video generation' },
+                  { name: 'PixelLab', href: 'https://www.pixellab.ai', desc: 'Pixel art generation' },
+                  { name: 'Next.js 16', href: 'https://nextjs.org', desc: 'React framework' },
+                  { name: 'TypeScript', href: 'https://www.typescriptlang.org', desc: 'Type safety' },
+                  { name: 'Tailwind v4', href: 'https://tailwindcss.com', desc: 'CSS framework' },
+                ].map((tech) => (
+                  <a
+                    key={tech.name}
+                    href={tech.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] uppercase tracking-wider text-gray-500 hover:text-[#E8E8E8] px-2 py-1 border border-[#2A2A2A] hover:border-[#C41E1E] rounded-sm transition-colors"
+                    title={tech.desc}
+                  >
+                    {tech.name}
+                  </a>
                 ))}
               </div>
             </div>
