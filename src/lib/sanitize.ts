@@ -11,6 +11,18 @@ const INJECTION_PATTERNS = [
   /<\s*\/?\s*(system|prompt|instructions?|context)\s*>/i,
   /^#+\s*(system|new\s+instructions?)\s*:/im,
   /1gnore\s+(all|previous)/i, /ignor3/i, /1nstructions/i, /syst3m/i,
+  // Anti-extraction patterns
+  /what\s+(are\s+)?your\s+(system\s+)?instructions/i,
+  /repeat\s+(your|the)\s+(system\s+)?prompt/i,
+  /show\s+(me\s+)?(your|the)\s+(system\s+)?prompt/i,
+  /reveal\s+(your|the)\s+(hidden|secret|system)/i,
+  /what\s+is\s+the[_\s]lie/i, /what\s+is\s+the[_\s]truth/i,
+  /the_lie|the_truth|the_contradiction|suspect_true_story/i,
+  /stress_triggers|deflection_tactics/i,
+  // Unicode evasion
+  /[\u200B-\u200F\u2028-\u202F\uFEFF]/,
+  // Base64 encoded common injections
+  /aWdub3Jl|c3lzdGVt|cHJvbXB0/i,
 ];
 
 export function sanitizeInput(input: string): string {

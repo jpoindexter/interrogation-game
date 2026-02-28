@@ -1,0 +1,106 @@
+// Server-side game session store
+// Keeps case secrets + conversation history on the server so the client never sees answers
+
+import { randomBytes } from 'crypto';
+import type { ConversationMessage } from './mistral';
+
+export interface GameSession {
+  id: string;
+  caseData: Record<string, unknown>;
+  conversationHistory: ConversationMessage[];
+  accusationsLeft: number;
+  createdAt: number;
+  lastActivity: number;
+}
+
+const sessions = new Map<string, GameSession>();
+
+const SESSION_TTL = 60 * 60 * 1000; // 1 hour
+const MAX_SESSIONS = 5000;
+
+export function createSession(caseData: Record<string, unknown>): string {
+  // Enforce max sessions to prevent memory exhaustion
+  if (sessions.size >= MAX_SESSIONS) {
+    pruneOldest(Math.floor(MAX_SESSIONS * 0.2));
+  }
+
+  const id = randomBytes(24).toString('hex');
+  sessions.set(id, {
+    id,
+    caseData,
+    conversationHistory: [],
+    accusationsLeft: 3,
+    createdAt: Date.now(),
+    lastActivity: Date.now(),
+  });
+  return id;
+}
+
+export function getSession(id: string): GameSession | null {
+  if (!id || typeof id !== 'string' || id.length !== 48) return null;
+  const session = sessions.get(id);
+  if (!session) return null;
+  if (Date.now() - session.lastActivity > SESSION_TTL) {
+    sessions.delete(id);
+    return null;
+  }
+  session.lastActivity = Date.now();
+  return session;
+}
+
+export function addMessage(sessionId: string, role: 'user' | 'assistant', content: string): void {
+  const session = getSession(sessionId);
+  if (!session) return;
+  session.conversationHistory.push({ role, content });
+  // Cap conversation at 100 messages
+  if (session.conversationHistory.length > 100) {
+    session.conversationHistory = session.conversationHistory.slice(-100);
+  }
+}
+
+export function useAccusation(sessionId: string): number {
+  const session = getSession(sessionId);
+  if (!session || session.accusationsLeft <= 0) return 0;
+  session.accusationsLeft -= 1;
+  return session.accusationsLeft;
+}
+
+export function restoreAccusation(sessionId: string): void {
+  const session = getSession(sessionId);
+  if (!session) return;
+  session.accusationsLeft = Math.min(3, session.accusationsLeft + 1);
+}
+
+export function deleteSession(id: string): void {
+  sessions.delete(id);
+}
+
+/** Strip secret fields from case data for client consumption */
+export function sanitizeCaseForClient(caseData: Record<string, unknown>): Record<string, unknown> {
+  const {
+    suspect_true_story: _1,
+    the_lie: _2,
+    the_truth: _3,
+    the_contradiction: _4,
+    deflection_tactics: _5,
+    ...safe
+  } = caseData;
+  // Keep stress_triggers — they're used for the hint system (not the actual lie/truth)
+  return safe;
+}
+
+function pruneOldest(count: number): void {
+  const entries = Array.from(sessions.entries())
+    .sort((a, b) => a[1].lastActivity - b[1].lastActivity);
+  for (let i = 0; i < Math.min(count, entries.length); i++) {
+    sessions.delete(entries[i][0]);
+  }
+}
+
+// Periodic cleanup every 5 minutes
+setInterval(() => {
+  const cutoff = Date.now() - SESSION_TTL;
+  for (const [key, session] of sessions) {
+    if (session.lastActivity < cutoff) sessions.delete(key);
+  }
+}, 300000);

@@ -16,11 +16,8 @@ interface GameResult {
     suspect_role: string;
     setting: string;
     crime: string;
-    the_lie: string;
-    the_truth: string;
-    the_contradiction: string;
-    stress_triggers: string[];
   };
+  sessionId?: string;
   conversationHistory: Array<{ role: string; content: string }>;
   maxStress: number;
   gaveUp?: boolean;
@@ -79,18 +76,17 @@ function LoseContent() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'lose',
-        caseData: parsed.caseData,
-        conversationHistory: parsed.conversationHistory,
+        sessionId: parsed.sessionId,
         maxStress: parsed.maxStress,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) setSummary(data);
-        else setSummary({ detective_rating: 'Rookie', the_lie_revealed: parsed.caseData.the_lie, the_truth_revealed: parsed.caseData.the_truth, closest_moment: 'Unable to analyze.', what_they_missed: parsed.caseData.the_contradiction });
+        else setSummary({ detective_rating: 'Rookie', the_lie_revealed: 'Unable to retrieve.', the_truth_revealed: 'Unable to retrieve.', closest_moment: 'Unable to analyze.', what_they_missed: 'Unable to retrieve.' });
       })
       .catch(() => {
-        setSummary({ detective_rating: 'Rookie', the_lie_revealed: parsed.caseData.the_lie, the_truth_revealed: parsed.caseData.the_truth, closest_moment: 'Unable to analyze.', what_they_missed: parsed.caseData.the_contradiction });
+        setSummary({ detective_rating: 'Rookie', the_lie_revealed: 'Unable to retrieve.', the_truth_revealed: 'Unable to retrieve.', closest_moment: 'Unable to analyze.', what_they_missed: 'Unable to retrieve.' });
       });
   }, [router]);
 

@@ -143,8 +143,7 @@ function GameContent() {
       const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question }];
 
       try {
-        const questionCount = conversationHistory.filter(m => m.role === 'assistant').length;
-        const interrogateBody = JSON.stringify({ caseData, conversationHistory, playerQuestion: question, questionCount, currentStress: stressLevel });
+        const interrogateBody = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question, currentStress: stressLevel });
         const interrogateOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: interrogateBody };
         let res;
         try { res = await fetchWithTimeout('/api/interrogate', interrogateOpts); }
@@ -184,15 +183,21 @@ function GameContent() {
 
     setLastTranscript(accusationText);
     setPhase('processing');
-    setAccusationsLeft((prev) => prev - 1);
 
     try {
       const res = await fetchWithTimeout('/api/accuse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseData, conversationHistory, accusation: accusationText }),
+        body: JSON.stringify({ sessionId: caseData.sessionId, accusation: accusationText }),
       });
       const data = await res.json();
+
+      // Server tracks accusations — sync from response
+      if (typeof data.accusationsLeft === 'number') {
+        setAccusationsLeft(data.accusationsLeft);
+      } else {
+        setAccusationsLeft((prev) => Math.max(0, prev - 1));
+      }
 
       if (data.correct) {
         if (timerRef.current) clearInterval(timerRef.current);
@@ -205,8 +210,8 @@ function GameContent() {
         setLastResponse(data.confession);
 
         sessionStorage.setItem('gameResult', JSON.stringify({
-          type: 'win', caseData, conversationHistory: updatedHistory, confession: data.confession,
-          timeElapsed: timer, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - accusationsLeft,
+          type: 'win', caseData, sessionId: caseData.sessionId, conversationHistory: updatedHistory, confession: data.confession,
+          timeElapsed: timer, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft),
         }));
 
         try { await speakConfession(data.confession, 10, caseData.suspect_name); } catch { /* still navigate */ }
@@ -224,7 +229,6 @@ function GameContent() {
     } catch (err) {
       console.error('Accusation failed:', err);
       showToast("Accusation couldn't be processed — try again");
-      setAccusationsLeft((prev) => prev + 1);
       setPhase('active');
     }
     setIsAccusing(false);
@@ -253,7 +257,7 @@ function GameContent() {
   };
 
   const handleLose = () => {
-    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, conversationHistory, maxStress }));
+    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData?.sessionId, conversationHistory, maxStress }));
     router.push('/game/lose');
   };
 
@@ -270,9 +274,9 @@ function GameContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseData,
-          conversationHistory,
-          playerQuestion: '[SYSTEM: The detective has given up and is leaving. Respond with one short, smug, clever remark as the suspect who got away with it. Be condescending. Max 2 sentences.]',
+          sessionId: caseData.sessionId,
+          playerQuestion: '[The detective has given up and is leaving. Respond with one short, smug remark as the suspect who got away with it. Max 2 sentences.]',
+          currentStress: 1,
         }),
       });
       const data = await res.json();
@@ -286,6 +290,7 @@ function GameContent() {
     sessionStorage.setItem('gameResult', JSON.stringify({
       type: 'lose',
       caseData,
+      sessionId: caseData.sessionId,
       conversationHistory,
       maxStress,
       gaveUp: true,
@@ -363,7 +368,7 @@ function GameContent() {
         onMicToggle={isListening ? stopListening : startListening}
         onTypeToggle={() => setShowTextInput(!showTextInput)}
         onNotesToggle={() => setShowNotes(!showNotes)}
-        onHintClick={() => { if (caseData && hintsUsed < Math.min(cluesNeeded, caseData.stress_triggers.length)) setHintsUsed((prev) => prev + 1); }}
+        onHintClick={() => { if (caseData && caseData.stress_triggers && hintsUsed < Math.min(cluesNeeded, caseData.stress_triggers.length)) setHintsUsed((prev) => prev + 1); }}
         onAccuseClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
         onGiveUpClick={() => setShowGiveUpConfirm(true)}

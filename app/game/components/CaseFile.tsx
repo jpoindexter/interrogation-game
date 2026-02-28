@@ -81,7 +81,7 @@ export default function CaseFile({
           <div>
             <h3 className="text-xs uppercase tracking-wider text-warn mb-2">Hints</h3>
             <div className="space-y-2">
-              {caseData.stress_triggers.slice(0, hintsUsed).map((trigger, i) => (
+              {(caseData.stress_triggers ?? []).slice(0, hintsUsed).map((trigger, i) => (
                 <div key={i} className="p-3 bg-surface-dark rounded border-l-2 border-warn">
                   <p className="text-sm text-gray-300">Try asking about: {trigger}</p>
                 </div>

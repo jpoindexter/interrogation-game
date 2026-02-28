@@ -17,10 +17,8 @@ interface GameResult {
     suspect_role: string;
     setting: string;
     crime: string;
-    the_lie: string;
-    the_truth: string;
-    the_contradiction: string;
   };
+  sessionId?: string;
   conversationHistory: Array<{ role: string; content: string }>;
   confession: string;
   timeElapsed: number;
@@ -138,18 +136,17 @@ function WinContent() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'win',
-        caseData: parsed.caseData,
-        conversationHistory: parsed.conversationHistory,
-        playerAccusation: parsed.conversationHistory.filter((m) => m.role === 'user').pop()?.content ?? '',
+        sessionId: parsed.sessionId,
+        playerAccusation: parsed.conversationHistory.filter((m: { role: string }) => m.role === 'user').pop()?.content ?? '',
       }),
     })
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) setEvaluation(data);
-        else setEvaluation({ detective_rating: 'Sharp', reveal_the_lie: parsed.caseData.the_lie, reveal_the_truth: parsed.caseData.the_truth, reveal_the_clue: parsed.caseData.the_contradiction, explanation: 'You identified the contradiction in the suspect\'s story.' });
+        else setEvaluation({ detective_rating: 'Sharp', reveal_the_lie: 'Unable to retrieve.', reveal_the_truth: 'Unable to retrieve.', reveal_the_clue: 'Unable to retrieve.', explanation: 'You identified the contradiction in the suspect\'s story.' });
       })
       .catch(() => {
-        setEvaluation({ detective_rating: 'Sharp', reveal_the_lie: parsed.caseData.the_lie, reveal_the_truth: parsed.caseData.the_truth, reveal_the_clue: parsed.caseData.the_contradiction, explanation: 'You identified the contradiction in the suspect\'s story.' });
+        setEvaluation({ detective_rating: 'Sharp', reveal_the_lie: 'Unable to retrieve.', reveal_the_truth: 'Unable to retrieve.', reveal_the_clue: 'Unable to retrieve.', explanation: 'You identified the contradiction in the suspect\'s story.' });
       });
   }, [router]);
 
