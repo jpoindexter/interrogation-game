@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/mistral';
-import { DIFFICULTY_CLUES, pickRandomIcons } from './components/utils';
+import { DIFFICULTY_CLUES, pickRandomIcons, fetchWithTimeout } from './components/utils';
 import TopBar from './components/TopBar';
 import SuspectZone from './components/SuspectZone';
 import CaseFile from './components/CaseFile';
@@ -23,7 +23,7 @@ import { useVoiceRecorder } from './hooks/useVoiceRecorder';
 import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { Spinner } from '../components/ui';
-import { motion, fadeIn, smooth } from '../components/motion';
+import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
 
 export default function GamePage() {
   return (
@@ -72,6 +72,8 @@ function GameContent() {
   const [showTextInput, setShowTextInput] = useState(false);
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const showToast = useCallback((msg: string) => { setToast(msg); setTimeout(() => setToast(null), 4000); }, []);
   const [settings, setSettings] = useState(() => {
     const d = { ttsEnabled: process.env.NODE_ENV !== 'development', fontSize: 'medium' as const, fontFamily: 'mono' as const, highContrast: false };
     if (typeof window !== 'undefined') { try { const s = localStorage.getItem('appSettings'); if (s) return { ...d, ...JSON.parse(s) }; } catch {} }
@@ -91,8 +93,15 @@ function GameContent() {
         if (setting && setting !== 'random') params.set('setting', setting);
         if (difficulty) params.set('difficulty', difficulty);
         params.set('t', Date.now().toString());
-        const res = await fetch(`/api/generate-case?${params}`, { cache: 'no-store' });
-        const data = await res.json();
+        const url = `/api/generate-case?${params}`;
+        const attempt = async () => { const res = await fetchWithTimeout(url, { cache: 'no-store' }, 30000); return res.json(); };
+        let data;
+        try { data = await attempt(); } catch {
+          if (!cancelled) showToast("Couldn't generate case — retrying...");
+          await new Promise(r => setTimeout(r, 2000));
+          if (cancelled) return;
+          data = await attempt();
+        }
         if (!cancelled) { setCaseData(data); setPhase('briefing'); }
       } catch (err) {
         console.error('Failed to load case:', err);
@@ -114,13 +123,13 @@ function GameContent() {
       const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question }];
 
       try {
-        const res = await fetch('/api/interrogate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ caseData, conversationHistory, playerQuestion: question }),
-        });
+        const interrogateBody = JSON.stringify({ caseData, conversationHistory, playerQuestion: question });
+        const interrogateOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: interrogateBody };
+        let res;
+        try { res = await fetchWithTimeout('/api/interrogate', interrogateOpts); }
+        catch { res = await fetchWithTimeout('/api/interrogate', interrogateOpts); }
         const data = await res.json();
-        if (data.error) { console.error('API error:', data.error); setPhase('active'); return; }
+        if (data.error) { console.error('API error:', data.error); showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
 
         const updatedHistory: ConversationMessage[] = [...newHistory, { role: 'assistant', content: data.spoken_response }];
         setConversationHistory(updatedHistory);
@@ -141,10 +150,11 @@ function GameContent() {
         await speakResponse(data.spoken_response, data.stress_level ?? 0, caseData.suspect_name, () => setPhase('active'), settings.ttsEnabled);
       } catch (err) {
         console.error('Failed to interrogate:', err);
+        showToast("Couldn't reach the suspect — try again");
         setPhase('active');
       }
     },
-    [caseData, conversationHistory, phase, speakResponse, settings.ttsEnabled]
+    [caseData, conversationHistory, phase, speakResponse, settings.ttsEnabled, showToast]
   );
 
   // Submit accusation
@@ -156,7 +166,7 @@ function GameContent() {
     setAccusationsLeft((prev) => prev - 1);
 
     try {
-      const res = await fetch('/api/accuse', {
+      const res = await fetchWithTimeout('/api/accuse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ caseData, conversationHistory, accusation: accusationText }),
@@ -192,10 +202,12 @@ function GameContent() {
       }
     } catch (err) {
       console.error('Accusation failed:', err);
+      showToast("Accusation couldn't be processed — try again");
+      setAccusationsLeft((prev) => prev + 1);
       setPhase('active');
     }
     setIsAccusing(false);
-  }, [caseData, conversationHistory, timer, stressLevel, clues.length, hintsUsed, accusationsLeft, speakResponse, speakConfession, settings.ttsEnabled, timerRef, difficulty, router]);
+  }, [caseData, conversationHistory, timer, stressLevel, clues.length, hintsUsed, accusationsLeft, speakResponse, speakConfession, settings.ttsEnabled, timerRef, difficulty, router, showToast]);
 
   // Voice-based question
   const startListening = () => {
@@ -336,6 +348,20 @@ function GameContent() {
         onHelpToggle={() => setShowHelp(!showHelp)}
         onExitClick={() => setShowExitConfirm(true)}
       />
+
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-accent/90 text-foreground font-mono text-xs px-4 py-2 rounded border border-accent"
+          >
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

@@ -45,3 +45,18 @@ export function formatTime(secs: number) {
   const s = secs % 60;
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
+
+// Fetch with AbortController timeout
+export async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs = 15000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...opts, signal: controller.signal });
+    return res;
+  } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === 'AbortError') throw new Error('Request timed out');
+    throw err;
+  } finally {
+    clearTimeout(id);
+  }
+}

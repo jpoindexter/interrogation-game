@@ -325,7 +325,7 @@ THE CONVERSATION SO FAR:
 ${historyText}
 
 THE PLAYER'S ACCUSATION:
-"${accusation}"
+"${accusation.replace(/["\\]/g, '')}"
 
 JUDGING RULES:
 - The player must identify WHAT the suspect lied about — the specific false claim.
@@ -380,7 +380,7 @@ THE CONVERSATION SO FAR:
 ${historyText}
 
 THE PLAYER'S ACCUSATION:
-${playerAccusation}
+${playerAccusation.replace(/["\\]/g, '')}
 
 Did the player correctly identify the lie or the contradiction? Be fair but firm — they don't need exact words, but they need to demonstrate they understand what the suspect lied about.
 
