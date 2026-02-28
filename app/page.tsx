@@ -103,6 +103,7 @@ export default function HomePage() {
           style={{
             imageRendering: 'pixelated',
             animation: 'flicker 4s infinite',
+            filter: 'saturate(0.3) sepia(0.15) contrast(1.1) brightness(0.95)',
           }}
         />
         {/* Scanlines overlay */}
