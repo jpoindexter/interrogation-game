@@ -160,17 +160,25 @@ function GameContent() {
         // Check if caught
         if (data.caught) {
           if (timerRef.current) clearInterval(timerRef.current);
-          // Store game data and navigate to win
+          // Store game data with confession
           sessionStorage.setItem(
             'gameResult',
             JSON.stringify({
               type: 'win',
               caseData,
               conversationHistory: updatedHistory,
+              confession: data.spoken_response,
               timeRemaining: timer,
               stressLevel: data.stress_level,
             })
           );
+          // Speak the confession, then navigate to win
+          setLastResponse(data.spoken_response);
+          try {
+            await speakConfession(data.spoken_response, data.stress_level ?? 0);
+          } catch {
+            // If speech fails, still navigate
+          }
           router.push('/game/win');
           return;
         }
@@ -229,6 +237,34 @@ function GameContent() {
       utterance.onerror = () => { setIsSpeaking(false); setPhase('active'); };
       speechSynthesis.speak(utterance);
     }
+  };
+
+  // Speak confession — returns promise, waits for audio to finish
+  const speakConfession = (text: string, stress: number): Promise<void> => {
+    setIsSpeaking(true);
+    return new Promise(async (resolve) => {
+      try {
+        const res = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, stress, suspectName: caseData?.suspect_name, suspectGender: caseData?.suspect_gender }),
+        });
+        if (!res.ok) throw new Error('TTS failed');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.onended = () => { setIsSpeaking(false); URL.revokeObjectURL(url); resolve(); };
+        audio.onerror = () => { setIsSpeaking(false); URL.revokeObjectURL(url); resolve(); };
+        await audio.play();
+      } catch {
+        // Fallback to browser speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.85;
+        utterance.onend = () => { setIsSpeaking(false); resolve(); };
+        utterance.onerror = () => { setIsSpeaking(false); resolve(); };
+        speechSynthesis.speak(utterance);
+      }
+    });
   };
 
   // Speech recognition
@@ -330,7 +366,7 @@ function GameContent() {
           <div className="flex justify-center mb-6">
             <SuspectAvatar name={caseData.suspect_name} stressLevel={0} size="sm" />
           </div>
-          <div className="bg-[#2A2A2A] p-8 rounded-lg mb-8 text-left">
+          <div className="bg-[#2A2A2A] p-8 rounded-lg mb-6 text-left">
             <p className="text-lg leading-relaxed mb-4">{caseData.briefing}</p>
             <div className="border-t border-gray-600 pt-4 mt-4">
               <p className="text-sm text-gray-400">
@@ -344,9 +380,17 @@ function GameContent() {
               </p>
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-8">
-            You have 10 minutes. Use your voice. Find the lie.
-          </p>
+
+          {/* How to win */}
+          <div className="bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg mb-8 text-left">
+            <h3 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-3">How to Win</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>The suspect is hiding <span className="text-[#C41E1E] font-bold">one specific lie</span> in their story.</li>
+              <li>Ask questions with your voice. Watch the <span className="text-[#E8E8E8]">stress meter</span> — it rises when you get close.</li>
+              <li>When you spot a contradiction, <span className="text-[#E8E8E8]">call it out directly</span> — the suspect will crack.</li>
+              <li>Use <span className="text-[#F59E0B]">hints</span> if you get stuck. You have 10 minutes.</li>
+            </ul>
+          </div>
           <button
             onClick={startInterrogation}
             className="px-8 py-4 bg-[#C41E1E] text-white text-xl font-bold rounded-lg hover:bg-red-700 transition-colors"

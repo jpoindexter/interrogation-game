@@ -15,6 +15,7 @@ interface GameResult {
     the_contradiction: string;
   };
   conversationHistory: Array<{ role: string; content: string }>;
+  confession: string;
   timeRemaining: number;
   stressLevel: number;
 }
@@ -40,7 +41,6 @@ export default function WinPage() {
     const parsed = JSON.parse(stored) as GameResult;
     setResult(parsed);
 
-    // Fetch evaluation from API
     fetch('/api/evaluate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,6 @@ export default function WinPage() {
         if (!data.error) {
           setEvaluation(data);
         } else {
-          // Fallback
           setEvaluation({
             detective_rating: 'Sharp',
             reveal_the_lie: parsed.caseData.the_lie,
@@ -98,7 +97,7 @@ export default function WinPage() {
     <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono p-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
             Case #{result.caseData.case_number}
           </p>
@@ -116,21 +115,34 @@ export default function WinPage() {
           )}
         </div>
 
-        {/* The Reveal */}
+        {/* Confession */}
+        {result.confession && (
+          <div className="mb-8 bg-[#1A1A1A] border border-[#C41E1E] rounded-lg p-8">
+            <h2 className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-1">
+              {result.caseData.suspect_name}
+            </h2>
+            <p className="text-xs text-gray-500 mb-4">{result.caseData.suspect_role}</p>
+            <p className="text-lg leading-relaxed italic text-gray-200">
+              &ldquo;{result.confession}&rdquo;
+            </p>
+          </div>
+        )}
+
+        {/* Case breakdown */}
         {evaluation ? (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="bg-[#2A2A2A] p-6 rounded-lg border-l-4 border-[#C41E1E]">
               <h2 className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-3">
                 The Lie
               </h2>
-              <p className="text-lg">&ldquo;{evaluation.reveal_the_lie}&rdquo;</p>
+              <p className="text-base">&ldquo;{evaluation.reveal_the_lie}&rdquo;</p>
             </div>
 
             <div className="bg-[#2A2A2A] p-6 rounded-lg border-l-4 border-[#E8E8E8]">
               <h2 className="text-xs uppercase tracking-[0.3em] text-gray-400 mb-3">
                 The Truth
               </h2>
-              <p className="text-lg">{evaluation.reveal_the_truth}</p>
+              <p className="text-base">{evaluation.reveal_the_truth}</p>
             </div>
 
             <div className="bg-[#2A2A2A] p-6 rounded-lg">
@@ -158,7 +170,7 @@ export default function WinPage() {
           <button
             onClick={() => {
               sessionStorage.removeItem('gameResult');
-              router.push('/game');
+              router.push('/cases');
             }}
             className="px-8 py-4 bg-[#C41E1E] text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
           >

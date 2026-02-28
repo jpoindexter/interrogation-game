@@ -152,7 +152,7 @@ export default function LosePage() {
           <button
             onClick={() => {
               sessionStorage.removeItem('gameResult');
-              router.push('/game');
+              router.push('/cases');
             }}
             className="px-8 py-4 bg-[#C41E1E] text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
           >
