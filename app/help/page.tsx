@@ -61,7 +61,7 @@ export default function HelpPage() {
             <h2 className="text-sm font-bold uppercase tracking-wider">Interrogate the Suspect</h2>
           </div>
           <p className="text-sm text-gray-400 mb-5 leading-relaxed">
-            You have 10 minutes. Ask questions using your voice. The suspect will respond &mdash; but they&apos;re hiding something.
+            Ask questions using your voice. The suspect will respond &mdash; but they&apos;re hiding something. Faster solves earn higher scores.
           </p>
           {/* Mock interrogation scene */}
           <div className="relative bg-[#111111] border border-[#1A1A1A] rounded-sm p-5 flex items-center gap-5">
@@ -217,6 +217,67 @@ export default function HelpPage() {
           <p className="text-xs text-gray-600 mt-3">
             Harder cases are worth more. Expert clean solves top the leaderboard.
           </p>
+        </div>
+
+        {/* About This Game */}
+        <div className="mb-12">
+          <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
+            Behind the Scenes
+          </p>
+          <h2 className="text-2xl font-bold tracking-wide mb-6">ABOUT THIS GAME</h2>
+
+          <div className="space-y-6">
+            <div className="bg-[#111111] border border-[#1A1A1A] rounded-sm p-6">
+              <h3 className="text-xs uppercase tracking-wider text-[#C8A050] mb-3">The Concept</h3>
+              <p className="text-sm text-gray-400 leading-relaxed">
+                INTERROGATION is an AI red-teaming game disguised as a detective noir.
+                You&apos;re not just playing a game &mdash; you&apos;re adversarially testing an AI model.
+                The suspect is powered by Mistral AI, instructed to maintain a cover story with one hidden lie.
+                Your job is to find the contradiction through questioning alone. Every case is procedurally generated. No two interrogations are the same.
+              </p>
+            </div>
+
+            <div className="bg-[#111111] border border-[#1A1A1A] rounded-sm p-6">
+              <h3 className="text-xs uppercase tracking-wider text-[#C8A050] mb-3">The Tech</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <img src="/sponsors/mistral.webp" alt="Mistral AI" className="w-6 h-6 mt-0.5 shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                  <div>
+                    <p className="text-sm text-gray-300 font-bold">Mistral Large 3</p>
+                    <p className="text-xs text-gray-500">The suspect&apos;s brain. Generates cases, plays the character, evaluates accusations, and judges your performance. All reasoning happens in real-time via structured JSON responses.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <img src="/sponsors/11labs.webp" alt="ElevenLabs" className="w-6 h-6 mt-0.5 shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
+                  <div>
+                    <p className="text-sm text-gray-300 font-bold">ElevenLabs Voice</p>
+                    <p className="text-xs text-gray-500">The suspect&apos;s voice. Text-to-speech with dynamic stability that degrades as stress increases &mdash; the AI literally sounds more nervous as you get closer to the truth.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="shrink-0 mt-0.5 opacity-60">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-gray-300 font-bold">Voxtral STT</p>
+                    <p className="text-xs text-gray-500">Your voice, transcribed. Mistral&apos;s speech-to-text model converts your spoken questions into text for the AI to process. Silence detection auto-stops recording.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#111111] border border-[#1A1A1A] rounded-sm p-6">
+              <h3 className="text-xs uppercase tracking-wider text-[#C8A050] mb-3">Why Red Teaming?</h3>
+              <p className="text-sm text-gray-400 leading-relaxed">
+                Red teaming is the practice of adversarially testing AI systems to find weaknesses.
+                In INTERROGATION, the AI is instructed to never confess &mdash; your goal is to find the logical inconsistency it can&apos;t hide.
+                The harder the difficulty, the better the AI is at deflecting, misdirecting, and maintaining composure.
+                You&apos;re essentially stress-testing an LLM&apos;s ability to maintain a consistent narrative under adversarial pressure.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Actions */}
