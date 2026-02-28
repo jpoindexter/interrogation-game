@@ -29,7 +29,7 @@ export default function HomePage() {
 
       {/* Settings gear */}
       <button
-        onClick={() => router.push('/help')}
+        onClick={() => router.push('/settings')}
         className="absolute top-6 right-6 z-20 text-gray-500 hover:text-white transition-colors"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -112,6 +112,12 @@ export default function HomePage() {
           className="text-sm text-gray-500 hover:text-gray-300 uppercase tracking-wider transition-colors"
         >
           &gt; How to Play
+        </button>
+        <button
+          onClick={() => router.push('/about')}
+          className="text-sm text-gray-500 hover:text-gray-300 uppercase tracking-wider transition-colors"
+        >
+          &gt; About
         </button>
       </div>
 
