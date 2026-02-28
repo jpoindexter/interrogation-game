@@ -58,3 +58,12 @@ body {
 .animate-waveform {
   animation: waveform var(--wave-speed, 0.6s) ease-in-out infinite;
 }
+
+@keyframes breathe {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}

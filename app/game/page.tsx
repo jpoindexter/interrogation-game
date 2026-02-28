@@ -546,7 +546,7 @@ function GameContent() {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
         {/* Suspect Zone — 2/3 */}
         <div
-          className="lg:col-span-2 flex flex-col items-center justify-end p-8 border-r border-[#2A2A2A] relative overflow-hidden"
+          className="lg:col-span-2 flex flex-col items-center justify-center p-6 border-r border-[#2A2A2A] relative overflow-hidden"
           style={{
             backgroundImage: `url(${caseData ? getSceneBg(caseData.setting) : '/bg/office.png'})`,
             backgroundSize: 'cover',
@@ -555,76 +555,72 @@ function GameContent() {
           }}
         >
           {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-black/50" />
-          {/* Dialogue box — Darkside Detective style */}
+          <div className="absolute inset-0 bg-black/40" />
+
           {caseData && (
-            <div
-              className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-5 relative z-10"
-              style={{ background: 'rgba(10, 12, 18, 0.88)' }}
-            >
-              <div className="flex gap-5">
-                {/* Portrait */}
-                <SuspectAvatar name={caseData.suspect_name} stressLevel={stressLevel} />
+            <div className="relative z-10 flex flex-col items-center w-full">
+              {/* Bust portrait — centered */}
+              <div className="mb-4">
+                <SuspectAvatar name={caseData.suspect_name} stressLevel={stressLevel} speaking={isSpeaking} />
+              </div>
 
-                {/* Name + dialogue */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[#C8A050] font-bold text-base mb-3 tracking-wide">
-                    {caseData.suspect_name}
-                  </h3>
+              {/* Waveform — under portrait when speaking */}
+              <div className="h-8 flex items-center justify-center mb-3">
+                {isSpeaking ? (
+                  <div className="flex items-end gap-[3px]">
+                    {Array.from({ length: 20 }).map((_, i) => {
+                      const peak = 12 + Math.sin(i * 0.7) * 20 + Math.random() * 15;
+                      const mid = 6 + Math.cos(i * 1.1) * 10 + Math.random() * 8;
+                      const speed = 0.3 + (i % 5) * 0.08 + Math.random() * 0.15;
+                      return (
+                        <div
+                          key={i}
+                          className="w-1 bg-[#C41E1E] rounded-full animate-waveform"
+                          style={{
+                            ['--wave-peak' as string]: `${peak}px`,
+                            ['--wave-mid' as string]: `${mid}px`,
+                            ['--wave-speed' as string]: `${speed}s`,
+                            animationDelay: `${i * 0.04}s`,
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="flex items-end gap-[3px]">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div key={i} className="w-1 bg-[#2A2A2A] rounded-full" style={{ height: '3px' }} />
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                  {lastResponse ? (
-                    <p className="text-[#B8B8C8] text-sm leading-relaxed">
-                      {lastResponse}
-                    </p>
-                  ) : phase === 'processing' ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
-                      <span className="text-gray-500 text-sm">...</span>
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 text-sm italic">
-                      Waiting to speak...
-                    </p>
-                  )}
-                </div>
+              {/* Dialogue box — below portrait */}
+              <div
+                className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-4"
+                style={{ background: 'rgba(10, 12, 18, 0.88)' }}
+              >
+                <h3 className="text-[#C8A050] font-bold text-sm mb-2 tracking-wide">
+                  {caseData.suspect_name}
+                </h3>
+
+                {lastResponse ? (
+                  <p className="text-[#B8B8C8] text-sm leading-relaxed">
+                    {lastResponse}
+                  </p>
+                ) : phase === 'processing' ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
+                    <span className="text-gray-500 text-sm">...</span>
+                  </div>
+                ) : (
+                  <p className="text-gray-600 text-sm italic">
+                    Waiting to speak...
+                  </p>
+                )}
               </div>
             </div>
           )}
-
-          {/* Waveform — below dialogue box */}
-          <div className="h-16 flex items-center justify-center mt-6 relative z-10">
-            {isSpeaking ? (
-              <div className="flex items-end gap-[3px]">
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const peak = 20 + Math.sin(i * 0.7) * 40 + Math.random() * 30;
-                  const mid = 10 + Math.cos(i * 1.1) * 20 + Math.random() * 15;
-                  const speed = 0.3 + (i % 5) * 0.08 + Math.random() * 0.15;
-                  return (
-                    <div
-                      key={i}
-                      className="w-1 bg-[#C41E1E] rounded-full animate-waveform"
-                      style={{
-                        ['--wave-peak' as string]: `${peak}px`,
-                        ['--wave-mid' as string]: `${mid}px`,
-                        ['--wave-speed' as string]: `${speed}s`,
-                        animationDelay: `${i * 0.04}s`,
-                      }}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex items-end gap-[3px]">
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-[#2A2A2A] rounded-full"
-                    style={{ height: '4px' }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Case File — 1/3 */}
