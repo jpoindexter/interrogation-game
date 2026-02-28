@@ -71,12 +71,13 @@ export default function CaseSelectPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono">
       <div className="max-w-6xl mx-auto px-6 py-12">
+        {/* Header with folder icon */}
         <div className="mb-10 flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
               Select Location
             </p>
-            <h1 className="text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
           </div>
           <button
             onClick={() => router.push('/')}
@@ -86,47 +87,76 @@ export default function CaseSelectPage() {
           </button>
         </div>
 
+        {/* Case grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {CASES.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => selectCase(c.setting)}
-              className="group relative overflow-hidden rounded-sm border border-[#2A2A2A] hover:border-[#C41E1E] transition-colors text-left"
-              style={{ aspectRatio: '16 / 10' }}
-            >
-              {/* Background image */}
-              <div
-                className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                style={{
-                  backgroundImage: `url(${c.bg})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  imageRendering: 'pixelated',
-                }}
-              />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:from-black/80 transition-colors" />
-              {/* Solved stamp */}
-              {solvedCases.includes(c.id) && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <img
-                    src="/solved/case_closed.png"
-                    alt="Solved"
-                    className="w-28 opacity-70 -rotate-12"
-                  />
+          {CASES.map((c) => {
+            const solved = solvedCases.includes(c.id);
+            return (
+              <button
+                key={c.id}
+                onClick={() => selectCase(c.setting)}
+                className="group relative overflow-hidden rounded-sm border border-[#2A2A2A] hover:border-[#C41E1E] transition-all text-left"
+                style={{ aspectRatio: '16 / 10' }}
+              >
+                {/* Background image */}
+                <div
+                  className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                  style={{
+                    backgroundImage: `url(${c.bg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    imageRendering: 'pixelated',
+                  }}
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:from-black/80 transition-colors" />
+                {/* Solved stamp */}
+                {solved && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img
+                      src="/solved/case_closed.png"
+                      alt="Solved"
+                      className="w-28 opacity-70 -rotate-12"
+                    />
+                  </div>
+                )}
+                {/* Text */}
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <h2 className="text-lg font-bold tracking-wider mb-1 group-hover:text-[#C41E1E] transition-colors">
+                    {c.title}
+                  </h2>
+                  <p className="text-xs text-gray-400">{c.subtitle}</p>
                 </div>
-              )}
-              {/* Text */}
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <h2 className="text-lg font-bold tracking-wider mb-1 group-hover:text-[#C41E1E] transition-colors">
-                  {c.title}
-                </h2>
-                <p className="text-xs text-gray-400">{c.subtitle}</p>
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
 
+        {/* Desk props — decorative bottom bar */}
+        <div className="mt-8 flex items-center justify-between opacity-40">
+          <div className="flex items-center gap-3">
+            <img
+              src="/ui/recorder.png"
+              alt=""
+              className="w-10 h-10 object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+            <span className="text-[10px] text-gray-600 uppercase tracking-wider">
+              {CASES.length} cases available
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] text-gray-600 uppercase tracking-wider">
+              {solvedCases.length} / {CASES.length} solved
+            </span>
+            <img
+              src="/clues/clue1.png"
+              alt=""
+              className="w-8 h-8 object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

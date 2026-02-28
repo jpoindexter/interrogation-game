@@ -50,6 +50,7 @@ export default function HomePage() {
           className="w-[500px] md:w-[640px] max-w-full rounded-sm border border-[#2A2A2A]"
           style={{
             imageRendering: 'pixelated',
+            animation: 'flicker 4s infinite',
           }}
         />
         {/* Scanlines on image */}
