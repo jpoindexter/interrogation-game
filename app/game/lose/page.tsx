@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Spinner } from '../../components/ui';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
+import { shareResult } from '../components/utils';
 
 interface GameResult {
   caseData: {
@@ -41,6 +42,7 @@ function LoseContent() {
   const searchParams = useSearchParams();
   const [result, setResult] = useState<GameResult | null>(null);
   const [stampVisible, setStampVisible] = useState(false);
+  const [shareLabel, setShareLabel] = useState('SHARE');
   const [summary, setSummary] = useState<{
     detective_rating: string;
     the_lie_revealed: string;
@@ -242,6 +244,22 @@ function LoseContent() {
               className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
             >
               OTHER CASES
+            </button>
+            <button
+              onClick={async () => {
+                const url = typeof window !== 'undefined' ? window.location.origin : '';
+                const text = result.gaveUp
+                  ? `\ud83d\udd0d INTERROGATION \u2014 I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?\n${url}`
+                  : `\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?\n${url}`;
+                const outcome = await shareResult(text);
+                if (outcome === 'copied') {
+                  setShareLabel('COPIED!');
+                  setTimeout(() => setShareLabel('SHARE'), 2000);
+                }
+              }}
+              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+            >
+              {shareLabel}
             </button>
           </div>
         </motion.div>

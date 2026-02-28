@@ -46,6 +46,25 @@ export function formatTime(secs: number) {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
+// Share result via Web Share API or clipboard fallback
+export async function shareResult(text: string): Promise<'shared' | 'copied' | 'failed'> {
+  if (typeof navigator !== 'undefined' && navigator.share) {
+    try {
+      await navigator.share({ text });
+      return 'shared';
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === 'AbortError') return 'failed';
+      // Share cancelled or unsupported — fall through to clipboard
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    return 'copied';
+  } catch {
+    return 'failed';
+  }
+}
+
 // Fetch with AbortController timeout
 export async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs = 15000): Promise<Response> {
   const controller = new AbortController();

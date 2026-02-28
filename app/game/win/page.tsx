@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
-import { formatTime } from '../components/utils';
+import { formatTime, shareResult } from '../components/utils';
 import InitialsEntry from './InitialsEntry';
 
 interface GameResult {
@@ -81,6 +81,7 @@ function WinContent() {
   const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
   const [playerInitials, setPlayerInitials] = useState<string | null>(null);
   const [showInitials, setShowInitials] = useState(false);
+  const [shareLabel, setShareLabel] = useState('SHARE');
   const scoreFrameRef = useRef<number>(0);
   const timeFrameRef = useRef<number>(0);
 
@@ -487,6 +488,27 @@ function WinContent() {
               className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
             >
               LEADERBOARD
+            </button>
+            <button
+              onClick={async () => {
+                if (!breakdown) return;
+                const url = typeof window !== 'undefined' ? window.location.origin : '';
+                const text = [
+                  `\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`,
+                  `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`,
+                  `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getRating(breakdown.finalScore)}`,
+                  `Can you beat my score?`,
+                  url,
+                ].join('\n');
+                const outcome = await shareResult(text);
+                if (outcome === 'copied') {
+                  setShareLabel('COPIED!');
+                  setTimeout(() => setShareLabel('SHARE'), 2000);
+                }
+              }}
+              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+            >
+              {shareLabel}
             </button>
           </div>
         </motion.div>
