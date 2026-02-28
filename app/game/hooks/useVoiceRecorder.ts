@@ -114,7 +114,18 @@ export function useVoiceRecorder() {
       startSilenceDetection(stream);
     } catch (err) {
       console.error('Microphone access error:', err);
-      onError('(microphone access denied — check browser permissions)');
+      if (err instanceof DOMException && err.name === 'NotAllowedError') {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+          (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (isIOS && isSafari) {
+          onError('(mic blocked — go to Settings > Safari > Microphone to enable)');
+        } else {
+          onError('(mic access denied — allow microphone in browser settings, or tap the keyboard icon to type)');
+        }
+      } else {
+        onError('(microphone unavailable — use the keyboard icon to type instead)');
+      }
     }
   }, [startSilenceDetection]);
 

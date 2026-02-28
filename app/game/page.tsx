@@ -17,6 +17,7 @@ import GiveUpConfirmDialog from './components/GiveUpConfirmDialog';
 import AccuseConfirmDialog from './components/AccuseConfirmDialog';
 import SettingsPanel from './components/SettingsPanel';
 import HelpPanel from './components/HelpPanel';
+import MicPermissionBanner from './components/MicPermissionBanner';
 import LoadingScreen from './components/LoadingScreen';
 import BriefingScreen from './components/BriefingScreen';
 import { useVoiceRecorder } from './hooks/useVoiceRecorder';
@@ -72,6 +73,7 @@ function GameContent() {
   const [showTextInput, setShowTextInput] = useState(false);
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showMicHint, setShowMicHint] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const showToast = useCallback((msg: string) => { setToast(msg); setTimeout(() => setToast(null), 4000); }, []);
   const [settings, setSettings] = useState(() => {
@@ -113,6 +115,17 @@ function GameContent() {
   }, [router, searchParams]);
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
+  useEffect(() => {
+    if (phase !== 'active') return;
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('micHintDismissed')) return;
+    if (navigator.permissions?.query) {
+      navigator.permissions.query({ name: 'microphone' as PermissionName }).then((status) => {
+        if (status.state === 'prompt' || status.state === 'denied') setShowMicHint(true);
+      }).catch(() => { setShowMicHint(true); });
+    } else {
+      setShowMicHint(true);
+    }
+  }, [phase]);
   const sendQuestion = useCallback(
     async (question: string, isOpening = false) => {
       if (!caseData) return;
@@ -123,7 +136,8 @@ function GameContent() {
       const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question }];
 
       try {
-        const interrogateBody = JSON.stringify({ caseData, conversationHistory, playerQuestion: question });
+        const questionCount = conversationHistory.filter(m => m.role === 'assistant').length;
+        const interrogateBody = JSON.stringify({ caseData, conversationHistory, playerQuestion: question, questionCount, currentStress: stressLevel });
         const interrogateOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: interrogateBody };
         let res;
         try { res = await fetchWithTimeout('/api/interrogate', interrogateOpts); }
@@ -303,6 +317,7 @@ function GameContent() {
       }}
     >
       <TopBar timer={timer} stressLevel={stressLevel} />
+      <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
         {caseData ? (

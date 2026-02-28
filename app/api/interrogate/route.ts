@@ -25,7 +25,10 @@ export async function POST(request: NextRequest) {
     const history = validateConversationHistory(body.conversationHistory);
     const sanitized = sanitizeInput(question);
 
-    const response = await interrogate(caseData as Parameters<typeof interrogate>[0], history, sanitized);
+    const questionCount = typeof body.questionCount === 'number' ? Math.max(0, Math.floor(body.questionCount)) : undefined;
+    const currentStress = typeof body.currentStress === 'number' ? Math.max(0, Math.min(10, body.currentStress)) : undefined;
+
+    const response = await interrogate(caseData as Parameters<typeof interrogate>[0], history, sanitized, questionCount, currentStress);
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error during interrogation:', error);

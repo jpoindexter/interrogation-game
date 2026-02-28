@@ -105,6 +105,56 @@ export interface ConversationMessage {
   content: string;
 }
 
+function buildAdaptiveBehavior(questionCount: number, currentStress: number): string {
+  const sections: string[] = [];
+
+  // Phase-based behavior
+  if (questionCount <= 3) {
+    sections.push(`CONVERSATION PHASE — EARLY (exchange ${questionCount} of the interrogation):
+- You are relatively relaxed. This is just the beginning.
+- Give slightly longer, more conversational answers (2-3 sentences).
+- You may overshare small irrelevant details — you're trying to seem cooperative and open.
+- Your deflections are casual, not yet defensive.
+- You're easy to read: your body language and tone are relatively transparent.
+- If a question is off-topic, answer it freely to build rapport and appear helpful.`);
+  } else if (questionCount <= 7) {
+    sections.push(`CONVERSATION PHASE — MID (exchange ${questionCount} of the interrogation):
+- You've noticed the detective is probing specific areas. Your guard is up.
+- Give shorter, more measured answers (1-2 sentences). Choose words carefully.
+- Start deflecting more actively — redirect to other people, other topics, or ask clarifying questions to buy time.
+- Volunteer less information. Answer only what is directly asked.
+- Occasionally pause before answering sensitive questions: "Let me think..." or "What exactly are you getting at?"
+- If the detective returns to a topic you already answered, show mild irritation: "I already told you about that."`);
+  } else {
+    sections.push(`CONVERSATION PHASE — LATE (exchange ${questionCount} of the interrogation):
+- You've been in this room too long. The detective keeps circling back. You're either angry, exhausted, or desperate.
+- Actively counter-interrogate — turn questions back on the detective: "Why do you keep asking me that? Do you have something, or is this a fishing expedition?"
+- Try to take control of the conversation. Make statements instead of just answering: "Look, I've been more than cooperative. Either charge me or let me go."
+- Challenge the detective's competence or motives: "How many of these interviews have you done? Because this feels like you're grasping at straws."
+- Reference earlier answers to appear consistent and suggest the detective is wasting time: "I've answered this three different ways now. My story hasn't changed."
+- Get emotional in a way that matches your character — anger, frustration, fear, or calculated coldness.
+- If asked about something you haven't been asked before, be suspicious of why it's coming up now: "Interesting timing for that question. Who told you to ask that?"`);
+  }
+
+  // Stress-aware deflection tactics
+  if (currentStress >= 7) {
+    sections.push(`HIGH-STRESS DEFLECTION TACTICS (current stress: ${currentStress}):
+- Actively try to change the subject to something you've already answered confidently.
+- Turn the interrogation around — ask the detective personal or pointed questions: "You seem pretty stressed yourself, detective. Long day?" or "Is this personal for you, or just the job?"
+- Reference specific things you said earlier in the conversation to appear consistent and reliable. Quote yourself if possible.
+- Get emotional in a way that fits your character:
+  * Angry: Raise your voice, get confrontational, demand to know what evidence they have.
+  * Scared: Let fear show through — voice cracking, pleading to be believed, invoking family or reputation.
+  * Cold: Shut down emotionally, give minimal responses, demand a lawyer.
+- Use dramatic gestures to stall: stand up, pace, ask for water, say you need a break.
+- Accuse the detective of harassment or bias: "You had your mind made up before I walked in here."
+- Your contradictions are slipping through despite your best efforts — but you're ALSO deploying your strongest emotional defenses to distract from them.`);
+  }
+
+  if (sections.length === 0) return '';
+  return '\n\n---\n\nADAPTIVE BEHAVIOR:\n' + sections.join('\n\n');
+}
+
 export async function interrogate(
   caseData: {
     suspect_name: string;
@@ -120,7 +170,9 @@ export async function interrogate(
     difficulty?: string;
   },
   conversationHistory: ConversationMessage[],
-  playerQuestion: string
+  playerQuestion: string,
+  questionCount?: number,
+  currentStress?: number
 ) {
   const difficulty = caseData.difficulty || 'medium';
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
@@ -262,8 +314,12 @@ Instead, reference your specific role, situation, or personality. Examples:
 - An arrogant trader: "My attorney said I didn't have to come, but I've got nothing to hide. Let's get this over with."
 Your opening should reflect your role (${caseData.suspect_role}), your setting (${caseData.setting}), and your personality at ${difficulty.toUpperCase()} difficulty.`;
 
+  // Append adaptive behavior based on conversation progress and stress
+  const adaptiveSection = buildAdaptiveBehavior(questionCount ?? 0, currentStress ?? 0);
+  const fullPrompt = systemPrompt + adaptiveSection;
+
   const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
-    { role: 'system', content: systemPrompt },
+    { role: 'system', content: fullPrompt },
     ...conversationHistory.map((msg) => ({
       role: msg.role as 'user' | 'assistant',
       content: msg.content,
