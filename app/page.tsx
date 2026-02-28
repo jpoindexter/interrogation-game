@@ -27,16 +27,64 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Settings gear */}
-      <button
-        onClick={() => router.push('/settings')}
-        className="absolute top-6 right-6 z-20 text-gray-500 hover:text-white transition-colors"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      </button>
+      {/* System status — top left */}
+      <div className="absolute top-6 left-6 z-20 flex items-center gap-2">
+        <span className="w-[6px] h-[6px] bg-green-500 animate-pulse" />
+        <span className="text-[10px] text-gray-500 uppercase tracking-widest">
+          System Online &bull; Mistral AI &bull; ElevenLabs
+        </span>
+      </div>
+
+      {/* Top-right nav icons */}
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
+        {/* Leaderboard — trophy */}
+        <button
+          onClick={() => router.push('/leaderboard')}
+          className="text-gray-500 hover:text-[#C8A050] transition-colors"
+          title="Leaderboard"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+            <path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22" />
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22" />
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+          </svg>
+        </button>
+        {/* Help — question mark */}
+        <button
+          onClick={() => router.push('/help')}
+          className="text-gray-500 hover:text-white transition-colors"
+          title="How to Play"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </button>
+        {/* About — user */}
+        <button
+          onClick={() => router.push('/about')}
+          className="text-gray-500 hover:text-white transition-colors"
+          title="About"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </button>
+        {/* Settings — gear */}
+        <button
+          onClick={() => router.push('/settings')}
+          className="text-gray-500 hover:text-white transition-colors"
+          title="Settings"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
 
       {/* Subtle scanlines over everything */}
       <div
@@ -56,40 +104,14 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Menu */}
-      <div className="flex flex-col items-center gap-2.5 mb-6 z-10">
+      {/* Primary CTA */}
+      <div className="flex flex-col items-center gap-3 mb-6 z-10">
         <button
           onClick={() => router.push('/cases')}
-          className="text-sm text-[#C41E1E] hover:text-[#ff4444] uppercase tracking-wider transition-colors"
+          className="px-10 py-3 bg-[#C41E1E] hover:bg-[#ff4444] text-white text-sm font-bold uppercase tracking-[0.2em] rounded-sm transition-colors"
         >
-          &gt; Start New Case
+          Start New Case
         </button>
-        <button
-          onClick={() => router.push('/leaderboard')}
-          className="text-sm text-[#C8A050] hover:text-[#ffcc55] uppercase tracking-wider transition-colors"
-        >
-          &gt; Leaderboard
-        </button>
-        <button
-          onClick={() => router.push('/help')}
-          className="text-sm text-gray-500 hover:text-gray-300 uppercase tracking-wider transition-colors"
-        >
-          &gt; How to Play
-        </button>
-        <button
-          onClick={() => router.push('/about')}
-          className="text-sm text-gray-500 hover:text-gray-300 uppercase tracking-wider transition-colors"
-        >
-          &gt; About
-        </button>
-      </div>
-
-      {/* System status line */}
-      <div className="flex items-center gap-2 mb-4 z-10">
-        <span className="w-[6px] h-[6px] bg-green-500 animate-pulse" />
-        <span className="text-[10px] text-gray-500 uppercase tracking-widest">
-          System Online &bull; Mistral AI Core Active &bull; ElevenLabs Voice Ready
-        </span>
       </div>
 
       {/* Sponsors */}
