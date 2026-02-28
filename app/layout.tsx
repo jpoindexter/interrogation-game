@@ -16,8 +16,20 @@ const pressStart2P = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: 'Interrogation - Voice Detective Game',
-  description: 'A voice-based detective game where you interrogate an AI suspect',
+  title: 'Interrogation — Voice Detective Game',
+  description: 'A voice-based detective game powered by Mistral AI. Interrogate suspects, catch lies, crack the case.',
+  openGraph: {
+    title: 'Interrogation — Voice Detective Game',
+    description: 'Mistral can reason. I made it lie. Your job is to catch it.',
+    type: 'website',
+    siteName: 'Interrogation',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Interrogation — Voice Detective Game',
+    description: 'Mistral can reason. I made it lie. Your job is to catch it.',
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -27,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} font-sans`}>
-      <body className="bg-black text-[#E8E8E8]">
+      <body className="bg-black text-foreground">
         {children}
       </body>
     </html>

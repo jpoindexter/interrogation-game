@@ -7,7 +7,7 @@
   --accent: #C41E1E;
   --accent-hover: #ff4444;
   --gold: #C8A050;
-  --gold-hover: #ffcc55;
+  --gold-hover: #D4AD5C;
   --warn: #F59E0B;
 
   /* Surfaces */
@@ -26,6 +26,10 @@
   --diff-medium: #F59E0B;
   --diff-hard: #C41E1E;
   --diff-expert: #9333EA;
+
+  /* Extra */
+  --bronze: #B87333;
+  --surface-hover: #3A3A3A;
 }
 
 @theme inline {
@@ -39,6 +43,16 @@
   --color-surface: var(--surface);
   --color-surface-dark: var(--surface-dark);
   --color-surface-darker: var(--surface-darker);
+  --color-surface-hover: var(--surface-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
+  --color-diff-easy: var(--diff-easy);
+  --color-diff-medium: var(--diff-medium);
+  --color-diff-hard: var(--diff-hard);
+  --color-diff-expert: var(--diff-expert);
+  --color-bronze: var(--bronze);
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-pixel: var(--font-pixel), 'Press Start 2P', cursive;
 }
@@ -195,25 +209,25 @@ body {
 .high-contrast .text-gray-700 {
   color: #ffffff !important;
 }
-.high-contrast .text-\[\#B8B8C8\],
-.high-contrast .text-\[\#E8E8E8\] {
+.high-contrast .text-text-secondary,
+.high-contrast .text-foreground {
   color: #ffffff !important;
 }
-.high-contrast .text-\[\#C8A050\] {
+.high-contrast .text-gold {
   color: #FFD700 !important;
 }
-.high-contrast .text-\[\#C41E1E\] {
+.high-contrast .text-accent {
   color: #FF4444 !important;
 }
-.high-contrast .text-\[\#F59E0B\] {
+.high-contrast .text-warn {
   color: #FFCC00 !important;
 }
-.high-contrast .bg-\[\#111111\],
-.high-contrast .bg-\[\#1A1A1A\],
+.high-contrast .bg-surface-darker,
+.high-contrast .bg-surface-dark,
 .high-contrast .bg-black {
   background-color: #000000 !important;
 }
-.high-contrast .bg-\[\#2A2A2A\] {
+.high-contrast .bg-surface {
   background-color: #333333 !important;
 }
 .high-contrast .placeholder-gray-600::placeholder {

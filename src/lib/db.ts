@@ -1,5 +1,8 @@
-import { neon } from '@neondatabase/serverless';
+import { createClient } from '@supabase/supabase-js';
 
-const sql = neon(process.env.DATABASE_URL!);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
-export default sql;
+export default supabase;

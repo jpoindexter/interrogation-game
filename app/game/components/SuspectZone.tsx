@@ -1,6 +1,7 @@
 import type { Case } from '@/lib/game-state';
 import SuspectAvatar from '../SuspectAvatar';
 import { getSceneBg } from './utils';
+import { motion, fadeIn, scaleIn, smooth, snappy } from '../../components/motion';
 
 interface SuspectZoneProps {
   caseData: Case;
@@ -22,8 +23,12 @@ export default function SuspectZone({
   phase,
 }: SuspectZoneProps) {
   return (
-    <div
-      className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-[#2A2A2A] relative overflow-hidden"
+    <motion.div
+      className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-surface relative overflow-hidden"
+      initial="hidden"
+      animate="visible"
+      variants={fadeIn}
+      transition={smooth}
       style={{
         backgroundImage: `url(${getSceneBg(caseData.setting)})`,
         backgroundSize: 'cover',
@@ -34,7 +39,13 @@ export default function SuspectZone({
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative z-10 flex flex-col items-center w-full">
-        <div className="mb-2">
+        <motion.div
+          className="mb-2"
+          initial="hidden"
+          animate="visible"
+          variants={scaleIn}
+          transition={snappy}
+        >
           <SuspectAvatar
             name={caseData.suspect_name}
             gender={caseData.suspect_gender}
@@ -42,7 +53,7 @@ export default function SuspectZone({
             size="md"
             speaking={isSpeaking}
           />
-        </div>
+        </motion.div>
 
         {/* Waveform */}
         <div className="h-6 flex items-center justify-center mb-2 gap-3">
@@ -55,7 +66,7 @@ export default function SuspectZone({
                 return (
                   <div
                     key={i}
-                    className="w-1 bg-[#C41E1E] rounded-full animate-waveform"
+                    className="w-1 bg-accent rounded-full animate-waveform"
                     style={{
                       ['--wave-peak' as string]: `${peak}px`,
                       ['--wave-mid' as string]: `${mid}px`,
@@ -69,7 +80,7 @@ export default function SuspectZone({
           ) : (
             <div className="flex items-end gap-[3px]">
               {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="w-1 bg-[#2A2A2A] rounded-full" style={{ height: '3px' }} />
+                <div key={i} className="w-1 bg-surface rounded-full" style={{ height: '3px' }} />
               ))}
             </div>
           )}
@@ -84,7 +95,7 @@ export default function SuspectZone({
             <span className="text-gray-500 font-bold text-sm">You</span>
             {isListening ? (
               <div className="flex items-center gap-2 mt-1">
-                <div className="w-2 h-2 bg-[#C41E1E] rounded-full animate-pulse" />
+                <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                 <span className="text-gray-400 text-sm italic">Listening...</span>
               </div>
             ) : lastTranscript && !lastTranscript.startsWith('(') ? (
@@ -96,15 +107,15 @@ export default function SuspectZone({
             )}
           </div>
 
-          <div className="border-t border-[#2A2A2A]" />
+          <div className="border-t border-surface" />
 
           <div>
-            <span className="text-[#C8A050] font-bold text-sm">{caseData.suspect_name}</span>
+            <span className="text-gold font-bold text-sm">{caseData.suspect_name}</span>
             {lastResponse ? (
-              <p className="text-[#B8B8C8] text-sm leading-relaxed mt-1">{lastResponse}</p>
+              <p className="text-text-secondary text-sm leading-relaxed mt-1">{lastResponse}</p>
             ) : phase === 'processing' ? (
               <div className="flex items-center gap-2 mt-1">
-                <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
+                <div className="w-2 h-2 bg-warn rounded-full animate-pulse" />
                 <span className="text-gray-500 text-sm">...</span>
               </div>
             ) : (
@@ -113,6 +124,6 @@ export default function SuspectZone({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

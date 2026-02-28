@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { validateString, validateNumber } from '../../../src/lib/sanitize';
 
 // Voice pool — different voices for different suspects
 const VOICES = {
@@ -23,7 +24,6 @@ const VOICES = {
   ],
 };
 
-// Simple hash to pick a voice deterministically from suspect name
 function hashName(name: string): number {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
@@ -41,24 +41,26 @@ function pickVoice(suspectName: string, suspectGender?: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, stress, suspectName, suspectGender } = await req.json();
+    const body = await req.json();
 
-    const apiKey = process.env.ELEVENLABS_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'ElevenLabs not configured' },
-        { status: 500 }
-      );
+    const text = validateString(body.text, 2000);
+    if (!text) {
+      return NextResponse.json({ error: 'Text is required (max 2000 chars)' }, { status: 400 });
     }
 
-    // Pick voice based on suspect name + gender, fallback to env var
-    const voiceId = suspectName
-      ? pickVoice(suspectName, suspectGender)
-      : process.env.ELEVENLABS_VOICE_ID || VOICES.male[0];
+    const stress = validateNumber(body.stress, 0, 10) ?? 0;
+    const suspectName = typeof body.suspectName === 'string' ? body.suspectName : 'Suspect';
+    const suspectGender = typeof body.suspectGender === 'string' ? body.suspectGender : undefined;
+
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: 'ElevenLabs not configured' }, { status: 500 });
+    }
+
+    const voiceId = pickVoice(suspectName, suspectGender);
 
     // Stress affects voice: higher stress = faster, less stable
-    const stressNorm = Math.min(Math.max((stress ?? 0) / 10, 0), 1);
+    const stressNorm = Math.min(stress / 10, 1);
     const stability = 0.7 - stressNorm * 0.35;
     const similarityBoost = 0.75;
     const speed = 0.9 + stressNorm * 0.25;
@@ -75,11 +77,7 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           text,
           model_id: 'eleven_turbo_v2_5',
-          voice_settings: {
-            stability,
-            similarity_boost: similarityBoost,
-            speed,
-          },
+          voice_settings: { stability, similarity_boost: similarityBoost, speed },
         }),
       }
     );
@@ -87,25 +85,15 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       const err = await response.text();
       console.error('ElevenLabs error:', err);
-      return NextResponse.json(
-        { error: 'TTS failed' },
-        { status: response.status }
-      );
+      return NextResponse.json({ error: 'TTS failed' }, { status: response.status });
     }
 
     const audioBuffer = await response.arrayBuffer();
-
     return new NextResponse(audioBuffer, {
-      headers: {
-        'Content-Type': 'audio/mpeg',
-        'Cache-Control': 'no-cache',
-      },
+      headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'no-cache' },
     });
   } catch (error) {
     console.error('TTS error:', error);
-    return NextResponse.json(
-      { error: 'TTS failed' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'TTS failed' }, { status: 500 });
   }
 }

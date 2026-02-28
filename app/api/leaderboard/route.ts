@@ -1,21 +1,21 @@
 import { NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import supabase from '@/lib/db';
 import { calculateScore, type Difficulty } from '@/lib/scoring';
+import { validateString, validateNumber, validateDifficulty } from '@/lib/sanitize';
 
 // GET — fetch top scores
 export async function GET() {
   try {
-    const rows = await sql`
-      SELECT player_name, case_setting, suspect_name, time_remaining,
-             detective_rating, score, clues_found, hints_used, accusations_used,
-             created_at
-      FROM leaderboard
-      ORDER BY score DESC
-      LIMIT 20
-    `;
-    return NextResponse.json({ leaderboard: rows });
+    const { data, error } = await supabase
+      .from('leaderboard')
+      .select('player_name, case_setting, suspect_name, time_remaining, detective_rating, score, clues_found, hints_used, accusations_used, created_at')
+      .order('score', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+    return NextResponse.json({ leaderboard: data ?? [] });
   } catch (error) {
-    console.error('Leaderboard fetch error:', error);
+    console.error('Leaderboard fetch error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
   }
 }
@@ -24,42 +24,47 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      playerName = 'Detective',
-      caseNumber,
-      caseSetting,
-      suspectName,
-      timeElapsed = 0,
-      difficulty = 'medium',
-      stressLevel,
-      hintsUsed = 0,
-      accusationsUsed = 0,
-      detectiveRating,
-    } = body;
+
+    const playerName = (validateString(body.playerName, 3) ?? 'DET').toUpperCase().slice(0, 3);
+    const difficulty = validateDifficulty(body.difficulty) ?? 'medium';
+    const timeElapsed = validateNumber(body.timeElapsed, 0, 7200) ?? 0;
+    const hintsUsed = validateNumber(body.hintsUsed, 0, 10) ?? 0;
+    const accusationsUsed = validateNumber(body.accusationsUsed, 0, 3) ?? 0;
+    const stressLevel = validateNumber(body.stressLevel, 0, 10) ?? 0;
+    const caseNumber = validateString(body.caseNumber, 100) ?? '';
+    const caseSetting = validateString(body.caseSetting, 100) ?? '';
+    const suspectName = validateString(body.suspectName, 100) ?? '';
+    const detectiveRating = validateString(body.detectiveRating, 50) ?? 'Rookie';
 
     const score = calculateScore(
       timeElapsed,
       difficulty as Difficulty,
       hintsUsed,
-      Math.max(0, accusationsUsed - 1), // only penalize WRONG accusations (subtract the winning one)
+      Math.max(0, accusationsUsed - 1),
     );
 
-    const rows = await sql`
-      INSERT INTO leaderboard (
-        player_name, case_number, case_setting, suspect_name,
-        time_remaining, stress_level, clues_found, hints_used, accusations_used,
-        detective_rating, score
-      ) VALUES (
-        ${playerName}, ${caseNumber}, ${caseSetting}, ${suspectName},
-        ${timeElapsed}, ${stressLevel}, ${0}, ${hintsUsed}, ${accusationsUsed},
-        ${detectiveRating}, ${score}
-      )
-      RETURNING id, score
-    `;
+    const { data, error } = await supabase
+      .from('leaderboard')
+      .insert({
+        player_name: playerName,
+        case_number: caseNumber,
+        case_setting: caseSetting,
+        suspect_name: suspectName,
+        time_remaining: timeElapsed,
+        stress_level: stressLevel,
+        clues_found: 0,
+        hints_used: hintsUsed,
+        accusations_used: accusationsUsed,
+        detective_rating: detectiveRating,
+        score,
+      })
+      .select('id, score')
+      .single();
 
-    return NextResponse.json({ success: true, id: rows[0].id, score: rows[0].score });
+    if (error) throw error;
+    return NextResponse.json({ success: true, id: data.id, score: data.score });
   } catch (error) {
-    console.error('Leaderboard submit error:', error);
+    console.error('Leaderboard submit error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to submit score' }, { status: 500 });
   }
 }
