@@ -6,6 +6,28 @@ import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/mistral';
 import SuspectAvatar from './SuspectAvatar';
 
+// Pool of evidence icons — 3 random ones are picked per case
+const EVIDENCE_ICONS = [
+  '/clues/folder.png',
+  '/clues/recorder.png',
+  '/clues/recorder2.png',
+  '/clues/coffee.png',
+  '/clues/clue1.png',
+  '/clues/clue2.png',
+  '/clues/clue3.png',
+  '/clues/notepad_pl.png',
+  '/clues/magnifying_glass.png',
+  '/clues/handcuffs.png',
+  '/clues/key.png',
+  '/clues/flashlight.png',
+  '/clues/walkie_talkie.png',
+];
+
+function pickRandomIcons(count: number): string[] {
+  const shuffled = [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
 // Map case setting text to background image
 function getSceneBg(setting: string): string {
   const s = setting.toLowerCase();
@@ -51,7 +73,10 @@ function GameContent() {
   const [isAccusing, setIsAccusing] = useState(false);
   const [showAccuseConfirm, setShowAccuseConfirm] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [helpPos, setHelpPos] = useState<{ x: number; y: number } | null>(null);
   const [clueNotification, setClueNotification] = useState<number | null>(null);
+  const [clueIcons, setClueIcons] = useState<string[]>(() => pickRandomIcons(3));
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -819,18 +844,19 @@ function GameContent() {
                 <h3 className="text-xs uppercase tracking-wider text-[#C41E1E] mb-2">
                   Evidence
                 </h3>
-                {/* Badge slots */}
-                <div className="flex items-center gap-2 mb-3">
-                  {[1, 2, 3].map((n) => (
-                    <div key={n} className="flex flex-col items-center">
+                {/* Evidence slots */}
+                <div className="flex items-center gap-3 mb-3">
+                  {clueIcons.map((icon, i) => (
+                    <div key={i} className="flex flex-col items-center">
                       <img
-                        src={`/clues/clue${n}.png`}
-                        alt={`Clue ${n}`}
-                        className={`w-8 h-8 object-contain transition-all duration-500 ${
-                          clues.length >= n
+                        src={icon}
+                        alt={`Evidence ${i + 1}`}
+                        className={`w-14 h-14 object-contain transition-all duration-500 ${
+                          clues.length >= i + 1
                             ? 'opacity-100'
                             : 'opacity-20 grayscale'
                         }`}
+                        style={{ imageRendering: 'pixelated' }}
                       />
                     </div>
                   ))}
@@ -898,9 +924,10 @@ function GameContent() {
         <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
           <div className="flex flex-col items-center gap-2" style={{ animation: 'clueReveal 0.6s ease-out' }}>
             <img
-              src={`/clues/clue${clueNotification}.png`}
-              alt={`Clue ${clueNotification}`}
-              className="w-20 h-20 object-contain drop-shadow-2xl"
+              src={clueIcons[clueNotification - 1] || clueIcons[0]}
+              alt={`Evidence ${clueNotification}`}
+              className="w-28 h-28 object-contain drop-shadow-2xl"
+              style={{ imageRendering: 'pixelated' }}
             />
             <span className="text-xs uppercase tracking-[0.3em] text-[#C8A050] font-bold">
               Clue {clueNotification} of 3
@@ -1142,6 +1169,91 @@ function GameContent() {
         </div>
       )}
 
+      {/* Help panel — draggable */}
+      {showHelp && (
+        <div
+          className="absolute z-40 w-[340px] max-h-[70vh] overflow-y-auto bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl"
+          style={{
+            left: helpPos ? helpPos.x : '50%',
+            top: helpPos ? helpPos.y : '50%',
+            transform: helpPos ? 'none' : 'translate(-50%, -50%)',
+          }}
+        >
+          <div
+            className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A] cursor-grab active:cursor-grabbing select-none"
+            onMouseDown={(e) => {
+              const panel = e.currentTarget.parentElement!;
+              const rect = panel.getBoundingClientRect();
+              const parentRect = panel.offsetParent!.getBoundingClientRect();
+              const startX = e.clientX;
+              const startY = e.clientY;
+              const origX = rect.left - parentRect.left;
+              const origY = rect.top - parentRect.top;
+              const onMove = (ev: MouseEvent) => {
+                setHelpPos({
+                  x: origX + (ev.clientX - startX),
+                  y: origY + (ev.clientY - startY),
+                });
+              };
+              const onUp = () => {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+              };
+              window.addEventListener('mousemove', onMove);
+              window.addEventListener('mouseup', onUp);
+            }}
+          >
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">How to Play</span>
+            <button
+              onClick={() => { setShowHelp(false); setHelpPos(null); }}
+              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div className="p-4 space-y-4">
+            <div className="flex gap-3">
+              <span className="text-sm font-bold text-[#C41E1E] shrink-0">01</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1">Ask Questions</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic and ask the suspect questions. Look for inconsistencies in their story.</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-sm font-bold text-[#C41E1E] shrink-0">02</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1">Collect 3 Clues</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">As you press on the right topics, the stress meter rises and you unlock detective badges.</p>
+                <div className="flex items-center gap-3 mt-2">
+                  {clueIcons.map((icon, i) => (
+                    <img key={i} src={icon} alt="" className="w-12 h-12 object-contain" style={{ imageRendering: 'pixelated' }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-sm font-bold text-[#C41E1E] shrink-0">03</span>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1">Make Your Accusation</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all 3 clues, the ACCUSE button unlocks. Call out the lie. You get 3 attempts.</p>
+              </div>
+            </div>
+            <div className="border-t border-[#2A2A2A] pt-3">
+              <p className="text-[10px] uppercase tracking-wider text-[#C8A050] mb-2">Tips</p>
+              <ul className="space-y-1.5">
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Ask open-ended questions first</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Rising stress = right track</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Use hints sparingly (-150 pts each)</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>More time left = higher score</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* === DOCK === */}
       <div className="flex-shrink-0 flex justify-center p-3 border-t border-[#2A2A2A]">
         <div className="flex items-end gap-1 px-3 py-2 bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#2A2A2A] rounded-2xl">
@@ -1273,6 +1385,19 @@ function GameContent() {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </button>
+
+          {/* Help */}
+          <button
+            onClick={() => setShowHelp(!showHelp)}
+            data-tooltip="How to Play"
+            className="dock-icon bg-[#2A2A2A] text-gray-500"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </button>
 

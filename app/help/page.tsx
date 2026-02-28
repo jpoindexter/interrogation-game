@@ -116,25 +116,29 @@ export default function HelpPage() {
           <p className="text-sm text-gray-400 mb-5 leading-relaxed">
             Press on suspicious topics. As stress rises, you&apos;ll unlock detective badges. You need all 3 to make an accusation.
           </p>
-          {/* Badge progression */}
+          {/* Evidence progression */}
           <div className="flex items-end justify-center gap-8 bg-[#111111] border border-[#1A1A1A] rounded-sm py-6 px-4">
-            {[1, 2, 3].map((n) => (
+            {[
+              { src: '/clues/folder.png', label: 'Evidence 1', sub: 'Stress 3+' },
+              { src: '/clues/recorder.png', label: 'Evidence 2', sub: 'Stress 5+' },
+              { src: '/clues/magnifying_glass.png', label: 'Evidence 3', sub: 'Stress 7+' },
+            ].map((item, n) => (
               <div key={n} className="flex flex-col items-center gap-2">
                 <img
-                  src={`/clues/clue${n}.png`}
-                  alt={`Clue ${n}`}
+                  src={item.src}
+                  alt={item.label}
                   className="object-contain drop-shadow-lg"
                   style={{
                     imageRendering: 'pixelated',
-                    width: `${40 + n * 12}px`,
-                    height: `${40 + n * 12}px`,
+                    width: `${48 + n * 8}px`,
+                    height: `${48 + n * 8}px`,
                   }}
                 />
                 <span className="text-[9px] text-gray-500 uppercase tracking-wider">
-                  Clue {n}
+                  {item.label}
                 </span>
                 <span className="text-[8px] text-gray-600">
-                  {n === 1 ? 'Stress 3+' : n === 2 ? 'Stress 5+' : 'Stress 7+'}
+                  {item.sub}
                 </span>
               </div>
             ))}
