@@ -47,17 +47,17 @@ export default function HomePage() {
       />
 
       {/* Hero image — title baked in */}
-      <div className="relative mb-6 z-10">
+      <div className="relative -mb-6 z-10">
         <img
           src="/logo/main3.png"
           alt="INTERROGATION"
-          className="w-[600px] md:w-[760px] max-w-full"
+          className="w-[500px] md:w-[640px] max-w-full"
           style={{ imageRendering: 'pixelated' }}
         />
       </div>
 
       {/* Menu */}
-      <div className="flex flex-col items-center gap-4 mb-8 z-10">
+      <div className="flex flex-col items-center gap-2.5 mb-6 z-10">
         <button
           onClick={() => router.push('/cases')}
           className="text-sm text-[#C41E1E] hover:text-[#ff4444] uppercase tracking-wider transition-colors"
@@ -85,7 +85,7 @@ export default function HomePage() {
       </div>
 
       {/* System status line */}
-      <div className="flex items-center gap-2 mb-6 z-10">
+      <div className="flex items-center gap-2 mb-4 z-10">
         <span className="w-[6px] h-[6px] bg-green-500 animate-pulse" />
         <span className="text-[10px] text-gray-500 uppercase tracking-widest">
           System Online &bull; Mistral AI Core Active &bull; ElevenLabs Voice Ready
@@ -93,7 +93,7 @@ export default function HomePage() {
       </div>
 
       {/* Sponsors */}
-      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 max-w-3xl px-6 mb-4 z-10">
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 max-w-3xl px-6 mb-3 z-10">
         {[
           { src: '/sponsors/mistral.webp', alt: 'Mistral AI', href: 'https://mistral.ai' },
           { src: '/sponsors/11labs.webp', alt: 'ElevenLabs', href: 'https://elevenlabs.io' },
