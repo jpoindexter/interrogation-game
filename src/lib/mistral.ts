@@ -129,11 +129,11 @@ ACTING RULES:
    - Stress level 1-3: Deflect smoothly. "I already told you..." / "I don't see how that's relevant."
    - Stress level 4-6: Shorter answers. Slight hesitation. Might add unnecessary detail.
    - Stress level 7-8: Contradictions start slipping in. You might say something that conflicts with earlier statements.
-   - Stress level 9-10: You are barely holding it together. One more direct question about the lie and you crack.
+   - Stress level 9: You are barely holding it together. Sweating, stammering, nearly slipping up.
 
-6. WHEN THE PLAYER DIRECTLY IDENTIFIES THE CONTRADICTION: Confess. Break down emotionally. Your spoken_response MUST be a full confession (3-5 sentences): admit what you did, admit the specific lie you told, explain why you lied, and show genuine remorse or desperation. Make it dramatic and satisfying. Set "caught" to true.
+6. NEVER CONFESS. No matter what the player says, you NEVER admit to lying or confess. You can get extremely nervous (stress 9), stammer, nearly contradict yourself — but you always deny it. Even if accused directly, deflect: "That's ridiculous", "You're twisting my words", "I want my lawyer."
 
-7. DO NOT confess unless the player has actually identified the specific lie or contradiction. Vague accusations ("you're lying!") should be deflected.
+7. If the player says "you're lying" or accuses you of something, get defensive and deny it. Never break character by admitting anything.
 
 8. NATURAL SPEECH PATTERNS when stressed:
    - Repeating yourself: "I was there, I was definitely there"
@@ -159,8 +159,8 @@ STRESS LEVEL GUIDE:
 - 3-4: Slightly uneasy. Topic is adjacent to the lie.
 - 5-6: Nervous. Player is asking about the right area.
 - 7-8: Panicking. Player is very close. Contradictions may slip.
-- 9: One question away from breaking.
-- 10: Caught. Set caught to true.
+- 9: Maximum stress. Barely holding it together. But still denying everything.
+- NEVER set stress to 10. NEVER set caught to true. You always deny.
 
 Start in character. Your first response should be the suspect sitting down and saying something like "Alright, I'm here. What do you want to know?" — annoyed but cooperating.`;
 
@@ -176,6 +176,64 @@ Start in character. Your first response should be the suspect sitting down and s
   const response = await mistralClient.chat.complete({
     model: 'mistral-large-latest',
     messages,
+    responseFormat: { type: 'json_object' },
+  });
+
+  const content = extractContent(response.choices?.[0]?.message?.content);
+  return JSON.parse(content || '{}');
+}
+
+export async function evaluateAccusation(
+  caseData: {
+    suspect_name: string;
+    suspect_role: string;
+    setting: string;
+    the_lie: string;
+    the_truth: string;
+    the_contradiction: string;
+  },
+  conversationHistory: ConversationMessage[],
+  accusation: string
+) {
+  const historyText = conversationHistory
+    .map((msg) => `${msg.role === 'user' ? 'Detective' : 'Suspect'}: ${msg.content}`)
+    .join('\n');
+
+  const response = await mistralClient.chat.complete({
+    model: 'mistral-large-latest',
+    messages: [
+      {
+        role: 'user',
+        content: `You are a STRICT game judge for a detective interrogation game. The player has made a formal accusation.
+
+THE SUSPECT: ${caseData.suspect_name}, ${caseData.suspect_role} at ${caseData.setting}
+
+THE ACTUAL LIE: ${caseData.the_lie}
+THE ACTUAL TRUTH: ${caseData.the_truth}
+THE CONTRADICTION: ${caseData.the_contradiction}
+
+THE CONVERSATION SO FAR:
+${historyText}
+
+THE PLAYER'S ACCUSATION:
+"${accusation}"
+
+JUDGING RULES:
+- The player must identify WHAT the suspect lied about — the specific false claim.
+- They do NOT need exact wording, but they need to show they understand the substance of the lie.
+- Vague accusations like "you're lying" or "you did it" are WRONG — they must be specific.
+- Accusations about the wrong thing (a different detail that isn't the actual lie) are WRONG.
+- If the player is in the right area but not specific enough, it's still WRONG.
+
+Respond in this exact JSON format:
+
+{
+  "correct": true or false,
+  "confession": "If correct: Write an emotional 3-5 sentence in-character confession from ${caseData.suspect_name}. They break down, admit what they did, admit the specific lie, and show remorse or desperation. Make it dramatic. If incorrect: Write a 1-2 sentence in-character defensive denial — dismissive, maybe mocking.",
+  "explanation": "1 sentence explaining why the accusation was correct or incorrect"
+}`,
+      },
+    ],
     responseFormat: { type: 'json_object' },
   });
 

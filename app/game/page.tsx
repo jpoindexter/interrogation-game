@@ -47,6 +47,8 @@ function GameContent() {
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [lastResponse, setLastResponse] = useState('');
   const [hintsUsed, setHintsUsed] = useState(0);
+  const [accusationsLeft, setAccusationsLeft] = useState(3);
+  const [isAccusing, setIsAccusing] = useState(false);
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -155,32 +157,6 @@ function GameContent() {
           setClues((prev) =>
             prev.includes(data.clue_unlocked) ? prev : [...prev, data.clue_unlocked]
           );
-        }
-
-        // Check if caught
-        if (data.caught) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          // Store game data with confession
-          sessionStorage.setItem(
-            'gameResult',
-            JSON.stringify({
-              type: 'win',
-              caseData,
-              conversationHistory: updatedHistory,
-              confession: data.spoken_response,
-              timeRemaining: timer,
-              stressLevel: data.stress_level,
-            })
-          );
-          // Speak the confession, then navigate to win
-          setLastResponse(data.spoken_response);
-          try {
-            await speakConfession(data.spoken_response, data.stress_level ?? 0);
-          } catch {
-            // If speech fails, still navigate
-          }
-          router.push('/game/win');
-          return;
         }
 
         // Speak the response
@@ -306,6 +282,103 @@ function GameContent() {
     setIsListening(false);
   };
 
+  // Start accusation — records voice, then evaluates
+  const startAccusation = () => {
+    if (phase !== 'active' || isSpeaking || accusationsLeft <= 0) return;
+    setIsAccusing(true);
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      alert('Speech recognition not supported. Try Chrome.');
+      setIsAccusing(false);
+      return;
+    }
+
+    const recognition = new SR();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => { setIsListening(false); setIsAccusing(false); };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setIsListening(false);
+      if (!transcript.trim() || !caseData) {
+        setIsAccusing(false);
+        return;
+      }
+
+      setLastTranscript(transcript);
+      setPhase('processing');
+      setAccusationsLeft((prev) => prev - 1);
+
+      try {
+        const res = await fetch('/api/accuse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            caseData,
+            conversationHistory,
+            accusation: transcript,
+          }),
+        });
+        const data = await res.json();
+
+        if (data.correct) {
+          // WIN — suspect confesses
+          if (timerRef.current) clearInterval(timerRef.current);
+          const updatedHistory: ConversationMessage[] = [
+            ...conversationHistory,
+            { role: 'user', content: `[ACCUSATION] ${transcript}` },
+            { role: 'assistant', content: data.confession },
+          ];
+          setConversationHistory(updatedHistory);
+          setLastResponse(data.confession);
+
+          sessionStorage.setItem(
+            'gameResult',
+            JSON.stringify({
+              type: 'win',
+              caseData,
+              conversationHistory: updatedHistory,
+              confession: data.confession,
+              timeRemaining: timer,
+              stressLevel,
+            })
+          );
+
+          try {
+            await speakConfession(data.confession, 10);
+          } catch {
+            // If speech fails, still navigate
+          }
+          router.push('/game/win');
+        } else {
+          // WRONG — suspect deflects
+          const updatedHistory: ConversationMessage[] = [
+            ...conversationHistory,
+            { role: 'user', content: `[ACCUSATION] ${transcript}` },
+            { role: 'assistant', content: data.confession },
+          ];
+          setConversationHistory(updatedHistory);
+          setLastResponse(data.confession);
+          await speakResponse(data.confession, stressLevel);
+        }
+      } catch (err) {
+        console.error('Accusation failed:', err);
+        setPhase('active');
+      }
+      setIsAccusing(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
   // Handle lose
   const handleLose = () => {
     sessionStorage.setItem(
@@ -337,10 +410,19 @@ function GameContent() {
 
   if (phase === 'loading') {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">GENERATING CASE...</h1>
-          <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin mx-auto" />
+      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center p-8">
+        <div className="max-w-lg text-center">
+          <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+          <h1 className="text-2xl font-bold mb-6">GENERATING CASE...</h1>
+
+          <div className="bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg text-left">
+            <h3 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-3">How to Play</h3>
+            <div className="space-y-3 text-sm text-gray-400">
+              <p><span className="text-[#E8E8E8] font-bold">1. Question.</span> Tap the mic and ask the suspect questions. The stress meter tells you when you&rsquo;re getting close to the lie.</p>
+              <p><span className="text-[#C41E1E] font-bold">2. Accuse.</span> When you find a contradiction, hit ACCUSE and state exactly what they lied about. Be specific.</p>
+              <p><span className="text-gray-300">3. Win.</span> Get it right and they confess. Get it wrong and you waste an attempt. You get <span className="text-[#E8E8E8]">3 tries</span>.</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -383,13 +465,30 @@ function GameContent() {
 
           {/* How to win */}
           <div className="bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg mb-8 text-left">
-            <h3 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-3">How to Win</h3>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li>The suspect is hiding <span className="text-[#C41E1E] font-bold">one specific lie</span> in their story.</li>
-              <li>Ask questions with your voice. Watch the <span className="text-[#E8E8E8]">stress meter</span> — it rises when you get close.</li>
-              <li>When you spot a contradiction, <span className="text-[#E8E8E8]">call it out directly</span> — the suspect will crack.</li>
-              <li>Use <span className="text-[#F59E0B]">hints</span> if you get stuck. You have 10 minutes.</li>
-            </ul>
+            <h3 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-3">How to Play</h3>
+            <div className="space-y-3 text-sm text-gray-400">
+              <p>The suspect is hiding <span className="text-[#C41E1E] font-bold">one specific lie</span> in their story. Your job is to find it.</p>
+
+              <div className="border-t border-[#2A2A2A] pt-3">
+                <p className="text-[#E8E8E8] font-bold text-xs uppercase tracking-wider mb-2">Question</p>
+                <p>Tap the <span className="text-[#E8E8E8]">mic button</span> and ask questions with your voice. Watch the <span className="text-[#E8E8E8]">stress meter</span> — it rises when your questions get close to the lie. Look for contradictions in what they say.</p>
+              </div>
+
+              <div className="border-t border-[#2A2A2A] pt-3">
+                <p className="text-[#C41E1E] font-bold text-xs uppercase tracking-wider mb-2">Accuse</p>
+                <p>When you think you know the lie, hit <span className="text-[#C41E1E] font-bold">ACCUSE</span> and say exactly what you think they lied about. Be specific — saying &ldquo;you&rsquo;re lying&rdquo; won&rsquo;t work. You need to say <span className="text-[#E8E8E8]">what</span> they lied about.</p>
+                <p className="mt-1">Example: <span className="text-[#E8E8E8] italic">&ldquo;You said you were in the office at 9pm, but the security logs show you left at 7.&rdquo;</span></p>
+              </div>
+
+              <div className="border-t border-[#2A2A2A] pt-3">
+                <p className="text-[#F59E0B] font-bold text-xs uppercase tracking-wider mb-2">Rules</p>
+                <ul className="space-y-1">
+                  <li>You have <span className="text-[#E8E8E8]">3 accusations</span>. Use them wisely.</li>
+                  <li>You have <span className="text-[#E8E8E8]">10 minutes</span> before the suspect walks.</li>
+                  <li>Use <span className="text-[#F59E0B]">hints</span> if you get stuck.</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <button
             onClick={startInterrogation}
@@ -610,34 +709,51 @@ function GameContent() {
       </div>
 
       {/* Bottom controls */}
-      <div className="p-4 border-t border-[#2A2A2A] flex items-center justify-between">
-        {/* Exit */}
-        <button
-          onClick={() => {
-            if (timerRef.current) clearInterval(timerRef.current);
-            if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-            speechSynthesis.cancel();
-            router.push('/cases');
-          }}
-          className="px-4 py-2 text-xs uppercase tracking-wider text-gray-500 hover:text-[#E8E8E8] border border-[#2A2A2A] hover:border-[#C41E1E] rounded-sm transition-colors"
-        >
-          Exit Case
-        </button>
+      <div className="p-4 border-t border-[#2A2A2A] flex items-center justify-between gap-4">
+        {/* Left — Exit + Hint */}
+        <div className="flex flex-col gap-2 min-w-[100px]">
+          <button
+            onClick={() => {
+              if (timerRef.current) clearInterval(timerRef.current);
+              if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+              speechSynthesis.cancel();
+              router.push('/cases');
+            }}
+            className="px-3 py-1.5 text-xs uppercase tracking-wider text-gray-500 hover:text-[#E8E8E8] border border-[#2A2A2A] hover:border-[#C41E1E] rounded-sm transition-colors"
+          >
+            Exit
+          </button>
+          <button
+            onClick={() => {
+              if (caseData && hintsUsed < caseData.stress_triggers.length) {
+                setHintsUsed((prev) => prev + 1);
+              }
+            }}
+            disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
+            className={`px-3 py-1.5 text-xs uppercase tracking-wider rounded-sm border transition-colors ${
+              !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
+                ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
+                : 'text-[#F59E0B] border-[#2A2A2A] hover:border-[#F59E0B] hover:text-[#E8E8E8]'
+            }`}
+          >
+            Hint {hintsUsed}/{caseData?.stress_triggers?.length ?? 0}
+          </button>
+        </div>
 
-        {/* Mic + status */}
+        {/* Center — Mic + status */}
         <div className="flex flex-col items-center">
           <button
             onClick={isListening ? stopListening : startListening}
-            disabled={phase === 'processing' || isSpeaking}
+            disabled={phase === 'processing' || isSpeaking || isAccusing}
             className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-              isListening
+              isListening && !isAccusing
                 ? 'bg-[#C41E1E] scale-110 shadow-[0_0_30px_rgba(196,30,30,0.5)]'
-                : phase === 'processing' || isSpeaking
+                : phase === 'processing' || isSpeaking || isAccusing
                   ? 'bg-[#2A2A2A] opacity-50 cursor-not-allowed'
                   : 'bg-[#2A2A2A] hover:bg-[#3A3A3A] hover:scale-105'
             }`}
           >
-            {isListening ? (
+            {isListening && !isAccusing ? (
               <div className="w-6 h-6 bg-white rounded-sm" />
             ) : (
               <svg
@@ -657,13 +773,15 @@ function GameContent() {
           </button>
 
           <p className="mt-2 text-xs uppercase tracking-wider text-gray-500">
-            {isListening
-              ? 'Listening...'
-              : isSpeaking
-                ? 'Suspect speaking...'
-                : phase === 'processing'
-                  ? 'Processing...'
-                  : 'Tap to speak'}
+            {isAccusing && isListening
+              ? 'State your accusation...'
+              : isListening
+                ? 'Listening...'
+                : isSpeaking
+                  ? 'Suspect speaking...'
+                  : phase === 'processing'
+                    ? isAccusing ? 'Evaluating accusation...' : 'Processing...'
+                    : 'Tap to ask'}
           </p>
 
           {lastTranscript && !isListening && (
@@ -673,22 +791,25 @@ function GameContent() {
           )}
         </div>
 
-        {/* Hint */}
-        <button
-          onClick={() => {
-            if (caseData && hintsUsed < caseData.stress_triggers.length) {
-              setHintsUsed((prev) => prev + 1);
-            }
-          }}
-          disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
-          className={`px-4 py-2 text-xs uppercase tracking-wider rounded-sm border transition-colors ${
-            !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
-              ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
-              : 'text-[#F59E0B] border-[#2A2A2A] hover:border-[#F59E0B] hover:text-[#E8E8E8]'
-          }`}
-        >
-          Hint {hintsUsed}/{caseData?.stress_triggers?.length ?? 0}
-        </button>
+        {/* Right — ACCUSE button */}
+        <div className="flex flex-col items-end min-w-[100px]">
+          <button
+            onClick={startAccusation}
+            disabled={phase === 'processing' || isSpeaking || isAccusing || accusationsLeft <= 0}
+            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider rounded-sm border-2 transition-all ${
+              accusationsLeft <= 0
+                ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
+                : isAccusing
+                  ? 'text-white bg-[#C41E1E] border-[#C41E1E] animate-pulse'
+                  : 'text-[#C41E1E] border-[#C41E1E] hover:bg-[#C41E1E] hover:text-white'
+            }`}
+          >
+            {isAccusing ? 'Accusing...' : 'Accuse'}
+          </button>
+          <p className="mt-1 text-xs text-gray-600">
+            {accusationsLeft} attempt{accusationsLeft !== 1 ? 's' : ''} left
+          </p>
+        </div>
       </div>
     </div>
   );
