@@ -1,5 +1,6 @@
 import type { Case } from '@/lib/game-state';
 import SuspectAvatar from '../SuspectAvatar';
+import VoiceWaveform from './VoiceWaveform';
 import { getSceneBg } from './utils';
 import { motion, fadeIn, scaleIn, smooth, snappy } from '../../components/motion';
 
@@ -56,34 +57,8 @@ export default function SuspectZone({
         </motion.div>
 
         {/* Waveform */}
-        <div className="h-6 flex items-center justify-center mb-2 gap-3">
-          {isSpeaking ? (
-            <div className="flex items-end gap-[3px]">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const peak = 12 + Math.sin(i * 0.7) * 20 + Math.random() * 15;
-                const mid = 6 + Math.cos(i * 1.1) * 10 + Math.random() * 8;
-                const speed = 0.3 + (i % 5) * 0.08 + Math.random() * 0.15;
-                return (
-                  <div
-                    key={i}
-                    className="w-1 bg-accent rounded-full animate-waveform"
-                    style={{
-                      ['--wave-peak' as string]: `${peak}px`,
-                      ['--wave-mid' as string]: `${mid}px`,
-                      ['--wave-speed' as string]: `${speed}s`,
-                      animationDelay: `${i * 0.04}s`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            <div className="flex items-end gap-[3px]">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="w-1 bg-surface rounded-full" style={{ height: '3px' }} />
-              ))}
-            </div>
-          )}
+        <div className="w-full max-w-xl mb-2">
+          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
         </div>
 
         {/* Dialogue */}

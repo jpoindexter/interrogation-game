@@ -17,6 +17,7 @@ import GiveUpConfirmDialog from './components/GiveUpConfirmDialog';
 import AccuseConfirmDialog from './components/AccuseConfirmDialog';
 import SettingsPanel from './components/SettingsPanel';
 import HelpPanel from './components/HelpPanel';
+import OnboardingOverlay from './components/OnboardingOverlay';
 import MicPermissionBanner from './components/MicPermissionBanner';
 import LoadingScreen from './components/LoadingScreen';
 import BriefingScreen from './components/BriefingScreen';
@@ -74,6 +75,7 @@ function GameContent() {
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showMicHint, setShowMicHint] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const showToast = useCallback((msg: string) => { setToast(msg); setTimeout(() => setToast(null), 4000); }, []);
   const [settings, setSettings] = useState(() => {
@@ -115,6 +117,11 @@ function GameContent() {
   }, [router, searchParams]);
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
+  useEffect(() => {
+    if (phase !== 'active') return;
+    if (localStorage.getItem('onboardingComplete')) return;
+    setShowOnboarding(true);
+  }, [phase]);
   useEffect(() => {
     if (phase !== 'active') return;
     if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('micHintDismissed')) return;
@@ -377,6 +384,8 @@ function GameContent() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {showOnboarding && <OnboardingOverlay onClose={() => setShowOnboarding(false)} />}
     </motion.div>
   );
 }
