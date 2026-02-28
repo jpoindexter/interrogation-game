@@ -29,9 +29,9 @@ export default function AboutPage() {
           <h2 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-6">The Builder</h2>
           <div className="bg-[#111111] border border-[#1A1A1A] rounded-sm p-6">
             <h3 className="text-xl font-bold mb-1">Jason Poindexter</h3>
-            <p className="text-sm text-gray-400 mb-4">AI Systems Builder &bull; Design Engineer &bull; Barcelona, ES</p>
+            <p className="text-sm text-gray-400 mb-4">UX Designer &bull; AI Systems Builder &bull; Barcelona, ES</p>
             <p className="text-sm text-gray-400 leading-relaxed mb-4">
-              Developer turned AI-native systems builder with 15+ years designing and shipping products at
+              UX designer for 15+ years, now building AI-native systems. Shipped products at
               Apple, Google, YouTube, FedEx Digital, London Stock Exchange, Electronic Arts, Equinix, and more.
               Currently building Gripe (AI-powered market intelligence) and FABRK (production-grade SaaS foundation for AI-native products).
             </p>
@@ -92,7 +92,7 @@ export default function AboutPage() {
             <p className="text-sm text-gray-400 leading-relaxed">
               INTERROGATION is an AI red-teaming experiment disguised as a detective noir game.
               The suspect is powered by Mistral Large 3, instructed to maintain a cover story with one hidden lie.
-              Your job is to find the contradiction through voice-based questioning alone.
+              Your job is to find the contradiction through voice or text-based questioning.
             </p>
             <p className="text-sm text-gray-400 leading-relaxed">
               Every case is procedurally generated &mdash; unique crime, suspect, cover story, and lie.
