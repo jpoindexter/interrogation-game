@@ -69,7 +69,7 @@ export default function AboutPage() {
               <p className="text-sm text-gray-400 leading-relaxed mb-4">
                 UX designer for 15+ years, now building AI-native systems. Shipped products at
                 Apple, Google, YouTube, FedEx Digital, London Stock Exchange, Electronic Arts, Equinix, and more.
-                Currently building Gripe (AI-powered market intelligence) and FABRK (production-grade SaaS foundation for AI-native products).
+                Currently building Gripe (AI-powered market intelligence) and Kern (design system enforcement).
               </p>
               <p className="text-sm text-gray-400 leading-relaxed">
                 Focus areas: agentic AI platforms, human-AI workflow systems, enterprise product architecture,
@@ -97,11 +97,11 @@ export default function AboutPage() {
               variants={stagger(0.06)}
             >
               {[
-                { role: 'Founder', company: 'FABRK', desc: 'Production-grade Next.js SaaS foundation — auth, billing, email, deployment patterns. 78+ reusable primitives.' },
                 { role: 'Director of Product & Design', company: 'THEFT Studio', desc: 'AI product builds for London Stock Exchange, FedEx Digital, YouTube, Google Health, Waymo, Booking.com.' },
                 { role: 'Lead Product Designer', company: 'Apple', desc: 'Internal experimentation platform adopted across Apple, saving $5M+ annually.' },
                 { role: 'UX Design Team Lead', company: 'Electronic Arts', desc: 'Product strategy and redesign for pogo.com ($30M+ annual revenue).' },
                 { role: 'Principal Product Designer', company: 'Equinix', desc: 'Enterprise SaaS modernization. Launched SmartView product offering.' },
+                { role: 'Senior UX Designer', company: 'FedEx Digital', desc: 'Redesigned FedEx logistics tracking. Shipped to millions of daily active users.' },
               ].map((item) => (
                 <motion.div
                   key={item.company}
@@ -138,9 +138,9 @@ export default function AboutPage() {
               variants={stagger(0.06)}
             >
               {[
-                { name: 'Gripe', year: '2026', desc: 'AI-powered market intelligence and acquisition analysis. Converts distributed public signals into scored datasets for competitive and due-diligence workflows.' },
+                { name: 'Gripe', year: '2026', desc: 'AI-powered market intelligence. Turns fragmented public signals into structured acquisition and competitive analysis. Multi-agent pipeline with scoring models.' },
+                { name: 'Kern', year: '2026', desc: 'Design system enforcement engine. Scans production codebases for consistency violations and generates actionable fix reports with auto-patching.' },
                 { name: 'AgentSmith', year: '2026', desc: 'Automated codebase audit engine. Generates maintainability scoring and structured technical due-diligence reports from live repositories.' },
-                { name: 'FABRK', year: '2025', desc: 'Opinionated SaaS foundation standardizing authentication, billing orchestration, email pipelines, and scalable architecture for AI-native products.' },
                 { name: 'INTERROGATION', year: '2026', desc: 'Voice-based AI red-teaming game. Mistral Large 3 plays a lying suspect. You catch the lie. Built in 48 hours.' },
               ].map((item) => (
                 <motion.div
