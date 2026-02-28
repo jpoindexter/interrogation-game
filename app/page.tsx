@@ -25,7 +25,7 @@ export default function HomePage() {
         </div>
 
         <button
-          onClick={() => router.push('/game')}
+          onClick={() => router.push('/cases')}
           className="px-8 py-4 bg-[#C41E1E] text-white text-xl font-bold rounded-lg hover:bg-red-700 transition-colors transform hover:scale-105"
         >
           START NEW CASE

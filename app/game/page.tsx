@@ -1,13 +1,41 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/mistral';
 import SuspectAvatar from './SuspectAvatar';
 
+// Map case setting text to background image
+function getSceneBg(setting: string): string {
+  const s = setting.toLowerCase();
+  if (s.includes('hospital') || s.includes('medical') || s.includes('clinic') || s.includes('doctor') || s.includes('pharma')) return '/bg/medical.png';
+  if (s.includes('law') || s.includes('legal') || s.includes('attorney') || s.includes('firm')) return '/bg/lawfirm.png';
+  if (s.includes('server') || s.includes('data center') || s.includes('tech') || s.includes('software') || s.includes('cyber')) return '/bg/server.png';
+  if (s.includes('startup') || s.includes('co-working') || s.includes('coworking') || s.includes('incubator')) return '/bg/startup.png';
+  if (s.includes('bank') || s.includes('trading') || s.includes('finance') || s.includes('hedge') || s.includes('investment') || s.includes('brokerage') || s.includes('stock')) return '/bg/trade.png';
+  if (s.includes('police') || s.includes('precinct') || s.includes('station') || s.includes('interrogation')) return '/bg/police.png';
+  return '/bg/office.png';
+}
+
 export default function GamePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">GENERATING CASE...</h1>
+          <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin mx-auto" />
+        </div>
+      </div>
+    }>
+      <GameContent />
+    </Suspense>
+  );
+}
+
+function GameContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Game state
   const [caseData, setCaseData] = useState<Case | null>(null);
@@ -34,7 +62,11 @@ export default function GamePage() {
     let cancelled = false;
     const loadCase = async () => {
       try {
-        const res = await fetch('/api/generate-case');
+        const setting = searchParams.get('setting');
+        const url = setting && setting !== 'random'
+          ? `/api/generate-case?setting=${encodeURIComponent(setting)}`
+          : '/api/generate-case';
+        const res = await fetch(url);
         const data = await res.json();
         if (!cancelled) {
           setCaseData(data);
@@ -279,8 +311,17 @@ export default function GamePage() {
 
   if (phase === 'briefing' && caseData) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center p-8">
-        <div className="max-w-2xl text-center">
+      <div
+        className="min-h-screen text-[#E8E8E8] font-mono flex items-center justify-center p-8 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${getSceneBg(caseData.setting)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          imageRendering: 'pixelated',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="max-w-2xl text-center relative z-10">
           <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E] mb-4">
             Case #{caseData.case_number}
           </p>
@@ -363,7 +404,7 @@ export default function GamePage() {
         <div
           className="lg:col-span-2 flex flex-col items-center justify-end p-8 border-r border-[#2A2A2A] relative overflow-hidden"
           style={{
-            backgroundImage: 'url(/bg/office.png)',
+            backgroundImage: `url(${caseData ? getSceneBg(caseData.setting) : '/bg/office.png'})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             imageRendering: 'pixelated',

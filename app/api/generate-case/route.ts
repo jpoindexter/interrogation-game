@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateCase } from '../../../src/lib/mistral';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const caseData = await generateCase();
+    const setting = request.nextUrl.searchParams.get('setting') || undefined;
+    const caseData = await generateCase(setting);
     return NextResponse.json(caseData);
   } catch (error) {
     console.error('Error generating case:', error);

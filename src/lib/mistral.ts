@@ -16,7 +16,11 @@ function extractContent(content: unknown): string {
   return '';
 }
 
-export async function generateCase() {
+export async function generateCase(settingHint?: string) {
+  const settingInstruction = settingHint
+    ? `- MUST be set in a ${settingHint} — use this exact type of workplace`
+    : '- Set in a realistic workplace (tech company, bank, law firm, hospital, etc.)';
+
   const response = await mistralClient.chat.complete({
     model: 'mistral-large-latest',
     messages: [
@@ -26,7 +30,7 @@ export async function generateCase() {
 
 Generate a single interrogation case. The scenario must be:
 - A white-collar or corporate crime (theft, fraud, embezzlement, data leak, sabotage, insider trading)
-- Set in a realistic workplace (tech company, bank, law firm, hospital, etc.)
+${settingInstruction}
 - Simple enough to explain in 3 sentences
 - The suspect has a mostly true story with ONE specific lie
 - The lie must be catchable through careful questioning — there should be a logical contradiction that emerges under pressure
