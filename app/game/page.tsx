@@ -84,8 +84,8 @@ function GameContent() {
     return d;
   });
   const updateSettings = useCallback((next: typeof settings) => { setSettings(next); localStorage.setItem('appSettings', JSON.stringify(next)); }, []);
-  const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder();
-  const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender);
+  const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder(caseData?.sessionId);
+  const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId);
   const { timer, timerRef } = useGameTimer(phase, isSpeaking);
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -143,7 +143,7 @@ function GameContent() {
       const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question }];
 
       try {
-        const interrogateBody = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question, currentStress: stressLevel });
+        const interrogateBody = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question });
         const interrogateOpts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: interrogateBody };
         let res;
         try { res = await fetchWithTimeout('/api/interrogate', interrogateOpts); }
@@ -210,7 +210,7 @@ function GameContent() {
         setLastResponse(data.confession);
 
         sessionStorage.setItem('gameResult', JSON.stringify({
-          type: 'win', caseData, sessionId: caseData.sessionId, conversationHistory: updatedHistory, confession: data.confession,
+          type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession,
           timeElapsed: timer, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft),
         }));
 
@@ -276,7 +276,6 @@ function GameContent() {
         body: JSON.stringify({
           sessionId: caseData.sessionId,
           playerQuestion: '[The detective has given up and is leaving. Respond with one short, smug remark as the suspect who got away with it. Max 2 sentences.]',
-          currentStress: 1,
         }),
       });
       const data = await res.json();

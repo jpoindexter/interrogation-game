@@ -1,6 +1,24 @@
 // Lightweight in-memory rate limiter (token bucket per IP)
+import type { NextRequest } from 'next/server';
 
 const buckets = new Map<string, { tokens: number; last: number }>();
+
+/** Extract the most reliable client IP from request headers.
+ *  On Vercel: x-real-ip is set by the edge and cannot be spoofed.
+ *  Falls back to x-forwarded-for first entry, then a restrictive fallback. */
+export function getClientIp(request: NextRequest): string {
+  // x-real-ip is set by Vercel edge and is reliable
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  // x-forwarded-for: take only the first (client) IP
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const first = forwarded.split(',')[0]?.trim();
+    if (first) return first;
+  }
+  // Fallback: assign a unique bucket per request to avoid sharing
+  return `anon-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 /** Returns true if the request is allowed, false if rate-limited. */
 export function rateLimit(ip: string, maxPerMinute: number = 30): boolean {

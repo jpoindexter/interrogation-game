@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateString, validateNumber } from '../../../src/lib/sanitize';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
+import { getSession } from '../../../src/lib/game-session';
 
 // Voice pool — different voices for different suspects
 const VOICES = {
@@ -41,7 +43,17 @@ function pickVoice(suspectName: string, suspectGender?: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req);
+    if (!rateLimit(ip, 30)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const body = await req.json();
+
+    // Require active game session to prevent use as a free TTS proxy
+    if (!body.sessionId || !getSession(body.sessionId)) {
+      return NextResponse.json({ error: 'Valid game session required' }, { status: 401 });
+    }
 
     const text = validateString(body.text, 2000);
     if (!text) {

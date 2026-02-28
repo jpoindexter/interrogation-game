@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { interrogate } from '../../../src/lib/mistral';
 import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
-import { rateLimit } from '../../../src/lib/rate-limit';
-import { getSession, addMessage } from '../../../src/lib/game-session';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
+import { getSession, addMessage, updateStress, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const ip = getClientIp(request);
     if (!rateLimit(ip, 30)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
       // Return an in-character deflection instead of processing
       const deflection = {
         spoken_response: "I don't understand what you're asking. Can we stay on topic?",
-        internal_state: "Injection attempt detected — deflecting",
         stress_level: session.conversationHistory.filter(m => m.role === 'assistant').length > 0 ? 2 : 0,
         clue_unlocked: null,
         caught: false,
@@ -38,31 +37,37 @@ export async function POST(request: NextRequest) {
     }
 
     const sanitized = sanitizeInput(question);
-    const questionCount = session.conversationHistory.filter(m => m.role === 'user').length;
-    // Derive stress from last assistant response if available
-    let currentStress = 0;
-    if (typeof body.currentStress === 'number') {
-      currentStress = Math.max(0, Math.min(9, Math.floor(body.currentStress)));
+
+    // Prevent race condition: lock session during question processing
+    if (!acquireSessionLock(session.id)) {
+      return NextResponse.json({ error: 'Question already in progress' }, { status: 409 });
     }
 
-    // Use server-side case data and conversation history
-    const response = await interrogate(
-      session.caseData as Parameters<typeof interrogate>[0],
-      session.conversationHistory,
-      sanitized,
-      questionCount,
-      currentStress,
-    );
+    try {
+      const questionCount = session.conversationHistory.filter(m => m.role === 'user').length;
+      // Use server-tracked stress — never trust client-supplied value
+      const currentStress = session.currentStress;
 
-    // Store conversation on server
-    addMessage(session.id, 'user', sanitized);
-    addMessage(session.id, 'assistant', response.spoken_response || '');
+      // Use server-side case data and conversation history
+      const response = await interrogate(
+        session.caseData as Parameters<typeof interrogate>[0],
+        session.conversationHistory,
+        sanitized,
+        questionCount,
+        currentStress,
+      );
 
-    // Clamp stress to 0-9 and never return caught=true
-    response.stress_level = Math.max(0, Math.min(9, response.stress_level ?? 0));
-    response.caught = false;
+      // Store conversation on server
+      addMessage(session.id, 'user', sanitized);
+      addMessage(session.id, 'assistant', (response.spoken_response as string) || '');
 
-    return NextResponse.json(response);
+      // Track stress server-side so client can't manipulate it
+      updateStress(session.id, response.stress_level as number);
+
+      return NextResponse.json(response);
+    } finally {
+      releaseSessionLock(session.id);
+    }
   } catch (error) {
     console.error('Error during interrogation:', error);
     return NextResponse.json(

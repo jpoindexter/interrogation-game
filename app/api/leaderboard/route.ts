@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/lib/db';
 import { calculateScore, type Difficulty } from '@/lib/scoring';
 import { validateString, validateNumber, validateDifficulty } from '@/lib/sanitize';
+import { consumeWinToken } from '@/lib/game-session';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // GET — fetch top scores
 export async function GET() {
@@ -21,9 +23,21 @@ export async function GET() {
 }
 
 // POST — submit a score
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (!rateLimit(ip, 5)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const body = await request.json();
+
+    // Require a valid win token to prevent fake score submissions
+    const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
+    const winToken = typeof body.winToken === 'string' ? body.winToken : '';
+    if (!sessionId || !winToken || !consumeWinToken(sessionId, winToken)) {
+      return NextResponse.json({ error: 'Invalid or expired win token' }, { status: 403 });
+    }
 
     const playerName = (validateString(body.playerName, 3) ?? 'DET').toUpperCase().slice(0, 3);
     const difficulty = validateDifficulty(body.difficulty) ?? 'medium';

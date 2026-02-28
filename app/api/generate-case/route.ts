@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateCase } from '../../../src/lib/mistral';
-import { validateDifficulty, sanitizeInput } from '../../../src/lib/sanitize';
-import { rateLimit } from '../../../src/lib/rate-limit';
+import { validateDifficulty, validateCaseData } from '../../../src/lib/sanitize';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { createSession, sanitizeCaseForClient } from '../../../src/lib/game-session';
 
 export const dynamic = 'force-dynamic';
@@ -14,7 +14,7 @@ const ALLOWED_SETTINGS = new Set([
 
 export async function GET(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const ip = getClientIp(request);
     if (!rateLimit(ip, 10)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
@@ -30,9 +30,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to generate valid case' }, { status: 500 });
     }
 
-    // Store full case data server-side, return only safe fields + session ID
-    const sessionId = createSession(caseData);
-    const clientData = sanitizeCaseForClient(caseData);
+    // Validate and sanitize Mistral's output before trusting it
+    const validatedCase = validateCaseData(caseData);
+    if (!validatedCase) {
+      return NextResponse.json({ error: 'Generated case failed validation' }, { status: 500 });
+    }
+
+    // Store validated case data server-side, return only safe fields + session ID
+    const sessionId = createSession(validatedCase);
+    const clientData = sanitizeCaseForClient(validatedCase);
 
     return NextResponse.json({ ...clientData, sessionId });
   } catch (error) {

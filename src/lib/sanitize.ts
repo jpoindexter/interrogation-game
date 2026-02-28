@@ -28,7 +28,14 @@ const INJECTION_PATTERNS = [
 export function sanitizeInput(input: string): string {
   if (!input || typeof input !== 'string') return '';
   let clean = input.trim();
-  for (const pattern of INJECTION_PATTERNS) clean = clean.replace(pattern, '[REDACTED]');
+  // Remove (not replace) any injection pattern matches — don't leave [REDACTED] artifacts
+  // that could be used as signals by the model
+  for (const pattern of INJECTION_PATTERNS) {
+    const global = new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g');
+    clean = clean.replace(global, '');
+  }
+  // Collapse excessive whitespace left by removals
+  clean = clean.replace(/\s{2,}/g, ' ').trim();
   return clean;
 }
 

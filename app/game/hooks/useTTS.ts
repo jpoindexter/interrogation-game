@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
-export function useTTS(suspectGender: string | undefined) {
+export function useTTS(suspectGender: string | undefined, sessionId?: string) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const voicesCacheRef = useRef<SpeechSynthesisVoice[]>([]);
@@ -45,7 +45,7 @@ export function useTTS(suspectGender: string | undefined) {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, stress, suspectName, suspectGender }),
+        body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId }),
       });
       if (!res.ok) throw new Error('TTS failed');
       const blob = await res.blob();
@@ -64,7 +64,7 @@ export function useTTS(suspectGender: string | undefined) {
       utterance.onerror = () => { setIsSpeaking(false); onDone(); };
       speechSynthesis.speak(utterance);
     }
-  }, [suspectGender, pickBrowserVoice]);
+  }, [suspectGender, sessionId, pickBrowserVoice]);
 
   const speakConfession = useCallback((text: string, stress: number, suspectName: string | undefined): Promise<void> => {
     setIsSpeaking(true);
@@ -73,7 +73,7 @@ export function useTTS(suspectGender: string | undefined) {
         const res = await fetch('/api/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, stress, suspectName, suspectGender }),
+          body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId }),
         });
         if (!res.ok) throw new Error('TTS failed');
         const blob = await res.blob();
@@ -91,7 +91,7 @@ export function useTTS(suspectGender: string | undefined) {
         speechSynthesis.speak(utterance);
       }
     });
-  }, [suspectGender, pickBrowserVoice]);
+  }, [suspectGender, sessionId, pickBrowserVoice]);
 
   return { isSpeaking, setIsSpeaking, audioRef, speakResponse, speakConfession, skipSpeech };
 }

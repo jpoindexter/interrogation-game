@@ -9,6 +9,8 @@ export interface GameSession {
   caseData: Record<string, unknown>;
   conversationHistory: ConversationMessage[];
   accusationsLeft: number;
+  currentStress: number;
+  winToken: string | null; // Set when player wins — required for leaderboard submission
   createdAt: number;
   lastActivity: number;
 }
@@ -30,6 +32,8 @@ export function createSession(caseData: Record<string, unknown>): string {
     caseData,
     conversationHistory: [],
     accusationsLeft: 3,
+    currentStress: 0,
+    winToken: null,
     createdAt: Date.now(),
     lastActivity: Date.now(),
   });
@@ -71,6 +75,66 @@ export function restoreAccusation(sessionId: string): void {
   session.accusationsLeft = Math.min(3, session.accusationsLeft + 1);
 }
 
+// Win tokens live in a separate Map so they survive session deletion.
+// Flow: accuse → issueWinToken → evaluate (deletes session) → leaderboard (consumes token)
+const winTokens = new Map<string, { token: string; issuedAt: number }>();
+const WIN_TOKEN_TTL = 30 * 60 * 1000; // 30 minutes
+
+/** Issue a one-time win token when the player wins. Returns the token or null if already issued. */
+export function issueWinToken(sessionId: string): string | null {
+  const session = getSession(sessionId);
+  if (!session || session.winToken) return null; // Already issued
+  const token = randomBytes(16).toString('hex');
+  session.winToken = token;
+  // Store in standalone Map so it survives session deletion
+  winTokens.set(sessionId, { token, issuedAt: Date.now() });
+  return token;
+}
+
+/** Validate and consume a win token. Returns true if valid. Token is single-use.
+ *  Checks standalone Map first (survives session deletion), falls back to session. */
+export function consumeWinToken(sessionId: string, token: string): boolean {
+  // Check standalone token store (primary — works after session deletion)
+  const stored = winTokens.get(sessionId);
+  if (stored) {
+    if (Date.now() - stored.issuedAt > WIN_TOKEN_TTL) {
+      winTokens.delete(sessionId);
+      return false;
+    }
+    if (stored.token === token) {
+      winTokens.delete(sessionId); // Consume — single use
+      return true;
+    }
+    return false;
+  }
+  // Fallback: check session (if not yet deleted)
+  const session = getSession(sessionId);
+  if (!session || !session.winToken || session.winToken !== token) return false;
+  session.winToken = null;
+  return true;
+}
+
+// Per-session locks to prevent race conditions (concurrent accusation requests)
+const sessionLocks = new Set<string>();
+
+/** Acquire a lock for a session. Returns true if acquired, false if already locked. */
+export function acquireSessionLock(sessionId: string): boolean {
+  if (sessionLocks.has(sessionId)) return false;
+  sessionLocks.add(sessionId);
+  return true;
+}
+
+/** Release a session lock. */
+export function releaseSessionLock(sessionId: string): void {
+  sessionLocks.delete(sessionId);
+}
+
+export function updateStress(sessionId: string, stress: number): void {
+  const session = getSession(sessionId);
+  if (!session) return;
+  session.currentStress = Math.max(0, Math.min(9, Math.floor(stress)));
+}
+
 export function deleteSession(id: string): void {
   sessions.delete(id);
 }
@@ -102,5 +166,10 @@ setInterval(() => {
   const cutoff = Date.now() - SESSION_TTL;
   for (const [key, session] of sessions) {
     if (session.lastActivity < cutoff) sessions.delete(key);
+  }
+  // Clean up expired win tokens
+  const tokenCutoff = Date.now() - WIN_TOKEN_TTL;
+  for (const [key, entry] of winTokens) {
+    if (entry.issuedAt < tokenCutoff) winTokens.delete(key);
   }
 }, 300000);

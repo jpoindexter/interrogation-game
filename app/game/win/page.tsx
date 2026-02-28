@@ -19,6 +19,7 @@ interface GameResult {
     crime: string;
   };
   sessionId?: string;
+  winToken?: string;
   conversationHistory: Array<{ role: string; content: string }>;
   confession: string;
   timeElapsed: number;
@@ -237,6 +238,8 @@ function WinContent() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        sessionId: result.sessionId,
+        winToken: result.winToken,
         playerName: playerInitials,
         caseNumber: result.caseData.case_number,
         caseSetting: result.caseData.setting,

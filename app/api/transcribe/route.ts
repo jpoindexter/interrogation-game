@@ -1,14 +1,28 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Mistral } from '@mistralai/mistralai';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
+import { getSession } from '../../../src/lib/game-session';
 
 const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
 const MAX_AUDIO_SIZE = 25 * 1024 * 1024; // 25MB
 const ALLOWED_TYPES = ['audio/mpeg', 'audio/wav', 'audio/webm', 'audio/ogg', 'audio/mp4', 'video/webm'];
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (!rateLimit(ip, 20)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const formData = await request.formData();
+
+    // Require active game session to prevent use as a free STT proxy
+    const sessionId = formData.get('sessionId');
+    if (!sessionId || typeof sessionId !== 'string' || !getSession(sessionId)) {
+      return NextResponse.json({ error: 'Valid game session required' }, { status: 401 });
+    }
+
     const audioFile = formData.get('audio') as File;
 
     if (!audioFile) {

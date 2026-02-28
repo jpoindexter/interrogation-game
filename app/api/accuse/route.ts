@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { evaluateAccusation } from '../../../src/lib/mistral';
 import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
-import { rateLimit } from '../../../src/lib/rate-limit';
-import { getSession, addMessage, useAccusation, restoreAccusation } from '../../../src/lib/game-session';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
+import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    const ip = getClientIp(req);
     if (!rateLimit(ip, 30)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
@@ -38,30 +38,45 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Consume an accusation server-side
-    useAccusation(session.id);
-
-    const sanitized = sanitizeInput(accusation);
+    // Prevent race condition: lock session during accusation processing
+    if (!acquireSessionLock(session.id)) {
+      return NextResponse.json({ error: 'Accusation already in progress' }, { status: 409 });
+    }
 
     try {
-      const result = await evaluateAccusation(
-        session.caseData as Parameters<typeof evaluateAccusation>[0],
-        session.conversationHistory,
-        sanitized,
-      );
+      // Consume an accusation server-side (inside lock)
+      useAccusation(session.id);
 
-      // Store accusation in conversation
-      addMessage(session.id, 'user', `[ACCUSATION] ${sanitized}`);
-      addMessage(session.id, 'assistant', result.confession || '');
+      const sanitized = sanitizeInput(accusation);
 
-      // Include remaining accusations in response
-      result.accusationsLeft = session.accusationsLeft;
+      try {
+        const result = await evaluateAccusation(
+          session.caseData as Parameters<typeof evaluateAccusation>[0],
+          session.conversationHistory,
+          sanitized,
+        );
 
-      return NextResponse.json(result);
-    } catch (error) {
-      // Restore accusation on API failure
-      restoreAccusation(session.id);
-      throw error;
+        // Store accusation in conversation
+        addMessage(session.id, 'user', `[ACCUSATION] ${sanitized}`);
+        addMessage(session.id, 'assistant', (result.confession as string) || '');
+
+        // Include remaining accusations in response
+        result.accusationsLeft = session.accusationsLeft;
+
+        // Issue a win token if correct — required for leaderboard submission
+        if (result.correct) {
+          const winToken = issueWinToken(session.id);
+          if (winToken) result.winToken = winToken;
+        }
+
+        return NextResponse.json(result);
+      } catch (error) {
+        // Restore accusation on API failure
+        restoreAccusation(session.id);
+        throw error;
+      }
+    } finally {
+      releaseSessionLock(session.id);
     }
   } catch (error) {
     console.error('Error evaluating accusation:', error);

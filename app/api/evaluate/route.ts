@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { evaluateWin, generateLossSummary } from '../../../src/lib/mistral';
 import { validateNumber, sanitizeInput } from '../../../src/lib/sanitize';
-import { rateLimit } from '../../../src/lib/rate-limit';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { getSession, deleteSession } from '../../../src/lib/game-session';
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const ip = getClientIp(request);
     if (!rateLimit(ip, 30)) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }

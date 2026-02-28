@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
 
-export function useVoiceRecorder() {
+export function useVoiceRecorder(sessionId?: string) {
   const [isListening, setIsListening] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -12,6 +12,7 @@ export function useVoiceRecorder() {
   const transcribeAudio = async (blob: Blob): Promise<string> => {
     const formData = new FormData();
     formData.append('audio', blob, 'recording.webm');
+    if (sessionId) formData.append('sessionId', sessionId);
     const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
