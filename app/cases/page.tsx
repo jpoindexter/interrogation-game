@@ -71,11 +71,19 @@ export default function CaseSelectPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-10">
-          <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
-            Select Location
-          </p>
-          <h1 className="text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
+        <div className="mb-10 flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
+              Select Location
+            </p>
+            <h1 className="text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
+          </div>
+          <button
+            onClick={() => router.push('/')}
+            className="text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors mt-2"
+          >
+            &larr; Home
+          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -119,25 +127,6 @@ export default function CaseSelectPage() {
           ))}
         </div>
 
-        <div className="mt-6 flex justify-center">
-          <button
-            onClick={() => selectCase('random')}
-            className="group relative overflow-hidden rounded-sm border border-[#2A2A2A] hover:border-[#C41E1E] transition-colors text-center flex flex-col items-center justify-center gap-2 px-10 py-6"
-          >
-            {/* Dice icon */}
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-400 group-hover:text-[#C41E1E] transition-colors">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-            </svg>
-            <span className="text-sm uppercase tracking-wider text-gray-400 group-hover:text-[#E8E8E8] transition-colors">
-              Random
-            </span>
-          </button>
-        </div>
       </div>
     </div>
   );

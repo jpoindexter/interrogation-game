@@ -9,6 +9,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-pixel: var(--font-pixel), 'Press Start 2P', cursive;
 }
 
 body {
@@ -228,6 +229,64 @@ body {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* CRT scanline effect */
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.15) 50%,
+    rgba(0,0,0,0.15)
+  );
+  background-size: 100% 4px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.crt-overlay {
+  background: radial-gradient(circle, rgba(18, 16, 16, 0) 60%, rgba(0, 0, 0, 0.6) 100%);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Typewriter blinking cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+
+/* Shine sweep on hover */
+@keyframes shineSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Floating pixel particles */
+@keyframes pixelFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-8px);
+    opacity: 0.3;
+  }
+}
+
+/* Drifting scan line */
+@keyframes scanDrift {
+  0% { top: -2px; }
+  100% { top: 100%; }
 }
 
 @keyframes breathe {

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono, Press_Start_2P } from 'next/font/google';
 import '@fontsource/opendyslexic/400.css';
 import '@fontsource/opendyslexic/700.css';
 import './globals.css';
@@ -7,6 +7,12 @@ import './globals.css';
 const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
+});
+
+const pressStart2P = Press_Start_2P({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-pixel',
 });
 
 export const metadata: Metadata = {
@@ -20,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jetBrainsMono.variable} font-sans`}>
+    <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} font-sans`}>
       <body className="bg-[#0A0A0A] text-[#E8E8E8]">
         {children}
       </body>
