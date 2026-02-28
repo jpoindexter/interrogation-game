@@ -112,14 +112,6 @@ export default function HomePage() {
             background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.4) 2px, rgba(0,0,0,0.4) 4px)',
           }}
         />
-        {/* Red glow pulse behind image */}
-        <div
-          className="absolute inset-0 pointer-events-none rounded-sm"
-          style={{
-            boxShadow: '0 0 80px rgba(196,30,30,0.15), 0 0 160px rgba(196,30,30,0.05)',
-            animation: 'glowPulse 3s ease-in-out infinite',
-          }}
-        />
         {/* Interference flicker — random opacity jitter */}
         <div
           className="absolute inset-0 pointer-events-none"
