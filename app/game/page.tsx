@@ -196,7 +196,7 @@ function GameContent() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, stress, suspectName: caseData?.suspect_name }),
+        body: JSON.stringify({ text, stress, suspectName: caseData?.suspect_name, suspectGender: caseData?.suspect_gender }),
       });
 
       if (!res.ok) throw new Error('TTS failed');

@@ -43,6 +43,7 @@ Respond ONLY in this exact JSON format:
   "crime": "what happened in one sentence",
   "briefing": "3 sentence briefing the detective reads before starting. Written in second person. Direct. No fluff.",
   "suspect_name": "a realistic full name",
+  "suspect_gender": "male or female",
   "suspect_role": "their job title",
   "suspect_true_story": "what actually happened — the full truth including what they did",
   "suspect_cover_story": "what the suspect claims happened — their version",
@@ -55,6 +56,8 @@ Respond ONLY in this exact JSON format:
 }
 
 Make the contradiction discoverable but not obvious. The player should need 3-5 good questions to find it.
+
+IMPORTANT: All text fields (briefing, stress_triggers, deflection_tactics, suspect_true_story, suspect_cover_story, the_lie, the_truth, the_contradiction) MUST use the correct pronouns matching suspect_gender. If female, use she/her/hers. If male, use he/him/his. Never mix pronouns.
 
 Generate one case now.`,
       },

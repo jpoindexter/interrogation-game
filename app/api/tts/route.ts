@@ -32,20 +32,16 @@ function hashName(name: string): number {
   return Math.abs(hash);
 }
 
-function pickVoice(suspectName: string): string {
+function pickVoice(suspectName: string, suspectGender?: string): string {
   const hash = hashName(suspectName);
-
-  // Use first name to guess gender (simple heuristic based on name hash)
-  // The case generator creates realistic names, so we use a pool approach:
-  // even hash → male pool, odd hash → female pool
-  const isFemale = hash % 2 === 1;
+  const isFemale = suspectGender ? suspectGender.toLowerCase() === 'female' : hash % 2 === 1;
   const pool = isFemale ? VOICES.female : VOICES.male;
   return pool[hash % pool.length];
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, stress, suspectName } = await req.json();
+    const { text, stress, suspectName, suspectGender } = await req.json();
 
     const apiKey = process.env.ELEVENLABS_API_KEY;
 
@@ -56,9 +52,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Pick voice based on suspect name, fallback to env var
+    // Pick voice based on suspect name + gender, fallback to env var
     const voiceId = suspectName
-      ? pickVoice(suspectName)
+      ? pickVoice(suspectName, suspectGender)
       : process.env.ELEVENLABS_VOICE_ID || VOICES.male[0];
 
     // Stress affects voice: higher stress = faster, less stable

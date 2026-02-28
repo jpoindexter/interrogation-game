@@ -4,6 +4,7 @@ export interface Case {
   crime: string;
   briefing: string;
   suspect_name: string;
+  suspect_gender: string;
   suspect_role: string;
   suspect_true_story: string;
   suspect_cover_story: string;
