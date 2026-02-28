@@ -46,6 +46,7 @@ function GameContent() {
   const [clues, setClues] = useState<string[]>([]);
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
   const [lastResponse, setLastResponse] = useState('');
+  const [hintsUsed, setHintsUsed] = useState(0);
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -526,6 +527,25 @@ function GameContent() {
                 )}
               </div>
 
+              {/* Hints */}
+              {hintsUsed > 0 && (
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider text-[#F59E0B] mb-2">
+                    Hints
+                  </h3>
+                  <div className="space-y-2">
+                    {caseData.stress_triggers.slice(0, hintsUsed).map((trigger, i) => (
+                      <div
+                        key={i}
+                        className="p-3 bg-[#1A1A1A] rounded border-l-2 border-[#F59E0B]"
+                      >
+                        <p className="text-sm text-gray-300">{trigger}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <h3 className="text-xs uppercase tracking-wider text-gray-600 mb-2">
                   Exchange Log
@@ -546,52 +566,85 @@ function GameContent() {
       </div>
 
       {/* Bottom controls */}
-      <div className="p-6 border-t border-[#2A2A2A] flex flex-col items-center">
+      <div className="p-4 border-t border-[#2A2A2A] flex items-center justify-between">
+        {/* Exit */}
         <button
-          onClick={isListening ? stopListening : startListening}
-          disabled={phase === 'processing' || isSpeaking}
-          className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-            isListening
-              ? 'bg-[#C41E1E] scale-110 shadow-[0_0_30px_rgba(196,30,30,0.5)]'
-              : phase === 'processing' || isSpeaking
-                ? 'bg-[#2A2A2A] opacity-50 cursor-not-allowed'
-                : 'bg-[#2A2A2A] hover:bg-[#3A3A3A] hover:scale-105'
-          }`}
+          onClick={() => {
+            if (timerRef.current) clearInterval(timerRef.current);
+            if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+            speechSynthesis.cancel();
+            router.push('/cases');
+          }}
+          className="px-4 py-2 text-xs uppercase tracking-wider text-gray-500 hover:text-[#E8E8E8] border border-[#2A2A2A] hover:border-[#C41E1E] rounded-sm transition-colors"
         >
-          {isListening ? (
-            <div className="w-6 h-6 bg-white rounded-sm" />
-          ) : (
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" y1="19" x2="12" y2="23" />
-              <line x1="8" y1="23" x2="16" y2="23" />
-            </svg>
-          )}
+          Exit Case
         </button>
 
-        <p className="mt-3 text-xs uppercase tracking-wider text-gray-500">
-          {isListening
-            ? 'Listening...'
-            : isSpeaking
-              ? 'Suspect speaking...'
-              : phase === 'processing'
-                ? 'Processing...'
-                : 'Tap to speak'}
-        </p>
+        {/* Mic + status */}
+        <div className="flex flex-col items-center">
+          <button
+            onClick={isListening ? stopListening : startListening}
+            disabled={phase === 'processing' || isSpeaking}
+            className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
+              isListening
+                ? 'bg-[#C41E1E] scale-110 shadow-[0_0_30px_rgba(196,30,30,0.5)]'
+                : phase === 'processing' || isSpeaking
+                  ? 'bg-[#2A2A2A] opacity-50 cursor-not-allowed'
+                  : 'bg-[#2A2A2A] hover:bg-[#3A3A3A] hover:scale-105'
+            }`}
+          >
+            {isListening ? (
+              <div className="w-6 h-6 bg-white rounded-sm" />
+            ) : (
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
+              </svg>
+            )}
+          </button>
 
-        {lastTranscript && !isListening && (
-          <p className="mt-2 text-xs text-gray-600">
-            You said: &ldquo;{lastTranscript}&rdquo;
+          <p className="mt-2 text-xs uppercase tracking-wider text-gray-500">
+            {isListening
+              ? 'Listening...'
+              : isSpeaking
+                ? 'Suspect speaking...'
+                : phase === 'processing'
+                  ? 'Processing...'
+                  : 'Tap to speak'}
           </p>
-        )}
+
+          {lastTranscript && !isListening && (
+            <p className="mt-1 text-xs text-gray-600">
+              You said: &ldquo;{lastTranscript}&rdquo;
+            </p>
+          )}
+        </div>
+
+        {/* Hint */}
+        <button
+          onClick={() => {
+            if (caseData && hintsUsed < caseData.stress_triggers.length) {
+              setHintsUsed((prev) => prev + 1);
+            }
+          }}
+          disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
+          className={`px-4 py-2 text-xs uppercase tracking-wider rounded-sm border transition-colors ${
+            !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
+              ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
+              : 'text-[#F59E0B] border-[#2A2A2A] hover:border-[#F59E0B] hover:text-[#E8E8E8]'
+          }`}
+        >
+          Hint {hintsUsed}/{caseData?.stress_triggers?.length ?? 0}
+        </button>
       </div>
     </div>
   );
