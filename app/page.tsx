@@ -46,50 +46,13 @@ export default function HomePage() {
         }}
       />
 
-      {/* Title with blinking cursor */}
-      <h1
-        className="text-5xl md:text-7xl font-bold text-white text-center mb-8 tracking-wider relative z-10 cursor"
-      >
-        INTERROGATION
-      </h1>
-
-      {/* Pixel art scene with effects */}
-      <div className="relative mb-8 z-10">
+      {/* Hero image — title baked in */}
+      <div className="relative mb-6 z-10">
         <img
-          src="/bg/police.png"
-          alt="Interrogation room"
-          className="w-[500px] md:w-[640px] max-w-full rounded-sm border border-[#2A2A2A]"
-          style={{
-            imageRendering: 'pixelated',
-            animation: 'flicker 4s infinite',
-          }}
-        />
-        {/* Scanlines on image */}
-        <div
-          className="absolute inset-0 pointer-events-none rounded-sm opacity-20"
-          style={{
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.4) 2px, rgba(0,0,0,0.4) 4px)',
-          }}
-        />
-        {/* CRT vignette on image */}
-        <div
-          className="absolute inset-0 pointer-events-none rounded-sm"
-          style={{
-            boxShadow: 'inset 0 0 60px rgba(0,0,0,0.6), inset 0 0 120px rgba(0,0,0,0.3)',
-          }}
-        />
-        {/* REC indicator */}
-        <div className="absolute top-2 right-2 flex items-center gap-1">
-          <span className="w-[6px] h-[6px] bg-[#C41E1E] animate-pulse" />
-          <span className="text-[10px] text-[#C41E1E]/60 uppercase tracking-wider">Rec</span>
-        </div>
-        {/* Flicker line — horizontal scan */}
-        <div
-          className="absolute left-0 right-0 h-[1px] pointer-events-none opacity-10"
-          style={{
-            background: 'rgba(255,255,255,0.6)',
-            animation: 'scanDrift 4s linear infinite',
-          }}
+          src="/logo/main3.png"
+          alt="INTERROGATION"
+          className="w-[600px] md:w-[760px] max-w-full"
+          style={{ imageRendering: 'pixelated' }}
         />
       </div>
 
