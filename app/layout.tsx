@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} font-sans`}>
-      <body className="bg-[#0A0A0A] text-[#E8E8E8]">
+      <body className="bg-black text-[#E8E8E8]">
         {children}
       </body>
     </html>

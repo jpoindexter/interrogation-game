@@ -74,7 +74,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono relative">
+    <div className="min-h-screen bg-black text-[#E8E8E8] font-mono relative">
       <button
         onClick={() => router.push('/')}
         className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"

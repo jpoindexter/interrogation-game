@@ -23,7 +23,7 @@ import {
 export default function GamePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center">
+      <div className="min-h-screen bg-black text-[#E8E8E8] font-mono flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">GENERATING CASE...</h1>
           <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin mx-auto" />
@@ -593,7 +593,7 @@ function GameContent() {
 
   if (phase === 'loading') {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center p-8">
+      <div className="min-h-screen bg-black text-[#E8E8E8] font-mono flex items-center justify-center p-8">
         <div className="max-w-lg text-center">
           <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
           <h1 className="text-2xl font-bold mb-6">GENERATING CASE...</h1>
@@ -678,7 +678,7 @@ function GameContent() {
   return (
     <div
       className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-[#2A2A2A] ${
-        settings.highContrast ? 'bg-black text-white' : 'bg-[#0A0A0A] text-[#E8E8E8]'
+        settings.highContrast ? 'bg-black text-white' : 'bg-black text-[#E8E8E8]'
       } ${
         settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'
       } ${settings.highContrast ? 'high-contrast' : ''}`}
@@ -706,7 +706,7 @@ function GameContent() {
             phase={phase}
           />
         ) : (
-          <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-[#2A2A2A] bg-[#0A0A0A]" />
+          <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-[#2A2A2A] bg-black" />
         )}
 
         {/* Case File — 1/3 */}

@@ -113,7 +113,7 @@ The AI is instructed to NEVER confess or admit lying, even at stress 9. The play
 
 ## Design System
 
-- **Background:** `#0A0A0A` (near black)
+- **Background:** `#000000` (pure black)
 - **Text:** `#E8E8E8` (off white)
 - **Accent red:** `#C41E1E` (stress, danger, accuse)
 - **Gold:** `#C8A050` (hints, active toggles, suspect name)

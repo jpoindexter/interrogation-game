@@ -2,7 +2,7 @@
 
 :root {
   /* Core palette */
-  --background: #0a0a0a;
+  --background: #000000;
   --foreground: #e8e8e8;
   --accent: #C41E1E;
   --accent-hover: #ff4444;
@@ -210,7 +210,7 @@ body {
 }
 .high-contrast .bg-\[\#111111\],
 .high-contrast .bg-\[\#1A1A1A\],
-.high-contrast .bg-\[\#0A0A0A\] {
+.high-contrast .bg-black {
   background-color: #000000 !important;
 }
 .high-contrast .bg-\[\#2A2A2A\] {

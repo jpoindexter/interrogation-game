@@ -124,7 +124,7 @@ export default function WinPage() {
 
   if (!result) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center">
+      <div className="min-h-screen bg-black text-[#E8E8E8] font-mono flex items-center justify-center">
         <div className="w-12 h-12 border-2 border-[#C41E1E] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -137,7 +137,7 @@ export default function WinPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono p-8">
+    <div className="min-h-screen bg-black text-[#E8E8E8] font-mono p-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
