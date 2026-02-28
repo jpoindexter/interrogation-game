@@ -41,7 +41,7 @@ export default function HomePage() {
         <button
           onClick={() => router.push('/leaderboard')}
           className="text-gray-500 hover:text-[#C8A050] transition-colors"
-          title="Leaderboard"
+          data-tooltip="Leaderboard"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
@@ -54,7 +54,7 @@ export default function HomePage() {
         <button
           onClick={() => router.push('/help')}
           className="text-gray-500 hover:text-white transition-colors"
-          title="How to Play"
+          data-tooltip="How to Play"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10" />
@@ -66,7 +66,7 @@ export default function HomePage() {
         <button
           onClick={() => router.push('/about')}
           className="text-gray-500 hover:text-white transition-colors"
-          title="About"
+          data-tooltip="About"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -77,7 +77,7 @@ export default function HomePage() {
         <button
           onClick={() => router.push('/settings')}
           className="text-gray-500 hover:text-white transition-colors"
-          title="Settings"
+          data-tooltip="Settings"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="3" />
@@ -114,36 +114,36 @@ export default function HomePage() {
         </button>
       </div>
 
-      {/* Sponsors */}
-      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 max-w-3xl px-6 mb-3 z-10">
-        {[
-          { src: '/sponsors/mistral.webp', alt: 'Mistral AI', href: 'https://mistral.ai' },
-          { src: '/sponsors/11labs.webp', alt: 'ElevenLabs', href: 'https://elevenlabs.io' },
-          { src: '/sponsors/nvidia.webp', alt: 'NVIDIA', href: 'https://nvidia.com' },
-          { src: '/sponsors/aws.webp', alt: 'AWS', href: 'https://aws.amazon.com' },
-          { src: '/sponsors/huggingface.webp', alt: 'Hugging Face', href: 'https://huggingface.co' },
-          { src: '/sponsors/jumptrading.webp', alt: 'Jump Trading', href: 'https://jumptrading.com' },
-          { src: '/sponsors/codeweavers.webp', alt: 'Weights & Biases', href: 'https://wandb.ai' },
-          { src: '/sponsors/giant.webp', alt: 'Giant', href: 'https://giant.vc' },
-          { src: '/sponsors/raise.webp', alt: 'Raise', href: 'https://raise.dev' },
-          { src: '/sponsors/tilde.webp', alt: 'Tilde Research', href: 'https://tilderesearch.com' },
-          { src: '/sponsors/white.webp', alt: 'White Circle', href: 'https://whitecircle.ai' },
-        ].map((logo) => (
-          <a key={logo.alt} href={logo.href} target="_blank" rel="noopener noreferrer">
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className="h-5 opacity-30 hover:opacity-50 transition-opacity"
-              style={{ filter: 'brightness(0) invert(1)' }}
-            />
-          </a>
-        ))}
+      {/* Sponsors + footer — pinned to bottom */}
+      <div className="absolute bottom-6 left-0 right-0 z-10 flex flex-col items-center gap-3 px-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 max-w-3xl">
+          {[
+            { src: '/sponsors/mistral.webp', alt: 'Mistral AI', href: 'https://mistral.ai' },
+            { src: '/sponsors/11labs.webp', alt: 'ElevenLabs', href: 'https://elevenlabs.io' },
+            { src: '/sponsors/nvidia.webp', alt: 'NVIDIA', href: 'https://nvidia.com' },
+            { src: '/sponsors/aws.webp', alt: 'AWS', href: 'https://aws.amazon.com' },
+            { src: '/sponsors/huggingface.webp', alt: 'Hugging Face', href: 'https://huggingface.co' },
+            { src: '/sponsors/jumptrading.webp', alt: 'Jump Trading', href: 'https://jumptrading.com' },
+            { src: '/sponsors/codeweavers.webp', alt: 'Weights & Biases', href: 'https://wandb.ai' },
+            { src: '/sponsors/giant.webp', alt: 'Giant', href: 'https://giant.vc' },
+            { src: '/sponsors/raise.webp', alt: 'Raise', href: 'https://raise.dev' },
+            { src: '/sponsors/tilde.webp', alt: 'Tilde Research', href: 'https://tilderesearch.com' },
+            { src: '/sponsors/white.webp', alt: 'White Circle', href: 'https://whitecircle.ai' },
+          ].map((logo) => (
+            <a key={logo.alt} href={logo.href} target="_blank" rel="noopener noreferrer">
+              <img
+                src={logo.src}
+                alt={logo.alt}
+                className="h-5 opacity-30 hover:opacity-50 transition-opacity"
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
+            </a>
+          ))}
+        </div>
+        <p className="text-xs text-gray-600 uppercase tracking-wider">
+          Mistral Worldwide Hackathon &bull; 2026
+        </p>
       </div>
-
-      {/* Footer */}
-      <p className="text-xs text-gray-600 uppercase tracking-wider z-10">
-        Mistral Worldwide Hackathon &bull; 2026
-      </p>
     </div>
   );
 }
