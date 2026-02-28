@@ -400,7 +400,7 @@ function GameContent() {
         streamRef.current = null;
 
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
-        if (blob.size < 1000) {
+        if (blob.size < 2000) {
           onError('(no speech detected — try again)');
           return;
         }
@@ -522,6 +522,7 @@ function GameContent() {
             setConversationHistory(updatedHistory);
             setLastResponse(data.confession);
             await speakResponse(data.confession, stressLevel);
+            setPhase('active');
           }
         } catch (err) {
           console.error('Accusation failed:', err);
@@ -739,51 +740,44 @@ function GameContent() {
                 )}
               </div>
 
-              {/* Dialogue log — scrolling game-style */}
+              {/* Dialogue box — shows both you and suspect */}
               <div
-                className="w-full max-w-xl max-h-[200px] overflow-y-auto border border-[#3A3A4A] rounded-sm px-4 py-3 space-y-2"
-                style={{ background: 'rgba(10, 12, 18, 0.88)' }}
+                className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-4 space-y-3"
+                style={{ background: 'rgba(10, 12, 18, 0.88)', minHeight: '120px' }}
               >
-                {conversationHistory
-                  .filter((msg) => !(msg.role === 'user' && msg.content.startsWith('*')))
-                  .map((msg, i) => (
-                    <p key={i} className="text-sm leading-relaxed">
-                      <span className={msg.role === 'user' ? 'text-gray-500 font-bold' : 'text-[#C8A050] font-bold'}>
-                        {msg.role === 'user' ? 'You' : caseData.suspect_name.split(' ')[0]}:
-                      </span>{' '}
-                      <span className={msg.role === 'user' ? 'text-gray-400' : 'text-[#B8B8C8]'}>
-                        {msg.content}
-                      </span>
-                    </p>
-                  ))}
+                {/* You */}
+                <div>
+                  <span className="text-gray-500 font-bold text-sm">You</span>
+                  {isListening ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-2 h-2 bg-[#C41E1E] rounded-full animate-pulse" />
+                      <span className="text-gray-400 text-sm italic">Listening...</span>
+                    </div>
+                  ) : lastTranscript && !lastTranscript.startsWith('(') ? (
+                    <p className="text-gray-300 text-sm leading-relaxed mt-1">{lastTranscript}</p>
+                  ) : lastTranscript && lastTranscript.startsWith('(') ? (
+                    <p className="text-gray-500 text-sm italic mt-1">{lastTranscript}</p>
+                  ) : (
+                    <p className="text-gray-600 text-sm italic mt-1">Tap the mic to speak...</p>
+                  )}
+                </div>
 
-                {/* Live state — current interaction */}
-                {isListening && (
-                  <p className="text-sm leading-relaxed flex items-center gap-2">
-                    <span className="text-gray-500 font-bold">You:</span>
-                    <span className="w-2 h-2 bg-[#C41E1E] rounded-full animate-pulse inline-block" />
-                    <span className="text-gray-400 italic">Listening...</span>
-                  </p>
-                )}
-                {!isListening && lastTranscript && lastTranscript.startsWith('(') && (
-                  <p className="text-sm leading-relaxed">
-                    <span className="text-gray-500 font-bold">You:</span>{' '}
-                    <span className="text-gray-500 italic">{lastTranscript}</span>
-                  </p>
-                )}
-                {phase === 'processing' && (
-                  <p className="text-sm leading-relaxed flex items-center gap-2">
-                    <span className="text-[#C8A050] font-bold">{caseData.suspect_name.split(' ')[0]}:</span>
-                    <span className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse inline-block" />
-                    <span className="text-gray-500">...</span>
-                  </p>
-                )}
+                <div className="border-t border-[#2A2A2A]" />
 
-                {conversationHistory.length === 0 && !isListening && phase !== 'processing' && (
-                  <p className="text-gray-600 text-sm italic">Tap the mic to begin interrogation...</p>
-                )}
-
-                <div ref={dialogueEndRef} />
+                {/* Suspect */}
+                <div>
+                  <span className="text-[#C8A050] font-bold text-sm">{caseData.suspect_name}</span>
+                  {lastResponse ? (
+                    <p className="text-[#B8B8C8] text-sm leading-relaxed mt-1">{lastResponse}</p>
+                  ) : phase === 'processing' ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
+                      <span className="text-gray-500 text-sm">...</span>
+                    </div>
+                  ) : (
+                    <p className="text-gray-600 text-sm italic mt-1">Waiting to speak...</p>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -1199,22 +1193,26 @@ function GameContent() {
 
           {/* Accuse */}
           <button
-            onClick={() => setShowAccuseConfirm(true)}
-            disabled={phase === 'processing' || isSpeaking || isAccusing || accusationsLeft <= 0 || showAccuseConfirm}
-            data-tooltip={`Accuse (${accusationsLeft})`}
+            onClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
+            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || showAccuseConfirm)) || (isAccusing && !isListening)}
+            data-tooltip={isAccusing && isListening ? 'Stop' : `Accuse (${accusationsLeft})`}
             className={`dock-icon ${
-              accusationsLeft <= 0
+              accusationsLeft <= 0 && !isAccusing
                 ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
                 : isAccusing
-                  ? 'bg-[#C41E1E] text-white animate-pulse'
+                  ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
                   : 'bg-[#2A2A2A] text-[#C41E1E]'
             }`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
+            {isAccusing && isListening ? (
+              <div className="w-4 h-4 bg-white rounded-sm" />
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            )}
           </button>
 
           {/* Divider */}

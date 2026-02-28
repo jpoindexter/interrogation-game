@@ -11,11 +11,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
     }
 
+    // Force longer minimum recording by checking size
+    console.log(`Transcribing audio: ${audioFile.size} bytes, type: ${audioFile.type}`);
+
     const result = await mistral.audio.transcriptions.complete({
       model: 'voxtral-mini-latest',
       file: audioFile,
       language: 'en',
     });
+
+    console.log(`Transcription result: "${result.text}", detected language: ${(result as Record<string, unknown>).language}`);
 
     return NextResponse.json({ text: result.text ?? '' });
   } catch (error) {
