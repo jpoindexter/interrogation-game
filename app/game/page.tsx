@@ -59,6 +59,36 @@ function GameContent() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
+  const voicesCacheRef = useRef<SpeechSynthesisVoice[]>([]);
+
+  // Preload voices — they load async so we cache them early
+  useEffect(() => {
+    const loadVoices = () => { voicesCacheRef.current = speechSynthesis.getVoices(); };
+    loadVoices();
+    speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    return () => speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+  }, []);
+
+  // Pick a browser voice matching suspect gender
+  const pickBrowserVoice = useCallback((utterance: SpeechSynthesisUtterance) => {
+    const isFemale = caseData?.suspect_gender?.toLowerCase() === 'female';
+    const voices = voicesCacheRef.current.length > 0 ? voicesCacheRef.current : speechSynthesis.getVoices();
+    // Prefer en-US voices, then any English voice
+    const enVoices = voices.filter(v => v.lang.startsWith('en'));
+    if (enVoices.length === 0) return;
+    // macOS / Chrome voice names that are clearly gendered
+    const femaleNames = ['samantha', 'karen', 'victoria', 'fiona', 'moira', 'tessa', 'allison', 'ava', 'susan', 'zoe'];
+    const maleNames = ['daniel', 'alex', 'tom', 'fred', 'ralph', 'lee', 'oliver', 'james', 'aaron', 'gordon'];
+    const targetNames = isFemale ? femaleNames : maleNames;
+    const match = enVoices.find(v => targetNames.some(n => v.name.toLowerCase().includes(n)));
+    if (match) {
+      utterance.voice = match;
+    } else {
+      // No exact match — pick any English voice, adjust pitch to compensate
+      utterance.voice = enVoices[0];
+    }
+    utterance.pitch = isFemale ? 1.15 : 0.8;
+  }, [caseData?.suspect_gender]);
 
   // Load case on mount
   useEffect(() => {
@@ -206,9 +236,9 @@ function GameContent() {
       await audio.play();
     } catch (err) {
       console.error('ElevenLabs TTS error, falling back to browser:', err);
-      // Fallback to browser SpeechSynthesis
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.9;
+      pickBrowserVoice(utterance);
       utterance.onend = () => { setIsSpeaking(false); setPhase('active'); };
       utterance.onerror = () => { setIsSpeaking(false); setPhase('active'); };
       speechSynthesis.speak(utterance);
@@ -236,6 +266,7 @@ function GameContent() {
         // Fallback to browser speech
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.85;
+        pickBrowserVoice(utterance);
         utterance.onend = () => { setIsSpeaking(false); resolve(); };
         utterance.onerror = () => { setIsSpeaking(false); resolve(); };
         speechSynthesis.speak(utterance);
@@ -446,7 +477,7 @@ function GameContent() {
           </p>
           <h1 className="text-4xl font-bold mb-8">BRIEFING</h1>
           <div className="flex justify-center mb-6">
-            <SuspectAvatar name={caseData.suspect_name} stressLevel={0} size="sm" />
+            <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={0} size="sm" />
           </div>
           <div className="bg-[#2A2A2A] p-8 rounded-lg mb-6 text-left">
             <p className="text-lg leading-relaxed mb-4">{caseData.briefing}</p>
@@ -561,7 +592,7 @@ function GameContent() {
             <div className="relative z-10 flex flex-col items-center w-full">
               {/* Bust portrait — centered */}
               <div className="mb-4">
-                <SuspectAvatar name={caseData.suspect_name} stressLevel={stressLevel} speaking={isSpeaking} />
+                <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={stressLevel} speaking={isSpeaking} />
               </div>
 
               {/* Waveform — under portrait when speaking */}
