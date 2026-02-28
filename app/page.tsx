@@ -108,27 +108,39 @@ export default function HomePage() {
       <div className="flex items-center gap-2 mb-6 z-10">
         <span className="w-[6px] h-[6px] bg-green-500 animate-pulse" />
         <span className="text-[10px] text-gray-500 uppercase tracking-widest">
-          System Online &bull; Mistral AI Core Active
+          System Online &bull; Mistral AI Core Active &bull; ElevenLabs Voice Ready
         </span>
       </div>
 
-      {/* Logos */}
-      <div className="flex items-center gap-6 mb-4 z-10">
-        <img
-          src="/ui/mistral-logo.png"
-          alt="Mistral AI"
-          className="h-5 opacity-40"
-        />
-        <img
-          src="/ui/infinity.webp"
-          alt="Infinity"
-          className="h-6 opacity-40"
-        />
+      {/* Sponsors */}
+      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 max-w-3xl px-6 mb-4 z-10">
+        {[
+          { src: '/sponsors/mistral.webp', alt: 'Mistral AI', href: 'https://mistral.ai' },
+          { src: '/sponsors/11labs.webp', alt: 'ElevenLabs', href: 'https://elevenlabs.io' },
+          { src: '/sponsors/nvidia.webp', alt: 'NVIDIA', href: 'https://nvidia.com' },
+          { src: '/sponsors/aws.webp', alt: 'AWS', href: 'https://aws.amazon.com' },
+          { src: '/sponsors/huggingface.webp', alt: 'Hugging Face', href: 'https://huggingface.co' },
+          { src: '/sponsors/jumptrading.webp', alt: 'Jump Trading', href: 'https://jumptrading.com' },
+          { src: '/sponsors/codeweavers.webp', alt: 'Weights & Biases', href: 'https://wandb.ai' },
+          { src: '/sponsors/giant.webp', alt: 'Giant', href: 'https://giant.vc' },
+          { src: '/sponsors/raise.webp', alt: 'Raise', href: 'https://raise.dev' },
+          { src: '/sponsors/tilde.webp', alt: 'Tilde Research', href: 'https://tilderesearch.com' },
+          { src: '/sponsors/white.webp', alt: 'White Circle', href: 'https://whitecircle.ai' },
+        ].map((logo) => (
+          <a key={logo.alt} href={logo.href} target="_blank" rel="noopener noreferrer">
+            <img
+              src={logo.src}
+              alt={logo.alt}
+              className="h-5 opacity-30 hover:opacity-50 transition-opacity"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+          </a>
+        ))}
       </div>
 
       {/* Footer */}
       <p className="text-xs text-gray-600 uppercase tracking-wider z-10">
-        Powered by Mistral AI &bull; Hackathon 2026
+        Mistral Worldwide Hackathon &bull; 2026
       </p>
     </div>
   );

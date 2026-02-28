@@ -5,48 +5,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/mistral';
 import SuspectAvatar from './SuspectAvatar';
-
-// Difficulty → clues needed
-const DIFFICULTY_CLUES: Record<string, number> = {
-  easy: 2,
-  medium: 3,
-  hard: 4,
-  expert: 5,
-};
-
-// Pool of evidence icons — random ones are picked per case
-const EVIDENCE_ICONS = [
-  '/clues/folder.png',
-  '/clues/recorder.png',
-  '/clues/recorder2.png',
-  '/clues/coffee.png',
-  '/clues/clue1.png',
-  '/clues/clue2.png',
-  '/clues/clue3.png',
-  '/clues/notepad_pl.png',
-  '/clues/magnifying_glass.png',
-  '/clues/handcuffs.png',
-  '/clues/key.png',
-  '/clues/flashlight.png',
-  '/clues/walkie_talkie.png',
-];
-
-function pickRandomIcons(count: number): string[] {
-  const shuffled = [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
-
-// Map case setting text to background image
-function getSceneBg(setting: string): string {
-  const s = setting.toLowerCase();
-  if (s.includes('hospital') || s.includes('medical') || s.includes('clinic') || s.includes('doctor') || s.includes('pharma')) return '/bg/medical.png';
-  if (s.includes('law') || s.includes('legal') || s.includes('attorney') || s.includes('firm')) return '/bg/lawfirm.png';
-  if (s.includes('server') || s.includes('data center') || s.includes('tech') || s.includes('software') || s.includes('cyber')) return '/bg/server.png';
-  if (s.includes('startup') || s.includes('co-working') || s.includes('coworking') || s.includes('incubator')) return '/bg/startup.png';
-  if (s.includes('bank') || s.includes('trading') || s.includes('finance') || s.includes('hedge') || s.includes('investment') || s.includes('brokerage') || s.includes('stock')) return '/bg/trade.png';
-  if (s.includes('police') || s.includes('precinct') || s.includes('station') || s.includes('interrogation')) return '/bg/police.png';
-  return '/bg/office.png';
-}
+import { DIFFICULTY_CLUES, pickRandomIcons, getSceneBg, formatTime } from './components/utils';
+import TopBar from './components/TopBar';
+import SuspectZone from './components/SuspectZone';
+import CaseFile from './components/CaseFile';
+import Dock from './components/Dock';
+import {
+  ClueNotification,
+  TextInputPanel,
+  NotesPanel,
+  ExitConfirmDialog,
+  AccuseConfirmDialog,
+  SettingsPanel,
+  HelpPanel,
+} from './components/Panels';
 
 export default function GamePage() {
   return (
@@ -70,7 +42,7 @@ function GameContent() {
   // Game state
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [phase, setPhase] = useState<'loading' | 'briefing' | 'active' | 'processing'>('loading');
-  const [timer, setTimer] = useState(600);
+  const [timer, setTimer] = useState(0);
   const [stressLevel, setStressLevel] = useState(0);
   const [maxStress, setMaxStress] = useState(0);
   const [clues, setClues] = useState<string[]>([]);
@@ -80,6 +52,7 @@ function GameContent() {
   const [accusationsLeft, setAccusationsLeft] = useState(3);
   const [isAccusing, setIsAccusing] = useState(false);
   const [showAccuseConfirm, setShowAccuseConfirm] = useState(false);
+  const [accuseText, setAccuseText] = useState('');
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [helpPos, setHelpPos] = useState<{ x: number; y: number } | null>(null);
@@ -104,8 +77,6 @@ function GameContent() {
     fontFamily: 'mono' as 'mono' | 'dyslexia' | 'sans',
     highContrast: false,
   });
-  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
-
   // Refs
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -171,7 +142,7 @@ function GameContent() {
     return () => { cancelled = true; };
   }, [router]);
 
-  // Timer countdown — pauses during processing and TTS
+  // Timer counts UP — pauses during processing and TTS
   useEffect(() => {
     if (phase !== 'active' && phase !== 'processing') return;
 
@@ -184,13 +155,7 @@ function GameContent() {
     }
 
     timerRef.current = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimer((prev) => prev + 1);
     }, 1000);
 
     return () => {
@@ -203,12 +168,12 @@ function GameContent() {
     dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversationHistory, lastTranscript, isListening, phase]);
 
-  // Navigate to lose screen when timer hits 0
+  // Lose when all accusations are used up
   useEffect(() => {
-    if (timer === 0 && (phase === 'active' || phase === 'processing')) {
+    if (accusationsLeft <= 0 && !isAccusing && phase === 'active') {
       handleLose();
     }
-  }, [timer, phase]);
+  }, [accusationsLeft, isAccusing, phase]);
 
   // Handle sending a question to Mistral
   const sendQuestion = useCallback(
@@ -497,83 +462,90 @@ function GameContent() {
     setIsListening(false);
   };
 
-  // Accusation recording
+  // Submit an accusation (shared by voice and text)
+  const submitAccusation = useCallback(async (accusationText: string) => {
+    if (!accusationText || !caseData) {
+      setIsAccusing(false);
+      return;
+    }
+
+    setLastTranscript(accusationText);
+    setPhase('processing');
+    setAccusationsLeft((prev) => prev - 1);
+
+    try {
+      const res = await fetch('/api/accuse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          caseData,
+          conversationHistory,
+          accusation: accusationText,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.correct) {
+        // WIN — suspect confesses
+        if (timerRef.current) clearInterval(timerRef.current);
+        const updatedHistory: ConversationMessage[] = [
+          ...conversationHistory,
+          { role: 'user', content: `[ACCUSATION] ${accusationText}` },
+          { role: 'assistant', content: data.confession },
+        ];
+        setConversationHistory(updatedHistory);
+        setLastResponse(data.confession);
+
+        sessionStorage.setItem(
+          'gameResult',
+          JSON.stringify({
+            type: 'win',
+            caseData,
+            conversationHistory: updatedHistory,
+            confession: data.confession,
+            timeElapsed: timer,
+            difficulty,
+            stressLevel,
+            cluesFound: clues.length,
+            hintsUsed,
+            accusationsUsed: 3 - accusationsLeft,
+          })
+        );
+
+        try {
+          await speakConfession(data.confession, 10);
+        } catch {
+          // If speech fails, still navigate
+        }
+        router.push('/game/win');
+      } else {
+        // WRONG — suspect deflects
+        const updatedHistory: ConversationMessage[] = [
+          ...conversationHistory,
+          { role: 'user', content: `[ACCUSATION] ${accusationText}` },
+          { role: 'assistant', content: data.confession },
+        ];
+        setConversationHistory(updatedHistory);
+        setLastResponse(data.confession);
+        await speakResponse(data.confession, stressLevel);
+        setPhase('active');
+      }
+    } catch (err) {
+      console.error('Accusation failed:', err);
+      setPhase('active');
+    }
+    setIsAccusing(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseData, conversationHistory, timer, stressLevel, clues.length, hintsUsed, accusationsLeft]);
+
+  // Accusation via voice
   const startAccusation = () => {
     if (phase !== 'active' || isSpeaking || accusationsLeft <= 0) return;
     setIsAccusing(true);
     startRecording(
       async (transcript) => {
         setIsListening(false);
-        if (!transcript || !caseData) {
-          setIsAccusing(false);
-          return;
-        }
-
-        setLastTranscript(transcript);
-        setPhase('processing');
-        setAccusationsLeft((prev) => prev - 1);
-
-        try {
-          const res = await fetch('/api/accuse', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              caseData,
-              conversationHistory,
-              accusation: transcript,
-            }),
-          });
-          const data = await res.json();
-
-          if (data.correct) {
-            // WIN — suspect confesses
-            if (timerRef.current) clearInterval(timerRef.current);
-            const updatedHistory: ConversationMessage[] = [
-              ...conversationHistory,
-              { role: 'user', content: `[ACCUSATION] ${transcript}` },
-              { role: 'assistant', content: data.confession },
-            ];
-            setConversationHistory(updatedHistory);
-            setLastResponse(data.confession);
-
-            sessionStorage.setItem(
-              'gameResult',
-              JSON.stringify({
-                type: 'win',
-                caseData,
-                conversationHistory: updatedHistory,
-                confession: data.confession,
-                timeRemaining: timer,
-                stressLevel,
-                cluesFound: clues.length,
-                hintsUsed,
-                accusationsUsed: 3 - accusationsLeft,
-              })
-            );
-
-            try {
-              await speakConfession(data.confession, 10);
-            } catch {
-              // If speech fails, still navigate
-            }
-            router.push('/game/win');
-          } else {
-            // WRONG — suspect deflects
-            const updatedHistory: ConversationMessage[] = [
-              ...conversationHistory,
-              { role: 'user', content: `[ACCUSATION] ${transcript}` },
-              { role: 'assistant', content: data.confession },
-            ];
-            setConversationHistory(updatedHistory);
-            setLastResponse(data.confession);
-            await speakResponse(data.confession, stressLevel);
-            setPhase('active');
-          }
-        } catch (err) {
-          console.error('Accusation failed:', err);
-          setPhase('active');
-        }
-        setIsAccusing(false);
+        await submitAccusation(transcript);
       },
       (msg) => {
         setIsListening(false);
@@ -601,13 +573,6 @@ function GameContent() {
   const startInterrogation = async () => {
     // Get suspect's opening line — sendQuestion handles all phase transitions
     await sendQuestion('*Detective sits down and opens the case file*', true);
-  };
-
-  // Format timer
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
   // --- RENDER ---
@@ -644,6 +609,12 @@ function GameContent() {
         }}
       >
         <div className="absolute inset-0 bg-black/70" />
+        <button
+          onClick={() => router.push('/cases')}
+          className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
+        >
+          &larr; Cases
+        </button>
         <div className="max-w-2xl text-center relative z-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E]">
@@ -705,738 +676,126 @@ function GameContent() {
             : 'var(--font-mono)',
       }}
     >
-      {/* Top bar — Timer + Stress */}
-      <div className="p-3 border-b border-[#2A2A2A] flex-shrink-0">
-        <div className="flex items-center gap-6">
-          {/* Timer */}
-          <div
-            className={`text-4xl font-bold tabular-nums ${
-              timer < 60 ? 'text-[#C41E1E] animate-pulse' : ''
-            }`}
-          >
-            {formatTime(timer)}
-          </div>
-
-          {/* Stress meter */}
-          <div className="flex-1">
-            <div className="flex justify-between text-xs uppercase tracking-wider mb-1">
-              <span className="text-gray-500">Stress Level</span>
-              <span className={stressLevel > 6 ? 'text-[#C41E1E]' : 'text-gray-400'}>
-                {stressLevel}/10
-              </span>
-            </div>
-            <div className="h-3 bg-[#2A2A2A] rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500 ease-out"
-                style={{
-                  width: `${(stressLevel / 10) * 100}%`,
-                  backgroundColor:
-                    stressLevel <= 3
-                      ? '#E8E8E8'
-                      : stressLevel <= 6
-                        ? '#F59E0B'
-                        : '#C41E1E',
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      <TopBar timer={timer} stressLevel={stressLevel} />
 
       {/* Main content */}
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
         {/* Suspect Zone — 2/3 */}
-        <div
-          className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-[#2A2A2A] relative overflow-hidden"
-          style={{
-            backgroundImage: `url(${caseData ? getSceneBg(caseData.setting) : '/bg/office.png'})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            imageRendering: 'pixelated',
-          }}
-        >
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-black/40" />
-
-          {caseData && (
-            <div className="relative z-10 flex flex-col items-center w-full">
-              {/* Bust portrait — centered */}
-              <div className="mb-2">
-                <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={stressLevel} size="md" speaking={isSpeaking} />
-              </div>
-
-              {/* Waveform — under portrait when speaking */}
-              <div className="h-6 flex items-center justify-center mb-2 gap-3">
-                {isSpeaking ? (
-                  <div className="flex items-end gap-[3px]">
-                    {Array.from({ length: 20 }).map((_, i) => {
-                      const peak = 12 + Math.sin(i * 0.7) * 20 + Math.random() * 15;
-                      const mid = 6 + Math.cos(i * 1.1) * 10 + Math.random() * 8;
-                      const speed = 0.3 + (i % 5) * 0.08 + Math.random() * 0.15;
-                      return (
-                        <div
-                          key={i}
-                          className="w-1 bg-[#C41E1E] rounded-full animate-waveform"
-                          style={{
-                            ['--wave-peak' as string]: `${peak}px`,
-                            ['--wave-mid' as string]: `${mid}px`,
-                            ['--wave-speed' as string]: `${speed}s`,
-                            animationDelay: `${i * 0.04}s`,
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="flex items-end gap-[3px]">
-                    {Array.from({ length: 20 }).map((_, i) => (
-                      <div key={i} className="w-1 bg-[#2A2A2A] rounded-full" style={{ height: '3px' }} />
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Dialogue box — shows both you and suspect */}
-              <div
-                className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-4 space-y-3"
-                style={{ background: 'rgba(10, 12, 18, 0.88)', minHeight: '120px' }}
-              >
-                {/* You */}
-                <div>
-                  <span className="text-gray-500 font-bold text-sm">You</span>
-                  {isListening ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="w-2 h-2 bg-[#C41E1E] rounded-full animate-pulse" />
-                      <span className="text-gray-400 text-sm italic">Listening...</span>
-                    </div>
-                  ) : lastTranscript && !lastTranscript.startsWith('(') ? (
-                    <p className="text-gray-300 text-sm leading-relaxed mt-1">{lastTranscript}</p>
-                  ) : lastTranscript && lastTranscript.startsWith('(') ? (
-                    <p className="text-gray-500 text-sm italic mt-1">{lastTranscript}</p>
-                  ) : (
-                    <p className="text-gray-600 text-sm italic mt-1">Tap the mic to speak...</p>
-                  )}
-                </div>
-
-                <div className="border-t border-[#2A2A2A]" />
-
-                {/* Suspect */}
-                <div>
-                  <span className="text-[#C8A050] font-bold text-sm">{caseData.suspect_name}</span>
-                  {lastResponse ? (
-                    <p className="text-[#B8B8C8] text-sm leading-relaxed mt-1">{lastResponse}</p>
-                  ) : phase === 'processing' ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
-                      <span className="text-gray-500 text-sm">...</span>
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 text-sm italic mt-1">Waiting to speak...</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {caseData ? (
+          <SuspectZone
+            caseData={caseData}
+            stressLevel={stressLevel}
+            isSpeaking={isSpeaking}
+            isListening={isListening}
+            lastTranscript={lastTranscript}
+            lastResponse={lastResponse}
+            phase={phase}
+          />
+        ) : (
+          <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-[#2A2A2A] bg-[#0A0A0A]" />
+        )}
 
         {/* Case File — 1/3 */}
-        <div className="p-4 bg-[#111111] overflow-y-auto border-l border-[#2A2A2A]">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
-            Case File
-          </h2>
-
-          {caseData && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xs uppercase tracking-wider text-[#C41E1E] mb-2">
-                  Crime
-                </h3>
-                <p className="text-sm text-gray-300">{caseData.crime}</p>
-              </div>
-
-              <div>
-                <h3 className="text-xs uppercase tracking-wider text-[#C41E1E] mb-2">
-                  Suspect
-                </h3>
-                <p className="text-sm text-gray-300">{caseData.suspect_name}</p>
-                <p className="text-xs text-gray-500">{caseData.suspect_role}</p>
-              </div>
-
-              <div>
-                <h3 className="text-xs uppercase tracking-wider text-[#C41E1E] mb-2">
-                  Evidence
-                </h3>
-                {/* Evidence slots */}
-                <div className="flex items-center gap-3 mb-3">
-                  {clueIcons.map((icon, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <img
-                        src={icon}
-                        alt={`Evidence ${i + 1}`}
-                        className={`w-20 h-20 object-contain transition-all duration-500 ${
-                          clues.length >= i + 1
-                            ? 'opacity-100'
-                            : 'opacity-20 grayscale'
-                        }`}
-                        style={{ imageRendering: 'pixelated' }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                {/* Clue text */}
-                {clues.length > 0 ? (
-                  <div className="space-y-2">
-                    {clues.map((clue, i) => (
-                      <div
-                        key={i}
-                        className="p-3 bg-[#1A1A1A] rounded border-l-2 border-[#C41E1E]"
-                      >
-                        <p className="text-sm text-gray-300">{clue}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-600">Find {cluesNeeded} clues to unlock accusation.</p>
-                )}
-              </div>
-
-              {/* Hints */}
-              {hintsUsed > 0 && (
-                <div>
-                  <h3 className="text-xs uppercase tracking-wider text-[#F59E0B] mb-2">
-                    Hints
-                  </h3>
-                  <div className="space-y-2">
-                    {caseData.stress_triggers.slice(0, hintsUsed).map((trigger, i) => (
-                      <div
-                        key={i}
-                        className="p-3 bg-[#1A1A1A] rounded border-l-2 border-[#F59E0B]"
-                      >
-                        <p className="text-sm text-gray-300">Try asking about: {trigger}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <h3 className="text-xs uppercase tracking-wider text-gray-600 mb-2">
-                  Exchange Log
-                </h3>
-                <div className="space-y-2">
-                  {conversationHistory
-                    .filter((msg) => !(msg.role === 'user' && msg.content.startsWith('*')))
-                    .map((msg, i) => (
-                      <div key={i} className={`text-xs ${msg.role === 'user' ? 'text-gray-400' : 'text-gray-600'}`}>
-                        <span className={msg.role === 'user' ? 'text-gray-500' : 'text-[#C8A050]'}>
-                          {msg.role === 'user' ? 'You' : caseData?.suspect_name?.split(' ')[0] ?? 'Suspect'}:
-                        </span>{' '}
-                        {msg.content}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Clue badge notification */}
-      {clueNotification && (
-        <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
-          <div className="flex flex-col items-center gap-2" style={{ animation: 'clueReveal 0.6s ease-out' }}>
-            <img
-              src={clueIcons[clueNotification - 1] || clueIcons[0]}
-              alt={`Evidence ${clueNotification}`}
-              className="w-36 h-36 object-contain drop-shadow-2xl"
-              style={{ imageRendering: 'pixelated' }}
-            />
-            <span className="text-xs uppercase tracking-[0.3em] text-[#C8A050] font-bold">
-              Clue {clueNotification} of {cluesNeeded}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Text input — floating above dock */}
-      {showTextInput && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (textInput.trim() && phase === 'active' && !isSpeaking && !isAccusing) {
-                sendQuestion(textInput.trim());
-                setTextInput('');
-              }
-            }}
-            className="flex items-center gap-2 bg-[#1A1A1A]/95 backdrop-blur-sm border border-[#2A2A2A] rounded-xl px-3 py-2 shadow-2xl"
-          >
-            <input
-              type="text"
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              placeholder={phase === 'active' && !isSpeaking ? 'Type a question and press Enter...' : '...'}
-              disabled={phase !== 'active' || isSpeaking || isAccusing}
-              autoFocus
-              className="flex-1 bg-transparent px-2 py-1 text-sm text-[#E8E8E8] placeholder-gray-600 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
-            />
-            <button
-              type="submit"
-              disabled={!textInput.trim() || phase !== 'active' || isSpeaking || isAccusing}
-              className="px-3 py-1.5 text-xs uppercase tracking-wider bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8] hover:bg-[#3A3A3A] rounded-lg border border-[#2A2A2A] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Ask
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Notes — draggable floating panel */}
-      {showNotes && (
-        <div
-          className="absolute z-30 w-[400px] bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl"
-          style={{
-            left: notesPos ? notesPos.x : '50%',
-            top: notesPos ? notesPos.y : '50%',
-            transform: notesPos ? 'none' : 'translate(-50%, -50%)',
-          }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A] cursor-grab active:cursor-grabbing select-none"
-            onMouseDown={(e) => {
-              const panel = e.currentTarget.parentElement!;
-              const rect = panel.getBoundingClientRect();
-              const parentRect = panel.offsetParent!.getBoundingClientRect();
-              dragRef.current = {
-                startX: e.clientX,
-                startY: e.clientY,
-                origX: rect.left - parentRect.left,
-                origY: rect.top - parentRect.top,
-              };
-              const onMove = (ev: MouseEvent) => {
-                if (!dragRef.current) return;
-                setNotesPos({
-                  x: dragRef.current.origX + (ev.clientX - dragRef.current.startX),
-                  y: dragRef.current.origY + (ev.clientY - dragRef.current.startY),
-                });
-              };
-              const onUp = () => {
-                dragRef.current = null;
-                window.removeEventListener('mousemove', onMove);
-                window.removeEventListener('mouseup', onUp);
-              };
-              window.addEventListener('mousemove', onMove);
-              window.addEventListener('mouseup', onUp);
-            }}
-          >
-            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Detective Notes</span>
-            <button
-              onClick={() => setShowNotes(false)}
-              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            autoFocus
-            placeholder="Write your notes here..."
-            className="w-full h-[300px] bg-transparent px-4 py-3 font-mono text-sm leading-relaxed text-[#E8E8E8] placeholder-gray-600 focus:outline-none resize-none"
+        {caseData && (
+          <CaseFile
+            caseData={caseData}
+            clues={clues}
+            clueIcons={clueIcons}
+            cluesNeeded={cluesNeeded}
+            hintsUsed={hintsUsed}
+            conversationHistory={conversationHistory}
           />
-        </div>
-      )}
-
-      {/* Popover confirmations */}
-      {showExitConfirm && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-[#1A1A1A] border border-[#C41E1E] rounded-sm p-3 w-48 z-40">
-          <p className="text-xs text-gray-300 mb-3">Abandon this case?</p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                if (timerRef.current) clearInterval(timerRef.current);
-                if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-                speechSynthesis.cancel();
-                router.push('/cases');
-              }}
-              className="flex-1 px-2 py-1.5 text-xs font-bold uppercase bg-[#C41E1E] text-white rounded-sm hover:bg-red-700 transition-colors"
-            >
-              Leave
-            </button>
-            <button
-              onClick={() => setShowExitConfirm(false)}
-              className="flex-1 px-2 py-1.5 text-xs uppercase text-gray-400 border border-[#2A2A2A] rounded-sm hover:text-[#E8E8E8] transition-colors"
-            >
-              Stay
-            </button>
-          </div>
-        </div>
-      )}
-      {showAccuseConfirm && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-[#1A1A1A] border border-[#C41E1E] rounded-sm p-3 w-64 z-40">
-          <p className="text-xs text-gray-300 mb-3">
-            You have <span className="text-[#C41E1E] font-bold">{accusationsLeft}</span> attempt{accusationsLeft !== 1 ? 's' : ''} left. State exactly what you think they lied about.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => { setShowAccuseConfirm(false); startAccusation(); }}
-              className="flex-1 px-2 py-1.5 text-xs font-bold uppercase bg-[#C41E1E] text-white rounded-sm hover:bg-red-700 transition-colors"
-            >
-              Accuse
-            </button>
-            <button
-              onClick={() => setShowAccuseConfirm(false)}
-              className="flex-1 px-2 py-1.5 text-xs uppercase text-gray-400 border border-[#2A2A2A] rounded-sm hover:text-[#E8E8E8] transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Settings panel */}
-      {showSettings && (
-        <div className="absolute bottom-20 right-4 z-40 w-[320px] bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl">
-          <div className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A]">
-            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Settings</span>
-            <button
-              onClick={() => setShowSettings(false)}
-              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-          <div className="p-4 space-y-4">
-            {/* Voice */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-300">Voice (TTS)</span>
-              <button
-                onClick={() => setSettings((s) => ({ ...s, ttsEnabled: !s.ttsEnabled }))}
-                className={`w-10 h-5 rounded-full transition-colors relative ${
-                  settings.ttsEnabled ? 'bg-[#C41E1E]' : 'bg-[#2A2A2A]'
-                }`}
-              >
-                <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
-                  settings.ttsEnabled ? 'translate-x-5' : 'translate-x-0.5'
-                }`} />
-              </button>
-            </div>
-
-            {/* Font Size */}
-            <div>
-              <span className="text-sm text-gray-300 block mb-2">Text Size</span>
-              <div className="flex gap-1">
-                {(['small', 'medium', 'large'] as const).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSettings((s) => ({ ...s, fontSize: size }))}
-                    className={`flex-1 px-2 py-1.5 text-xs uppercase tracking-wider rounded-sm transition-colors ${
-                      settings.fontSize === size
-                        ? 'bg-[#C41E1E] text-white'
-                        : 'bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8]'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Font Family */}
-            <div>
-              <span className="text-sm text-gray-300 block mb-2">Font</span>
-              <div className="flex gap-1">
-                {([
-                  { key: 'mono', label: 'Mono' },
-                  { key: 'dyslexia', label: 'Dyslexia' },
-                  { key: 'sans', label: 'Sans' },
-                ] as const).map(({ key, label }) => (
-                  <button
-                    key={key}
-                    onClick={() => setSettings((s) => ({ ...s, fontFamily: key }))}
-                    className={`flex-1 px-2 py-1.5 text-xs uppercase tracking-wider rounded-sm transition-colors ${
-                      settings.fontFamily === key
-                        ? 'bg-[#C41E1E] text-white'
-                        : 'bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8]'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* High Contrast */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-300">High Contrast</span>
-              <button
-                onClick={() => setSettings((s) => ({ ...s, highContrast: !s.highContrast }))}
-                className={`w-10 h-5 rounded-full transition-colors relative ${
-                  settings.highContrast ? 'bg-[#C41E1E]' : 'bg-[#2A2A2A]'
-                }`}
-              >
-                <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
-                  settings.highContrast ? 'translate-x-5' : 'translate-x-0.5'
-                }`} />
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Help panel — draggable */}
-      {showHelp && (
-        <div
-          className="absolute z-40 w-[340px] max-h-[70vh] overflow-y-auto bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl"
-          style={{
-            left: helpPos ? helpPos.x : '50%',
-            top: helpPos ? helpPos.y : '50%',
-            transform: helpPos ? 'none' : 'translate(-50%, -50%)',
-          }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A] cursor-grab active:cursor-grabbing select-none"
-            onMouseDown={(e) => {
-              const panel = e.currentTarget.parentElement!;
-              const rect = panel.getBoundingClientRect();
-              const parentRect = panel.offsetParent!.getBoundingClientRect();
-              const startX = e.clientX;
-              const startY = e.clientY;
-              const origX = rect.left - parentRect.left;
-              const origY = rect.top - parentRect.top;
-              const onMove = (ev: MouseEvent) => {
-                setHelpPos({
-                  x: origX + (ev.clientX - startX),
-                  y: origY + (ev.clientY - startY),
-                });
-              };
-              const onUp = () => {
-                window.removeEventListener('mousemove', onMove);
-                window.removeEventListener('mouseup', onUp);
-              };
-              window.addEventListener('mousemove', onMove);
-              window.addEventListener('mouseup', onUp);
-            }}
-          >
-            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">How to Play</span>
-            <button
-              onClick={() => { setShowHelp(false); setHelpPos(null); }}
-              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-          <div className="p-4 space-y-4">
-            <div className="flex gap-3">
-              <span className="text-sm font-bold text-[#C41E1E] shrink-0">01</span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1">Ask Questions</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic and ask the suspect questions. Look for inconsistencies in their story.</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="text-sm font-bold text-[#C41E1E] shrink-0">02</span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1">Collect 3 Clues</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">As you press on the right topics, the stress meter rises and you unlock detective badges.</p>
-                <div className="flex items-center gap-3 mt-2">
-                  {clueIcons.map((icon, i) => (
-                    <img key={i} src={icon} alt="" className="w-16 h-16 object-contain" style={{ imageRendering: 'pixelated' }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="text-sm font-bold text-[#C41E1E] shrink-0">03</span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1">Make Your Accusation</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all {cluesNeeded} clues, the ACCUSE button unlocks. Call out the lie. You get 3 attempts.</p>
-              </div>
-            </div>
-            <div className="border-t border-[#2A2A2A] pt-3">
-              <p className="text-[10px] uppercase tracking-wider text-[#C8A050] mb-2">Tips</p>
-              <ul className="space-y-1.5">
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Ask open-ended questions first</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Rising stress = right track</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>Use hints sparingly (-150 pts each)</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-[#C8A050]">&bull;</span>More time left = higher score</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* === DOCK === */}
-      <div className="flex-shrink-0 flex justify-center p-3 border-t border-[#2A2A2A]">
-        <div className="flex items-end gap-1 px-3 py-2 bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#2A2A2A] rounded-2xl">
-          {/* Speak */}
-          <button
-            onClick={isListening ? stopListening : startListening}
-            disabled={phase === 'processing' || isSpeaking || isAccusing}
-            data-tooltip="Speak"
-            className={`dock-icon ${
-              isListening
-                ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
-                : 'bg-[#2A2A2A] text-[#E8E8E8]'
-            } ${phase === 'processing' || isSpeaking || isAccusing ? 'opacity-40 cursor-not-allowed' : ''}`}
-          >
-            {isListening ? (
-              <div className="w-4 h-4 bg-white rounded-sm" />
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                <line x1="12" y1="19" x2="12" y2="23" />
-                <line x1="8" y1="23" x2="16" y2="23" />
-              </svg>
-            )}
-          </button>
-
-          {/* Type */}
-          <button
-            onClick={() => setShowTextInput(!showTextInput)}
-            data-tooltip="Type"
-            className={`dock-icon ${
-              showTextInput
-                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
-                : 'bg-[#2A2A2A] text-gray-500'
-            }`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <line x1="6" y1="8" x2="6" y2="8" />
-              <line x1="10" y1="8" x2="10" y2="8" />
-              <line x1="14" y1="8" x2="14" y2="8" />
-              <line x1="18" y1="8" x2="18" y2="8" />
-              <line x1="6" y1="12" x2="6" y2="12" />
-              <line x1="10" y1="12" x2="10" y2="12" />
-              <line x1="14" y1="12" x2="14" y2="12" />
-              <line x1="18" y1="12" x2="18" y2="12" />
-              <line x1="8" y1="16" x2="16" y2="16" />
-            </svg>
-          </button>
-
-          {/* Notes */}
-          <button
-            onClick={() => setShowNotes(!showNotes)}
-            data-tooltip="Notes"
-            className={`dock-icon ${
-              showNotes
-                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
-                : 'bg-[#2A2A2A] text-gray-500'
-            }`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
-          </button>
-
-          {/* Divider */}
-          <div className="w-px h-8 bg-[#2A2A2A] mx-1" />
-
-          {/* Hint */}
-          <button
-            onClick={() => {
-              if (caseData && hintsUsed < Math.min(cluesNeeded, caseData.stress_triggers.length)) {
-                setHintsUsed((prev) => prev + 1);
-              }
-            }}
-            disabled={!caseData || hintsUsed >= Math.min(cluesNeeded, caseData?.stress_triggers?.length ?? 0)}
-            data-tooltip={`Hint (${hintsUsed}/${cluesNeeded})`}
-            className={`dock-icon ${
-              !caseData || hintsUsed >= Math.min(cluesNeeded, caseData?.stress_triggers?.length ?? 0)
-                ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
-                : 'bg-[#2A2A2A] text-[#F59E0B]'
-            }`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </button>
-
-          {/* Accuse */}
-          <button
-            onClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
-            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || clues.length < cluesNeeded || showAccuseConfirm)) || (isAccusing && !isListening)}
-            data-tooltip={isAccusing && isListening ? 'Stop' : clues.length < cluesNeeded ? `Find ${cluesNeeded - clues.length} more clue${cluesNeeded - clues.length === 1 ? '' : 's'}` : `Accuse (${accusationsLeft})`}
-            className={`dock-icon ${
-              (accusationsLeft <= 0 || clues.length < cluesNeeded) && !isAccusing
-                ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
-                : isAccusing
-                  ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
-                  : 'bg-[#2A2A2A] text-[#C41E1E]'
-            }`}
-          >
-            {isAccusing && isListening ? (
-              <div className="w-4 h-4 bg-white rounded-sm" />
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            )}
-          </button>
-
-          {/* Divider */}
-          <div className="w-px h-8 bg-[#2A2A2A] mx-1" />
-
-          {/* Settings */}
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            data-tooltip="Settings"
-            className={`dock-icon ${
-              showSettings
-                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
-                : 'bg-[#2A2A2A] text-gray-500'
-            }`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </button>
-
-          {/* Help */}
-          <button
-            onClick={() => setShowHelp(!showHelp)}
-            data-tooltip="How to Play"
-            className="dock-icon bg-[#2A2A2A] text-gray-500"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </button>
-
-          {/* Exit */}
-          <button
-            onClick={() => setShowExitConfirm(true)}
-            data-tooltip="Exit"
-            className="dock-icon bg-[#2A2A2A] text-gray-500"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-          </button>
-        </div>
+        )}
       </div>
+
+      <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
+
+      <TextInputPanel
+        show={showTextInput}
+        value={textInput}
+        disabled={phase !== 'active' || isSpeaking || isAccusing}
+        onChange={setTextInput}
+        onSubmit={(v) => { sendQuestion(v); setTextInput(''); }}
+      />
+
+      <NotesPanel
+        show={showNotes}
+        notes={notes}
+        pos={notesPos}
+        onChange={setNotes}
+        onClose={() => setShowNotes(false)}
+        onPosChange={setNotesPos}
+      />
+
+      <ExitConfirmDialog
+        show={showExitConfirm}
+        onConfirm={() => {
+          if (timerRef.current) clearInterval(timerRef.current);
+          if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+          speechSynthesis.cancel();
+          router.push('/cases');
+        }}
+        onCancel={() => setShowExitConfirm(false)}
+      />
+
+      <AccuseConfirmDialog
+        show={showAccuseConfirm}
+        accusationsLeft={accusationsLeft}
+        accuseText={accuseText}
+        onChange={setAccuseText}
+        onSubmitText={(v) => {
+          setShowAccuseConfirm(false);
+          setIsAccusing(true);
+          submitAccusation(v);
+          setAccuseText('');
+        }}
+        onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }}
+        onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }}
+      />
+
+      <SettingsPanel
+        show={showSettings}
+        settings={settings}
+        onSettingsChange={setSettings}
+        onClose={() => setShowSettings(false)}
+      />
+
+      <HelpPanel
+        show={showHelp}
+        pos={helpPos}
+        cluesNeeded={cluesNeeded}
+        clueIcons={clueIcons}
+        onClose={() => setShowHelp(false)}
+        onPosChange={setHelpPos}
+      />
+
+      <Dock
+        isListening={isListening}
+        isSpeaking={isSpeaking}
+        isAccusing={isAccusing}
+        phase={phase}
+        showTextInput={showTextInput}
+        showNotes={showNotes}
+        showSettings={showSettings}
+        showAccuseConfirm={showAccuseConfirm}
+        clues={clues}
+        cluesNeeded={cluesNeeded}
+        accusationsLeft={accusationsLeft}
+        hintsUsed={hintsUsed}
+        caseData={caseData}
+        onMicToggle={isListening ? stopListening : startListening}
+        onTypeToggle={() => setShowTextInput(!showTextInput)}
+        onNotesToggle={() => setShowNotes(!showNotes)}
+        onHintClick={() => {
+          if (caseData && hintsUsed < Math.min(cluesNeeded, caseData.stress_triggers.length)) {
+            setHintsUsed((prev) => prev + 1);
+          }
+        }}
+        onAccuseClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
+        onSettingsToggle={() => setShowSettings(!showSettings)}
+        onHelpToggle={() => setShowHelp(!showHelp)}
+        onExitClick={() => setShowExitConfirm(true)}
+      />
     </div>
   );
 }

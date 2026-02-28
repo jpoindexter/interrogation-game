@@ -83,22 +83,20 @@ export default function CaseSelectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono">
+    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono relative">
+      <button
+        onClick={() => router.push('/')}
+        className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
+      >
+        &larr; Home
+      </button>
       <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Header with folder icon */}
-        <div className="mb-10 flex items-start justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
-              Select Location
-            </p>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
-          </div>
-          <button
-            onClick={() => router.push('/')}
-            className="text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors mt-2"
-          >
-            &larr; Home
-          </button>
+        {/* Header */}
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
+            Select Location
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-wide">CHOOSE YOUR CASE</h1>
         </div>
 
         {/* Case grid */}

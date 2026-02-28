@@ -92,7 +92,7 @@ export default function LosePage() {
             Case #{result.caseData.case_number}
           </p>
           <h1 className="text-5xl font-bold mb-4">SUSPECT WALKS</h1>
-          <p className="text-gray-400">Time&apos;s up.</p>
+          <p className="text-gray-400">Out of accusations. The suspect walks free.</p>
           {summary && (
             <p className="text-2xl mt-4">
               Rating:{' '}

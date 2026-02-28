@@ -16,6 +16,21 @@ interface LeaderboardEntry {
   created_at: string;
 }
 
+// Seed data — time_remaining stores elapsed seconds (lower = faster)
+// Score: sqrt curve × difficulty multiplier × hint/accusation penalties
+const SEED_ENTRIES: LeaderboardEntry[] = [
+  { player_name: 'DetectiveNoir', case_setting: 'Police Precinct', suspect_name: 'Sgt. Marcus Webb', time_remaining: 240, detective_rating: 'Legendary', score: 2384, clues_found: 5, hints_used: 0, accusations_used: 1, created_at: '2026-02-28T09:12:00Z' },
+  { player_name: 'ColdCase_King', case_setting: 'Trading Floor', suspect_name: 'Elena Marchetti', time_remaining: 180, detective_rating: 'Legendary', score: 2062, clues_found: 4, hints_used: 0, accusations_used: 1, created_at: '2026-02-28T08:45:00Z' },
+  { player_name: 'TruthSeeker', case_setting: 'Tech Company', suspect_name: 'Raj Patel', time_remaining: 300, detective_rating: 'Veteran', score: 1530, clues_found: 4, hints_used: 1, accusations_used: 1, created_at: '2026-02-28T07:30:00Z' },
+  { player_name: 'BadCopGoodCop', case_setting: 'Hospital', suspect_name: 'Dr. Linda Zhao', time_remaining: 240, detective_rating: 'Veteran', score: 1275, clues_found: 3, hints_used: 0, accusations_used: 2, created_at: '2026-02-28T06:15:00Z' },
+  { player_name: 'Interrogator_X', case_setting: 'Law Firm', suspect_name: 'James Whitfield', time_remaining: 280, detective_rating: 'Sharp', score: 1060, clues_found: 3, hints_used: 1, accusations_used: 1, created_at: '2026-02-27T22:00:00Z' },
+  { player_name: 'LieDetector99', case_setting: 'Corporate Office', suspect_name: 'Karen Sullivan', time_remaining: 180, detective_rating: 'Sharp', score: 866, clues_found: 2, hints_used: 0, accusations_used: 1, created_at: '2026-02-27T20:30:00Z' },
+  { player_name: 'NightShift', case_setting: 'Startup', suspect_name: 'Tyler Brooks', time_remaining: 200, detective_rating: 'Sharp', score: 764, clues_found: 2, hints_used: 1, accusations_used: 1, created_at: '2026-02-27T19:00:00Z' },
+  { player_name: 'Columbo_Jr', case_setting: 'Police Precinct', suspect_name: 'Officer Diane Holt', time_remaining: 520, detective_rating: 'Rookie', score: 614, clues_found: 5, hints_used: 2, accusations_used: 2, created_at: '2026-02-27T17:45:00Z' },
+  { player_name: 'QuietRoom', case_setting: 'Trading Floor', suspect_name: 'Victor Tan', time_remaining: 600, detective_rating: 'Rookie', score: 478, clues_found: 4, hints_used: 3, accusations_used: 2, created_at: '2026-02-27T16:00:00Z' },
+  { player_name: 'FirstTimer', case_setting: 'Startup', suspect_name: 'Amy Chen', time_remaining: 380, detective_rating: 'Trainee', score: 312, clues_found: 2, hints_used: 3, accusations_used: 3, created_at: '2026-02-27T14:30:00Z' },
+];
+
 export default function LeaderboardPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
@@ -25,10 +40,17 @@ export default function LeaderboardPage() {
     fetch('/api/leaderboard')
       .then((res) => res.json())
       .then((data) => {
-        setEntries(data.leaderboard ?? []);
+        const real = data.leaderboard ?? [];
+        const merged = [...real, ...SEED_ENTRIES]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 10);
+        setEntries(merged);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setEntries(SEED_ENTRIES);
+        setLoading(false);
+      });
   }, []);
 
   const formatTime = (secs: number) => {
@@ -52,7 +74,13 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono">
+    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono relative">
+      <button
+        onClick={() => router.push('/')}
+        className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
+      >
+        &larr; Home
+      </button>
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="mb-10">
           <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
@@ -134,29 +162,14 @@ export default function LeaderboardPage() {
           <div className="mt-10 p-4 bg-[#111111] border border-[#1A1A1A] rounded-sm">
             <p className="text-xs uppercase tracking-wider text-gray-600 mb-3">Scoring</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-gray-500">
-              <span>Time left &times; 100</span>
-              <span>Clues &times; 200</span>
-              <span>Hints &times; -150</span>
-              <span>Accusations &times; -300</span>
+              <span>Speed &times; difficulty</span>
+              <span>Hints &minus;15% each</span>
+              <span>Wrong acc. &minus;10% each</span>
+              <span>Harder = more pts</span>
             </div>
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-4 justify-center mt-12">
-          <button
-            onClick={() => router.push('/cases')}
-            className="px-8 py-4 bg-[#C41E1E] text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
-          >
-            PLAY
-          </button>
-          <button
-            onClick={() => router.push('/')}
-            className="px-8 py-4 bg-[#2A2A2A] text-white font-bold rounded-lg hover:bg-[#3A3A3A] transition-colors"
-          >
-            MAIN MENU
-          </button>
-        </div>
       </div>
     </div>
   );

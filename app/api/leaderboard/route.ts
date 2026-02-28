@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import { calculateScore, type Difficulty } from '@/lib/scoring';
 
 // GET — fetch top scores
 export async function GET() {
@@ -28,20 +29,19 @@ export async function POST(request: Request) {
       caseNumber,
       caseSetting,
       suspectName,
-      timeRemaining,
+      timeElapsed = 0,
+      difficulty = 'medium',
       stressLevel,
-      cluesFound = 0,
       hintsUsed = 0,
       accusationsUsed = 0,
       detectiveRating,
     } = body;
 
-    // Calculate score: time * 100 + clues * 200 - hints * 150 - extra accusations * 300
-    const score = Math.max(0,
-      timeRemaining * 100
-      + cluesFound * 200
-      - hintsUsed * 150
-      - accusationsUsed * 300
+    const score = calculateScore(
+      timeElapsed,
+      difficulty as Difficulty,
+      hintsUsed,
+      Math.max(0, accusationsUsed - 1), // only penalize WRONG accusations (subtract the winning one)
     );
 
     const rows = await sql`
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         detective_rating, score
       ) VALUES (
         ${playerName}, ${caseNumber}, ${caseSetting}, ${suspectName},
-        ${timeRemaining}, ${stressLevel}, ${cluesFound}, ${hintsUsed}, ${accusationsUsed},
+        ${timeElapsed}, ${stressLevel}, ${0}, ${hintsUsed}, ${accusationsUsed},
         ${detectiveRating}, ${score}
       )
       RETURNING id, score

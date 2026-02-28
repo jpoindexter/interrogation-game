@@ -6,22 +6,20 @@ export default function HelpPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono">
+    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono relative">
+      <button
+        onClick={() => router.push('/')}
+        className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
+      >
+        &larr; Home
+      </button>
       <div className="max-w-3xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="mb-12 flex items-start justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
-              Field Manual
-            </p>
-            <h1 className="text-4xl font-bold tracking-wide">HOW TO PLAY</h1>
-          </div>
-          <button
-            onClick={() => router.push('/')}
-            className="text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors mt-2"
-          >
-            &larr; Home
-          </button>
+        <div className="mb-12">
+          <p className="text-xs uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
+            Field Manual
+          </p>
+          <h1 className="text-4xl font-bold tracking-wide">HOW TO PLAY</h1>
         </div>
 
         {/* Step 1 — Choose a Case */}
@@ -198,16 +196,27 @@ export default function HelpPage() {
           <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
             Scoring
           </h2>
-          <div className="grid grid-cols-2 gap-3 text-sm text-gray-400">
-            <span>Time remaining &times; 100</span>
-            <span className="text-green-500 text-right">+ points</span>
-            <span>Clues found &times; 200</span>
-            <span className="text-green-500 text-right">+ points</span>
-            <span>Hints used &times; 150</span>
-            <span className="text-[#C41E1E] text-right">&minus; points</span>
-            <span>Failed accusations &times; 300</span>
-            <span className="text-[#C41E1E] text-right">&minus; points</span>
+          <div className="space-y-3 text-sm text-gray-400">
+            <div className="flex justify-between">
+              <span>Speed (solve faster than par)</span>
+              <span className="text-green-500">base score</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Difficulty multiplier</span>
+              <span className="text-green-500">1x / 1.5x / 2x / 2.5x</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Each hint used</span>
+              <span className="text-[#C41E1E]">&minus;15%</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Each wrong accusation</span>
+              <span className="text-[#C41E1E]">&minus;10%</span>
+            </div>
           </div>
+          <p className="text-xs text-gray-600 mt-3">
+            Harder cases are worth more. Expert clean solves top the leaderboard.
+          </p>
         </div>
 
         {/* Actions */}

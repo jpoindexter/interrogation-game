@@ -16,7 +16,8 @@ interface GameResult {
   };
   conversationHistory: Array<{ role: string; content: string }>;
   confession: string;
-  timeRemaining: number;
+  timeElapsed: number;
+  difficulty: string;
   stressLevel: number;
   cluesFound?: number;
   hintsUsed?: number;
@@ -108,9 +109,9 @@ export default function WinPage() {
         caseNumber: result.caseData.case_number,
         caseSetting: result.caseData.setting,
         suspectName: result.caseData.suspect_name,
-        timeRemaining: result.timeRemaining,
+        timeElapsed: result.timeElapsed,
+        difficulty: result.difficulty,
         stressLevel: result.stressLevel,
-        cluesFound: result.cluesFound ?? 0,
         hintsUsed: result.hintsUsed ?? 0,
         accusationsUsed: result.accusationsUsed ?? 0,
         detectiveRating: evaluation.detective_rating,
@@ -150,7 +151,7 @@ export default function WinPage() {
             Case #{result.caseData.case_number}
           </p>
           <p className="text-gray-400">
-            Time remaining: {formatTime(result.timeRemaining)}
+            Solved in {formatTime(result.timeElapsed)}
           </p>
           {evaluation && (
             <p className="text-2xl mt-4">
