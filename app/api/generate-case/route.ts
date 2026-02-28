@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateCase } from '../../../src/lib/mistral';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const setting = request.nextUrl.searchParams.get('setting') || undefined;

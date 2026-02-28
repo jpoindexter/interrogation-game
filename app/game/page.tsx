@@ -63,10 +63,10 @@ function GameContent() {
     const loadCase = async () => {
       try {
         const setting = searchParams.get('setting');
-        const url = setting && setting !== 'random'
-          ? `/api/generate-case?setting=${encodeURIComponent(setting)}`
-          : '/api/generate-case';
-        const res = await fetch(url);
+        const params = new URLSearchParams();
+        if (setting && setting !== 'random') params.set('setting', setting);
+        params.set('t', Date.now().toString());
+        const res = await fetch(`/api/generate-case?${params}`, { cache: 'no-store' });
         const data = await res.json();
         if (!cancelled) {
           setCaseData(data);
