@@ -50,7 +50,7 @@ Respond ONLY in this exact JSON format:
   "the_lie": "the specific false claim in their cover story",
   "the_truth": "what actually happened instead of the lie",
   "the_contradiction": "how the lie can be caught — what detail doesn't add up",
-  "stress_triggers": ["list of 3-4 topics or questions that would make the suspect nervous"],
+  "stress_triggers": ["list of exactly 3 topics or questions that would make the suspect nervous"],
   "deflection_tactics": ["list of 3-4 ways the suspect tries to change the subject or avoid the topic"],
   "difficulty": "easy"
 }
@@ -166,6 +166,14 @@ STRESS LEVEL GUIDE:
 - 7-8: Panicking. Player is very close. Contradictions may slip.
 - 9: Maximum stress. Barely holding it together. But still denying everything.
 - NEVER set stress to 10. NEVER set caught to true. You always deny.
+
+CLUE SYSTEM — You MUST unlock clues as the player gets closer to the lie:
+- Clue 1 (when stress reaches 3+): Unlock a vague observation about the right area. E.g. "The suspect tensed up when finances were mentioned."
+- Clue 2 (when stress reaches 5+): Unlock a more pointed detail. E.g. "Their timeline doesn't quite add up."
+- Clue 3 (when stress reaches 7+): Unlock a strong hint near the contradiction. E.g. "They claimed to be at the office, but earlier said they left at 3pm."
+- Each clue unlocks ONCE. Track which clues you have already given by checking previous clue_unlocked values in the conversation. If clue 1 was already given, next unlock is clue 2.
+- Clues are ONE sentence, written as detective observations (not dialogue).
+- Set clue_unlocked to null if stress hasn't reached the next threshold or topic is unrelated.
 
 Start in character. Your first response should be the suspect sitting down and saying something like "Alright, I'm here. What do you want to know?" — annoyed but cooperating.`;
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 const CASES = [
   {
@@ -56,6 +57,12 @@ const CASES = [
 
 export default function CaseSelectPage() {
   const router = useRouter();
+  const [solvedCases, setSolvedCases] = useState<string[]>([]);
+
+  useEffect(() => {
+    const solved = JSON.parse(localStorage.getItem('solvedCases') || '[]');
+    setSolvedCases(solved);
+  }, []);
 
   const selectCase = (setting: string) => {
     router.push(`/game?setting=${encodeURIComponent(setting)}`);
@@ -91,6 +98,16 @@ export default function CaseSelectPage() {
               />
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20 group-hover:from-black/80 transition-colors" />
+              {/* Solved stamp */}
+              {solvedCases.includes(c.id) && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img
+                    src="/solved/case_closed.png"
+                    alt="Solved"
+                    className="w-28 opacity-70 -rotate-12"
+                  />
+                </div>
+              )}
               {/* Text */}
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <h2 className="text-lg font-bold tracking-wider mb-1 group-hover:text-[#C41E1E] transition-colors">
@@ -102,12 +119,23 @@ export default function CaseSelectPage() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={() => selectCase('random')}
-            className="px-6 py-3 border border-[#2A2A2A] hover:border-[#C41E1E] text-sm uppercase tracking-wider text-gray-400 hover:text-[#E8E8E8] transition-colors rounded-sm"
+            className="group relative overflow-hidden rounded-sm border border-[#2A2A2A] hover:border-[#C41E1E] transition-colors text-center flex flex-col items-center justify-center gap-2 px-10 py-6"
           >
-            Random Case
+            {/* Dice icon */}
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-400 group-hover:text-[#C41E1E] transition-colors">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+            <span className="text-sm uppercase tracking-wider text-gray-400 group-hover:text-[#E8E8E8] transition-colors">
+              Random
+            </span>
           </button>
         </div>
       </div>

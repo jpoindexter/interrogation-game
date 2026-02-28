@@ -18,11 +18,15 @@ interface GameResult {
   confession: string;
   timeRemaining: number;
   stressLevel: number;
+  cluesFound?: number;
+  hintsUsed?: number;
+  accusationsUsed?: number;
 }
 
 export default function WinPage() {
   const router = useRouter();
   const [result, setResult] = useState<GameResult | null>(null);
+  const [score, setScore] = useState<number | null>(null);
   const [evaluation, setEvaluation] = useState<{
     detective_rating: string;
     reveal_the_lie: string;
@@ -40,6 +44,21 @@ export default function WinPage() {
 
     const parsed = JSON.parse(stored) as GameResult;
     setResult(parsed);
+
+    // Track solved case setting in localStorage
+    const s = (parsed.caseData.setting || '').toLowerCase();
+    let solvedId = 'random';
+    if (s.includes('hospital') || s.includes('medical') || s.includes('clinic')) solvedId = 'medical';
+    else if (s.includes('law') || s.includes('legal') || s.includes('attorney')) solvedId = 'lawfirm';
+    else if (s.includes('server') || s.includes('data center') || s.includes('tech') || s.includes('software') || s.includes('cyber')) solvedId = 'server';
+    else if (s.includes('startup') || s.includes('co-working') || s.includes('incubator')) solvedId = 'startup';
+    else if (s.includes('bank') || s.includes('trading') || s.includes('finance') || s.includes('hedge') || s.includes('investment') || s.includes('brokerage') || s.includes('stock')) solvedId = 'trade';
+    else if (s.includes('police') || s.includes('precinct') || s.includes('station')) solvedId = 'police';
+    else if (s.includes('office') || s.includes('corporate')) solvedId = 'office';
+    const solved: string[] = JSON.parse(localStorage.getItem('solvedCases') || '[]');
+    if (!solved.includes(solvedId)) {
+      localStorage.setItem('solvedCases', JSON.stringify([...solved, solvedId]));
+    }
 
     fetch('/api/evaluate', {
       method: 'POST',
@@ -79,6 +98,29 @@ export default function WinPage() {
       });
   }, [router]);
 
+  // Submit to leaderboard once evaluation is ready
+  useEffect(() => {
+    if (!result || !evaluation || score !== null) return;
+    fetch('/api/leaderboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        caseNumber: result.caseData.case_number,
+        caseSetting: result.caseData.setting,
+        suspectName: result.caseData.suspect_name,
+        timeRemaining: result.timeRemaining,
+        stressLevel: result.stressLevel,
+        cluesFound: result.cluesFound ?? 0,
+        hintsUsed: result.hintsUsed ?? 0,
+        accusationsUsed: result.accusationsUsed ?? 0,
+        detectiveRating: evaluation.detective_rating,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => { if (data.score !== undefined) setScore(data.score); })
+      .catch(() => {});
+  }, [result, evaluation, score]);
+
   if (!result) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex items-center justify-center">
@@ -98,10 +140,15 @@ export default function WinPage() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
+          <img
+            src="/solved/case_closed.png"
+            alt="Case Closed"
+            className="w-48 mx-auto mb-4"
+            style={{ animation: 'clueReveal 0.6s ease-out' }}
+          />
           <p className="text-sm uppercase tracking-[0.3em] text-[#C41E1E] mb-2">
             Case #{result.caseData.case_number}
           </p>
-          <h1 className="text-5xl font-bold mb-4">SUSPECT CRACKED</h1>
           <p className="text-gray-400">
             Time remaining: {formatTime(result.timeRemaining)}
           </p>
@@ -111,6 +158,11 @@ export default function WinPage() {
               <span className="text-[#C41E1E] font-bold">
                 {evaluation.detective_rating}
               </span>
+            </p>
+          )}
+          {score !== null && (
+            <p className="text-3xl font-bold mt-4 text-[#C8A050]">
+              {score.toLocaleString()} pts
             </p>
           )}
         </div>
@@ -175,6 +227,12 @@ export default function WinPage() {
             className="px-8 py-4 bg-[#C41E1E] text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
           >
             NEW CASE
+          </button>
+          <button
+            onClick={() => router.push('/leaderboard')}
+            className="px-8 py-4 bg-[#C8A050] text-black font-bold rounded-lg hover:bg-[#D4AD5C] transition-colors"
+          >
+            LEADERBOARD
           </button>
           <button
             onClick={() => {

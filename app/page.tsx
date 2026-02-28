@@ -24,12 +24,20 @@ export default function HomePage() {
           </p>
         </div>
 
-        <button
-          onClick={() => router.push('/cases')}
-          className="px-8 py-4 bg-[#C41E1E] text-white text-xl font-bold rounded-lg hover:bg-red-700 transition-colors transform hover:scale-105"
-        >
-          START NEW CASE
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button
+            onClick={() => router.push('/cases')}
+            className="px-8 py-4 bg-[#C41E1E] text-white text-xl font-bold rounded-lg hover:bg-red-700 transition-colors transform hover:scale-105"
+          >
+            START NEW CASE
+          </button>
+          <button
+            onClick={() => router.push('/leaderboard')}
+            className="px-8 py-4 bg-[#2A2A2A] text-white text-lg font-bold rounded-lg hover:bg-[#3A3A3A] transition-colors"
+          >
+            LEADERBOARD
+          </button>
+        </div>
 
         <div className="mt-16 text-sm text-gray-400">
           <p>Powered by Mistral AI</p>

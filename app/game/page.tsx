@@ -51,6 +51,7 @@ function GameContent() {
   const [isAccusing, setIsAccusing] = useState(false);
   const [showAccuseConfirm, setShowAccuseConfirm] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [clueNotification, setClueNotification] = useState<number | null>(null);
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
@@ -217,9 +218,14 @@ function GameContent() {
         setMaxStress((prev) => Math.max(prev, data.stress_level ?? 0));
 
         if (data.clue_unlocked) {
-          setClues((prev) =>
-            prev.includes(data.clue_unlocked) ? prev : [...prev, data.clue_unlocked]
-          );
+          setClues((prev) => {
+            if (prev.includes(data.clue_unlocked)) return prev;
+            const newClues = [...prev, data.clue_unlocked];
+            // Show badge notification (1, 2, or 3)
+            setClueNotification(newClues.length);
+            setTimeout(() => setClueNotification(null), 3000);
+            return newClues;
+          });
         }
 
         // Speak the response
@@ -503,6 +509,9 @@ function GameContent() {
                 confession: data.confession,
                 timeRemaining: timer,
                 stressLevel,
+                cluesFound: clues.length,
+                hintsUsed,
+                accusationsUsed: 3 - accusationsLeft,
               })
             );
 
@@ -808,8 +817,25 @@ function GameContent() {
 
               <div>
                 <h3 className="text-xs uppercase tracking-wider text-[#C41E1E] mb-2">
-                  Clues ({clues.length})
+                  Evidence
                 </h3>
+                {/* Badge slots */}
+                <div className="flex items-center gap-2 mb-3">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="flex flex-col items-center">
+                      <img
+                        src={`/clues/clue${n}.png`}
+                        alt={`Clue ${n}`}
+                        className={`w-8 h-8 object-contain transition-all duration-500 ${
+                          clues.length >= n
+                            ? 'opacity-100'
+                            : 'opacity-20 grayscale'
+                        }`}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/* Clue text */}
                 {clues.length > 0 ? (
                   <div className="space-y-2">
                     {clues.map((clue, i) => (
@@ -822,7 +848,7 @@ function GameContent() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-600">No clues uncovered yet.</p>
+                  <p className="text-sm text-gray-600">Find 3 clues to unlock accusation.</p>
                 )}
               </div>
 
@@ -866,6 +892,22 @@ function GameContent() {
           )}
         </div>
       </div>
+
+      {/* Clue badge notification */}
+      {clueNotification && (
+        <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
+          <div className="flex flex-col items-center gap-2" style={{ animation: 'clueReveal 0.6s ease-out' }}>
+            <img
+              src={`/clues/clue${clueNotification}.png`}
+              alt={`Clue ${clueNotification}`}
+              className="w-20 h-20 object-contain drop-shadow-2xl"
+            />
+            <span className="text-xs uppercase tracking-[0.3em] text-[#C8A050] font-bold">
+              Clue {clueNotification} of 3
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Text input — floating above dock */}
       {showTextInput && (
@@ -1172,14 +1214,14 @@ function GameContent() {
           {/* Hint */}
           <button
             onClick={() => {
-              if (caseData && hintsUsed < caseData.stress_triggers.length) {
+              if (caseData && hintsUsed < Math.min(3, caseData.stress_triggers.length)) {
                 setHintsUsed((prev) => prev + 1);
               }
             }}
-            disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
-            data-tooltip={`Hint (${hintsUsed}/${caseData?.stress_triggers?.length ?? 0})`}
+            disabled={!caseData || hintsUsed >= Math.min(3, caseData?.stress_triggers?.length ?? 0)}
+            data-tooltip={`Hint (${hintsUsed}/3)`}
             className={`dock-icon ${
-              !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
+              !caseData || hintsUsed >= Math.min(3, caseData?.stress_triggers?.length ?? 0)
                 ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
                 : 'bg-[#2A2A2A] text-[#F59E0B]'
             }`}
@@ -1194,10 +1236,10 @@ function GameContent() {
           {/* Accuse */}
           <button
             onClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)}
-            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || showAccuseConfirm)) || (isAccusing && !isListening)}
-            data-tooltip={isAccusing && isListening ? 'Stop' : `Accuse (${accusationsLeft})`}
+            disabled={(!isAccusing && (phase === 'processing' || isSpeaking || accusationsLeft <= 0 || clues.length < 3 || showAccuseConfirm)) || (isAccusing && !isListening)}
+            data-tooltip={isAccusing && isListening ? 'Stop' : clues.length < 3 ? `Find ${3 - clues.length} more clue${3 - clues.length === 1 ? '' : 's'}` : `Accuse (${accusationsLeft})`}
             className={`dock-icon ${
-              accusationsLeft <= 0 && !isAccusing
+              (accusationsLeft <= 0 || clues.length < 3) && !isAccusing
                 ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
                 : isAccusing
                   ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
