@@ -16,7 +16,9 @@ You're a detective. Mistral is a suspect who's lying. Your job is to catch the l
 - Voxtral STT via Mistral API — speech-to-text for player voice input
 - ElevenLabs TTS — suspect voice output with dynamic stress-based stability
 - Browser SpeechSynthesis — fallback voice when ElevenLabs unavailable
-- No database. All state in React state + sessionStorage for game results. Leaderboard in `/tmp`.
+- Supabase (leaderboard persistence with RLS)
+- Framer Motion (animations across all pages)
+- sessionStorage for game result passing between pages
 
 ## Project Structure
 
@@ -24,23 +26,50 @@ You're a detective. Mistral is a suspect who's lying. Your job is to catch the l
 interrogation/
 ├── app/
 │   ├── layout.tsx                    # Root layout, JetBrains Mono font
-│   ├── globals.css                   # Tailwind v4 + custom animations (clueReveal, pixelFloat, etc.)
+│   ├── globals.css                   # Tailwind v4 + design tokens + custom animations
 │   ├── page.tsx                      # Title screen — hero image, sponsor logos, nav
+│   ├── error.tsx                     # Global error boundary
+│   ├── not-found.tsx                 # 404 page
+│   ├── components/
+│   │   ├── ui.tsx                    # Shared UI: BackButton, PageHeader, Spinner, PageShell, InfoPanel
+│   │   └── motion.tsx                # Shared Framer Motion variants + transitions
+│   ├── data/
+│   │   ├── cases.ts                  # CASES + DIFFICULTY_CONFIG constants
+│   │   └── leaderboard-seeds.ts      # Seed leaderboard entries (3-letter initials)
 │   ├── cases/page.tsx                # Case select — 7 locations + difficulty picker
 │   ├── help/page.tsx                 # How to Play + About This Game + scoring
-│   ├── leaderboard/page.tsx          # Top 10 leaderboard with seed data
+│   ├── leaderboard/page.tsx          # Top 10 leaderboard with new-entry animation
+│   ├── settings/page.tsx             # Settings page
+│   ├── about/page.tsx                # About page
 │   ├── game/
-│   │   ├── page.tsx                  # MAIN GAME — orchestrator (801 lines)
+│   │   ├── page.tsx                  # MAIN GAME — orchestrator (~283 lines)
 │   │   ├── SuspectAvatar.tsx         # PixelLab-generated suspect avatar with expressions
+│   │   ├── hooks/
+│   │   │   ├── useVoiceRecorder.ts   # MediaRecorder + silence detection + transcription
+│   │   │   ├── useTTS.ts            # ElevenLabs + browser fallback, voice selection, skip
+│   │   │   └── useGameTimer.ts       # Count-up timer with pause during TTS/processing
 │   │   ├── components/
 │   │   │   ├── utils.ts              # EVIDENCE_ICONS, pickRandomIcons, getSceneBg, DIFFICULTY_CLUES, formatTime
 │   │   │   ├── TopBar.tsx            # Timer (counts up) + stress meter
 │   │   │   ├── SuspectZone.tsx       # Avatar, waveform, dialogue area
 │   │   │   ├── CaseFile.tsx          # Right sidebar — evidence badges, clues, hints, exchange log
-│   │   │   ├── Dock.tsx              # Bottom action bar — speak, type, notes, hint, accuse, settings, help, exit
-│   │   │   └── Panels.tsx            # ClueNotification, TextInputPanel, NotesPanel, ExitConfirmDialog, AccuseConfirmDialog, SettingsPanel, HelpPanel
-│   │   ├── win/page.tsx              # Win screen — confession, case breakdown, score, leaderboard submit
-│   │   └── lose/page.tsx             # Lose screen — what you missed, the truth revealed
+│   │   │   ├── Dock.tsx              # Bottom action bar — speak, type, notes, hint, accuse, give up, settings, help, exit
+│   │   │   ├── icons.tsx             # SVG icons for dock buttons
+│   │   │   ├── CloseIcon.tsx         # Shared close icon
+│   │   │   ├── BriefingScreen.tsx    # Pre-game case overview
+│   │   │   ├── LoadingScreen.tsx     # Generating case spinner + How to Play
+│   │   │   ├── ClueNotification.tsx  # Center-screen clue badge popup
+│   │   │   ├── TextInputPanel.tsx    # Type-to-question input
+│   │   │   ├── NotesPanel.tsx        # Player notes sidebar
+│   │   │   ├── AccuseConfirmDialog.tsx # Accusation confirmation
+│   │   │   ├── ExitConfirmDialog.tsx # Exit game confirmation
+│   │   │   ├── GiveUpConfirmDialog.tsx # Give up confirmation
+│   │   │   ├── SettingsPanel.tsx     # In-game settings
+│   │   │   └── HelpPanel.tsx         # In-game help overlay
+│   │   ├── win/
+│   │   │   ├── page.tsx              # Win screen — APPREHENDED, score breakdown, confession, case details
+│   │   │   └── InitialsEntry.tsx     # Arcade HIGH SCORE overlay — 3-letter initials entry
+│   │   └── lose/page.tsx             # Lose screen — ESCAPED, case summary, what you missed
 │   └── api/
 │       ├── generate-case/route.ts    # GET — generates a new case via Mistral (supports ?setting= &difficulty=)
 │       ├── interrogate/route.ts      # POST — sends player question, gets suspect response
@@ -48,14 +77,16 @@ interrogation/
 │       ├── accuse/route.ts           # POST — formal accusation evaluation (correct/incorrect + confession/denial)
 │       ├── tts/route.ts              # POST — ElevenLabs TTS with stress-based stability
 │       ├── transcribe/route.ts       # POST — Voxtral STT (audio blob → text)
-│       └── leaderboard/route.ts      # GET/POST — file-based leaderboard with scoring formula
+│       └── leaderboard/route.ts      # GET/POST — Supabase leaderboard with scoring formula
 ├── src/
 │   ├── lib/
 │   │   ├── mistral.ts                # Mistral client: generateCase, interrogate, evaluateAccusation, evaluateWin, generateLossSummary
 │   │   ├── scoring.ts                # calculateScore (sqrt curve) + getDetectiveRating
+│   │   ├── db.ts                     # Supabase client
+│   │   ├── sanitize.ts               # Input validation helpers
 │   │   ├── game-state.ts             # Case type definition
-│   │   ├── voice-input.ts            # VoiceInput class (unused, recording inlined in page.tsx)
-│   │   └── voice-output.ts           # VoiceOutput class (unused, ElevenLabs in page.tsx)
+│   │   ├── voice-input.ts            # VoiceInput class (unused, recording inlined in hooks)
+│   │   └── voice-output.ts           # VoiceOutput class (unused, ElevenLabs in hooks)
 │   └── types/
 │       └── speech.d.ts               # SpeechRecognition type declarations
 ├── public/
@@ -63,10 +94,13 @@ interrogation/
 │   ├── clues/                        # Evidence icons — pixel art items
 │   ├── suspects/                     # PixelLab-generated suspect portraits
 │   ├── sponsors/                     # Hackathon sponsor logos (11 .webp files)
-│   ├── solved/                       # Case closed stamp
+│   ├── solved/                       # APPREHENDED (caught.png) + ESCAPED (escaped.png) images
+│   ├── detective/                    # Detective background art
 │   ├── ui/                           # UI assets (logos)
 │   └── logo/                         # Game logos
-└── .env                              # MISTRAL_API_KEY, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID
+├── scripts/
+│   └── generate-suspects.ts          # PixelLab suspect portrait generation
+└── .env                              # MISTRAL_API_KEY, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, SUPABASE vars
 ```
 
 ## How It Works
@@ -83,6 +117,12 @@ interrogation/
 9. Player hits ACCUSE → records or types accusation → `/api/accuse` judges accuracy
 10. Correct = confession + win screen. Incorrect = denial + lose an attempt (3 total)
 11. Win/lose screens call `/api/evaluate` for detailed Mistral analysis
+
+### End-Game Flow
+- **Win:** APPREHENDED image → staggered score reveal → scroll-triggered HIGH SCORE overlay → 3-letter initials entry → choice: View Leaderboard or Back to Score
+- **Lose (out of accusations):** ESCAPED image → case summary → suspect taunt → the lie/truth/what would have cracked them
+- **Lose (gave up):** Same ESCAPED screen but with "Surrendered" outcome + AI-generated smug remark via TTS
+- **Leaderboard:** New entries drop in with spring animation, gold glow pulse, "NEW" badge
 
 ### Scoring Formula (src/lib/scoring.ts)
 ```
@@ -113,14 +153,28 @@ The AI is instructed to NEVER confess or admit lying, even at stress 9. The play
 
 ## Design System
 
-- **Background:** `#000000` (pure black)
-- **Text:** `#E8E8E8` (off white)
-- **Accent red:** `#C41E1E` (stress, danger, accuse)
-- **Gold:** `#C8A050` (hints, active toggles, suspect name)
-- **Surface:** `#2A2A2A` (panels, borders)
-- **Dark surface:** `#1A1A1A` / `#111111`
+All colors are registered as Tailwind v4 tokens in `globals.css`. Use token names, never hardcoded hex.
+
+- **Background:** `bg-black` (`#000000`)
+- **Text:** `text-foreground` (`#E8E8E8`)
+- **Accent red:** `text-accent` / `bg-accent` (`#C41E1E`) — stress, danger, accuse
+- **Accent hover:** `bg-accent-hover` (`#ff4444`)
+- **Gold:** `text-gold` / `bg-gold` (`#C8A050`) — hints, active toggles, suspect name, high score
+- **Gold hover:** `bg-gold-hover` (`#D4AD5C`)
+- **Warning:** `text-warn` (`#F59E0B`)
+- **Surface:** `bg-surface` (`#2A2A2A`) — panels, borders
+- **Surface hover:** `bg-surface-hover` (`#3A3A3A`)
+- **Surface dark:** `bg-surface-dark` (`#1A1A1A`)
+- **Surface darker:** `bg-surface-darker` (`#111111`)
+- **Bronze:** `text-bronze` (`#B87333`)
 - **Font:** JetBrains Mono (monospace)
 - **Aesthetic:** Noir detective. Dark, minimal, typographic. Pixel art backgrounds. No chat bubbles.
+
+### Animation System
+Shared variants in `app/components/motion.tsx`: `fadeIn`, `fadeUp`, `fadeDown`, `scaleIn`, `slideLeft`, `slideRight`, `stagger()`. Transition presets: `smooth`, `snappy`, `springy`, `gentle`. `PageMotion` wrapper for page-level fade-in.
+
+### Shared UI Components
+`app/components/ui.tsx`: `BackButton`, `PageHeader`, `Spinner`, `PageShell`, `InfoPanel`. Use these instead of duplicating patterns.
 
 ## Commands
 
@@ -135,9 +189,11 @@ npm run lint            # ESLint
 ## Environment Variables
 
 ```
-MISTRAL_API_KEY=xxx          # Required — Mistral API (case gen, interrogation, evaluation, STT)
-ELEVENLABS_API_KEY=xxx       # Required — ElevenLabs TTS for suspect voice
-ELEVENLABS_VOICE_ID=xxx      # Optional — specific ElevenLabs voice ID
+MISTRAL_API_KEY=xxx                    # Required — Mistral API (case gen, interrogation, evaluation, STT)
+ELEVENLABS_API_KEY=xxx                 # Required — ElevenLabs TTS for suspect voice
+ELEVENLABS_VOICE_ID=xxx                # Optional — specific ElevenLabs voice ID
+NEXT_PUBLIC_SUPABASE_URL=xxx           # Required — Supabase project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx      # Required — Supabase anon key (public, RLS-protected)
 ```
 
 ## Key Decisions
@@ -146,12 +202,21 @@ ELEVENLABS_VOICE_ID=xxx      # Optional — specific ElevenLabs voice ID
 2. **ElevenLabs TTS** with stress-based stability — voice literally degrades as suspect gets nervous
 3. **Browser SpeechSynthesis** as fallback — works when ElevenLabs is unavailable
 4. **MediaRecorder + silence detection** — 2s silence auto-stops recording, no manual stop needed
-5. **sessionStorage** for game results — no URL size limits, cleaner URLs, no database needed
-6. **Timer counts UP** — no arbitrary time pressure, speed rewarded through scoring formula
-7. **3 accusations max** — only lose condition (no timer-based lose). Forces careful play.
-8. **Separate accusation judge** — different Mistral call evaluates the accusation independently from the suspect character
-9. **Structured JSON responses** — stress_level, clue_unlocked fields let game state be driven by AI assessment
-10. **Modular components** — game page (801 lines) orchestrates 7 extracted component files
+5. **sessionStorage** for game results — no URL size limits, cleaner URLs
+6. **Supabase** for leaderboard — RLS policies for public read + insert, no auth needed
+7. **Timer counts UP** — no arbitrary time pressure, speed rewarded through scoring formula
+8. **3 accusations max** — only lose condition (no timer-based lose). Forces careful play.
+9. **Give Up option** — AI generates smug remark, reveals answers, counts as loss
+10. **Separate accusation judge** — different Mistral call evaluates the accusation independently from the suspect character
+11. **Structured JSON responses** — stress_level, clue_unlocked fields let game state be driven by AI assessment
+12. **Modular architecture** — game page ~283 lines, extracted hooks + components, pages ≤300 lines, components ≤150 lines
+13. **Arcade high score** — scroll-triggered overlay, 3-letter initials, spring animation on leaderboard entry
+
+## File Size Limits
+
+- Pages: ≤300 lines
+- Components: ≤150 lines
+- Utilities: ≤50 lines
 
 ## Hackathon Context
 
