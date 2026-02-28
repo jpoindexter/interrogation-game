@@ -66,7 +66,12 @@ Generate one case now.`,
   });
 
   const content = extractContent(response.choices?.[0]?.message?.content);
-  return JSON.parse(content || '{}');
+  try {
+    return JSON.parse(content || '{}');
+  } catch {
+    console.error('Failed to parse case generation response:', content);
+    return {};
+  }
 }
 
 export interface ConversationMessage {
@@ -180,7 +185,18 @@ Start in character. Your first response should be the suspect sitting down and s
   });
 
   const content = extractContent(response.choices?.[0]?.message?.content);
-  return JSON.parse(content || '{}');
+  try {
+    return JSON.parse(content || '{}');
+  } catch {
+    console.error('Failed to parse interrogation response:', content);
+    return {
+      spoken_response: "I... I need a moment. Can you repeat that?",
+      internal_state: "parse error fallback",
+      stress_level: 3,
+      clue_unlocked: null,
+      caught: false,
+    };
+  }
 }
 
 export async function evaluateAccusation(
@@ -238,7 +254,12 @@ Respond in this exact JSON format:
   });
 
   const content = extractContent(response.choices?.[0]?.message?.content);
-  return JSON.parse(content || '{}');
+  try {
+    return JSON.parse(content || '{}');
+  } catch {
+    console.error('Failed to parse accusation response:', content);
+    return { correct: false, confession: "That's... that's ridiculous. You have nothing.", explanation: "Parse error — treating as incorrect." };
+  }
 }
 
 export async function evaluateWin(
@@ -286,7 +307,12 @@ Respond in JSON:
   });
 
   const content = extractContent(response.choices?.[0]?.message?.content);
-  return JSON.parse(content || '{}');
+  try {
+    return JSON.parse(content || '{}');
+  } catch {
+    console.error('Failed to parse win evaluation response:', content);
+    return { correct: false, explanation: "Could not evaluate — try again." };
+  }
 }
 
 export async function generateLossSummary(
@@ -336,5 +362,16 @@ Analyze the conversation and respond in JSON:
   });
 
   const content = extractContent(response.choices?.[0]?.message?.content);
-  return JSON.parse(content || '{}');
+  try {
+    return JSON.parse(content || '{}');
+  } catch {
+    console.error('Failed to parse loss summary response:', content);
+    return {
+      closest_moment: "Unable to analyze",
+      what_they_missed: "Unable to analyze",
+      the_lie_revealed: "Unable to analyze",
+      the_truth_revealed: "Unable to analyze",
+      detective_rating: "Rookie",
+    };
+  }
 }

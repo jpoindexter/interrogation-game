@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
+import '@fontsource/opendyslexic/400.css';
+import '@fontsource/opendyslexic/700.css';
 import './globals.css';
 
 const jetBrainsMono = JetBrains_Mono({

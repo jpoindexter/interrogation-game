@@ -49,16 +49,36 @@ function GameContent() {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [accusationsLeft, setAccusationsLeft] = useState(3);
   const [isAccusing, setIsAccusing] = useState(false);
+  const [showAccuseConfirm, setShowAccuseConfirm] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Voice state
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [lastTranscript, setLastTranscript] = useState('');
+  const [textInput, setTextInput] = useState('');
+  const [notes, setNotes] = useState('');
+  const [showNotes, setShowNotes] = useState(false);
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState({
+    ttsEnabled: process.env.NODE_ENV !== 'development',
+    fontSize: 'medium' as 'small' | 'medium' | 'large',
+    fontFamily: 'mono' as 'mono' | 'dyslexia' | 'sans',
+    highContrast: false,
+  });
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recognitionRef = useRef<any>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const silenceTimerRef = useRef<number>(0);
+  const rafSilenceRef = useRef<number>(0);
+  const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   const voicesCacheRef = useRef<SpeechSynthesisVoice[]>([]);
 
   // Preload voices — they load async so we cache them early
@@ -114,9 +134,17 @@ function GameContent() {
     return () => { cancelled = true; };
   }, [router]);
 
-  // Timer countdown
+  // Timer countdown — pauses during processing and TTS
   useEffect(() => {
-    if (phase !== 'active') return;
+    if (phase !== 'active' && phase !== 'processing') return;
+
+    // Only tick when the phase is active (not processing, not speaking)
+    const shouldTick = phase === 'active' && !isSpeaking;
+    if (!shouldTick) {
+      // Pause the timer
+      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      return;
+    }
 
     timerRef.current = setInterval(() => {
       setTimer((prev) => {
@@ -131,7 +159,12 @@ function GameContent() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [phase]);
+  }, [phase, isSpeaking]);
+
+  // Auto-scroll dialogue to bottom
+  useEffect(() => {
+    dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [conversationHistory, lastTranscript, isListening, phase]);
 
   // Navigate to lose screen when timer hits 0
   useEffect(() => {
@@ -202,8 +235,24 @@ function GameContent() {
   // Ref for current audio so we can stop it
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Skip TTS — stop current speech and return to active
+  const skipSpeech = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setPhase('active');
+  }, []);
+
   // Text-to-speech via ElevenLabs
   const speakResponse = async (text: string, stress: number) => {
+    if (!settings.ttsEnabled) {
+      setPhase('active');
+      return;
+    }
+
     setIsSpeaking(true);
 
     try {
@@ -274,140 +323,218 @@ function GameContent() {
     });
   };
 
-  // Speech recognition
+  // Transcribe audio blob via Mistral Voxtral
+  const transcribeAudio = async (blob: Blob): Promise<string> => {
+    const formData = new FormData();
+    formData.append('audio', blob, 'recording.webm');
+    const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return (data.text ?? '').trim();
+  };
+
+  // Silence detection — monitors audio level, stops recording after 2s of silence
+  const startSilenceDetection = (stream: MediaStream) => {
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createMediaStreamSource(stream);
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 512;
+    source.connect(analyser);
+    analyserRef.current = analyser;
+    silenceTimerRef.current = 0;
+
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let lastTime = performance.now();
+
+    const check = () => {
+      analyser.getByteFrequencyData(data);
+      const rms = Math.sqrt(data.reduce((sum, v) => sum + v * v, 0) / data.length);
+      const now = performance.now();
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      if (rms < 15) {
+        silenceTimerRef.current += dt;
+        if (silenceTimerRef.current >= 2) {
+          // 2 seconds of silence → auto-stop
+          stopListening();
+          audioCtx.close();
+          return;
+        }
+      } else {
+        silenceTimerRef.current = 0;
+      }
+      rafSilenceRef.current = requestAnimationFrame(check);
+    };
+    rafSilenceRef.current = requestAnimationFrame(check);
+
+    return audioCtx;
+  };
+
+  // Start recording with MediaRecorder → Voxtral transcription
+  const startRecording = async (onTranscript: (transcript: string) => void, onError: (msg: string) => void) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      // Pick a supported mime type
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+          ? 'audio/webm'
+          : 'audio/mp4';
+
+      const recorder = new MediaRecorder(stream, { mimeType });
+      recorderRef.current = recorder;
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        // Stop silence detection
+        cancelAnimationFrame(rafSilenceRef.current);
+        // Stop mic stream
+        stream.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        if (blob.size < 1000) {
+          onError('(no speech detected — try again)');
+          return;
+        }
+
+        try {
+          setLastTranscript('(transcribing...)');
+          const transcript = await transcribeAudio(blob);
+          if (transcript) {
+            onTranscript(transcript);
+          } else {
+            onError('(no speech detected — try again)');
+          }
+        } catch (err) {
+          console.error('Transcription failed:', err);
+          onError('(transcription failed — try again or type below)');
+        }
+      };
+
+      recorder.start(250); // collect chunks every 250ms
+      setIsListening(true);
+
+      // Start silence auto-stop
+      startSilenceDetection(stream);
+    } catch (err) {
+      console.error('Microphone access error:', err);
+      onError('(microphone access denied — check browser permissions)');
+    }
+  };
+
+  // Question recording
   const startListening = () => {
     if (phase !== 'active' || isSpeaking) return;
-
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      alert('Speech recognition not supported in this browser. Try Chrome.');
-      return;
-    }
-
-    const recognition = new SR();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setIsListening(false);
-      if (transcript.trim()) {
+    setLastTranscript('');
+    startRecording(
+      (transcript) => {
+        setIsListening(false);
+        setLastTranscript(transcript);
         sendQuestion(transcript);
+      },
+      (msg) => {
+        setIsListening(false);
+        setLastTranscript(msg);
       }
-    };
-
-    recognitionRef.current = recognition;
-    recognition.start();
+    );
   };
 
   const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
+    if (recorderRef.current && recorderRef.current.state === 'recording') {
+      recorderRef.current.stop();
     }
+    cancelAnimationFrame(rafSilenceRef.current);
     setIsListening(false);
   };
 
-  // Start accusation — records voice, then evaluates
+  // Accusation recording
   const startAccusation = () => {
     if (phase !== 'active' || isSpeaking || accusationsLeft <= 0) return;
     setIsAccusing(true);
-
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      alert('Speech recognition not supported. Try Chrome.');
-      setIsAccusing(false);
-      return;
-    }
-
-    const recognition = new SR();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-
-    recognition.onstart = () => setIsListening(true);
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => { setIsListening(false); setIsAccusing(false); };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    recognition.onresult = async (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setIsListening(false);
-      if (!transcript.trim() || !caseData) {
-        setIsAccusing(false);
-        return;
-      }
-
-      setLastTranscript(transcript);
-      setPhase('processing');
-      setAccusationsLeft((prev) => prev - 1);
-
-      try {
-        const res = await fetch('/api/accuse', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            caseData,
-            conversationHistory,
-            accusation: transcript,
-          }),
-        });
-        const data = await res.json();
-
-        if (data.correct) {
-          // WIN — suspect confesses
-          if (timerRef.current) clearInterval(timerRef.current);
-          const updatedHistory: ConversationMessage[] = [
-            ...conversationHistory,
-            { role: 'user', content: `[ACCUSATION] ${transcript}` },
-            { role: 'assistant', content: data.confession },
-          ];
-          setConversationHistory(updatedHistory);
-          setLastResponse(data.confession);
-
-          sessionStorage.setItem(
-            'gameResult',
-            JSON.stringify({
-              type: 'win',
-              caseData,
-              conversationHistory: updatedHistory,
-              confession: data.confession,
-              timeRemaining: timer,
-              stressLevel,
-            })
-          );
-
-          try {
-            await speakConfession(data.confession, 10);
-          } catch {
-            // If speech fails, still navigate
-          }
-          router.push('/game/win');
-        } else {
-          // WRONG — suspect deflects
-          const updatedHistory: ConversationMessage[] = [
-            ...conversationHistory,
-            { role: 'user', content: `[ACCUSATION] ${transcript}` },
-            { role: 'assistant', content: data.confession },
-          ];
-          setConversationHistory(updatedHistory);
-          setLastResponse(data.confession);
-          await speakResponse(data.confession, stressLevel);
+    startRecording(
+      async (transcript) => {
+        setIsListening(false);
+        if (!transcript || !caseData) {
+          setIsAccusing(false);
+          return;
         }
-      } catch (err) {
-        console.error('Accusation failed:', err);
-        setPhase('active');
-      }
-      setIsAccusing(false);
-    };
 
-    recognitionRef.current = recognition;
-    recognition.start();
+        setLastTranscript(transcript);
+        setPhase('processing');
+        setAccusationsLeft((prev) => prev - 1);
+
+        try {
+          const res = await fetch('/api/accuse', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              caseData,
+              conversationHistory,
+              accusation: transcript,
+            }),
+          });
+          const data = await res.json();
+
+          if (data.correct) {
+            // WIN — suspect confesses
+            if (timerRef.current) clearInterval(timerRef.current);
+            const updatedHistory: ConversationMessage[] = [
+              ...conversationHistory,
+              { role: 'user', content: `[ACCUSATION] ${transcript}` },
+              { role: 'assistant', content: data.confession },
+            ];
+            setConversationHistory(updatedHistory);
+            setLastResponse(data.confession);
+
+            sessionStorage.setItem(
+              'gameResult',
+              JSON.stringify({
+                type: 'win',
+                caseData,
+                conversationHistory: updatedHistory,
+                confession: data.confession,
+                timeRemaining: timer,
+                stressLevel,
+              })
+            );
+
+            try {
+              await speakConfession(data.confession, 10);
+            } catch {
+              // If speech fails, still navigate
+            }
+            router.push('/game/win');
+          } else {
+            // WRONG — suspect deflects
+            const updatedHistory: ConversationMessage[] = [
+              ...conversationHistory,
+              { role: 'user', content: `[ACCUSATION] ${transcript}` },
+              { role: 'assistant', content: data.confession },
+            ];
+            setConversationHistory(updatedHistory);
+            setLastResponse(data.confession);
+            await speakResponse(data.confession, stressLevel);
+          }
+        } catch (err) {
+          console.error('Accusation failed:', err);
+          setPhase('active');
+        }
+        setIsAccusing(false);
+      },
+      (msg) => {
+        setIsListening(false);
+        setIsAccusing(false);
+        setLastTranscript(msg);
+      }
+    );
   };
 
   // Handle lose
@@ -494,33 +621,6 @@ function GameContent() {
             </div>
           </div>
 
-          {/* How to win */}
-          <div className="bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg mb-8 text-left">
-            <h3 className="text-xs uppercase tracking-[0.3em] text-[#C8A050] mb-3">How to Play</h3>
-            <div className="space-y-3 text-sm text-gray-400">
-              <p>The suspect is hiding <span className="text-[#C41E1E] font-bold">one specific lie</span> in their story. Your job is to find it.</p>
-
-              <div className="border-t border-[#2A2A2A] pt-3">
-                <p className="text-[#E8E8E8] font-bold text-xs uppercase tracking-wider mb-2">Question</p>
-                <p>Tap the <span className="text-[#E8E8E8]">mic button</span> and ask questions with your voice. Watch the <span className="text-[#E8E8E8]">stress meter</span> — it rises when your questions get close to the lie. Look for contradictions in what they say.</p>
-              </div>
-
-              <div className="border-t border-[#2A2A2A] pt-3">
-                <p className="text-[#C41E1E] font-bold text-xs uppercase tracking-wider mb-2">Accuse</p>
-                <p>When you think you know the lie, hit <span className="text-[#C41E1E] font-bold">ACCUSE</span> and say exactly what you think they lied about. Be specific — saying &ldquo;you&rsquo;re lying&rdquo; won&rsquo;t work. You need to say <span className="text-[#E8E8E8]">what</span> they lied about.</p>
-                <p className="mt-1">Example: <span className="text-[#E8E8E8] italic">&ldquo;You said you were in the office at 9pm, but the security logs show you left at 7.&rdquo;</span></p>
-              </div>
-
-              <div className="border-t border-[#2A2A2A] pt-3">
-                <p className="text-[#F59E0B] font-bold text-xs uppercase tracking-wider mb-2">Rules</p>
-                <ul className="space-y-1">
-                  <li>You have <span className="text-[#E8E8E8]">3 accusations</span>. Use them wisely.</li>
-                  <li>You have <span className="text-[#E8E8E8]">10 minutes</span> before the suspect walks.</li>
-                  <li>Use <span className="text-[#F59E0B]">hints</span> if you get stuck.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
           <button
             onClick={startInterrogation}
             className="px-8 py-4 bg-[#C41E1E] text-white text-xl font-bold rounded-lg hover:bg-red-700 transition-colors"
@@ -534,9 +634,22 @@ function GameContent() {
 
   // Active game + processing
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] font-mono flex flex-col">
+    <div
+      className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-[#2A2A2A] ${
+        settings.highContrast ? 'bg-black text-white' : 'bg-[#0A0A0A] text-[#E8E8E8]'
+      } ${
+        settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'
+      } ${settings.highContrast ? 'high-contrast' : ''}`}
+      style={{
+        fontFamily: settings.fontFamily === 'dyslexia'
+          ? '"OpenDyslexic", sans-serif'
+          : settings.fontFamily === 'sans'
+            ? 'system-ui, -apple-system, sans-serif'
+            : 'var(--font-mono)',
+      }}
+    >
       {/* Top bar — Timer + Stress */}
-      <div className="p-4 border-b border-[#2A2A2A]">
+      <div className="p-3 border-b border-[#2A2A2A] flex-shrink-0">
         <div className="flex items-center gap-6">
           {/* Timer */}
           <div
@@ -574,10 +687,10 @@ function GameContent() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
         {/* Suspect Zone — 2/3 */}
         <div
-          className="lg:col-span-2 flex flex-col items-center justify-center p-6 border-r border-[#2A2A2A] relative overflow-hidden"
+          className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-[#2A2A2A] relative overflow-hidden"
           style={{
             backgroundImage: `url(${caseData ? getSceneBg(caseData.setting) : '/bg/office.png'})`,
             backgroundSize: 'cover',
@@ -591,12 +704,12 @@ function GameContent() {
           {caseData && (
             <div className="relative z-10 flex flex-col items-center w-full">
               {/* Bust portrait — centered */}
-              <div className="mb-4">
-                <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={stressLevel} speaking={isSpeaking} />
+              <div className="mb-2">
+                <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={stressLevel} size="md" speaking={isSpeaking} />
               </div>
 
               {/* Waveform — under portrait when speaking */}
-              <div className="h-8 flex items-center justify-center mb-3">
+              <div className="h-6 flex items-center justify-center mb-2 gap-3">
                 {isSpeaking ? (
                   <div className="flex items-end gap-[3px]">
                     {Array.from({ length: 20 }).map((_, i) => {
@@ -626,36 +739,58 @@ function GameContent() {
                 )}
               </div>
 
-              {/* Dialogue box — below portrait */}
+              {/* Dialogue log — scrolling game-style */}
               <div
-                className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-4"
+                className="w-full max-w-xl max-h-[200px] overflow-y-auto border border-[#3A3A4A] rounded-sm px-4 py-3 space-y-2"
                 style={{ background: 'rgba(10, 12, 18, 0.88)' }}
               >
-                <h3 className="text-[#C8A050] font-bold text-sm mb-2 tracking-wide">
-                  {caseData.suspect_name}
-                </h3>
+                {conversationHistory
+                  .filter((msg) => !(msg.role === 'user' && msg.content.startsWith('*')))
+                  .map((msg, i) => (
+                    <p key={i} className="text-sm leading-relaxed">
+                      <span className={msg.role === 'user' ? 'text-gray-500 font-bold' : 'text-[#C8A050] font-bold'}>
+                        {msg.role === 'user' ? 'You' : caseData.suspect_name.split(' ')[0]}:
+                      </span>{' '}
+                      <span className={msg.role === 'user' ? 'text-gray-400' : 'text-[#B8B8C8]'}>
+                        {msg.content}
+                      </span>
+                    </p>
+                  ))}
 
-                {lastResponse ? (
-                  <p className="text-[#B8B8C8] text-sm leading-relaxed">
-                    {lastResponse}
-                  </p>
-                ) : phase === 'processing' ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse" />
-                    <span className="text-gray-500 text-sm">...</span>
-                  </div>
-                ) : (
-                  <p className="text-gray-600 text-sm italic">
-                    Waiting to speak...
+                {/* Live state — current interaction */}
+                {isListening && (
+                  <p className="text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-gray-500 font-bold">You:</span>
+                    <span className="w-2 h-2 bg-[#C41E1E] rounded-full animate-pulse inline-block" />
+                    <span className="text-gray-400 italic">Listening...</span>
                   </p>
                 )}
+                {!isListening && lastTranscript && lastTranscript.startsWith('(') && (
+                  <p className="text-sm leading-relaxed">
+                    <span className="text-gray-500 font-bold">You:</span>{' '}
+                    <span className="text-gray-500 italic">{lastTranscript}</span>
+                  </p>
+                )}
+                {phase === 'processing' && (
+                  <p className="text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#C8A050] font-bold">{caseData.suspect_name.split(' ')[0]}:</span>
+                    <span className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse inline-block" />
+                    <span className="text-gray-500">...</span>
+                  </p>
+                )}
+
+                {conversationHistory.length === 0 && !isListening && phase !== 'processing' && (
+                  <p className="text-gray-600 text-sm italic">Tap the mic to begin interrogation...</p>
+                )}
+
+                <div ref={dialogueEndRef} />
               </div>
             </div>
           )}
         </div>
 
         {/* Case File — 1/3 */}
-        <div className="p-6 bg-[#111111] overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="p-4 bg-[#111111] overflow-y-auto border-l border-[#2A2A2A]">
           <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">
             Case File
           </h2>
@@ -709,7 +844,7 @@ function GameContent() {
                         key={i}
                         className="p-3 bg-[#1A1A1A] rounded border-l-2 border-[#F59E0B]"
                       >
-                        <p className="text-sm text-gray-300">{trigger}</p>
+                        <p className="text-sm text-gray-300">Try asking about: {trigger}</p>
                       </div>
                     ))}
                   </div>
@@ -722,11 +857,14 @@ function GameContent() {
                 </h3>
                 <div className="space-y-2">
                   {conversationHistory
-                    .filter((msg) => msg.role === 'user' && !msg.content.startsWith('*'))
+                    .filter((msg) => !(msg.role === 'user' && msg.content.startsWith('*')))
                     .map((msg, i) => (
-                      <p key={i} className="text-xs text-gray-500">
-                        &gt; {msg.content}
-                      </p>
+                      <div key={i} className={`text-xs ${msg.role === 'user' ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <span className={msg.role === 'user' ? 'text-gray-500' : 'text-[#C8A050]'}>
+                          {msg.role === 'user' ? 'You' : caseData?.suspect_name?.split(' ')[0] ?? 'Suspect'}:
+                        </span>{' '}
+                        {msg.content}
+                      </div>
                     ))}
                 </div>
               </div>
@@ -735,62 +873,257 @@ function GameContent() {
         </div>
       </div>
 
-      {/* Bottom controls */}
-      <div className="p-4 border-t border-[#2A2A2A] flex items-center justify-between gap-4">
-        {/* Left — Exit + Hint */}
-        <div className="flex flex-col gap-2 min-w-[100px]">
-          <button
-            onClick={() => {
-              if (timerRef.current) clearInterval(timerRef.current);
-              if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-              speechSynthesis.cancel();
-              router.push('/cases');
-            }}
-            className="px-3 py-1.5 text-xs uppercase tracking-wider text-gray-500 hover:text-[#E8E8E8] border border-[#2A2A2A] hover:border-[#C41E1E] rounded-sm transition-colors"
-          >
-            Exit
-          </button>
-          <button
-            onClick={() => {
-              if (caseData && hintsUsed < caseData.stress_triggers.length) {
-                setHintsUsed((prev) => prev + 1);
+      {/* Text input — floating above dock */}
+      {showTextInput && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 w-full max-w-2xl px-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (textInput.trim() && phase === 'active' && !isSpeaking && !isAccusing) {
+                sendQuestion(textInput.trim());
+                setTextInput('');
               }
             }}
-            disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
-            className={`px-3 py-1.5 text-xs uppercase tracking-wider rounded-sm border transition-colors ${
-              !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
-                ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
-                : 'text-[#F59E0B] border-[#2A2A2A] hover:border-[#F59E0B] hover:text-[#E8E8E8]'
-            }`}
+            className="flex items-center gap-2 bg-[#1A1A1A]/95 backdrop-blur-sm border border-[#2A2A2A] rounded-xl px-3 py-2 shadow-2xl"
           >
-            Hint {hintsUsed}/{caseData?.stress_triggers?.length ?? 0}
-          </button>
+            <input
+              type="text"
+              value={textInput}
+              onChange={(e) => setTextInput(e.target.value)}
+              placeholder={phase === 'active' && !isSpeaking ? 'Type a question and press Enter...' : '...'}
+              disabled={phase !== 'active' || isSpeaking || isAccusing}
+              autoFocus
+              className="flex-1 bg-transparent px-2 py-1 text-sm text-[#E8E8E8] placeholder-gray-600 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+            />
+            <button
+              type="submit"
+              disabled={!textInput.trim() || phase !== 'active' || isSpeaking || isAccusing}
+              className="px-3 py-1.5 text-xs uppercase tracking-wider bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8] hover:bg-[#3A3A3A] rounded-lg border border-[#2A2A2A] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Ask
+            </button>
+          </form>
         </div>
+      )}
 
-        {/* Center — Mic + status */}
-        <div className="flex flex-col items-center">
+      {/* Notes — draggable floating panel */}
+      {showNotes && (
+        <div
+          className="absolute z-30 w-[400px] bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl"
+          style={{
+            left: notesPos ? notesPos.x : '50%',
+            top: notesPos ? notesPos.y : '50%',
+            transform: notesPos ? 'none' : 'translate(-50%, -50%)',
+          }}
+        >
+          <div
+            className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A] cursor-grab active:cursor-grabbing select-none"
+            onMouseDown={(e) => {
+              const panel = e.currentTarget.parentElement!;
+              const rect = panel.getBoundingClientRect();
+              const parentRect = panel.offsetParent!.getBoundingClientRect();
+              dragRef.current = {
+                startX: e.clientX,
+                startY: e.clientY,
+                origX: rect.left - parentRect.left,
+                origY: rect.top - parentRect.top,
+              };
+              const onMove = (ev: MouseEvent) => {
+                if (!dragRef.current) return;
+                setNotesPos({
+                  x: dragRef.current.origX + (ev.clientX - dragRef.current.startX),
+                  y: dragRef.current.origY + (ev.clientY - dragRef.current.startY),
+                });
+              };
+              const onUp = () => {
+                dragRef.current = null;
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+              };
+              window.addEventListener('mousemove', onMove);
+              window.addEventListener('mouseup', onUp);
+            }}
+          >
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Detective Notes</span>
+            <button
+              onClick={() => setShowNotes(false)}
+              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            autoFocus
+            placeholder="Write your notes here..."
+            className="w-full h-[300px] bg-transparent px-4 py-3 font-mono text-sm leading-relaxed text-[#E8E8E8] placeholder-gray-600 focus:outline-none resize-none"
+          />
+        </div>
+      )}
+
+      {/* Popover confirmations */}
+      {showExitConfirm && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-[#1A1A1A] border border-[#C41E1E] rounded-sm p-3 w-48 z-40">
+          <p className="text-xs text-gray-300 mb-3">Abandon this case?</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                if (timerRef.current) clearInterval(timerRef.current);
+                if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+                speechSynthesis.cancel();
+                router.push('/cases');
+              }}
+              className="flex-1 px-2 py-1.5 text-xs font-bold uppercase bg-[#C41E1E] text-white rounded-sm hover:bg-red-700 transition-colors"
+            >
+              Leave
+            </button>
+            <button
+              onClick={() => setShowExitConfirm(false)}
+              className="flex-1 px-2 py-1.5 text-xs uppercase text-gray-400 border border-[#2A2A2A] rounded-sm hover:text-[#E8E8E8] transition-colors"
+            >
+              Stay
+            </button>
+          </div>
+        </div>
+      )}
+      {showAccuseConfirm && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-[#1A1A1A] border border-[#C41E1E] rounded-sm p-3 w-64 z-40">
+          <p className="text-xs text-gray-300 mb-3">
+            You have <span className="text-[#C41E1E] font-bold">{accusationsLeft}</span> attempt{accusationsLeft !== 1 ? 's' : ''} left. State exactly what you think they lied about.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setShowAccuseConfirm(false); startAccusation(); }}
+              className="flex-1 px-2 py-1.5 text-xs font-bold uppercase bg-[#C41E1E] text-white rounded-sm hover:bg-red-700 transition-colors"
+            >
+              Accuse
+            </button>
+            <button
+              onClick={() => setShowAccuseConfirm(false)}
+              className="flex-1 px-2 py-1.5 text-xs uppercase text-gray-400 border border-[#2A2A2A] rounded-sm hover:text-[#E8E8E8] transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Settings panel */}
+      {showSettings && (
+        <div className="absolute bottom-20 right-4 z-40 w-[320px] bg-[#111111] border border-[#2A2A2A] rounded-sm shadow-2xl">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-[#2A2A2A]">
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Settings</span>
+            <button
+              onClick={() => setShowSettings(false)}
+              className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#E8E8E8] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div className="p-4 space-y-4">
+            {/* Voice */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-300">Voice (TTS)</span>
+              <button
+                onClick={() => setSettings((s) => ({ ...s, ttsEnabled: !s.ttsEnabled }))}
+                className={`w-10 h-5 rounded-full transition-colors relative ${
+                  settings.ttsEnabled ? 'bg-[#C41E1E]' : 'bg-[#2A2A2A]'
+                }`}
+              >
+                <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
+                  settings.ttsEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                }`} />
+              </button>
+            </div>
+
+            {/* Font Size */}
+            <div>
+              <span className="text-sm text-gray-300 block mb-2">Text Size</span>
+              <div className="flex gap-1">
+                {(['small', 'medium', 'large'] as const).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSettings((s) => ({ ...s, fontSize: size }))}
+                    className={`flex-1 px-2 py-1.5 text-xs uppercase tracking-wider rounded-sm transition-colors ${
+                      settings.fontSize === size
+                        ? 'bg-[#C41E1E] text-white'
+                        : 'bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8]'
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Font Family */}
+            <div>
+              <span className="text-sm text-gray-300 block mb-2">Font</span>
+              <div className="flex gap-1">
+                {([
+                  { key: 'mono', label: 'Mono' },
+                  { key: 'dyslexia', label: 'Dyslexia' },
+                  { key: 'sans', label: 'Sans' },
+                ] as const).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setSettings((s) => ({ ...s, fontFamily: key }))}
+                    className={`flex-1 px-2 py-1.5 text-xs uppercase tracking-wider rounded-sm transition-colors ${
+                      settings.fontFamily === key
+                        ? 'bg-[#C41E1E] text-white'
+                        : 'bg-[#2A2A2A] text-gray-400 hover:text-[#E8E8E8]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* High Contrast */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-300">High Contrast</span>
+              <button
+                onClick={() => setSettings((s) => ({ ...s, highContrast: !s.highContrast }))}
+                className={`w-10 h-5 rounded-full transition-colors relative ${
+                  settings.highContrast ? 'bg-[#C41E1E]' : 'bg-[#2A2A2A]'
+                }`}
+              >
+                <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${
+                  settings.highContrast ? 'translate-x-5' : 'translate-x-0.5'
+                }`} />
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* === DOCK === */}
+      <div className="flex-shrink-0 flex justify-center p-3 border-t border-[#2A2A2A]">
+        <div className="flex items-end gap-1 px-3 py-2 bg-[#1A1A1A]/80 backdrop-blur-sm border border-[#2A2A2A] rounded-2xl">
+          {/* Speak */}
           <button
             onClick={isListening ? stopListening : startListening}
             disabled={phase === 'processing' || isSpeaking || isAccusing}
-            className={`w-20 h-20 rounded-full flex items-center justify-center transition-all ${
-              isListening && !isAccusing
-                ? 'bg-[#C41E1E] scale-110 shadow-[0_0_30px_rgba(196,30,30,0.5)]'
-                : phase === 'processing' || isSpeaking || isAccusing
-                  ? 'bg-[#2A2A2A] opacity-50 cursor-not-allowed'
-                  : 'bg-[#2A2A2A] hover:bg-[#3A3A3A] hover:scale-105'
-            }`}
+            data-tooltip="Speak"
+            className={`dock-icon ${
+              isListening
+                ? 'bg-[#C41E1E] text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
+                : 'bg-[#2A2A2A] text-[#E8E8E8]'
+            } ${phase === 'processing' || isSpeaking || isAccusing ? 'opacity-40 cursor-not-allowed' : ''}`}
           >
-            {isListening && !isAccusing ? (
-              <div className="w-6 h-6 bg-white rounded-sm" />
+            {isListening ? (
+              <div className="w-4 h-4 bg-white rounded-sm" />
             ) : (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                 <line x1="12" y1="19" x2="12" y2="23" />
@@ -799,43 +1132,122 @@ function GameContent() {
             )}
           </button>
 
-          <p className="mt-2 text-xs uppercase tracking-wider text-gray-500">
-            {isAccusing && isListening
-              ? 'State your accusation...'
-              : isListening
-                ? 'Listening...'
-                : isSpeaking
-                  ? 'Suspect speaking...'
-                  : phase === 'processing'
-                    ? isAccusing ? 'Evaluating accusation...' : 'Processing...'
-                    : 'Tap to ask'}
-          </p>
-
-          {lastTranscript && !isListening && (
-            <p className="mt-1 text-xs text-gray-600">
-              You said: &ldquo;{lastTranscript}&rdquo;
-            </p>
-          )}
-        </div>
-
-        {/* Right — ACCUSE button */}
-        <div className="flex flex-col items-end min-w-[100px]">
+          {/* Type */}
           <button
-            onClick={startAccusation}
-            disabled={phase === 'processing' || isSpeaking || isAccusing || accusationsLeft <= 0}
-            className={`px-4 py-3 text-sm font-bold uppercase tracking-wider rounded-sm border-2 transition-all ${
-              accusationsLeft <= 0
-                ? 'text-gray-600 border-[#1A1A1A] cursor-not-allowed'
-                : isAccusing
-                  ? 'text-white bg-[#C41E1E] border-[#C41E1E] animate-pulse'
-                  : 'text-[#C41E1E] border-[#C41E1E] hover:bg-[#C41E1E] hover:text-white'
+            onClick={() => setShowTextInput(!showTextInput)}
+            data-tooltip="Type"
+            className={`dock-icon ${
+              showTextInput
+                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
+                : 'bg-[#2A2A2A] text-gray-500'
             }`}
           >
-            {isAccusing ? 'Accusing...' : 'Accuse'}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <line x1="6" y1="8" x2="6" y2="8" />
+              <line x1="10" y1="8" x2="10" y2="8" />
+              <line x1="14" y1="8" x2="14" y2="8" />
+              <line x1="18" y1="8" x2="18" y2="8" />
+              <line x1="6" y1="12" x2="6" y2="12" />
+              <line x1="10" y1="12" x2="10" y2="12" />
+              <line x1="14" y1="12" x2="14" y2="12" />
+              <line x1="18" y1="12" x2="18" y2="12" />
+              <line x1="8" y1="16" x2="16" y2="16" />
+            </svg>
           </button>
-          <p className="mt-1 text-xs text-gray-600">
-            {accusationsLeft} attempt{accusationsLeft !== 1 ? 's' : ''} left
-          </p>
+
+          {/* Notes */}
+          <button
+            onClick={() => setShowNotes(!showNotes)}
+            data-tooltip="Notes"
+            className={`dock-icon ${
+              showNotes
+                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
+                : 'bg-[#2A2A2A] text-gray-500'
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-8 bg-[#2A2A2A] mx-1" />
+
+          {/* Hint */}
+          <button
+            onClick={() => {
+              if (caseData && hintsUsed < caseData.stress_triggers.length) {
+                setHintsUsed((prev) => prev + 1);
+              }
+            }}
+            disabled={!caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)}
+            data-tooltip={`Hint (${hintsUsed}/${caseData?.stress_triggers?.length ?? 0})`}
+            className={`dock-icon ${
+              !caseData || hintsUsed >= (caseData?.stress_triggers?.length ?? 0)
+                ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
+                : 'bg-[#2A2A2A] text-[#F59E0B]'
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </button>
+
+          {/* Accuse */}
+          <button
+            onClick={() => setShowAccuseConfirm(true)}
+            disabled={phase === 'processing' || isSpeaking || isAccusing || accusationsLeft <= 0 || showAccuseConfirm}
+            data-tooltip={`Accuse (${accusationsLeft})`}
+            className={`dock-icon ${
+              accusationsLeft <= 0
+                ? 'bg-[#1A1A1A] text-gray-700 cursor-not-allowed'
+                : isAccusing
+                  ? 'bg-[#C41E1E] text-white animate-pulse'
+                  : 'bg-[#2A2A2A] text-[#C41E1E]'
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-8 bg-[#2A2A2A] mx-1" />
+
+          {/* Settings */}
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            data-tooltip="Settings"
+            className={`dock-icon ${
+              showSettings
+                ? 'bg-[#2A2A2A] text-[#E8E8E8] ring-1 ring-[#C8A050]'
+                : 'bg-[#2A2A2A] text-gray-500'
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </button>
+
+          {/* Exit */}
+          <button
+            onClick={() => setShowExitConfirm(true)}
+            data-tooltip="Exit"
+            className="dock-icon bg-[#2A2A2A] text-gray-500"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
