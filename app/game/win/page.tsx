@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
 import { formatTime, shareResult } from '../components/utils';
 import InitialsEntry from './InitialsEntry';
+import TranscriptViewer from '../components/TranscriptViewer';
+import { saveCaseResult } from '../../data/case-history';
 
 interface GameResult {
   caseData: {
@@ -82,6 +84,7 @@ function WinContent() {
   const [playerInitials, setPlayerInitials] = useState<string | null>(null);
   const [showInitials, setShowInitials] = useState(false);
   const [shareLabel, setShareLabel] = useState('SHARE');
+  const [showTranscript, setShowTranscript] = useState(false);
   const scoreFrameRef = useRef<number>(0);
   const timeFrameRef = useRef<number>(0);
 
@@ -109,6 +112,25 @@ function WinContent() {
       if (!solved.includes(solvedId)) {
         localStorage.setItem('solvedCases', JSON.stringify([...solved, solvedId]));
       }
+    } catch { /* private browsing */ }
+
+    // Track case history
+    try {
+      const diff = DIFFICULTY_CONFIG[parsed.difficulty] || DIFFICULTY_CONFIG.medium;
+      const timeRatio = Math.max(0, 1 - parsed.timeElapsed / (diff.parTime * 2));
+      const timeScore = Math.round(1000 * Math.sqrt(timeRatio));
+      const hintsUsed = parsed.hintsUsed ?? 0;
+      const hintMul = Math.pow(0.85, hintsUsed);
+      const wrongAcc = Math.max(0, (parsed.accusationsUsed ?? 1) - 1);
+      const accMul = Math.max(0, 1 - wrongAcc * 0.1);
+      const score = Math.round(Math.max(0, timeScore * diff.multiplier * hintMul * accMul));
+      saveCaseResult({
+        setting: parsed.caseData.setting || '',
+        won: true,
+        score,
+        difficulty: parsed.difficulty || 'medium',
+        timestamp: Date.now(),
+      });
     } catch { /* private browsing */ }
 
     fetch('/api/evaluate', {
@@ -510,9 +532,25 @@ function WinContent() {
             >
               {shareLabel}
             </button>
+            <button
+              onClick={() => setShowTranscript(true)}
+              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+            >
+              TRANSCRIPT
+            </button>
           </div>
         </motion.div>
       </div>
+      {/* Transcript overlay */}
+      <AnimatePresence>
+        {showTranscript && (
+          <TranscriptViewer
+            conversationHistory={result.conversationHistory}
+            suspectName={result.caseData.suspect_name}
+            onClose={() => setShowTranscript(false)}
+          />
+        )}
+      </AnimatePresence>
       {/* HIGH SCORE overlay — arcade style, appears after user sees total score */}
       <AnimatePresence>
         {showInitials && breakdown && (

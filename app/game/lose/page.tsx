@@ -6,6 +6,8 @@ import { Suspense } from 'react';
 import { Spinner } from '../../components/ui';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
 import { shareResult } from '../components/utils';
+import TranscriptViewer from '../components/TranscriptViewer';
+import { saveCaseResult } from '../../data/case-history';
 
 interface GameResult {
   caseData: {
@@ -43,6 +45,7 @@ function LoseContent() {
   const [result, setResult] = useState<GameResult | null>(null);
   const [stampVisible, setStampVisible] = useState(false);
   const [shareLabel, setShareLabel] = useState('SHARE');
+  const [showTranscript, setShowTranscript] = useState(false);
   const [summary, setSummary] = useState<{
     detective_rating: string;
     the_lie_revealed: string;
@@ -59,6 +62,17 @@ function LoseContent() {
     setResult(parsed);
 
     setTimeout(() => setStampVisible(true), 300);
+
+    // Track case history
+    try {
+      const diff = searchParams.get('difficulty') || 'medium';
+      saveCaseResult({
+        setting: parsed.caseData.setting || '',
+        won: false,
+        difficulty: diff,
+        timestamp: Date.now(),
+      });
+    } catch { /* private browsing */ }
 
     fetch('/api/evaluate', {
       method: 'POST',
@@ -261,9 +275,25 @@ function LoseContent() {
             >
               {shareLabel}
             </button>
+            <button
+              onClick={() => setShowTranscript(true)}
+              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+            >
+              TRANSCRIPT
+            </button>
           </div>
         </motion.div>
       </div>
+      {/* Transcript overlay */}
+      <AnimatePresence>
+        {showTranscript && (
+          <TranscriptViewer
+            conversationHistory={result.conversationHistory}
+            suspectName={result.caseData.suspect_name}
+            onClose={() => setShowTranscript(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

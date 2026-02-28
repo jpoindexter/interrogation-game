@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
 import { CASES, DIFFICULTY_CONFIG } from '../data/cases';
+import { getCaseStats, type CaseStats } from '../data/case-history';
 import {
   motion,
   PageMotion,
@@ -18,12 +19,16 @@ import {
 export default function CaseSelectPage() {
   const router = useRouter();
   const [solvedCases, setSolvedCases] = useState<string[]>([]);
+  const [stats, setStats] = useState<CaseStats | null>(null);
 
   useEffect(() => {
     try {
       const solved = JSON.parse(localStorage.getItem('solvedCases') || '[]');
       setSolvedCases(solved);
     } catch { /* private browsing or corrupt data */ }
+    try {
+      setStats(getCaseStats());
+    } catch { /* private browsing */ }
   }, []);
 
   const selectCase = (setting: string, difficulty: string) => {
@@ -38,6 +43,27 @@ export default function CaseSelectPage() {
       <PageMotion>
         <div className="max-w-6xl mx-auto px-6 py-12">
           <PageHeader label="Select Location" title="CHOOSE YOUR CASE" />
+
+          {/* Stats bar — only visible with history */}
+          {stats && (
+            <motion.div
+              className="flex flex-wrap items-center gap-x-6 gap-y-1 mb-6 text-xs text-gray-500 uppercase tracking-wider"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ ...smooth, delay: 0.15 }}
+            >
+              <span>{stats.totalPlayed} case{stats.totalPlayed !== 1 ? 's' : ''} played</span>
+              <span className="hidden sm:inline text-gray-700">|</span>
+              <span>Win rate: <span className="text-gray-400">{stats.winRate}%</span></span>
+              {stats.bestScore !== null && (
+                <>
+                  <span className="hidden sm:inline text-gray-700">|</span>
+                  <span>Best score: <span className="text-gold">{stats.bestScore.toLocaleString()}</span></span>
+                </>
+              )}
+            </motion.div>
+          )}
 
           {/* Case grid */}
           <motion.div
