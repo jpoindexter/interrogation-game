@@ -65,10 +65,16 @@ export async function POST(request: NextRequest) {
       updateStress(session.id, response.stress_level as number);
 
       // Track clues server-side so client can't skip ahead to accusation
-      if (response.clue_unlocked) {
+      // Skip clue on opening message (starts with *)
+      const isOpening = sanitized.startsWith('*');
+      if (response.clue_unlocked && !isOpening) {
         incrementClue(session.id);
       }
 
+      // Strip clue from opening so client never sees it
+      if (isOpening && response.clue_unlocked) {
+        response.clue_unlocked = null;
+      }
       return NextResponse.json(response);
     } finally {
       releaseSessionLock(session.id);

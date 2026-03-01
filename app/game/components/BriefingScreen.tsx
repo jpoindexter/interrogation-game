@@ -87,6 +87,17 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
             </div>
           ))}
         </motion.div>
+
+        <motion.button
+          onClick={onStart}
+          className="mt-8 px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors"
+          variants={fadeUp}
+          transition={smooth}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          Begin Interrogation
+        </motion.button>
       </motion.div>
 
       <TapePlayer onClick={() => setShowBriefing(true)} />

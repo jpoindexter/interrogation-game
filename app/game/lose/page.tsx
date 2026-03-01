@@ -233,7 +233,7 @@ function LoseContent() {
                 sessionStorage.removeItem('gameResult');
                 router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${difficulty}`);
               }}
-              className="px-8 py-4 bg-accent text-white font-bold rounded-sm hover:bg-accent-hover transition-colors text-center"
+              className="px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors text-center"
             >
               RETRY CASE
             </button>
@@ -244,14 +244,14 @@ function LoseContent() {
                   const easier = difficulty === 'expert' ? 'hard' : difficulty === 'hard' ? 'medium' : 'easy';
                   router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${easier}`);
                 }}
-                className="px-8 py-4 bg-gold text-black font-bold rounded-sm hover:bg-gold-hover transition-colors text-center"
+                className="px-8 py-3 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors text-center"
               >
                 TRY EASIER
               </button>
             )}
             <button
               onClick={() => { sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
-              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
             >
               OTHER CASES
             </button>
@@ -267,13 +267,13 @@ function LoseContent() {
                   setTimeout(() => setShareLabel('SHARE'), 2000);
                 }
               }}
-              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
             >
               {shareLabel}
             </button>
             <button
               onClick={() => setShowTranscript(true)}
-              className="px-8 py-4 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
             >
               TRANSCRIPT
             </button>

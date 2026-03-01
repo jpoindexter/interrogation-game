@@ -54,11 +54,10 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
           <div className="absolute inset-0 bg-black/70" onClick={onClose} />
           <div className="relative flex items-start justify-center gap-5">
             <motion.div
-              className="relative max-w-lg w-full rounded-sm p-6 pl-10 text-left"
+              className="relative rounded-sm p-6 pl-10 text-left flex flex-col w-[32rem] h-[36rem]"
               style={{
                 background: 'repeating-linear-gradient(transparent, transparent 19px, rgba(100,140,180,0.2) 19px, rgba(100,140,180,0.2) 20px), linear-gradient(180deg, #F5E6A3 0%, #EDD98B 100%)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
-                minHeight: '420px',
               }}
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
@@ -77,25 +76,23 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
                 <p className="text-xs uppercase tracking-[0.3em] text-red-800 font-bold">Case Briefing</p>
               </div>
 
-              <div className="mb-4 min-h-[280px]">
+              <div className="flex-1 overflow-y-auto mb-4">
                 <SectionedText sections={sections} charIndex={charIndex} />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
                   <button onClick={onClose} className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wider transition-colors">Close</button>
                   {charIndex < fullText.length && (
                     <button onClick={onSkip} className="text-xs text-gray-500 hover:text-gray-900 uppercase tracking-wider transition-colors">Skip</button>
                   )}
                 </div>
-                <motion.button
+                <button
                   onClick={onStart}
-                  className="px-5 py-2 bg-accent text-white text-xs font-bold rounded hover:bg-red-700 transition-colors uppercase tracking-wider"
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
+                  className="text-xs text-red-800 hover:text-red-900 uppercase tracking-wider font-bold transition-colors underline underline-offset-2"
                 >
-                  Begin Interrogation
-                </motion.button>
+                  Begin Interrogation &rarr;
+                </button>
               </div>
             </motion.div>
 

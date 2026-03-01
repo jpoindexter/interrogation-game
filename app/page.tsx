@@ -137,7 +137,7 @@ export default function HomePage() {
           <img
             src="/logo/main3.png"
             alt="INTERROGATION"
-            className="w-[500px] md:w-[640px] max-w-full"
+            className="w-[600px] md:w-[780px] max-w-full"
             style={{
               imageRendering: 'pixelated',
               animation: 'flicker 4s infinite',
@@ -176,7 +176,7 @@ export default function HomePage() {
         >
           <motion.button
             onClick={() => router.push('/cases')}
-            className="px-10 py-3 bg-accent hover:bg-accent-hover text-white text-sm font-bold uppercase tracking-[0.2em] rounded-sm transition-colors"
+            className="px-8 py-3 bg-accent hover:bg-accent-hover text-white text-xs font-bold uppercase tracking-wider rounded-sm transition-colors"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             transition={snappy}
@@ -186,7 +186,7 @@ export default function HomePage() {
         </motion.div>
 
         {/* Sponsors + footer — pinned to bottom */}
-        <div className="absolute bottom-6 left-0 right-0 z-10 flex flex-col items-center gap-3 px-6">
+        <div className="absolute bottom-12 left-0 right-0 z-10 flex flex-col items-center gap-5 px-6">
           <motion.div
             className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 max-w-3xl"
             variants={stagger(0.05)}

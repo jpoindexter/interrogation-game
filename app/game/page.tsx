@@ -133,7 +133,7 @@ function GameContent() {
       setLastResponse(data.spoken_response);
       setStressLevel(data.stress_level ?? 0);
       setMaxStress((prev) => Math.max(prev, data.stress_level ?? 0));
-      if (data.clue_unlocked) {
+      if (data.clue_unlocked && !isOpening) {
         setClues((prev) => {
           if (prev.includes(data.clue_unlocked)) return prev;
           const next = [...prev, data.clue_unlocked];

@@ -7,7 +7,7 @@ export default function NotFound() {
       <PageMotion className="max-w-md text-center">
         <h1 className="text-6xl font-bold text-accent mb-2">404</h1>
         <p className="text-xl text-gray-400 mb-6">Case not found.</p>
-        <Link href="/" className="px-6 py-3 bg-surface text-foreground font-bold rounded-sm hover:bg-surface-hover transition-colors inline-block">
+        <Link href="/" className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors inline-block">
           Back to HQ
         </Link>
       </PageMotion>

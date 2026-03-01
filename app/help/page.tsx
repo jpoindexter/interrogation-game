@@ -220,8 +220,8 @@ export default function HelpPage() {
           </motion.div>
 
           <motion.div className="flex gap-4 justify-center" variants={stagger(0.1)} initial="hidden" animate="visible">
-            <motion.button onClick={() => router.push('/cases')} className="px-8 py-4 bg-accent text-white font-bold rounded-lg hover:bg-red-700 transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>PLAY</motion.button>
-            <motion.button onClick={() => router.push('/')} className="px-8 py-4 bg-surface text-white font-bold rounded-lg hover:bg-surface-hover transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>BACK</motion.button>
+            <motion.button onClick={() => router.push('/cases')} className="px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>PLAY</motion.button>
+            <motion.button onClick={() => router.push('/')} className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>BACK</motion.button>
           </motion.div>
         </div>
       </PageMotion>
