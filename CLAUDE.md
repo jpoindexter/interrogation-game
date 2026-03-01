@@ -47,7 +47,10 @@ interrogation/
 │   │   ├── hooks/
 │   │   │   ├── useVoiceRecorder.ts   # MediaRecorder + silence detection + transcription
 │   │   │   ├── useTTS.ts            # ElevenLabs + browser fallback, voice selection, skip
-│   │   │   └── useGameTimer.ts       # Count-up timer with pause during TTS/processing
+│   │   │   ├── useGameTimer.ts       # Count-up timer with pause during TTS/processing
+│   │   │   ├── useSfx.ts            # Sound effects — cached Audio elements, master volume, fade envelopes
+│   │   │   ├── useSettings.ts       # Game settings (TTS, music/SFX volume, font, contrast)
+│   │   │   └── useBriefingTTS.ts    # Briefing narration TTS with typewriter sync
 │   │   ├── components/
 │   │   │   ├── utils.ts              # EVIDENCE_ICONS, pickRandomIcons, getSceneBg, DIFFICULTY_CLUES, formatTime
 │   │   │   ├── TopBar.tsx            # Timer (counts up) + stress meter
@@ -96,6 +99,8 @@ interrogation/
 │   ├── sponsors/                     # Hackathon sponsor logos (11 .webp files)
 │   ├── solved/                       # APPREHENDED (caught.png) + ESCAPED (escaped.png) images
 │   ├── detective/                    # Detective background art
+│   ├── efx/                           # Sound effects — all mono 22kHz 48kbps MP3, trimmed to <1s each
+│   ├── music/                         # Background music tracks (menu + game pools)
 │   ├── ui/                           # UI assets (logos)
 │   └── logo/                         # Game logos
 ├── scripts/
@@ -147,6 +152,16 @@ accusePenalty = max(0, 1 − wrongAccusations × 0.1)  (−10% each)
 - Badge notification pops center-screen with `clueReveal` animation
 - Evidence icons shown in sidebar — grayscale until unlocked
 - Accuse button locked until all clues collected
+
+### Sound System
+- **useSfx hook** (`app/game/hooks/useSfx.ts`): Central SFX manager with Audio element caching, master volume scaling from settings, and per-sound fade envelopes
+- All audio files are mono 22kHz 48kbps MP3, trimmed to exact needed duration (<1s each, ~160KB total)
+- Every sound has a fade config (delay + duration) — nothing plays uncontrolled
+- Volume tiers: UI clicks 0.15, paper 0.12, dramatic 0.18-0.22, ambient 0.06-0.08
+- Inline `playSfx`/`clickSfx` helpers outside game pages read `sfxVolume` from localStorage
+- Speaker/mute button mutes both music AND SFX, restores both on unmute
+- Ambient system: clock ticks every ~12s, nervous fidgeting sounds at stress >= 6 (probability scales with stress)
+- Music: crossfade between menu/game pools (sequential fade out 2s → fade in 2s), track-ended auto-advances
 
 ### Key Mechanic: Never Confess
 The AI is instructed to NEVER confess or admit lying, even at stress 9. The player wins by making a specific accusation that the judge AI evaluates separately. This prevents auto-confess and forces genuine detective work.
