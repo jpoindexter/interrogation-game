@@ -109,15 +109,13 @@ export async function POST(request: NextRequest) {
       addMessage(session.id, 'user', sanitized);
       addMessage(session.id, 'assistant', (response.spoken_response as string) || '');
 
-      // --- STRESS CLAMPING ---
-      // Max +1 per exchange — suspect doesn't crack from a single question
-      // Floor: stress can never decrease — prevents AI from gaming clue gates
+      // Max +1 per exchange, floor = current (stress never decreases)
       const stressVal = response.stress_level as number;
       const clampedStress = Math.max(currentStress, Math.min(stressVal, currentStress + 1));
       response.stress_level = clampedStress;
       updateStress(session.id, clampedStress);
 
-      // --- CLUE GATING (server-enforced, AI cannot override) ---
+      // Server-enforced clue gating
       const maxClues = DIFFICULTY_CLUES[difficulty] || 3;
       const nextClueNumber = session.cluesCollected + 1;
       const minQuestions = MIN_QUESTIONS_FOR_CLUES[difficulty] ?? 4;
@@ -141,7 +139,7 @@ export async function POST(request: NextRequest) {
         incrementClue(session.id);
       }
 
-      // --- OUTPUT SCANNING: block responses that leak case secrets ---
+      // Block responses that leak case secrets
       const caseSecrets = [
         session.caseData.the_lie as string,
         session.caseData.the_truth as string,
@@ -153,8 +151,7 @@ export async function POST(request: NextRequest) {
         if (response.clue_unlocked) response.clue_unlocked = null;
       }
 
-      // --- LAWYER-UP: unlimited mode + hard/expert only ---
-      // 4 consecutive exchanges at stress 8+ = suspect calls a lawyer and game ends
+      // 4 consecutive exchanges at stress 8+ = lawyer-up (unlimited hard/expert only)
       const lawyerEligible = session.timerMode === 'unlimited' && (difficulty === 'hard' || difficulty === 'expert');
       const lawyeredUp = lawyerEligible && updateHighStressStreak(session.id, clampedStress);
 
