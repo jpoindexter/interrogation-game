@@ -92,7 +92,7 @@ export async function interrogate(
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
 
   const clueThresholds = Array.from({ length: clueCount }, (_, i) => {
-    const stress = Math.round(1 + (i * 8) / clueCount);
+    const stress = Math.round(2 + (i * 6) / Math.max(1, clueCount - 1));
     const isFirst = i === 0;
     const isLast = i === clueCount - 1;
     let desc: string;
@@ -316,7 +316,11 @@ Instead, reference your specific role, situation, or personality. Examples:
 Your opening should reflect your role (${caseData.suspect_role}), your setting (${caseData.setting}), and your personality at ${difficulty.toUpperCase()} difficulty.`;
 
   const adaptiveSection = buildAdaptiveBehavior(questionCount ?? 0, currentStress ?? 0);
-  const safeTactics = (learnedTactics || []).map(t => t.replace(/["\n\r\\]/g, ' ').slice(0, 200));
+  const { sanitizeInput, isInjectionAttempt } = require('../sanitize');
+  const safeTactics = (learnedTactics || [])
+    .filter(t => t.length > 10 && !isInjectionAttempt(t))
+    .map(t => sanitizeInput(t.replace(/["\n\r\\]/g, ' ')).slice(0, 200))
+    .filter(Boolean);
   const learnedSection = safeTactics.length > 0
     ? `\n\n---\n\nCROSS-INTERROGATION INTELLIGENCE — Previous detectives have used these tactics against suspects like you. Be prepared to deflect them:\n${safeTactics.map((t, i) => `${i + 1}. "${t}"`).join('\n')}\n\nYou've heard variations of these questions before. When you recognize one of these approaches, deflect MORE skillfully than usual — you've had time to prepare counter-responses. But don't reference other interrogations directly.`
     : '';

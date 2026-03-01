@@ -21,6 +21,8 @@ export interface GameSession {
   totalPriorGames: number;
   /** Consecutive exchanges where stress stayed at 8+ (for lawyer-up mechanic) */
   highStressStreak: number;
+  /** Timer mode set at session creation — prevents client header spoofing */
+  timerMode: 'countdown' | 'unlimited';
 }
 
 interface WinTokenEntry {
@@ -43,7 +45,7 @@ const sessions = globalSessions.__gameSessions;
 const SESSION_TTL = 60 * 60 * 1000; // 1 hour
 const MAX_SESSIONS = 5000;
 
-export function createSession(caseData: Record<string, unknown>, learnedTactics: string[] = [], totalPriorGames = 0): string {
+export function createSession(caseData: Record<string, unknown>, learnedTactics: string[] = [], totalPriorGames = 0, timerMode: 'countdown' | 'unlimited' = 'countdown'): string {
   if (sessions.size >= MAX_SESSIONS) {
     pruneOldest(Math.floor(MAX_SESSIONS * 0.2));
   }
@@ -66,6 +68,7 @@ export function createSession(caseData: Record<string, unknown>, learnedTactics:
     learnedTactics,
     totalPriorGames,
     highStressStreak: 0,
+    timerMode,
   });
   return id;
 }

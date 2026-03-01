@@ -111,7 +111,10 @@ function GameContent() {
         if (setting && setting !== 'random') params.set('setting', setting);
         if (difficulty) params.set('difficulty', difficulty);
         params.set('t', Date.now().toString());
-        const attempt = async () => { const res = await fetchWithTimeout(`/api/generate-case?${params}`, { cache: 'no-store', headers: getUserApiHeaders() }, 30000); return res.json(); };
+        const caseHeaders: Record<string, string> = { ...getUserApiHeaders() };
+        const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('appSettings') : null;
+        if (stored) { try { if (JSON.parse(stored).timerMode === 'unlimited') caseHeaders['x-timer-mode'] = 'unlimited'; } catch {} }
+        const attempt = async () => { const res = await fetchWithTimeout(`/api/generate-case?${params}`, { cache: 'no-store', headers: caseHeaders }, 30000); return res.json(); };
         let data;
         try { data = await attempt(); } catch {
           if (!cancelled) showToast("Couldn't generate case — retrying...");
@@ -170,6 +173,11 @@ function GameContent() {
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
+      // Server-side time cap hit (unlimited mode 30min safety net)
+      if (data.timeExpired) {
+        handleTimeUp();
+        return;
+      }
       setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: elapsed }]);
       setLastResponse(data.spoken_response);
       // Lawyer-up: suspect demands a lawyer — game over
@@ -211,6 +219,7 @@ function GameContent() {
     try {
       const res = await fetchWithTimeout('/api/accuse', { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body: JSON.stringify({ sessionId: caseData.sessionId, accusation: text }) });
       const data = await res.json();
+      if (data.error) { showToast(data.error); setPhase('active'); setIsAccusing(false); return; }
       if (typeof data.accusationsLeft === 'number') setAccusationsLeft(data.accusationsLeft);
       else setAccusationsLeft((prev) => Math.max(0, prev - 1));
       const updatedHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: `[ACCUSATION] ${text}`, timestamp: elapsed }, { role: 'assistant', content: data.confession, timestamp: elapsed }];

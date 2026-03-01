@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/db';
+import supabase from '@/lib/db';
 import { embedOne } from '@/lib/mistral/embeddings';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { getSession } from '@/lib/game-session';
@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
     const userMistralKey = req.headers.get('x-mistral-api-key') || undefined;
     const embedding = await embedOne(summary, userMistralKey);
 
-    const supabase = getSupabaseClient(req);
     const { error } = await supabase.from('interrogation_patterns').upsert({
       session_id: sessionId,
       setting: String(setting).slice(0, 100),
@@ -89,7 +88,6 @@ export async function GET(req: NextRequest) {
     const queryText = `Setting: ${setting || 'any'}\nDifficulty: ${difficulty}\nOutcome: win\nEffective interrogation tactics`;
     const queryEmbedding = await embedOne(queryText, userMistralKey);
 
-    const supabase = getSupabaseClient(req);
     const { data, error } = await supabase.rpc('match_patterns', {
       query_embedding: JSON.stringify(queryEmbedding),
       match_threshold: 0.5,

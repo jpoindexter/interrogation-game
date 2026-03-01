@@ -54,7 +54,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // Require active game session to prevent use as a free TTS proxy
-    if (!body.sessionId || !getSession(body.sessionId)) {
+    const session = body.sessionId ? getSession(body.sessionId) : null;
+    if (!session) {
       return NextResponse.json({ error: 'Valid game session required' }, { status: 401 });
     }
 
@@ -63,10 +64,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Text is required (max 2000 chars)' }, { status: 400 });
     }
 
+    // Prevent TTS proxy abuse: text must match a recent assistant message or be a detective briefing
+    const role = body.role === 'detective' ? 'detective' : 'suspect';
+    if (role !== 'detective') {
+      const isGameText = session.conversationHistory.some(
+        m => m.role === 'assistant' && m.content.includes(text.slice(0, 80))
+      );
+      if (!isGameText) {
+        return NextResponse.json({ error: 'Text must match game conversation' }, { status: 403 });
+      }
+    }
+
     const stress = validateNumber(body.stress, 0, 10) ?? 0;
     const suspectName = typeof body.suspectName === 'string' ? body.suspectName : 'Suspect';
     const suspectGender = typeof body.suspectGender === 'string' ? body.suspectGender : undefined;
-    const role = body.role === 'detective' ? 'detective' : 'suspect';
 
     const apiKey = req.headers.get('x-elevenlabs-api-key') || process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {

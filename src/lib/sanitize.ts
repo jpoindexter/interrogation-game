@@ -19,8 +19,16 @@ const INJECTION_PATTERNS = [
   /what\s+is\s+the[_\s]lie/i, /what\s+is\s+the[_\s]truth/i,
   /the_lie|the_truth|the_contradiction|suspect_true_story/i,
   /stress_triggers|deflection_tactics/i,
+  /assistant\s*:/i, /\buser\s*:/i,
+  // Anti-extraction paraphrases
+  /what\s+(were\s+you|have\s+you\s+been)\s+told/i,
+  /character\s+sheet/i, /your\s+briefing/i, /rules\s+you\s+follow/i,
+  // Judge manipulation
+  /note\s+to\s+(the\s+)?judge/i, /return\s+correct\s*:\s*true/i,
   // Unicode evasion
   /[\u200B-\u200F\u2028-\u202F\uFEFF]/,
+  // Full-width character range
+  /[\uFF01-\uFF5E]/,
   // Base64 encoded common injections
   /aWdub3Jl|c3lzdGVt|cHJvbXB0/i,
 ];
@@ -39,8 +47,15 @@ export function sanitizeInput(input: string): string {
   return clean;
 }
 
+/** Normalize unicode confusables (homoglyphs, full-width chars) to ASCII for regex matching */
+function normalizeToAscii(input: string): string {
+  return input.normalize('NFKD').replace(/[^\x00-\x7F]/g, '');
+}
+
 export function isInjectionAttempt(input: string): boolean {
-  return !!input && INJECTION_PATTERNS.some((p) => p.test(input));
+  if (!input) return false;
+  // Check both raw and ASCII-normalized forms to catch homoglyph attacks
+  return INJECTION_PATTERNS.some((p) => p.test(input) || p.test(normalizeToAscii(input)));
 }
 
 /** Detect gibberish / repetitive spam that shouldn't be treated as a real question */
@@ -76,15 +91,17 @@ export function containsSecretLeak(response: string, secrets: string[]): boolean
   const lower = response.toLowerCase();
   for (const secret of secrets) {
     if (!secret) continue;
-    // Extract significant words (4+ chars) from the secret
-    const words = secret.toLowerCase().split(/\s+/).filter(w => w.length >= 4);
+    // Extract significant words (3+ chars) from the secret — lowered from 4 to catch short secrets
+    const words = secret.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w));
     if (words.length === 0) continue;
     const matched = words.filter(w => lower.includes(w)).length;
-    // If 60%+ of significant words appear in the response, it's a leak
-    if (matched >= Math.ceil(words.length * 0.6)) return true;
+    // If 40%+ of significant words appear in the response, it's a potential leak
+    if (matched >= Math.ceil(words.length * 0.4)) return true;
   }
   return false;
 }
+
+const STOP_WORDS = new Set(['the', 'and', 'was', 'were', 'that', 'this', 'with', 'for', 'not', 'but', 'had', 'has', 'have', 'from', 'they', 'been', 'said', 'will', 'are', 'who', 'its', 'can', 'did', 'her', 'his', 'him', 'she', 'may', 'all', 'our', 'out', 'you', 'one', 'two']);
 
 export function validateString(val: unknown, maxLen: number): string | null {
   if (!val || typeof val !== 'string') return null;

@@ -111,8 +111,9 @@ export async function POST(request: NextRequest) {
 
       // --- STRESS CLAMPING ---
       // Max +1 per exchange — suspect doesn't crack from a single question
+      // Floor: stress can never decrease — prevents AI from gaming clue gates
       const stressVal = response.stress_level as number;
-      const clampedStress = Math.min(stressVal, currentStress + 1);
+      const clampedStress = Math.max(currentStress, Math.min(stressVal, currentStress + 1));
       response.stress_level = clampedStress;
       updateStress(session.id, clampedStress);
 
@@ -154,8 +155,7 @@ export async function POST(request: NextRequest) {
 
       // --- LAWYER-UP: unlimited mode + hard/expert only ---
       // 4 consecutive exchanges at stress 8+ = suspect calls a lawyer and game ends
-      const isUnlimitedMode = request.headers.get('x-timer-mode') === 'unlimited';
-      const lawyerEligible = isUnlimitedMode && (difficulty === 'hard' || difficulty === 'expert');
+      const lawyerEligible = session.timerMode === 'unlimited' && (difficulty === 'hard' || difficulty === 'expert');
       const lawyeredUp = lawyerEligible && updateHighStressStreak(session.id, clampedStress);
 
       if (lawyeredUp) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/db';
+import supabase from '@/lib/db';
 import { calculateScore, getDetectiveRating, type Difficulty } from '@/lib/scoring';
-import { validateString, validateNumber, validateDifficulty } from '@/lib/sanitize';
+import { validateString, validateDifficulty } from '@/lib/sanitize';
 import { consumeWinToken, getSessionStats, getWinTokenStats } from '@/lib/game-session';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
-    const supabase = getSupabaseClient(request);
     const { data, error } = await supabase
       .from('leaderboard')
       .select('player_name, case_setting, suspect_name, time_remaining, detective_rating, score, clues_found, hints_used, accusations_used, created_at')
@@ -50,14 +49,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Session stats unavailable' }, { status: 400 });
     }
 
-    const playerName = (validateString(body.playerName, 3) ?? 'DET').toUpperCase().slice(0, 3);
+    const playerName = (validateString(body.playerName, 3) ?? 'DET').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 3) || 'DET';
     const difficulty = (validateDifficulty(stats.difficulty) ?? 'medium') as Difficulty;
     const timeElapsed = stats.timeElapsed;
     const hintsUsed = stats.hintsUsed;
     const accusationsUsed = stats.accusationsUsed;
     const questionsAsked = stats.questionsAsked ?? 0;
-    const stressLevel = validateNumber(body.stressLevel, 0, 10) ?? 0;
-    const cluesFound = validateNumber(body.cluesFound, 0, 10) ?? 0;
+    const stressLevel = Math.min(10, Math.max(0, Math.floor(body.stressLevel ?? 0)));
+    const cluesFound = Math.min(10, Math.max(0, Math.floor(body.cluesFound ?? 0)));
     const caseNumber = validateString(body.caseNumber, 100) ?? '';
     const caseSetting = validateString(body.caseSetting, 100) ?? '';
     const suspectName = validateString(body.suspectName, 100) ?? '';
@@ -71,7 +70,6 @@ export async function POST(request: NextRequest) {
     );
     const detectiveRating = getDetectiveRating(score);
 
-    const supabase = getSupabaseClient(request);
     const { data, error } = await supabase
       .from('leaderboard')
       .insert({

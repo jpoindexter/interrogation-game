@@ -3,7 +3,7 @@ import { generateCase } from '../../../src/lib/mistral';
 import { validateDifficulty, validateCaseData } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { createSession, sanitizeCaseForClient } from '../../../src/lib/game-session';
-import { getSupabaseClient } from '../../../src/lib/db';
+import supabase from '../../../src/lib/db';
 import { embedOne } from '../../../src/lib/mistral/embeddings';
 
 export const dynamic = 'force-dynamic';
@@ -44,7 +44,6 @@ export async function GET(request: NextRequest) {
     try {
       const queryText = `Setting: ${setting || 'any'}\nDifficulty: ${difficulty}\nEffective interrogation tactics`;
       const queryEmbedding = await embedOne(queryText, userMistralKey);
-      const supabase = getSupabaseClient(request);
       const { data } = await supabase.rpc('match_patterns', {
         query_embedding: JSON.stringify(queryEmbedding),
         match_threshold: 0.5,
@@ -71,7 +70,8 @@ export async function GET(request: NextRequest) {
       console.error('Pattern retrieval failed (non-fatal):', err);
     }
 
-    const sessionId = createSession(validatedCase, learnedTactics, totalPriorGames);
+    const timerMode = request.headers.get('x-timer-mode') === 'unlimited' ? 'unlimited' as const : 'countdown' as const;
+    const sessionId = createSession(validatedCase, learnedTactics, totalPriorGames, timerMode);
     const clientData = sanitizeCaseForClient(validatedCase);
 
     return NextResponse.json({ ...clientData, sessionId, priorGames: totalPriorGames });
