@@ -41,11 +41,10 @@ export function useBriefingTTS(
           if (!duration && audio.duration && isFinite(audio.duration)) duration = audio.duration;
           if (duration > 0) {
             const progress = audio.currentTime / duration;
-            // Lag text behind audio so voice leads the typewriter
-            const target = Math.max(0, progress - 0.05) * fullText.length;
-            // Smooth toward target — never jump more than ~2 chars/frame
+            const target = progress * fullText.length;
+            // Smooth toward target — catch up quickly so text matches speech
             const delta = target - smoothIndex;
-            if (delta > 0) smoothIndex += Math.min(delta, 2);
+            if (delta > 0) smoothIndex += Math.min(delta, Math.max(delta * 0.3, 1));
             setCharIndex(Math.floor(smoothIndex));
           }
           rafRef.current = requestAnimationFrame(tick);
