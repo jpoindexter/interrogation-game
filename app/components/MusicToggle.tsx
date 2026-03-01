@@ -63,6 +63,8 @@ export default function MusicToggle() {
   const indexRef = useRef(0);
   const prevVolumeRef = useRef(0.05);
   const fadingRef = useRef(false);
+  const fadeTimersRef = useRef<number[]>([]);
+  const incomingRef = useRef<HTMLAudioElement | null>(null);
 
   // Determine desired mode
   const desiredMode = isGame && gameActive ? 'game' : 'menu';
@@ -80,8 +82,17 @@ export default function MusicToggle() {
     const handler = () => {
       const vol = getVolume();
       setMuted(vol === 0);
-      if (vol > 0) prevVolumeRef.current = vol;
-      if (audioRef.current && !fadingRef.current) audioRef.current.volume = vol;
+      if (vol > 0) {
+        prevVolumeRef.current = vol;
+        if (audioRef.current && !fadingRef.current) audioRef.current.volume = vol;
+      } else {
+        // Immediately stop everything when muting
+        fadeTimersRef.current.forEach(clearInterval);
+        fadeTimersRef.current = [];
+        fadingRef.current = false;
+        if (incomingRef.current) { incomingRef.current.pause(); incomingRef.current.src = ''; incomingRef.current = null; }
+        if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; audioRef.current = null; }
+      }
     };
     window.addEventListener('settingsChanged', handler);
     return () => window.removeEventListener('settingsChanged', handler);
@@ -111,30 +122,46 @@ export default function MusicToggle() {
   }, []);
 
   const crossfadeTo = useCallback((nextSrc: string) => {
-    if (fadingRef.current) {
-      // Kill current audio immediately and start fresh
-      if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
-    }
+    // Kill any in-progress fade timers and orphaned audio
+    fadeTimersRef.current.forEach(clearInterval);
+    fadeTimersRef.current = [];
+    if (incomingRef.current) { incomingRef.current.pause(); incomingRef.current.src = ''; incomingRef.current = null; }
+    if (fadingRef.current && audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
+
     fadingRef.current = true;
     const outgoing = audioRef.current;
-    const incoming = new Audio(nextSrc);
     const vol = getVolume();
-    incoming.volume = 0;
-    incoming.play().catch(() => {});
+    const steps = 20;
+
+    // Phase 1: fade out (2s)
     let step = 0;
-    const steps = 25;
-    const timer = setInterval(() => {
+    const outTimer = setInterval(() => {
       step++;
-      const p = step / steps;
-      if (outgoing) outgoing.volume = Math.max(0, vol * (1 - p));
-      incoming.volume = vol * p;
+      if (outgoing) outgoing.volume = Math.max(0, vol * (1 - step / steps));
       if (step >= steps) {
-        clearInterval(timer);
+        clearInterval(outTimer);
         if (outgoing) { outgoing.pause(); outgoing.src = ''; }
-        audioRef.current = incoming;
-        fadingRef.current = false;
+
+        // Phase 2: fade in (2s)
+        const incoming = new Audio(nextSrc);
+        incomingRef.current = incoming;
+        incoming.volume = 0;
+        incoming.play().catch(() => {});
+        let inStep = 0;
+        const inTimer = setInterval(() => {
+          inStep++;
+          incoming.volume = Math.min(vol, vol * (inStep / steps));
+          if (inStep >= steps) {
+            clearInterval(inTimer);
+            audioRef.current = incoming;
+            incomingRef.current = null;
+            fadingRef.current = false;
+          }
+        }, 2000 / steps) as unknown as number;
+        fadeTimersRef.current.push(inTimer);
       }
-    }, FADE_MS / steps);
+    }, 2000 / steps) as unknown as number;
+    fadeTimersRef.current.push(outTimer);
   }, []);
 
   const fadeIn = useCallback((audio: HTMLAudioElement, targetVol: number) => {
@@ -163,6 +190,11 @@ export default function MusicToggle() {
   useEffect(() => {
     if (!ready) return;
     if (muted) {
+      // Kill everything — active audio, in-progress fades, orphaned incoming
+      fadeTimersRef.current.forEach(clearInterval);
+      fadeTimersRef.current = [];
+      fadingRef.current = false;
+      if (incomingRef.current) { incomingRef.current.pause(); incomingRef.current.src = ''; incomingRef.current = null; }
       if (audioRef.current) { fadeOut(audioRef.current); audioRef.current = null; }
       modeRef.current = desiredMode;
       return;
@@ -181,8 +213,8 @@ export default function MusicToggle() {
 
     modeRef.current = desiredMode;
 
-    // If no audio playing, start fresh with fade-in
-    if (!audioRef.current) {
+    // If no audio playing and not mid-crossfade, start fresh with fade-in
+    if (!audioRef.current && !fadingRef.current) {
       playlistRef.current = [];
       indexRef.current = 0;
       const src = getNextTrack(pool);
@@ -191,15 +223,19 @@ export default function MusicToggle() {
       audio.volume = 0;
       audioRef.current = audio;
       const vol = getVolume();
+      let started = false;
 
       const startWithFade = () => {
-        audio.play().then(() => fadeIn(audio, vol)).catch(() => {});
+        if (started) return;
+        started = true;
+        audio.play().then(() => fadeIn(audio, vol)).catch(() => { started = false; });
       };
       startWithFade();
 
       // Listen for any user interaction to unlock autoplay
       const events = ['click', 'keydown', 'touchstart', 'pointerdown'];
       const handler = () => {
+        started = false; // allow retry
         startWithFade();
         events.forEach(e => document.removeEventListener(e, handler));
       };
@@ -221,8 +257,22 @@ export default function MusicToggle() {
     const audio = audioRef.current;
     if (!audio || muted) return;
     const onEnded = () => {
+      if (fadingRef.current) return; // crossfade in progress, skip
       const pool = modeRef.current === 'game' ? GAME_TRACKS : MENU_TRACKS;
-      crossfadeTo(getNextTrack(pool));
+      const nextSrc = getNextTrack(pool);
+      const next = new Audio(nextSrc);
+      const vol = getVolume();
+      next.volume = 0;
+      next.play().catch(() => {});
+      audioRef.current = next;
+      // Gentle fade in
+      let step = 0;
+      const steps = 15;
+      const timer = setInterval(() => {
+        step++;
+        next.volume = Math.min(vol, vol * (step / steps));
+        if (step >= steps) clearInterval(timer);
+      }, 1500 / steps);
     };
     audio.addEventListener('ended', onEnded);
     return () => audio.removeEventListener('ended', onEnded);

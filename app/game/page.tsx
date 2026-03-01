@@ -74,15 +74,16 @@ function GameContent() {
   const [showMicHint, setShowMicHint] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const showToast = useCallback((msg: string) => { setToast(msg); setTimeout(() => setToast(null), 4000); }, []);
-
   const sfx = useSfx();
+  const showToast = useCallback((msg: string) => { sfx('error'); setToast(msg); setTimeout(() => setToast(null), 4000); }, [sfx]);
   const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder(caseData?.sessionId);
   const ttsErrorToast = useCallback(() => showToast('Voice server unavailable — reading text instead'), [showToast]);
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId, ttsErrorToast);
   const { timer, timerRef } = useGameTimer(phase, isSpeaking);
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   const prevVolumeRef = useRef(settings.musicVolume > 0 ? settings.musicVolume : 0.1);
+  const stressRef = useRef(0);
+  stressRef.current = stressLevel;
 
   useEffect(() => {
     let cancelled = false;
@@ -137,8 +138,10 @@ function GameContent() {
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
       setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: timer }]);
       setLastResponse(data.spoken_response);
-      setStressLevel(data.stress_level ?? 0);
-      setMaxStress((prev) => Math.max(prev, data.stress_level ?? 0));
+      const newStress = data.stress_level ?? 0;
+      if (newStress > stressRef.current + 1) sfx('tension');
+      setStressLevel(newStress);
+      setMaxStress((prev) => Math.max(prev, newStress));
       if (data.clue_unlocked && !isOpening) {
         setClues((prev) => {
           if (prev.includes(data.clue_unlocked)) return prev;
@@ -246,25 +249,25 @@ function GameContent() {
         {caseData && <CaseFile caseData={caseData} clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} conversationHistory={conversationHistory} />}
       </div>
       <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
-      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('typewriter'); sendQuestion(v); setTextInput(''); }} />
+      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('click_short'); sendQuestion(v); setTextInput(''); }} />
       <NotesPanel show={showNotes} notes={notes} pos={notesPos} onChange={setNotes} onClose={() => setShowNotes(false)} onPosChange={setNotesPos} />
       <ExitConfirmDialog show={showExitConfirm} onConfirm={() => { if (timerRef.current) clearInterval(timerRef.current); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } speechSynthesis.cancel(); router.push('/cases'); }} onCancel={() => setShowExitConfirm(false)} />
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
       <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
       <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
       <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
-      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx(isListening ? 'mic_off' : 'mic_on'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
+      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx(isListening ? 'mic_off' : 'mic_on'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click_short'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
         onHintClick={async () => {
           sfx('click');
           if (!caseData) return;
           try {
             const res = await fetch('/api/hint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId }) });
             const data = await res.json();
-            if (data.hint) { setHintsUsed(data.hintsUsed); setHintTexts((prev) => [...prev, data.hint]); }
+            if (data.hint) { sfx('chime'); setHintsUsed(data.hintsUsed); setHintTexts((prev) => [...prev, data.hint]); }
             else if (data.error) showToast(data.error);
           } catch { showToast('Could not retrieve hint'); }
         }}
-        onAccuseClick={isAccusing && isListening ? stopListening : () => { sfx('slam'); setShowAccuseConfirm(true); }} onSettingsToggle={() => { sfx(showSettings ? 'close' : 'click'); setShowSettings(!showSettings); }} onGiveUpClick={() => { sfx('click'); setShowGiveUpConfirm(true); }} onHelpToggle={() => { sfx(showHelp ? 'close' : 'paper'); setShowHelp(!showHelp); }} onExitClick={() => { sfx('click'); setShowExitConfirm(true); }} />
+        onAccuseClick={isAccusing && isListening ? stopListening : () => { sfx('slam'); setShowAccuseConfirm(true); }} onSettingsToggle={() => { sfx(showSettings ? 'close' : 'click_short'); setShowSettings(!showSettings); }} onGiveUpClick={() => { sfx('click'); setShowGiveUpConfirm(true); }} onHelpToggle={() => { sfx(showHelp ? 'close' : 'click_short'); setShowHelp(!showHelp); }} onExitClick={() => { sfx('click'); setShowExitConfirm(true); }} />
       <AnimatePresence>
         {toast && (<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.25 }} className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-accent/90 text-foreground font-mono text-xs px-4 py-2 rounded border border-accent">{toast}</motion.div>)}
       </AnimatePresence>

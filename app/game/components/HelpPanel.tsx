@@ -16,7 +16,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
       {show && (
         <motion.div
           key="help-panel"
-          className="absolute z-40 w-[340px] max-h-[70vh] overflow-y-auto bg-surface-darker border border-surface rounded-sm shadow-2xl"
+          className={`${pos ? 'absolute' : 'fixed'} z-40 w-[340px] max-h-[70vh] overflow-y-auto bg-surface-darker border border-surface rounded-sm shadow-2xl`}
           style={{
             left: pos ? pos.x : '50%',
             top: pos ? pos.y : '50%',
@@ -33,7 +33,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
             onMouseDown={(e) => {
               const panel = e.currentTarget.parentElement!;
               const rect = panel.getBoundingClientRect();
-              const parentRect = panel.offsetParent!.getBoundingClientRect();
+              const parentRect = panel.offsetParent?.getBoundingClientRect() ?? { left: 0, top: 0 };
               const startX = e.clientX;
               const startY = e.clientY;
               const origX = rect.left - parentRect.left;

@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
 
 interface TextInputPanelProps {
@@ -9,6 +10,22 @@ interface TextInputPanelProps {
 }
 
 export default function TextInputPanel({ show, value, disabled, onChange, onSubmit }: TextInputPanelProps) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playKeystroke = useCallback(() => {
+    try {
+      if (!audioRef.current) {
+        audioRef.current = new Audio('/efx/typewriter.wav');
+      }
+      const a = audioRef.current;
+      a.currentTime = 0;
+      a.volume = 0.12;
+      a.play().catch(() => {});
+      // Cut it short after 60ms
+      setTimeout(() => { a.volume = 0; a.pause(); }, 60);
+    } catch {}
+  }, []);
+
   return (
     <AnimatePresence>
       {show && (
@@ -34,7 +51,7 @@ export default function TextInputPanel({ show, value, disabled, onChange, onSubm
             <input
               type="text"
               value={value}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e) => { playKeystroke(); onChange(e.target.value); }}
               placeholder={!disabled ? 'Type a question and press Enter...' : '...'}
               disabled={disabled}
               autoFocus
