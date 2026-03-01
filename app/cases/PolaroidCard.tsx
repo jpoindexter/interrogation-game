@@ -45,17 +45,17 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
       transition={{ duration: 0.25, ease: 'easeOut' }}
       style={{ zIndex, transformOrigin: 'bottom center' }}
     >
-      <motion.div animate={isActive && !expanded ? { y: [0, -4, 0] } : { y: 0 }} transition={isActive && !expanded ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.15 }}>
-        <button onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] ${isActive ? '' : 'pointer-events-auto'}`}>
+      <motion.div animate={isActive && !expanded ? { y: [0, -3, 0] } : { y: 0 }} transition={isActive && !expanded ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 } : { duration: 0.15 }}>
+        <button onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] xl:w-[340px] ${isActive ? '' : 'pointer-events-auto'}`}>
           <motion.div
             className="relative p-2 pb-14"
             style={{
               background: 'linear-gradient(135deg, #E8E0D0 0%, #D8CFC0 40%, #E2DAC8 60%, #D5CCBB 100%)',
               boxShadow: isActive ? '3px 5px 20px rgba(0,0,0,0.7), 1px 2px 4px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.05)' : '2px 3px 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.03)',
             }}
-            animate={isActive && expanded ? { scale: 1.05 } : { scale: 1 }}
-            whileHover={isActive && !expanded ? { scale: 1.02 } : {}}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            animate={isActive && expanded ? { scale: 1.12, y: -8 } : { scale: 1, y: 0 }}
+            whileHover={isActive && !expanded ? { scale: 1.03 } : {}}
+            transition={isActive && expanded ? { type: 'spring', stiffness: 300, damping: 20 } : { duration: 0.2, ease: 'easeOut' }}
           >
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(45deg, transparent 48%, rgba(0,0,0,0.03) 49%, rgba(0,0,0,0.03) 51%, transparent 52%)' }} />
             <div className="absolute top-0 right-0 w-6 h-6 pointer-events-none" style={{ background: 'linear-gradient(225deg, rgba(0,0,0,0.08) 0%, transparent 60%)' }} />

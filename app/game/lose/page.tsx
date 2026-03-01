@@ -25,6 +25,7 @@ interface GameResult {
   maxStress: number;
   gaveUp?: boolean;
   timeUp?: boolean;
+  lawyeredUp?: boolean;
   timeUpRemark?: string;
   cleverRemark?: string;
 }
@@ -111,15 +112,15 @@ function LoseContent() {
         &larr; Home
       </button>
 
-      {/* ESCAPED background image */}
+      {/* Background image — LAWYERED UP or ESCAPED */}
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
         initial={{ opacity: 0, scale: 1.5 }}
-        animate={stampVisible ? { opacity: 0.15, scale: 1 } : {}}
+        animate={stampVisible ? { opacity: result.lawyeredUp ? 0.25 : 0.15, scale: 1 } : {}}
         transition={{ duration: 0.7, ease: 'easeOut' }}
       >
         <img
-          src="/solved/escaped.png"
+          src={result.lawyeredUp ? '/solved/lawyered_up.png' : '/solved/escaped.png'}
           alt=""
           className="w-[600px] sm:w-[800px] md:w-[900px]"
           style={{ imageRendering: 'auto' }}
@@ -148,7 +149,7 @@ function LoseContent() {
             variants={fadeUp}
             transition={{ duration: 0.6 }}
           >
-            {result.timeUp ? 'Time\u2019s up. The suspect walks free.' : result.gaveUp ? 'You gave up. The suspect walks free.' : 'Out of accusations. The suspect walks free.'}
+            {result.lawyeredUp ? 'The suspect lawyered up. Interview over.' : result.timeUp ? 'Time\u2019s up. The suspect walks free.' : result.gaveUp ? 'You gave up. The suspect walks free.' : 'Out of accusations. The suspect walks free.'}
           </motion.p>
         </motion.div>
 
@@ -172,7 +173,7 @@ function LoseContent() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-300">Outcome</span>
-                <span className="text-sm font-bold text-accent">{result.timeUp ? 'Time expired' : result.gaveUp ? 'Surrendered' : 'Out of attempts'}</span>
+                <span className="text-sm font-bold text-accent">{result.lawyeredUp ? 'Lawyered up' : result.timeUp ? 'Time expired' : result.gaveUp ? 'Surrendered' : 'Out of attempts'}</span>
               </div>
               <div className="border-t border-surface my-3" />
               <div className="flex justify-between items-center">
@@ -265,7 +266,7 @@ function LoseContent() {
               onClick={async () => {
                 playClick();
                 const url = typeof window !== 'undefined' ? window.location.origin : '';
-                const msg = result.timeUp ? `Ran out of time on Case #${result.caseData.case_number}. ${result.caseData.suspect_name} escaped. Can you do better?` : result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
+                const msg = result.lawyeredUp ? `The suspect in Case #${result.caseData.case_number} lawyered up on me. ${result.caseData.suspect_name} walked out. Can you crack them without pushing too hard?` : result.timeUp ? `Ran out of time on Case #${result.caseData.case_number}. ${result.caseData.suspect_name} escaped. Can you do better?` : result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
                 const outcome = await shareResult(`\ud83d\udd0d INTERROGATION \u2014 ${msg}\n${url}`);
                 if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); }
               }}

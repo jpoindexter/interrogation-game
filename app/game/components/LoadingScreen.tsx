@@ -9,10 +9,11 @@ export default function LoadingScreen() {
         className="absolute inset-0"
         style={{
           backgroundImage: 'url(/detective/desk.png)',
-          backgroundSize: '90%',
+          backgroundSize: '60%',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           backgroundColor: '#000',
+          imageRendering: 'pixelated',
         }}
       />
       <div className="absolute inset-0 bg-black/60" />
@@ -55,10 +56,19 @@ export default function LoadingScreen() {
             {/* Red margin line */}
             <div className="absolute top-0 bottom-0 left-[26px] w-[1px] pointer-events-none" style={{ background: 'rgba(196,60,60,0.35)' }} />
             <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-3">How to Play</h3>
-            <div className="space-y-3 text-[12px] text-gray-700 leading-relaxed">
-              <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic or type to question the suspect. Watch the clock &mdash; you have limited time (5&ndash;10 min).</p>
-              <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> As stress rises, detective badges unlock. Rising stress means you&rsquo;re getting close.</p>
-              <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about and <span className="text-gray-900 font-bold">what actually happened</span>. You get <span className="text-gray-900 font-bold">3 tries</span>. Run out of time or attempts and they escape.</p>
+            <div className="space-y-2.5 text-[12px] text-gray-700 leading-relaxed">
+              <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic or type. Timer counts down &mdash; 5 min on Easy up to 10 min on Expert.</p>
+              <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> Push the right topics to raise stress. Evidence unlocks as they crack.</p>
+              <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about. Be specific. You get <span className="text-gray-900 font-bold">3 tries</span>.</p>
+            </div>
+            <div className="mt-3 pt-3" style={{ borderTop: '1px dashed rgba(0,0,0,0.15)' }}>
+              <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-2">Scoring</h3>
+              <div className="space-y-1 text-[11px] text-gray-600">
+                <p><span className="text-green-800">+</span> Solve fast &mdash; time is your base score</p>
+                <p><span className="text-green-800">+</span> Fewer questions &mdash; efficiency bonus up to 1.5&times;</p>
+                <p><span className="text-green-800">+</span> Higher difficulty &mdash; up to 2.5&times; multiplier</p>
+                <p><span className="text-red-800">&minus;</span> Each hint &minus;15% &bull; Each wrong accusation &minus;10%</p>
+              </div>
             </div>
           </div>
           {/* Torn bottom edge — SVG with hand-drawn bezier path */}

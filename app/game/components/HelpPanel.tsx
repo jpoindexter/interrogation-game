@@ -1,16 +1,19 @@
 import CloseIcon from './CloseIcon';
 import { motion, AnimatePresence, fadeUp, stagger, smooth, snappy } from '../../components/motion';
+import { playClick } from '../../lib/sfx-utils';
 
 interface HelpPanelProps {
   show: boolean;
   pos: { x: number; y: number } | null;
   cluesNeeded: number;
   clueIcons: string[];
+  isUnlimited?: boolean;
+  difficulty?: string;
   onClose: () => void;
   onPosChange: (pos: { x: number; y: number } | null) => void;
 }
 
-export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, onPosChange }: HelpPanelProps) {
+export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, isUnlimited, difficulty, onClose, onPosChange }: HelpPanelProps) {
   return (
     <AnimatePresence>
       {show && (
@@ -18,7 +21,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
         <div key="help-backdrop" className="fixed inset-0 z-39" onClick={() => { onClose(); onPosChange(null); }} />
         <motion.div
           key="help-panel"
-          className={`${pos ? 'absolute' : 'fixed inset-0 m-auto'} z-40 w-[340px] max-h-[70vh] h-fit overflow-y-auto bg-surface-darker border border-surface rounded-sm shadow-2xl`}
+          className={`${pos ? 'absolute' : 'fixed inset-0 m-auto'} z-40 w-[340px] max-h-[70vh] h-fit flex flex-col bg-surface-darker border border-surface rounded-sm shadow-2xl`}
           style={pos ? { left: pos.x, top: pos.y } : undefined}
           variants={fadeUp}
           initial="hidden"
@@ -48,12 +51,12 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
             }}
           >
             <span className="text-xs uppercase tracking-[0.2em] text-gray-500">How to Play</span>
-            <button onClick={() => { onClose(); onPosChange(null); }} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-foreground transition-colors">
+            <button onClick={() => { playClick(); onClose(); onPosChange(null); }} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-foreground transition-colors">
               <CloseIcon />
             </button>
           </div>
           <motion.div
-            className="p-4 space-y-4"
+            className="p-4 space-y-4 overflow-y-auto min-h-0"
             variants={stagger(0.08)}
             initial="hidden"
             animate="visible"
@@ -62,7 +65,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
               <span className="text-sm font-bold text-accent shrink-0">01</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Ask Questions</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic or keyboard to question the suspect. Watch the clock &mdash; you have limited time.</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic or keyboard to question the suspect. {isUnlimited ? 'No time limit \u2014 but the suspect is tougher to crack.' : 'Watch the clock \u2014 you have limited time.'}{isUnlimited && (difficulty === 'hard' || difficulty === 'expert') ? <span className="text-accent"> Push too hard and they\u2019ll lawyer up \u2014 game over.</span> : ''}</p>
               </div>
             </motion.div>
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>
@@ -85,13 +88,13 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
               </div>
             </motion.div>
             <motion.div className="border-t border-surface pt-3" variants={fadeUp} transition={smooth}>
-              <p className="text-[10px] uppercase tracking-wider text-gold mb-2">Tips</p>
+              <p className="text-[10px] uppercase tracking-wider text-gold mb-2">Tactics</p>
               <ul className="space-y-1.5">
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Ask open-ended questions first</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Rising stress = right track</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Use hints sparingly (-15% score each)</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>You have limited time (5-10 min by difficulty)</li>
-                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Faster solve = higher score</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Ask about timelines &mdash; liars trip on sequences</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Circle back to old questions &mdash; rehearsed lies repeat exactly</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Let them talk &mdash; long answers have more contradictions</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Confront with clues &mdash; watch how they react</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Ask &ldquo;why&rdquo; not &ldquo;what&rdquo; &mdash; liars prepare facts, not motives</li>
               </ul>
             </motion.div>
           </motion.div>

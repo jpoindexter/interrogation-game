@@ -8,6 +8,7 @@ export interface Case {
   case_number: string;
   setting: string;
   crime: string;
+  objective: string;
   briefing: string;
   detective_leads?: string[];
   suspect_name: string;

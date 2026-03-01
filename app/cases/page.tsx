@@ -43,7 +43,7 @@ export default function CaseSelectPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '90%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '60%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000', imageRendering: 'pixelated' }} />
       <svg className="absolute w-0 h-0"><defs><filter id="sticky-wrinkle"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="5" result="noise" /><feDiffuseLighting in="noise" lightingColor="white" surfaceScale="1.5" result="light"><feDistantLight azimuth="45" elevation="55" /></feDiffuseLighting><feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" /></filter></defs></svg>
       <div className="absolute inset-0 bg-black/30" />
       <motion.div className="absolute inset-0 pointer-events-none" animate={{ opacity: [0, 0.15, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)' }} />
@@ -65,8 +65,8 @@ export default function CaseSelectPage() {
             </motion.div>
           )}
 
-          <div className="relative w-full max-w-lg h-[380px] sm:h-[420px] flex items-center justify-center -mt-32">
-            {[[-1, 'left-0 sm:-left-10', [0, -4, 0], '-scale-x-100'], [1, 'right-0 sm:-right-10', [0, 4, 0], '']].map(([dir, pos, anim, flip]) => (
+          <div className="relative w-full max-w-lg xl:max-w-2xl h-[380px] sm:h-[420px] xl:h-[500px] flex items-center justify-center -mt-44">
+            {[[-1, 'left-0 sm:left-4 xl:left-16', [0, -4, 0], '-scale-x-100'], [1, 'right-0 sm:right-4 xl:right-16', [0, 4, 0], '']].map(([dir, pos, anim, flip]) => (
               <motion.button key={String(dir)} onClick={() => go(dir as number)} className={`group/arrow absolute ${pos} top-1/2 translate-y-0 z-30 w-14 h-14 flex items-center justify-center active:scale-90 transition-all drop-shadow-lg`} animate={{ x: anim as number[] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.85 }}>
                 <img src="/ui/arrow_right.png" alt="" className={`w-10 h-10 ${flip} group-active/arrow:brightness-50 group-active/arrow:sepia group-active/arrow:saturate-200 group-active/arrow:hue-rotate-[-20deg] transition-all`} style={{ imageRendering: 'pixelated' }} />
               </motion.button>

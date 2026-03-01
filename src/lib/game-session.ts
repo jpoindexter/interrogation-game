@@ -19,6 +19,8 @@ export interface GameSession {
   accusationsUsed: number;
   learnedTactics: string[];
   totalPriorGames: number;
+  /** Consecutive exchanges where stress stayed at 8+ (for lawyer-up mechanic) */
+  highStressStreak: number;
 }
 
 interface WinTokenEntry {
@@ -63,6 +65,7 @@ export function createSession(caseData: Record<string, unknown>, learnedTactics:
     accusationsUsed: 0,
     learnedTactics,
     totalPriorGames,
+    highStressStreak: 0,
   });
   return id;
 }
@@ -220,9 +223,22 @@ export function updateStress(sessionId: string, stress: number): void {
   session.currentStress = Math.max(0, Math.min(9, Math.floor(stress)));
 }
 
+/** Track consecutive high-stress exchanges. Returns true if suspect lawyers up. */
+export function updateHighStressStreak(sessionId: string, stress: number): boolean {
+  const session = getSession(sessionId);
+  if (!session) return false;
+  if (stress >= 8) {
+    session.highStressStreak += 1;
+  } else {
+    session.highStressStreak = 0;
+  }
+  // Lawyer-up threshold: 4 consecutive exchanges at stress 8+
+  return session.highStressStreak >= 4;
+}
+
 export function exportSession(
   sessionId: string,
-  outcome: 'win' | 'lose_accusations' | 'lose_time' | 'lose_giveup',
+  outcome: 'win' | 'lose_accusations' | 'lose_time' | 'lose_giveup' | 'lose_lawyer',
   accusationText?: string,
   accusationCorrect?: boolean,
 ): void {

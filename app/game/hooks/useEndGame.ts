@@ -26,7 +26,7 @@ export function useEndGame(deps: EndGameDeps) {
   const { caseData, conversationHistory, maxStress, cluesLength, timerRef, sfx, speakResponse, ttsEnabled, setPhase, setLastResponse, setLastTranscript, setShowGiveUpConfirm, setFadingOut, storePatterns, router } = deps;
 
   const navigateLose = useCallback((extra?: Record<string, unknown>) => {
-    const outcome = extra?.timeUp ? 'lose_time' : extra?.gaveUp ? 'lose_giveup' : 'lose_accusations';
+    const outcome = extra?.lawyeredUp ? 'lose_lawyer' : extra?.timeUp ? 'lose_time' : extra?.gaveUp ? 'lose_giveup' : 'lose_accusations';
     storePatterns(outcome, conversationHistory, maxStress, cluesLength);
     sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData?.sessionId, conversationHistory, maxStress, ...extra }));
     setFadingOut(true);
@@ -116,5 +116,20 @@ export function useEndGame(deps: EndGameDeps) {
     setTimeout(() => navigateLose({ gaveUp: true, cleverRemark }), 4500);
   }, [caseData, sfx, timerRef, speakResponse, ttsEnabled, setPhase, setLastResponse, setLastTranscript, setShowGiveUpConfirm, navigateLose]);
 
-  return { handleLose, handleTimeUp, handleGiveUp };
+  /** Suspect lawyers up — game over. Spoken response already in data. */
+  const handleLawyerUp = useCallback(async (lawyerResponse: string) => {
+    if (!caseData) return;
+    setPhase('processing');
+    if (timerRef.current) clearInterval(timerRef.current);
+    setLastTranscript('');
+    setLastResponse(lawyerResponse);
+    await new Promise<void>((resolve) => { speakResponse(lawyerResponse, 9, caseData.suspect_name, resolve, ttsEnabled); });
+    sfx('standing_up');
+    setTimeout(() => sfx('chair_slide'), 800);
+    setTimeout(() => sfx('door'), 1800);
+    setTimeout(() => sfx('gameover'), 2800);
+    setTimeout(() => navigateLose({ lawyeredUp: true, cleverRemark: lawyerResponse }), 4500);
+  }, [caseData, sfx, timerRef, speakResponse, ttsEnabled, setPhase, setLastResponse, setLastTranscript, navigateLose]);
+
+  return { handleLose, handleTimeUp, handleGiveUp, handleLawyerUp };
 }

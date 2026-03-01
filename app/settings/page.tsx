@@ -20,6 +20,7 @@ interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
+  timerMode: 'countdown' | 'unlimited';
   mistralApiKey: string;
   elevenlabsApiKey: string;
   supabaseUrl: string;
@@ -34,6 +35,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,
+  timerMode: 'countdown',
   mistralApiKey: '',
   elevenlabsApiKey: '',
   supabaseUrl: '',
@@ -186,6 +188,32 @@ export default function SettingsPage() {
                   <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${settings.highContrast ? 'translate-x-6' : 'translate-x-0.5'}`} />
                 </motion.button>
               </div>
+            </motion.div>
+
+            {/* Timer Mode */}
+            <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
+              <h3 className="text-sm text-gray-300 font-bold mb-1">Timer Mode</h3>
+              <p className="text-xs text-gray-500 mb-4">Countdown is the real challenge with higher scoring. Unlimited removes time pressure for exploration.</p>
+              <div className="flex gap-2">
+                {([
+                  { key: 'countdown' as const, label: 'Countdown' },
+                  { key: 'unlimited' as const, label: 'Unlimited' },
+                ]).map(({ key, label }) => (
+                  <motion.button
+                    key={key}
+                    whileHover={{ scale: 1.03 }}
+                    onClick={() => { playClick(); update({ timerMode: key }); }}
+                    className={`flex-1 px-3 py-2 text-xs uppercase tracking-wider rounded-sm transition-colors ${
+                      settings.timerMode === key ? 'bg-accent text-white' : 'bg-surface text-gray-400 hover:text-foreground'
+                    }`}
+                  >
+                    {label}
+                  </motion.button>
+                ))}
+              </div>
+              {settings.timerMode === 'unlimited' && (
+                <p className="text-xs text-warn mt-3">Heads up — unlimited mode uses more API credits (ElevenLabs TTS, Mistral). The AI suspect is also tougher without time pressure.</p>
+              )}
             </motion.div>
 
             {/* API Keys */}

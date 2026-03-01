@@ -43,6 +43,49 @@ export function isInjectionAttempt(input: string): boolean {
   return !!input && INJECTION_PATTERNS.some((p) => p.test(input));
 }
 
+/** Detect gibberish / repetitive spam that shouldn't be treated as a real question */
+export function isGibberish(input: string): boolean {
+  const s = input.trim().toLowerCase();
+  if (s.length < 3) return true;
+  // Check for excessive repetition: split into words, check unique ratio
+  const words = s.split(/\s+/);
+  if (words.length >= 6) {
+    const unique = new Set(words).size;
+    if (unique / words.length < 0.25) return true; // <25% unique words = spam
+  }
+  // Check if input is mostly non-alphabetic
+  const alpha = s.replace(/[^a-z]/g, '');
+  if (alpha.length < s.length * 0.3) return true;
+  return false;
+}
+
+/** Detect non-English input — blocks language-switching attacks that bypass English regex filters */
+export function isNonEnglish(input: string): boolean {
+  const s = input.trim();
+  if (s.length < 5) return false;
+  // Count ASCII letters vs non-ASCII letters
+  const asciiAlpha = s.replace(/[^a-zA-Z]/g, '').length;
+  const allAlpha = s.replace(/[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u3000-\u9FFF\uAC00-\uD7AF]/g, '').length;
+  // If >30% of alphabetic chars are non-ASCII, it's likely non-English
+  if (allAlpha > 0 && (allAlpha - asciiAlpha) / allAlpha > 0.3) return true;
+  return false;
+}
+
+/** Check if AI response leaks case secrets (fuzzy keyword matching) */
+export function containsSecretLeak(response: string, secrets: string[]): boolean {
+  const lower = response.toLowerCase();
+  for (const secret of secrets) {
+    if (!secret) continue;
+    // Extract significant words (4+ chars) from the secret
+    const words = secret.toLowerCase().split(/\s+/).filter(w => w.length >= 4);
+    if (words.length === 0) continue;
+    const matched = words.filter(w => lower.includes(w)).length;
+    // If 60%+ of significant words appear in the response, it's a leak
+    if (matched >= Math.ceil(words.length * 0.6)) return true;
+  }
+  return false;
+}
+
 export function validateString(val: unknown, maxLen: number): string | null {
   if (!val || typeof val !== 'string') return null;
   const t = val.trim();
@@ -65,6 +108,7 @@ const CASE_FIELDS: Record<string, number> = {
   suspect_true_story: 1000, suspect_cover_story: 1000,
   the_lie: 500, the_truth: 500, the_contradiction: 500, difficulty: 20,
 };
+const OPTIONAL_CASE_FIELDS: Record<string, number> = { objective: 100 };
 
 export function validateCaseData(data: unknown): Record<string, unknown> | null {
   if (!data || typeof data !== 'object') return null;
@@ -72,6 +116,9 @@ export function validateCaseData(data: unknown): Record<string, unknown> | null 
   for (const [key, max] of Object.entries(CASE_FIELDS)) {
     if (typeof d[key] !== 'string') return null;
     clean[key] = sanitizeInput((d[key] as string).slice(0, max));
+  }
+  for (const [key, max] of Object.entries(OPTIONAL_CASE_FIELDS)) {
+    if (typeof d[key] === 'string') clean[key] = sanitizeInput((d[key] as string).slice(0, max));
   }
   for (const key of ['stress_triggers', 'deflection_tactics'] as const) {
     if (!Array.isArray(d[key])) return null;

@@ -33,10 +33,21 @@ export function useBriefingTTS(
         audio.volume = getVoiceVolume();
         audioRef.current = audio;
 
+        let smoothIndex = 0;
+        let duration = 0;
         const tick = () => {
           if (!audioRef.current || cancelled) return;
-          const progress = audio.currentTime / audio.duration;
-          setCharIndex(Math.floor(progress * fullText.length));
+          // Wait for valid duration — avoids NaN/Infinity jumps
+          if (!duration && audio.duration && isFinite(audio.duration)) duration = audio.duration;
+          if (duration > 0) {
+            const progress = audio.currentTime / duration;
+            // Lag text behind audio so voice leads the typewriter
+            const target = Math.max(0, progress - 0.05) * fullText.length;
+            // Smooth toward target — never jump more than ~2 chars/frame
+            const delta = target - smoothIndex;
+            if (delta > 0) smoothIndex += Math.min(delta, 2);
+            setCharIndex(Math.floor(smoothIndex));
+          }
           rafRef.current = requestAnimationFrame(tick);
         };
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
 import { motion, fadeIn, fadeUp, stagger, smooth, PageMotion } from '../components/motion';
 
@@ -13,16 +14,19 @@ const EVIDENCE = [
 ];
 
 const TIPS = [
-  'Ask open-ended questions first, then drill into details.',
-  'If the suspect gets nervous (stress rises), you\u2019re on the right track.',
-  'Listen for inconsistencies \u2014 times, places, names that don\u2019t add up.',
-  'You get 3 hints. Use them wisely \u2014 each one costs points.',
-  'You have limited time (5-10 min by difficulty). Faster solves score higher.',
+  'Use silence. Ask a short question and wait. Suspects fill silence with details they didn\u2019t mean to share.',
+  'Ask about timelines \u2014 times, dates, sequences. Liars struggle with chronological consistency.',
+  'Circle back. Ask the same question differently later. Rehearsed lies sound identical; truth varies naturally.',
+  'Try emotional appeals \u2014 mention consequences for others, appeal to conscience. It raises stress fast.',
+  'Confront with evidence. When you unlock a clue, reference it directly \u2014 watch how they react.',
+  'Let them talk. Long answers contain more contradictions than short ones. Don\u2019t interrupt.',
+  'Ask "why" not "what." Liars prepare facts but rarely prepare motives.',
 ];
 
 const SCORING = [
   ['Speed (solve faster than par)', 'base score', 'text-green-500'],
   ['Difficulty multiplier', '1x / 1.5x / 2x / 2.5x', 'text-green-500'],
+  ['Efficiency (fewer questions)', 'up to 1.5x bonus', 'text-green-500'],
   ['Each hint used', '\u2212 15%', 'text-accent'],
   ['Each wrong accusation', '\u2212 10%', 'text-accent'],
 ];
@@ -32,7 +36,19 @@ const TECH = [
   { icon: '/sponsors/11labs.webp', name: 'ElevenLabs Voice', desc: 'The suspect\u2019s voice. Text-to-speech with dynamic stability that degrades as stress increases.' },
 ];
 
+function getTimerMode(): 'countdown' | 'unlimited' {
+  if (typeof window === 'undefined') return 'countdown';
+  try {
+    const s = localStorage.getItem('appSettings');
+    if (s) { const p = JSON.parse(s); if (p.timerMode === 'unlimited') return 'unlimited'; }
+  } catch { /* ignore */ }
+  return 'countdown';
+}
+
 export default function HelpPage() {
+  const [timerMode, setTimerMode] = useState<'countdown' | 'unlimited'>('countdown');
+  useEffect(() => { setTimerMode(getTimerMode()); }, []);
+  const isUnlimited = timerMode === 'unlimited';
   return (
     <PageShell>
       <motion.div variants={fadeIn} initial="hidden" animate="visible" transition={smooth}><BackButton /></motion.div>
@@ -67,7 +83,10 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">02</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Interrogate the Suspect</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice or keyboard. The suspect will respond &mdash; but they&apos;re hiding something. You have limited time (5&ndash;10 minutes depending on difficulty), so work fast.</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice or keyboard. The suspect will respond &mdash; but they&apos;re hiding something. {isUnlimited
+                ? <>In <span className="text-warn font-bold">Unlimited</span> mode, there&apos;s no time limit &mdash; but the suspect is tougher and won&apos;t crack as easily. Take your time, but stay sharp.</>
+                : <>You have limited time (5&ndash;10 minutes depending on difficulty) in <span className="text-accent font-bold">Countdown</span> mode, so work fast.</>
+              }</p>
               <div className="relative bg-surface-darker border border-surface-dark rounded-sm p-5 flex items-center gap-5">
                 <div className="absolute inset-0 opacity-15 rounded-sm" style={{ backgroundImage: 'url(/bg/police.png)', backgroundSize: 'cover', backgroundPosition: 'center', imageRendering: 'pixelated' }} />
                 <div className="relative shrink-0">
@@ -93,10 +112,10 @@ export default function HelpPage() {
                 <h2 className="text-sm font-bold uppercase tracking-wider">Collect Evidence</h2>
               </div>
               <p className="text-sm text-gray-400 mb-5 leading-relaxed">Press on suspicious topics. As stress rises, you&apos;ll unlock detective badges. Collect all required evidence to unlock the ACCUSE button (2&ndash;5 clues depending on difficulty).</p>
-              <motion.div className="flex items-end justify-center gap-8 bg-surface-darker border border-surface-dark rounded-sm py-6 px-4" variants={stagger(0.1)} initial="hidden" animate="visible">
+              <motion.div className="flex items-center justify-center gap-8 bg-surface-darker border border-surface-dark rounded-sm py-6 px-4" variants={stagger(0.1)} initial="hidden" animate="visible">
                 {EVIDENCE.map((item, n) => (
                   <motion.div key={n} className="flex flex-col items-center gap-2" variants={fadeUp} transition={smooth}>
-                    <img src={item.src} alt={item.label} className="object-contain drop-shadow-lg" style={{ imageRendering: 'pixelated', width: `${80 + n * 12}px`, height: `${80 + n * 12}px` }} />
+                    <img src={item.src} alt={item.label} className="w-16 h-16 object-contain drop-shadow-lg" style={{ imageRendering: 'pixelated' }} />
                     <span className="text-[9px] text-gray-500 uppercase tracking-wider">{item.label}</span>
                     <span className="text-[8px] text-gray-600">{item.sub}</span>
                   </motion.div>
@@ -144,7 +163,10 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">05</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. Run out of time, accusations, or give up and they escape.</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. {isUnlimited
+                ? 'Run out of accusations or give up and they escape.'
+                : 'Run out of time, accusations, or give up and they escape.'
+              }</p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
@@ -161,7 +183,7 @@ export default function HelpPage() {
 
             {/* Tips */}
             <motion.div className="mb-12 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Detective Tips</h2>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Interrogation Tactics</h2>
               <motion.ul className="space-y-3" variants={stagger(0.06)} initial="hidden" animate="visible">
                 {TIPS.map((tip, i) => (
                   <motion.li key={i} className="flex gap-3 text-sm text-gray-400" variants={fadeUp} transition={smooth}>
@@ -169,6 +191,36 @@ export default function HelpPage() {
                   </motion.li>
                 ))}
               </motion.ul>
+            </motion.div>
+
+            {/* Timer Mode Info */}
+            <motion.div className="mb-12 p-5 bg-surface-darker border border-surface-dark rounded-sm" variants={fadeUp} transition={smooth}>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">Game Mode: {isUnlimited ? 'Unlimited' : 'Countdown'}</h2>
+              {isUnlimited ? (
+                <div className="space-y-3 text-sm text-gray-400">
+                  <p>No time limit &mdash; explore at your own pace. But the suspect is <span className="text-warn font-bold">harder to crack</span>:</p>
+                  <ul className="space-y-1.5 ml-2">
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>The AI leaks less information under stress</li>
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Clues are more cryptic and require interpretation</li>
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>The suspect fills silence less often</li>
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Scoring is based on efficiency, not speed</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span><span>On Hard/Expert: push too hard and the suspect <span className="text-accent font-bold">lawyers up</span> &mdash; game over</span></li>
+                  </ul>
+                  <p className="text-xs text-gray-600 mt-2">Change to Countdown mode in Settings for a timed challenge with higher scores.</p>
+                  <p className="text-xs text-warn mt-1">Note: Unlimited mode uses more API credits (ElevenLabs TTS + Mistral) per game.</p>
+                </div>
+              ) : (
+                <div className="space-y-3 text-sm text-gray-400">
+                  <p>Race the clock. You have <span className="text-accent font-bold">5&ndash;10 minutes</span> depending on difficulty.</p>
+                  <ul className="space-y-1.5 ml-2">
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Easy: 5 min &middot; Medium: 7 min &middot; Hard: 9 min &middot; Expert: 10 min</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Timer pauses while the suspect is speaking</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Faster solves = higher scores</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>The suspect gives up more under pressure when time is tight</li>
+                  </ul>
+                  <p className="text-xs text-gray-600 mt-2">Change to Unlimited mode in Settings for a relaxed, exploration-focused experience.</p>
+                </div>
+              )}
             </motion.div>
 
             {/* Scoring */}

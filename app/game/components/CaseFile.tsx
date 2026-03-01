@@ -53,7 +53,7 @@ export default function CaseFile({
 
   return (
     <motion.div
-      className="h-full relative"
+      className="relative h-full min-h-0"
       initial="hidden" animate="visible" variants={slideRight} transition={smooth}
     >
       {/* Folder tabs — float over game board */}

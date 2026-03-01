@@ -87,9 +87,9 @@ function GameContent() {
   const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder(caseData?.sessionId);
   const ttsErrorToast = useCallback(() => showToast('Voice server unavailable — reading text instead'), [showToast]);
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId, ttsErrorToast);
-  const { remaining, elapsed, timeLimit, timerRef, onExpire } = useGameTimer(phase, isSpeaking, difficulty);
+  const { remaining, elapsed, timeLimit, timerRef, onExpire, isUnlimited } = useGameTimer(phase, isSpeaking, difficulty);
   const storePatterns = usePatterns(caseData?.sessionId, caseData?.setting, difficulty, elapsed);
-  const { handleLose, handleTimeUp, handleGiveUp } = useEndGame({
+  const { handleLose, handleTimeUp, handleGiveUp, handleLawyerUp } = useEndGame({
     caseData, conversationHistory, maxStress, cluesLength: clues.length,
     timerRef, sfx, speakResponse, ttsEnabled: settings.ttsEnabled,
     setPhase, setLastResponse, setLastTranscript, setShowGiveUpConfirm, setFadingOut,
@@ -163,13 +163,20 @@ function GameContent() {
     const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question, timestamp: elapsed }];
     try {
       const body = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question });
-      const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body };
+      const headers: Record<string, string> = { 'Content-Type': 'application/json', ...getUserApiHeaders() };
+      if (isUnlimited) headers['x-timer-mode'] = 'unlimited';
+      const opts = { method: 'POST', headers, body };
       let res;
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
       setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: elapsed }]);
       setLastResponse(data.spoken_response);
+      // Lawyer-up: suspect demands a lawyer — game over
+      if (data.lawyered_up) {
+        handleLawyerUp(data.spoken_response);
+        return;
+      }
       const newStress = data.stress_level ?? 0;
       if (newStress > stressRef.current + 1) {
         sfx('tension');
@@ -253,7 +260,7 @@ function GameContent() {
       className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-surface-darker ${settings.highContrast ? 'bg-black text-white' : 'bg-black text-foreground'} ${settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'} ${settings.highContrast ? 'high-contrast' : ''}`}
       style={{ fontFamily: settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif' : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : 'var(--font-mono)' }}
     >
-      <TopBar remaining={remaining} timeLimit={timeLimit} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
+      <TopBar remaining={remaining} elapsed={elapsed} timeLimit={timeLimit} isUnlimited={isUnlimited} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
         if (settings.musicVolume > 0 || (settings.sfxVolume ?? 0.5) > 0 || (settings.voiceVolume ?? 0.7) > 0) {
           prevVolumeRef.current = settings.musicVolume || 0.05;
           prevSfxRef.current = (settings.sfxVolume ?? 0.5) || 0.5;
@@ -275,7 +282,7 @@ function GameContent() {
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
       <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} onClickOutside={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
       <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
-      <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
+      <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} isUnlimited={isUnlimited} difficulty={difficulty} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
       <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx(isListening ? 'mic_off' : 'mic_on'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click_short'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
         onHintClick={async () => {
           sfx('click');

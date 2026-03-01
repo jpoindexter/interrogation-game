@@ -5,6 +5,9 @@ interface Breakdown {
   timeScore: number;
   diffMultiplier: number;
   diff: { label: string };
+  questionsAsked: number;
+  parQuestions: number;
+  efficiencyMultiplier: number;
   hintsUsed: number;
   hintMultiplier: number;
   wrongAccusations: number;
@@ -69,18 +72,23 @@ export default function ScoreBreakdown({ breakdown, timeElapsed, revealStep, dis
         <ScoreLine label="Time" sublabel={formatTime(timeElapsed)} value={String(breakdown.timeScore)} step={1} revealStep={revealStep} />
         <ScoreLine label="Difficulty" sublabel={breakdown.diff.label} value={`\u00d7${breakdown.diffMultiplier.toFixed(1)}`} color="text-gold" step={2} revealStep={revealStep} />
         <ScoreLine
+          label="Efficiency" sublabel={`${breakdown.questionsAsked} question${breakdown.questionsAsked !== 1 ? 's' : ''}`}
+          value={breakdown.efficiencyMultiplier > 1 ? `\u00d7${breakdown.efficiencyMultiplier.toFixed(2)}` : 'No bonus'}
+          color={breakdown.efficiencyMultiplier > 1 ? 'text-green-500' : ''} step={3} revealStep={revealStep}
+        />
+        <ScoreLine
           label="Hints used" sublabel={String(breakdown.hintsUsed)}
           value={breakdown.hintsUsed > 0 ? `\u2212${Math.round((1 - breakdown.hintMultiplier) * 100)}%` : 'No penalty'}
-          color={breakdown.hintsUsed > 0 ? 'text-accent' : 'text-green-500'} step={3} revealStep={revealStep}
+          color={breakdown.hintsUsed > 0 ? 'text-accent' : 'text-green-500'} step={4} revealStep={revealStep}
         />
         <ScoreLine
           label="Wrong accusations" sublabel={String(breakdown.wrongAccusations)}
           value={breakdown.wrongAccusations > 0 ? `\u2212${Math.round((1 - breakdown.accusationMultiplier) * 100)}%` : 'No penalty'}
-          color={breakdown.wrongAccusations > 0 ? 'text-accent' : 'text-green-500'} step={4} revealStep={revealStep}
+          color={breakdown.wrongAccusations > 0 ? 'text-accent' : 'text-green-500'} step={5} revealStep={revealStep}
         />
 
         <AnimatePresence>
-          {revealStep >= 5 && (
+          {revealStep >= 6 && (
             <motion.div ref={totalRef} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="border-t border-surface my-3" />
               <div className="flex justify-between items-center">

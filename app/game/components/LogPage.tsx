@@ -24,22 +24,27 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
   }
 
   return (
-    <div className="p-4 text-black" style={MONO}>
-      <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Interview Transcript</p>
-      <p className="text-xs text-black/40 text-center mb-3">Subject: {suspectName}</p>
-
-      <hr className="border-black/20 mb-3" />
+    <div className="text-black" style={MONO}>
+      <div className="sticky top-0 z-10 px-4 pt-4 pb-0" style={{ background: '#F0EDE6' }}>
+        <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Interview Transcript</p>
+        <p className="text-xs text-black/40 text-center mb-3">Subject: {suspectName}</p>
+        <hr className="border-black/20" />
+        {pairs.length > 0 && (
+          <div className="pt-1 pb-1">
+            <div className={SECTION_HEADER} style={LOG_HEADER_BG}>Exchanges</div>
+          </div>
+        )}
+      </div>
 
       {conversationHistory.length === 0 && (
-        <div className="py-8 text-center">
+        <div className="py-8 text-center px-4">
           <p className="text-xs italic text-black/40">No exchanges recorded.</p>
           <p className="text-xs italic text-black/30 mt-1">Begin questioning to populate this log.</p>
         </div>
       )}
 
       {pairs.length > 0 && (
-        <div>
-          <div className={SECTION_HEADER} style={LOG_HEADER_BG}>Exchanges</div>
+        <div className="px-4">
           {pairs.map((pair, i) => {
             const isLatest = i === pairs.length - 1;
             return (
@@ -48,7 +53,7 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: 0.02 }}
-                className={`py-2.5 ${!isLatest ? 'border-b border-black/15 opacity-50' : ''}`}
+                className={`py-2.5 ${!isLatest ? 'border-b border-black/15 opacity-50' : 'pb-6'}`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="text-[10px] uppercase tracking-widest text-black/25" style={MONO}>

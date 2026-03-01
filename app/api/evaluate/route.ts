@@ -25,15 +25,16 @@ export async function POST(request: NextRequest) {
     const caseData = session.caseData as Parameters<typeof evaluateWin>[0] & Parameters<typeof generateLossSummary>[0];
     const history = session.conversationHistory;
 
-    const userMistralKey = request.headers.get('x-mistral-api-key') || undefined;
+    // SECURITY: Judge/evaluation calls NEVER use user-provided API key.
+    // A malicious user could proxy their key to manipulate results.
     let result;
     if (body.type === 'win') {
       const accusation = typeof body.playerAccusation === 'string'
         ? sanitizeInput(body.playerAccusation.slice(0, 1000)) : '';
-      result = await evaluateWin(caseData, history, accusation, userMistralKey);
+      result = await evaluateWin(caseData, history, accusation);
     } else {
       const maxStress = validateNumber(body.maxStress, 0, 10) ?? 0;
-      result = await generateLossSummary(caseData, history, maxStress, userMistralKey);
+      result = await generateLossSummary(caseData, history, maxStress);
     }
 
     if (body.type === 'lose') {

@@ -25,14 +25,26 @@ function buildBriefingSections(c: Case): BriefingSection[] {
   return sections;
 }
 
-const STICKIES = [
-  { label: 'Suspect', key: 'suspect_name' as const, bg: ['#FFB3B3', '#F5A0A0'], text: 'red', rot: -3 },
-  { label: 'Role', key: 'suspect_role' as const, bg: ['#A3D5F5', '#8DC8EE'], text: 'blue', rot: 2 },
-  { label: 'Location', key: 'setting' as const, bg: ['#B3F5B3', '#9BE89B'], text: 'green', rot: -1.5 },
+const STICKY_BASE = [
+  { label: 'Suspect', key: 'suspect_name' as const, bg: ['#FFB3B3', '#F5A0A0'] },
+  { label: 'Role', key: 'suspect_role' as const, bg: ['#A3D5F5', '#8DC8EE'] },
+  { label: 'Location', key: 'setting' as const, bg: ['#B3F5B3', '#9BE89B'] },
+  { label: 'Mission', key: 'objective' as const, bg: ['#FFF5A3', '#F5E88D'] },
 ];
+
+function randRange(min: number, max: number) { return min + Math.random() * (max - min); }
+function randomizeStickies() {
+  return STICKY_BASE.map(s => ({
+    ...s,
+    rot: randRange(-7, 7),
+    y: randRange(-18, 22),
+    ml: randRange(-14, 10),
+  }));
+}
 
 export default function BriefingScreen({ caseData, difficulty, onStart, onBack }: BriefingScreenProps) {
   const [showBriefing, setShowBriefing] = useState(false);
+  const [stickies] = useState(randomizeStickies);
   const sfx = useSfx();
   const sections = buildBriefingSections(caseData);
   const fullText = sections.map(s => s.text).join(' ');
@@ -43,7 +55,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
 
   return (
     <div className="min-h-screen text-foreground font-mono flex items-center justify-center p-8 relative overflow-hidden">
-      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '90%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '60%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000', imageRendering: 'pixelated' }} />
       <div className="absolute inset-0 bg-black/50" />
 
       <svg className="absolute w-0 h-0">
@@ -73,21 +85,28 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
           <SuspectAvatar name={caseData.suspect_name} gender={caseData.suspect_gender} stressLevel={0} size="sm" />
         </motion.div>
 
-        <motion.div className="flex justify-center gap-6 mb-6" variants={fadeUp} transition={smooth}>
-          {STICKIES.map((s) => (
-            <div key={s.label} className="relative p-4 text-center w-44 h-44 flex flex-col justify-center overflow-hidden" style={{
-              background: `linear-gradient(180deg, ${s.bg[0]} 0%, ${s.bg[1]} 100%)`,
-              boxShadow: '2px 3px 10px rgba(0,0,0,0.35), inset 0 0 20px rgba(0,0,0,0.03)',
-              transform: `rotate(${s.rot}deg)`,
-              filter: 'url(#paper-wrinkle)',
-            }}>
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: 'linear-gradient(125deg, transparent 30%, rgba(0,0,0,0.06) 30.5%, transparent 31%), linear-gradient(65deg, transparent 55%, rgba(255,255,255,0.1) 55.5%, transparent 56%)',
-              }} />
-              <p className="text-[9px] text-black/60 uppercase tracking-wider mb-1 relative z-10">{s.label}</p>
-              <p className={`text-2xl text-black font-bold leading-snug relative z-10`} style={{ fontFamily: 'var(--font-handwriting)' }}>{caseData[s.key]}</p>
-            </div>
-          ))}
+        <motion.div className="flex justify-center gap-4 mb-6 flex-wrap" variants={fadeUp} transition={smooth}>
+          {stickies.map((s) => {
+            const val = caseData[s.key] || (s.key === 'objective' ? 'Find the lie' : '');
+            const len = val.length;
+            // Dynamic font: short text = big, long text = small
+            const fontSize = len > 60 ? '11px' : len > 30 ? '13px' : len > 15 ? '16px' : '20px';
+            return (
+              <div key={s.label} className="relative p-4 pt-3 text-left w-36 h-36 flex flex-col overflow-hidden" style={{
+                background: `linear-gradient(180deg, ${s.bg[0]} 0%, ${s.bg[1]} 100%)`,
+                boxShadow: '2px 3px 10px rgba(0,0,0,0.35), inset 0 0 20px rgba(0,0,0,0.03)',
+                transform: `rotate(${s.rot}deg) translateY(${s.y}px)`,
+                marginLeft: `${s.ml}px`,
+                filter: 'url(#paper-wrinkle)',
+              }}>
+                <div className="absolute inset-0 pointer-events-none" style={{
+                  background: 'linear-gradient(125deg, transparent 30%, rgba(0,0,0,0.06) 30.5%, transparent 31%), linear-gradient(65deg, transparent 55%, rgba(255,255,255,0.1) 55.5%, transparent 56%)',
+                }} />
+                <p className="text-[9px] text-black/60 uppercase tracking-wider mb-2 relative z-10">{s.label}</p>
+                <p className="text-black font-bold leading-snug relative z-10" style={{ fontFamily: 'var(--font-handwriting)', fontSize }}>{val}</p>
+              </div>
+            );
+          })}
         </motion.div>
 
         <motion.button
