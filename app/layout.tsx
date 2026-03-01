@@ -4,6 +4,7 @@ import '@fontsource/opendyslexic/400.css';
 import '@fontsource/opendyslexic/700.css';
 import './globals.css';
 import FontProvider from './components/FontProvider';
+import MusicToggle from './components/MusicToggle';
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -48,6 +49,7 @@ export default function RootLayout({
     <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} ${handwriting.variable} font-sans`}>
       <body className="bg-black text-foreground">
         <FontProvider />
+        <MusicToggle />
         {children}
       </body>
     </html>

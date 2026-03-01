@@ -3,7 +3,7 @@ import type { GameSettings } from '../components/SettingsPanel';
 
 const DEFAULTS: GameSettings = {
   ttsEnabled: process.env.NODE_ENV !== 'development',
-  musicVolume: 0.1,
+  musicVolume: 0.05,
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,

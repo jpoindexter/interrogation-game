@@ -25,7 +25,6 @@ import { useVoiceRecorder } from './hooks/useVoiceRecorder';
 import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { useSettings } from './hooks/useSettings';
-import { useBackgroundMusic } from './hooks/useBackgroundMusic';
 import { Spinner } from '../components/ui';
 import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
 
@@ -41,7 +40,6 @@ function GameContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { settings, updateSettings } = useSettings();
-  useBackgroundMusic('/music/Shadowed_Keys_1.mp3', settings.musicVolume, settings.musicVolume > 0);
 
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [phase, setPhase] = useState<'loading' | 'briefing' | 'active' | 'processing'>('loading');
@@ -112,6 +110,7 @@ function GameContent() {
   }, [router, searchParams]);
 
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
+  useEffect(() => { window.dispatchEvent(new CustomEvent('gamePhaseChange', { detail: phase })); }, [phase]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
   useEffect(() => { if (phase === 'active' && !localStorage.getItem('onboardingComplete')) setShowOnboarding(true); }, [phase]);
   useEffect(() => {
@@ -235,7 +234,7 @@ function GameContent() {
           prevVolumeRef.current = settings.musicVolume;
           updateSettings({ ...settings, musicVolume: 0 });
         } else {
-          updateSettings({ ...settings, musicVolume: prevVolumeRef.current || 0.1 });
+          updateSettings({ ...settings, musicVolume: prevVolumeRef.current || 0.05 });
         }
       }} />
       <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />
