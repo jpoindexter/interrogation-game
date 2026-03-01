@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
+import { fadeUp, stagger } from '../../components/motion';
 import { formatTime, shareResult } from '../components/utils';
+import { calculateScore, getDetectiveRating } from '../../../src/lib/scoring';
+import type { Difficulty } from '../../../src/lib/scoring';
 import InitialsEntry from './InitialsEntry';
 import TranscriptViewer from '../components/TranscriptViewer';
 import ScoreBreakdown from './ScoreBreakdown';
 import CaseDetails from './CaseDetails';
 import { saveCaseResult } from '../../data/case-history';
-
 import { playClick, playSfx } from '../../lib/sfx-utils';
 
 interface GameResult {
@@ -28,35 +30,24 @@ interface GameResult {
   accusationsUsed?: number;
 }
 
-const DIFFICULTY_CONFIG: Record<string, { parTime: number; multiplier: number; label: string }> = {
+const DIFF_LABELS: Record<string, { parTime: number; multiplier: number; label: string }> = {
   easy: { parTime: 240, multiplier: 1.0, label: 'Easy' },
   medium: { parTime: 360, multiplier: 1.5, label: 'Medium' },
   hard: { parTime: 480, multiplier: 2.0, label: 'Hard' },
   expert: { parTime: 600, multiplier: 2.5, label: 'Expert' },
 };
 
-function getRating(score: number): string {
-  if (score >= 2000) return 'Legendary';
-  if (score >= 1200) return 'Veteran';
-  if (score >= 800) return 'Sharp';
-  if (score >= 400) return 'Rookie';
-  return 'Trainee';
-}
-
 function computeBreakdown(result: GameResult) {
-  const diff = DIFFICULTY_CONFIG[result.difficulty] || DIFFICULTY_CONFIG.medium;
+  const diff = DIFF_LABELS[result.difficulty] || DIFF_LABELS.medium;
+  const hintsUsed = result.hintsUsed ?? 0;
+  const wrongAccusations = Math.max(0, (result.accusationsUsed ?? 1) - 1);
   const timeRatio = Math.max(0, 1 - result.timeElapsed / (diff.parTime * 2));
   const timeScore = Math.round(1000 * Math.sqrt(timeRatio));
-  const hintsUsed = result.hintsUsed ?? 0;
-  const hintMultiplier = Math.pow(0.85, hintsUsed);
-  const wrongAccusations = Math.max(0, (result.accusationsUsed ?? 1) - 1);
-  const accusationMultiplier = Math.max(0, 1 - wrongAccusations * 0.1);
-  const finalScore = Math.round(Math.max(0, timeScore * diff.multiplier * hintMultiplier * accusationMultiplier));
-  return { timeScore, diffMultiplier: diff.multiplier, diff, hintsUsed, hintMultiplier, wrongAccusations, accusationMultiplier, finalScore };
+  const finalScore = calculateScore(result.timeElapsed, (result.difficulty || 'medium') as Difficulty, hintsUsed, wrongAccusations);
+  return { timeScore, diffMultiplier: diff.multiplier, diff, hintsUsed, hintMultiplier: Math.pow(0.85, hintsUsed), wrongAccusations, accusationMultiplier: Math.max(0, 1 - wrongAccusations * 0.1), finalScore };
 }
 
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-const staggerChildren = { visible: { transition: { staggerChildren: 0.15 } } };
+const staggerChildren = stagger(0.15);
 
 export default function WinPage() {
   return (
@@ -209,7 +200,7 @@ function WinContent() {
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); const next = difficulty === 'easy' ? 'medium' : difficulty === 'medium' ? 'hard' : 'expert'; router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${next}`); }} className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">Try Harder</button>
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }} className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors">New Case</button>
             <button onClick={() => { playClick(); router.push('/leaderboard'); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Leaderboard</button>
-            <button onClick={async () => { playClick(); if (!breakdown) return; const url = typeof window !== 'undefined' ? window.location.origin : ''; const text = [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getRating(breakdown.finalScore)}`, `Can you beat my score?`, url].join('\n'); const outcome = await shareResult(text); if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); } }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">{shareLabel}</button>
+            <button onClick={async () => { playClick(); if (!breakdown) return; const url = typeof window !== 'undefined' ? window.location.origin : ''; const text = [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getDetectiveRating(breakdown.finalScore)}`, `Can you beat my score?`, url].join('\n'); const outcome = await shareResult(text); if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); } }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">{shareLabel}</button>
             <button onClick={() => { playClick(); setShowTranscript(true); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Transcript</button>
           </div>
         </motion.div>

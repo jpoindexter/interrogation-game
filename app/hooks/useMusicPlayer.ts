@@ -107,11 +107,11 @@ export function useMusicPlayer(isGame: boolean) {
         if (outgoing) { outgoing.pause(); outgoing.src = ''; }
         const incoming = new Audio(nextSrc); incomingRef.current = incoming; incoming.volume = 0; incoming.play().catch(() => {});
         let inStep = 0;
-        const inTimer = setInterval(() => { inStep++; incoming.volume = Math.min(vol, vol * (inStep / steps)); if (inStep >= steps) { clearInterval(inTimer); audioRef.current = incoming; incomingRef.current = null; fadingRef.current = false; } }, 2000 / steps) as unknown as number;
-        fadeTimersRef.current.push(inTimer);
+        const inTimer: ReturnType<typeof setInterval> = setInterval(() => { inStep++; incoming.volume = Math.min(vol, vol * (inStep / steps)); if (inStep >= steps) { clearInterval(inTimer); audioRef.current = incoming; incomingRef.current = null; fadingRef.current = false; } }, 2000 / steps);
+        fadeTimersRef.current.push(inTimer as unknown as number);
       }
-    }, 2000 / steps) as unknown as number;
-    fadeTimersRef.current.push(outTimer);
+    }, 2000 / steps);
+    fadeTimersRef.current.push(outTimer as unknown as number);
   }, []);
 
   useEffect(() => {
