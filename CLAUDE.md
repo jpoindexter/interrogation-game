@@ -226,7 +226,7 @@ EXPORT_SECRET=xxx                      # Required for /api/export — shared sec
 5. **sessionStorage** for game results — no URL size limits, cleaner URLs
 6. **Supabase** for leaderboard — RLS policies for public read + insert, no auth needed
 7. **Countdown timer** — easy 5min, medium 7min, hard 9min, expert 10min. Time runs out = lose. Alarm at expiry, clock ticks intensify in final 2 min.
-8. **3 accusations max** — accusation available anytime (no clue gate). Run out of time OR accusations = lose.
+8. **3 accusations max** — accusation unlocks after collecting all required clues (server + client enforced). Run out of time OR accusations = lose.
 9. **Give Up option** — AI generates smug remark, reveals answers, counts as loss
 10. **Separate accusation judge** — different Mistral call evaluates the accusation independently from the suspect character
 11. **Structured JSON responses** — stress_level, clue_unlocked fields let game state be driven by AI assessment

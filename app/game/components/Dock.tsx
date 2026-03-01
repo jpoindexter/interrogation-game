@@ -41,7 +41,7 @@ export default function Dock({
   // Server enforces actual limit; client uses cluesNeeded as the visible cap
   const hintsExhausted = !caseData || hintsUsed >= cluesNeeded;
   const accuseDisabled =
-    (!isAccusing && (busy || accusationsLeft <= 0 || showAccuseConfirm))
+    (!isAccusing && (busy || accusationsLeft <= 0 || clues.length < cluesNeeded || showAccuseConfirm))
     || (isAccusing && !isListening);
 
   return (
@@ -105,10 +105,11 @@ export default function Dock({
           data-tooltip={
             isAccusing && isListening ? 'Stop'
               : accusationsLeft <= 0 ? 'No attempts left'
+              : clues.length < cluesNeeded ? `Collect more evidence (${clues.length}/${cluesNeeded})`
               : `Accuse (${accusationsLeft})`
           }
           className={`dock-icon ${
-            accusationsLeft <= 0 && !isAccusing
+            (accusationsLeft <= 0 || clues.length < cluesNeeded) && !isAccusing
               ? 'bg-surface-dark text-gray-700 cursor-not-allowed'
               : isAccusing
                 ? 'bg-accent text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
