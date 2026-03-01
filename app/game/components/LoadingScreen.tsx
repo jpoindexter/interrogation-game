@@ -50,9 +50,9 @@ export default function LoadingScreen() {
           }} />
           <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-3">How to Play</h3>
           <div className="space-y-3 text-[12px] text-gray-700 leading-relaxed">
-            <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic and ask the suspect questions. The stress meter tells you when you&rsquo;re getting close to the lie.</p>
-            <p><span className="text-red-800 font-bold">2. Accuse.</span> When you find a contradiction, hit ACCUSE and state exactly what they lied about. Be specific.</p>
-            <p><span className="text-gray-900 font-bold">3. Win.</span> Get it right and they confess. Get it wrong and you waste an attempt. You get <span className="text-gray-900 font-bold">3 tries</span>.</p>
+            <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic and ask the suspect questions. Rising stress means you&rsquo;re getting close.</p>
+            <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> As stress rises, detective badges unlock. Collect them all to enable the ACCUSE button.</p>
+            <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about and <span className="text-gray-900 font-bold">what actually happened</span>. A separate AI judge evaluates your accusation. You get <span className="text-gray-900 font-bold">3 tries</span>.</p>
           </div>
         </div>
       </motion.div>

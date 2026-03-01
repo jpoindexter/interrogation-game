@@ -83,7 +83,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
               <span className="text-sm font-bold text-accent shrink-0">03</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Make Your Accusation</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all {cluesNeeded} clues, the ACCUSE button unlocks. Call out the lie. You get 3 attempts.</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Once you have all {cluesNeeded} clues, hit ACCUSE. State <span className="text-foreground">what</span> they lied about and <span className="text-foreground">what actually happened</span>. Be specific &mdash; &ldquo;you&apos;re lying&rdquo; won&apos;t count. You get 3 attempts.</p>
               </div>
             </motion.div>
             <motion.div className="border-t border-surface pt-3" variants={fadeUp} transition={smooth}>

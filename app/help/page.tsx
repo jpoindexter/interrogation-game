@@ -93,9 +93,9 @@ export default function HelpPage() {
             <motion.div className="mb-12" variants={fadeUp} transition={smooth}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl font-bold text-accent">03</span>
-                <h2 className="text-sm font-bold uppercase tracking-wider">Collect 3 Clues</h2>
+                <h2 className="text-sm font-bold uppercase tracking-wider">Collect Evidence</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Press on suspicious topics. As stress rises, you&apos;ll unlock detective badges. You need all 3 to make an accusation.</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Press on suspicious topics. As stress rises, you&apos;ll unlock detective badges. Collect all required evidence to unlock the ACCUSE button (2&ndash;5 clues depending on difficulty).</p>
               <motion.div className="flex items-end justify-center gap-8 bg-surface-darker border border-surface-dark rounded-sm py-6 px-4" variants={stagger(0.1)} initial="hidden" animate="visible">
                 {EVIDENCE.map((item, n) => (
                   <motion.div key={n} className="flex flex-col items-center gap-2" variants={fadeUp} transition={smooth}>
@@ -113,14 +113,30 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">04</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Make Your Accusation</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Once you have all 3 clues, hit ACCUSE and call out the lie. Be specific &mdash; the AI judges your accuracy.</p>
-              <div className="flex items-center justify-center bg-surface-darker border border-surface-dark rounded-sm py-8">
-                <div className="flex items-center gap-3 px-6 py-3 bg-accent text-white rounded-sm text-sm font-bold uppercase tracking-wider">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                    <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-                  </svg>
-                  Accuse
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Once you have all your clues, hit ACCUSE and state the specific lie. A separate AI judge evaluates your accusation &mdash; you need to identify <span className="text-foreground font-bold">what</span> they lied about, not just that they lied. You get 3 attempts.</p>
+              <div className="bg-surface-darker border border-surface-dark rounded-sm p-5 space-y-3">
+                <div className="flex items-center justify-center">
+                  <div className="flex items-center gap-3 px-6 py-3 bg-accent text-white rounded-sm text-sm font-bold uppercase tracking-wider">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Accuse
+                  </div>
+                </div>
+                <div className="border-t border-surface-dark pt-3 space-y-3">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">Specific &mdash; counts</p>
+                    <div className="bg-surface-dark border border-surface rounded-sm p-3">
+                      <p className="text-xs text-gray-300 italic">&ldquo;You claimed you were at the office until 9pm, but the security logs show you badged out at 7. You left two hours earlier than you said.&rdquo;</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1.5">Vague &mdash; won&apos;t count</p>
+                    <div className="bg-surface-dark border border-surface rounded-sm p-3">
+                      <p className="text-xs text-gray-300 italic">&ldquo;You&apos;re lying about everything.&rdquo;</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -27,12 +27,12 @@ export default function AccuseConfirmDialog({ show, accusationsLeft, accuseText,
         animate="visible"
         transition={{ ...snappy, delay: 0.1 }}
       >
-        You have <span className="text-accent font-bold">{accusationsLeft}</span> attempt{accusationsLeft !== 1 ? 's' : ''} left. State exactly what you think they lied about.
+        You have <span className="text-accent font-bold">{accusationsLeft}</span> attempt{accusationsLeft !== 1 ? 's' : ''} left. Be specific &mdash; say <span className="text-foreground">what</span> they lied about and <span className="text-foreground">what actually happened</span>.
       </motion.p>
       <textarea
         value={accuseText}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Type your accusation here..."
+        placeholder="e.g. You claimed X, but really Y happened..."
         className="w-full bg-surface-darker border border-surface rounded-sm p-2 text-sm text-foreground placeholder-gray-600 resize-none mb-3 focus:outline-none focus:border-accent"
         rows={2}
         onKeyDown={(e) => {
