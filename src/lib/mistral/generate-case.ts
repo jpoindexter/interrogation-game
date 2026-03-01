@@ -1,8 +1,5 @@
 import { mistralClient, extractContent } from './client';
-
-const DIFFICULTY_CLUES: Record<string, number> = {
-  easy: 2, medium: 3, hard: 4, expert: 5,
-};
+import { DIFFICULTY_CLUES } from '../game-state';
 
 const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
   easy: `- EASY difficulty: The lie should be relatively obvious under pressure. The contradiction should be easy to spot.
@@ -59,6 +56,7 @@ Respond ONLY in this exact JSON format:
   "the_contradiction": "how the lie can be caught — what detail doesn't add up",
   "stress_triggers": ["list of exactly ${clueCount} topics or questions that would make the suspect nervous"],
   "deflection_tactics": ["list of 3-4 ways the suspect tries to change the subject or avoid the topic"],
+  "verbal_tics": "1-2 unique speech patterns this character has (e.g., 'says frankly before lies', 'clears throat when nervous', 'uses overly precise numbers', 'repeats the question back', 'switches to formal language under pressure')",
   "difficulty": "${difficulty}"
 }
 

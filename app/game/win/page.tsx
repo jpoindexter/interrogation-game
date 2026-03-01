@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
@@ -12,9 +12,7 @@ import ScoreBreakdown from './ScoreBreakdown';
 import CaseDetails from './CaseDetails';
 import { saveCaseResult } from '../../data/case-history';
 
-function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
-const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {} };
-const playSfx = (src: string, vol: number) => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio(src); a.volume = vol * m; a.play().catch(() => {}); } catch {} };
+import { playClick, playSfx } from '../../lib/sfx-utils';
 
 interface GameResult {
   caseData: { case_number: string; suspect_name: string; suspect_role: string; setting: string; crime: string };
@@ -90,7 +88,8 @@ function WinContent() {
   useEffect(() => {
     const stored = sessionStorage.getItem('gameResult');
     if (!stored) { router.push('/'); return; }
-    const parsed = JSON.parse(stored) as GameResult;
+    let parsed: GameResult;
+    try { parsed = JSON.parse(stored) as GameResult; } catch { router.push('/'); return; }
     setResult(parsed);
     setTimeout(() => {
       setStampVisible(true);
@@ -189,7 +188,7 @@ function WinContent() {
 
   return (
     <div className="min-h-screen bg-black text-foreground font-mono overflow-y-auto relative">
-      <button onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/'); }} className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20">&larr; Home</button>
+      <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/'); }} className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20">&larr; Home</button>
 
       <motion.div className="absolute top-0 left-1/2 -translate-x-1/2 z-0 pointer-events-none" initial={{ opacity: 0, scale: 1.5 }} animate={stampVisible ? { opacity: 0.15, scale: 1 } : {}} transition={{ duration: 0.7, ease: 'easeOut' }}>
         <img src="/solved/caught.png" alt="" className="w-[600px] sm:w-[800px] md:w-[900px]" />
@@ -207,11 +206,11 @@ function WinContent() {
 
         <motion.div className="mt-10" initial={{ opacity: 0 }} animate={revealStep >= 5 ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 1.5 }}>
           <div className="flex flex-wrap gap-2 justify-center">
-            <button onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); const next = difficulty === 'easy' ? 'medium' : difficulty === 'medium' ? 'hard' : 'expert'; router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${next}`); }} className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">Try Harder</button>
-            <button onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }} className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors">New Case</button>
-            <button onClick={() => { clickSfx(); router.push('/leaderboard'); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Leaderboard</button>
-            <button onClick={async () => { clickSfx(); if (!breakdown) return; const url = typeof window !== 'undefined' ? window.location.origin : ''; const text = [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getRating(breakdown.finalScore)}`, `Can you beat my score?`, url].join('\n'); const outcome = await shareResult(text); if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); } }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">{shareLabel}</button>
-            <button onClick={() => { clickSfx(); setShowTranscript(true); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Transcript</button>
+            <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); const next = difficulty === 'easy' ? 'medium' : difficulty === 'medium' ? 'hard' : 'expert'; router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${next}`); }} className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">Try Harder</button>
+            <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }} className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors">New Case</button>
+            <button onClick={() => { playClick(); router.push('/leaderboard'); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Leaderboard</button>
+            <button onClick={async () => { playClick(); if (!breakdown) return; const url = typeof window !== 'undefined' ? window.location.origin : ''; const text = [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getRating(breakdown.finalScore)}`, `Can you beat my score?`, url].join('\n'); const outcome = await shareResult(text); if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); } }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">{shareLabel}</button>
+            <button onClick={() => { playClick(); setShowTranscript(true); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Transcript</button>
           </div>
         </motion.div>
       </div>

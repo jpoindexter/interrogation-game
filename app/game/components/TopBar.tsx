@@ -1,10 +1,6 @@
 import { motion, fadeDown, snappy } from '../../components/motion';
-
-export function formatTime(secs: number) {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${s < 10 ? '0' : ''}${s}`;
-}
+import { playClick } from '../../lib/sfx-utils';
+import { formatTime } from './utils';
 
 interface TopBarProps {
   remaining: number;
@@ -50,7 +46,7 @@ export default function TopBar({ remaining, timeLimit, stressLevel, musicVolume,
           </div>
         </div>
         <button
-          onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } } catch {} onMusicToggle(); }}
+          onClick={() => { playClick(); onMusicToggle(); }}
           className="text-gray-500 hover:text-foreground transition-colors"
           title={muted ? 'Unmute music' : 'Mute music'}
         >

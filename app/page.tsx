@@ -13,14 +13,7 @@ import {
   smooth,
   snappy,
 } from './components/motion';
-
-function _sfxVol(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
-}
-const playSfx = () => {
-  const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {}
-};
+import { playClick } from './lib/sfx-utils';
 
 export default function HomePage() {
   const router = useRouter();
@@ -71,7 +64,7 @@ export default function HomePage() {
         >
           {/* Leaderboard — trophy */}
           <motion.button
-            onClick={() => { playSfx(); router.push('/leaderboard'); }}
+            onClick={() => { playClick(); router.push('/leaderboard'); }}
             className="text-gray-500 hover:text-gold transition-colors"
             data-tooltip="Leaderboard"
             variants={fadeDown}
@@ -86,7 +79,7 @@ export default function HomePage() {
           </motion.button>
           {/* Help — question mark */}
           <motion.button
-            onClick={() => { playSfx(); router.push('/help'); }}
+            onClick={() => { playClick(); router.push('/help'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="How to Play"
             variants={fadeDown}
@@ -100,7 +93,7 @@ export default function HomePage() {
           </motion.button>
           {/* About — user */}
           <motion.button
-            onClick={() => { playSfx(); router.push('/about'); }}
+            onClick={() => { playClick(); router.push('/about'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="About"
             variants={fadeDown}
@@ -113,7 +106,7 @@ export default function HomePage() {
           </motion.button>
           {/* Settings — gear */}
           <motion.button
-            onClick={() => { playSfx(); router.push('/settings'); }}
+            onClick={() => { playClick(); router.push('/settings'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="Settings"
             variants={fadeDown}
@@ -183,7 +176,7 @@ export default function HomePage() {
           transition={{ ...smooth, delay: 0.3 }}
         >
           <motion.button
-            onClick={() => { playSfx(); router.push('/cases'); }}
+            onClick={() => { playClick(); router.push('/cases'); }}
             className="px-8 py-3 bg-accent hover:bg-accent-hover text-white text-xs font-bold uppercase tracking-wider rounded-sm transition-colors"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}

@@ -9,9 +9,7 @@ import { shareResult } from '../components/utils';
 import TranscriptViewer from '../components/TranscriptViewer';
 import { saveCaseResult } from '../../data/case-history';
 
-function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
-const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {} };
-const playSfx = (src: string, vol: number) => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio(src); a.volume = vol * m; a.play().catch(() => {}); } catch {} };
+import { playClick, playSfx } from '../../lib/sfx-utils';
 
 interface GameResult {
   caseData: {
@@ -36,9 +34,8 @@ export default function LosePage() {
   );
 }
 
-const staggerChildren = {
-  visible: { transition: { staggerChildren: 0.15 } },
-};
+const staggerChildren = { visible: { transition: { staggerChildren: 0.15 } } };
+const FALLBACK_SUMMARY = { detective_rating: 'Rookie', the_lie_revealed: 'Unable to retrieve.', the_truth_revealed: 'Unable to retrieve.', closest_moment: 'Unable to analyze.', what_they_missed: 'Unable to retrieve.' };
 
 function LoseContent() {
   const router = useRouter();
@@ -59,7 +56,8 @@ function LoseContent() {
     const stored = sessionStorage.getItem('gameResult');
     if (!stored) { router.push('/'); return; }
 
-    const parsed = JSON.parse(stored) as GameResult;
+    let parsed: GameResult;
+    try { parsed = JSON.parse(stored) as GameResult; } catch { router.push('/'); return; }
     setResult(parsed);
 
     setTimeout(() => {
@@ -89,13 +87,8 @@ function LoseContent() {
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        if (!data.error) setSummary(data);
-        else setSummary({ detective_rating: 'Rookie', the_lie_revealed: 'Unable to retrieve.', the_truth_revealed: 'Unable to retrieve.', closest_moment: 'Unable to analyze.', what_they_missed: 'Unable to retrieve.' });
-      })
-      .catch(() => {
-        setSummary({ detective_rating: 'Rookie', the_lie_revealed: 'Unable to retrieve.', the_truth_revealed: 'Unable to retrieve.', closest_moment: 'Unable to analyze.', what_they_missed: 'Unable to retrieve.' });
-      });
+      .then((data) => setSummary(data.error ? FALLBACK_SUMMARY : data))
+      .catch(() => setSummary(FALLBACK_SUMMARY));
   }, [router]);
 
   if (!result) {
@@ -109,7 +102,7 @@ function LoseContent() {
     <div className="min-h-screen bg-black text-foreground font-mono overflow-y-auto relative">
       {/* Main Menu — top right, consistent with other pages */}
       <button
-        onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/'); }}
+        onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/'); }}
         className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
       >
         &larr; Home
@@ -238,7 +231,7 @@ function LoseContent() {
           <div className="flex flex-wrap gap-2 justify-center">
             <button
               onClick={() => {
-                clickSfx();
+                playClick();
                 sessionStorage.removeItem('gameResult');
                 router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${difficulty}`);
               }}
@@ -249,7 +242,7 @@ function LoseContent() {
             {difficulty !== 'easy' && (
               <button
                 onClick={() => {
-                  clickSfx();
+                  playClick();
                   sessionStorage.removeItem('gameResult');
                   const easier = difficulty === 'expert' ? 'hard' : difficulty === 'hard' ? 'medium' : 'easy';
                   router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${easier}`);
@@ -260,30 +253,23 @@ function LoseContent() {
               </button>
             )}
             <button
-              onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
+              onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
               Other Cases
             </button>
             <button
               onClick={async () => {
-                clickSfx();
+                playClick();
                 const url = typeof window !== 'undefined' ? window.location.origin : '';
-                const text = result.gaveUp
-                  ? `\ud83d\udd0d INTERROGATION \u2014 I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?\n${url}`
-                  : `\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?\n${url}`;
-                const outcome = await shareResult(text);
-                if (outcome === 'copied') {
-                  setShareLabel('COPIED!');
-                  setTimeout(() => setShareLabel('SHARE'), 2000);
-                }
+                const msg = result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
+                const outcome = await shareResult(`\ud83d\udd0d INTERROGATION \u2014 ${msg}\n${url}`);
+                if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); }
               }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
-            >
-              {shareLabel}
-            </button>
+            >{shareLabel}</button>
             <button
-              onClick={() => { clickSfx(); setShowTranscript(true); }}
+              onClick={() => { playClick(); setShowTranscript(true); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
               Transcript

@@ -3,6 +3,7 @@ import SuspectAvatar from '../SuspectAvatar';
 import VoiceWaveform from './VoiceWaveform';
 import { getSceneBg } from './utils';
 import { motion, fadeIn, scaleIn, smooth, snappy } from '../../components/motion';
+import { playClick } from '../../lib/sfx-utils';
 
 interface SuspectZoneProps {
   caseData: Case;
@@ -58,7 +59,7 @@ export default function SuspectZone({
           />
           {isSpeaking && onSkipSpeech && (
             <button
-              onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); setTimeout(() => { a.volume = 0; a.pause(); }, 100); } } catch {} onSkipSpeech?.(); }}
+              onClick={() => { playClick(); onSkipSpeech?.(); }}
               className="absolute -bottom-1 -right-1 z-20 px-2 py-1 text-[10px] uppercase tracking-wider font-bold bg-black/80 text-gray-300 hover:text-white border border-surface-hover rounded-sm transition-colors flex items-center gap-1"
               style={{ imageRendering: 'pixelated' }}
             >

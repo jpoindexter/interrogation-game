@@ -5,12 +5,9 @@ import { motion, slideRight, smooth } from '../../components/motion';
 import CasePage from './CaseFilePage';
 import EvidencePage from './EvidencePage';
 import LogPage from './LogPage';
+import { playSfx } from '../../lib/sfx-utils';
 
-function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
-const playPaper = () => {
-  const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/paper.mp3'); a.volume = 0.3 * m; a.play().catch(() => {}); } catch {}
-};
+const playPaper = () => playSfx('/efx/paper.mp3', 0.3);
 
 interface CaseFileProps {
   caseData: Case;

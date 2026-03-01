@@ -5,7 +5,8 @@ export const EVIDENCE_ICONS = [
   '/clues/walkie_talkie.png',
 ];
 
-export const DIFFICULTY_CLUES: Record<string, number> = { easy: 2, medium: 3, hard: 4, expert: 5 };
+import { DIFFICULTY_CLUES } from '@/lib/game-state';
+export { DIFFICULTY_CLUES };
 
 export function pickRandomIcons(count: number): string[] {
   return [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5).slice(0, count);

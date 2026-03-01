@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/lib/db';
-import { calculateScore, type Difficulty } from '@/lib/scoring';
+import { calculateScore, getDetectiveRating, type Difficulty } from '@/lib/scoring';
 import { validateString, validateNumber, validateDifficulty } from '@/lib/sanitize';
 import { consumeWinToken, getSessionStats, getWinTokenStats } from '@/lib/game-session';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
@@ -56,10 +56,10 @@ export async function POST(request: NextRequest) {
     const hintsUsed = stats.hintsUsed;
     const accusationsUsed = stats.accusationsUsed;
     const stressLevel = validateNumber(body.stressLevel, 0, 10) ?? 0;
+    const cluesFound = validateNumber(body.cluesFound, 0, 10) ?? 0;
     const caseNumber = validateString(body.caseNumber, 100) ?? '';
     const caseSetting = validateString(body.caseSetting, 100) ?? '';
     const suspectName = validateString(body.suspectName, 100) ?? '';
-    const detectiveRating = validateString(body.detectiveRating, 50) ?? 'Rookie';
 
     const score = calculateScore(
       timeElapsed,
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       hintsUsed,
       Math.max(0, accusationsUsed - 1),
     );
+    const detectiveRating = getDetectiveRating(score);
 
     const { data, error } = await supabase
       .from('leaderboard')
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
         suspect_name: suspectName,
         time_remaining: timeElapsed,
         stress_level: stressLevel,
-        clues_found: 0,
+        clues_found: cluesFound,
         hints_used: hintsUsed,
         accusations_used: accusationsUsed,
         detective_rating: detectiveRating,

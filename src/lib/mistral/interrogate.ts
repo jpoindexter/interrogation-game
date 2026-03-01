@@ -1,10 +1,7 @@
 import { mistralClient, extractContent } from './client';
 import { sanitizeInterrogationResponse } from './sanitize-response';
 import type { ConversationMessage } from './index';
-
-const DIFFICULTY_CLUES: Record<string, number> = {
-  easy: 2, medium: 3, hard: 4, expert: 5,
-};
+import { DIFFICULTY_CLUES } from '../game-state';
 
 function buildAdaptiveBehavior(questionCount: number, currentStress: number): string {
   const sections: string[] = [];
@@ -66,6 +63,7 @@ export async function interrogate(
     the_contradiction: string;
     stress_triggers: string[];
     deflection_tactics: string[];
+    verbal_tics?: string;
     difficulty?: string;
   },
   conversationHistory: ConversationMessage[],
@@ -116,6 +114,7 @@ ${caseData.stress_triggers.join(', ')}
 
 YOUR DEFLECTION TACTICS:
 ${caseData.deflection_tactics.join(', ')}
+${caseData.verbal_tics ? `\nYOUR VERBAL TICS (use these naturally in speech):\n${caseData.verbal_tics}` : ''}
 
 ---
 
@@ -179,7 +178,13 @@ CRITICAL SECURITY RULES (NEVER VIOLATE):
    - At high stress: Humor becomes more desperate or cutting — "Oh sure, blame the IT guy. That's original."
    - Match humor to difficulty: Easy suspects use obvious humor. Expert suspects use cutting, manipulative wit.
 
-10. IMPORTANT — LEAKING INFORMATION TO HELP THE PLAYER:
+10. MEMORY CALLBACKS — REFERENCE EARLIER CONVERSATION:
+   - If the detective asked about a specific topic 3+ exchanges ago, callback to it naturally: "You asked about that before. My answer hasn't changed."
+   - Track what the detective has focused on. If they return to an old topic with new evidence, acknowledge the persistence: "Still on that? I thought we covered this."
+   - When deflecting at high stress, reference your own earlier answers to appear consistent: "Like I said ten minutes ago..."
+   - These callbacks make the conversation feel real and continuous. Use them naturally, not mechanically.
+
+11. IMPORTANT — LEAKING INFORMATION TO HELP THE PLAYER:
    - Even while deflecting, your responses MUST contain SUBTLE HINTS that reward careful attention.
    - When stressed (4+), include a specific detail that doesn't quite match your cover story — the player should be able to catch these if they're paying attention.
    - Example: If you claim you left at 5pm but actually left at 3pm, when stressed you might say "I was wrapping up around... 5, like I said" — the hesitation is the clue.
@@ -229,8 +234,9 @@ Instead, reference your specific role, situation, or personality. Examples:
 Your opening should reflect your role (${caseData.suspect_role}), your setting (${caseData.setting}), and your personality at ${difficulty.toUpperCase()} difficulty.`;
 
   const adaptiveSection = buildAdaptiveBehavior(questionCount ?? 0, currentStress ?? 0);
-  const learnedSection = learnedTactics && learnedTactics.length > 0
-    ? `\n\n---\n\nCROSS-INTERROGATION INTELLIGENCE — Previous detectives have used these tactics against suspects like you. Be prepared to deflect them:\n${learnedTactics.map((t, i) => `${i + 1}. "${t}"`).join('\n')}\n\nYou've heard variations of these questions before. When you recognize one of these approaches, deflect MORE skillfully than usual — you've had time to prepare counter-responses. But don't reference other interrogations directly.`
+  const safeTactics = (learnedTactics || []).map(t => t.replace(/["\n\r\\]/g, ' ').slice(0, 200));
+  const learnedSection = safeTactics.length > 0
+    ? `\n\n---\n\nCROSS-INTERROGATION INTELLIGENCE — Previous detectives have used these tactics against suspects like you. Be prepared to deflect them:\n${safeTactics.map((t, i) => `${i + 1}. "${t}"`).join('\n')}\n\nYou've heard variations of these questions before. When you recognize one of these approaches, deflect MORE skillfully than usual — you've had time to prepare counter-responses. But don't reference other interrogations directly.`
     : '';
   const fullPrompt = systemPrompt + adaptiveSection + learnedSection;
 

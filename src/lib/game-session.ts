@@ -3,14 +3,8 @@
 
 import { randomBytes, timingSafeEqual } from 'crypto';
 import type { ConversationMessage } from './mistral';
-
-// Difficulty → minimum clues required before accusation is allowed
-export const DIFFICULTY_CLUES: Record<string, number> = {
-  easy: 2,
-  medium: 3,
-  hard: 4,
-  expert: 5,
-};
+import { DIFFICULTY_CLUES } from './game-state';
+export { DIFFICULTY_CLUES };
 
 export interface GameSession {
   id: string;

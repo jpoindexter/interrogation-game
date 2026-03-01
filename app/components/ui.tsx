@@ -2,20 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
-
-function _sfxVol(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
-}
-const clickSfx = () => {
-  const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {}
-};
+import { playClick } from '../lib/sfx-utils';
 
 export function BackButton({ href = '/', label = 'Home' }: { href?: string; label?: string }) {
   const router = useRouter();
   return (
     <button
-      onClick={() => { clickSfx(); router.push(href); }}
+      onClick={() => { playClick(); router.push(href); }}
       className="fixed top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
     >
       &larr; {label}

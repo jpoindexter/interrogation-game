@@ -1,3 +1,8 @@
+/** Difficulty → minimum clues required. Single source of truth. */
+export const DIFFICULTY_CLUES: Record<string, number> = {
+  easy: 2, medium: 3, hard: 4, expert: 5,
+};
+
 /** Case data as returned to the client (secrets stripped) */
 export interface Case {
   case_number: string;

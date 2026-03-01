@@ -7,14 +7,7 @@ import { CASES, DIFFICULTY_CONFIG } from '../data/cases';
 import { getCaseStats, type CaseStats } from '../data/case-history';
 import { motion, PageMotion, fadeIn, fadeUp, smooth } from '../components/motion';
 import PolaroidCard from './PolaroidCard';
-
-function _sfxVol(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
-}
-const playSfx = (name: 'click' | 'paper' | 'paperslide' | 'paper_ruffle') => {
-  const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio(`/efx/${name}.mp3`); a.volume = (name === 'click' ? 0.4 : 0.3) * m; a.play().catch(() => {}); } catch {}
-};
+import { playClick, playSfx } from '../lib/sfx-utils';
 
 export default function CaseSelectPage() {
   const router = useRouter();
@@ -29,7 +22,7 @@ export default function CaseSelectPage() {
   }, []);
 
   const go = useCallback((dir: number) => {
-    playSfx('paperslide');
+    playSfx('/efx/paperslide.mp3', 0.3);
     setExpanded(false);
     setDirection(dir);
     setCurrent((prev) => { const next = prev + dir; if (next < 0) return CASES.length - 1; if (next >= CASES.length) return 0; return next; });
@@ -88,7 +81,7 @@ export default function CaseSelectPage() {
               return (
                 <PolaroidCard key={caseItem.id} caseData={caseItem} isActive={isActive} expanded={expanded && isActive} isSolved={solvedCases.includes(caseItem.id)} index={i}
                   fanX={offset * 18} fanY={isActive ? 0 : absOffset * 4} fanRotate={isActive ? 0 : baseRotation + offset * 3} fanScale={isActive ? 1 : 1 - absOffset * 0.04} zIndex={isActive ? 20 : 10 - absOffset} opacity={absOffset > 2 ? 0.3 : absOffset > 1 ? 0.6 : 1}
-                  onClick={() => { if (isActive) { playSfx('paper_ruffle'); setExpanded(!expanded); } else { playSfx('paperslide'); setExpanded(false); setDirection(offset > 0 ? 1 : -1); setCurrent(i); } }}
+                  onClick={() => { if (isActive) { playSfx('/efx/paper_ruffle.mp3', 0.3); setExpanded(!expanded); } else { playSfx('/efx/paperslide.mp3', 0.3); setExpanded(false); setDirection(offset > 0 ? 1 : -1); setCurrent(i); } }}
                 />
               );
             })}

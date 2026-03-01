@@ -10,18 +10,15 @@ export function usePatterns(
 ) {
   return useCallback((outcome: string, history: ConversationMessage[], stress: number, clueCount: number) => {
     if (!sessionId) return;
-    const questions: string[] = [];
-    const effectiveQuestions: string[] = [];
-    for (let i = 0; i < history.length; i++) {
-      const m = history[i];
-      if (m.role === 'user' && m.content && !m.content.startsWith('*') && !m.content.startsWith('[')) {
-        questions.push(m.content);
-        const next = history[i + 1];
-        if (next?.role === 'assistant' && next.content) {
-          effectiveQuestions.push(m.content);
-        }
-      }
-    }
+    const userMessages = history.filter(
+      m => m.role === 'user' && m.content && !m.content.startsWith('*') && !m.content.startsWith('['),
+    );
+    const questions = userMessages.map(m => m.content);
+    // Effective = questions from the second half of conversation when stress reached 4+
+    // These are the targeted questions that actually pressured the suspect
+    const effectiveQuestions = stress >= 4
+      ? userMessages.slice(Math.floor(userMessages.length / 2)).map(m => m.content)
+      : [];
     fetch('/api/patterns', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -48,14 +48,15 @@ export async function GET(request: NextRequest) {
       const queryEmbedding = await embedOne(queryText);
       const { data } = await supabase.rpc('match_patterns', {
         query_embedding: JSON.stringify(queryEmbedding),
-        match_threshold: 0.25,
-        match_count: 30,
+        match_threshold: 0.5,
+        match_count: 20,
         filter_difficulty: difficulty,
       });
       if (data && data.length > 0) {
         totalPriorGames = data.length;
+        const wins = data.filter((p: { outcome?: string }) => p.outcome === 'win');
         const freq = new Map<string, number>();
-        for (const p of data) {
+        for (const p of wins) {
           const qs = (p.effective_questions?.length ? p.effective_questions : p.questions) || [];
           for (const q of qs) {
             const n = q.toLowerCase().trim();
