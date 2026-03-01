@@ -20,6 +20,8 @@ interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
+  mistralApiKey: string;
+  elevenlabsApiKey: string;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -30,6 +32,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,
+  mistralApiKey: '',
+  elevenlabsApiKey: '',
 };
 
 export default function SettingsPage() {
@@ -177,6 +181,38 @@ export default function SettingsPage() {
                 >
                   <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${settings.highContrast ? 'translate-x-6' : 'translate-x-0.5'}`} />
                 </motion.button>
+              </div>
+            </motion.div>
+
+            {/* API Keys */}
+            <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
+              <h3 className="text-sm text-gray-300 font-bold mb-1">API Keys</h3>
+              <p className="text-xs text-gray-500 mb-4">Use your own keys instead of the shared server keys. Stored locally in your browser only.</p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">Mistral API Key</label>
+                  <input
+                    type="password"
+                    placeholder="sk-..."
+                    value={settings.mistralApiKey}
+                    onChange={(e) => update({ mistralApiKey: e.target.value.trim() })}
+                    className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">ElevenLabs API Key</label>
+                  <input
+                    type="password"
+                    placeholder="sk_..."
+                    value={settings.elevenlabsApiKey}
+                    onChange={(e) => update({ elevenlabsApiKey: e.target.value.trim() })}
+                    className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </div>
               </div>
             </motion.div>
 

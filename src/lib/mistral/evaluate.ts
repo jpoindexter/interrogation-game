@@ -1,4 +1,4 @@
-import { mistralClient, extractContent } from './client';
+import { extractContent, getClient } from './client';
 import { sanitizeAccusationResponse, sanitizeWinResponse, sanitizeLossResponse } from './sanitize-response';
 import type { ConversationMessage } from './index';
 
@@ -16,9 +16,10 @@ export async function evaluateAccusation(
     the_contradiction: string;
   },
   conversationHistory: ConversationMessage[],
-  accusation: string
+  accusation: string,
+  apiKey?: string,
 ) {
-  const response = await mistralClient.chat.complete({
+  const response = await getClient(apiKey).chat.complete({
     model: 'mistral-large-latest',
     messages: [{
       role: 'user',
@@ -70,9 +71,10 @@ Respond in this exact JSON format:
 export async function evaluateWin(
   caseData: { the_lie: string; the_truth: string; the_contradiction: string },
   conversationHistory: ConversationMessage[],
-  playerAccusation: string
+  playerAccusation: string,
+  apiKey?: string,
 ) {
-  const response = await mistralClient.chat.complete({
+  const response = await getClient(apiKey).chat.complete({
     model: 'mistral-large-latest',
     messages: [{
       role: 'user',
@@ -128,9 +130,10 @@ export async function generateLossSummary(
     stress_triggers: string[];
   },
   conversationHistory: ConversationMessage[],
-  maxStress: number
+  maxStress: number,
+  apiKey?: string,
 ) {
-  const response = await mistralClient.chat.complete({
+  const response = await getClient(apiKey).chat.complete({
     model: 'mistral-large-latest',
     messages: [{
       role: 'user',

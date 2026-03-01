@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 export function getVoiceVolume(): number {
   try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.45; } catch {}
@@ -48,7 +49,7 @@ export function useTTS(suspectGender: string | undefined, sessionId?: string, on
   const playTTS = useCallback(async (text: string, stress: number, suspectName: string | undefined, onDone: () => void) => {
     skippedRef.current = false;
     onDoneRef.current = onDone;
-    const res = await fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId: sessionIdRef.current }) });
+    const res = await fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId: sessionIdRef.current }) });
     if (!res.ok) throw new Error('TTS failed');
     if (skippedRef.current) return;
     const url = URL.createObjectURL(await res.blob());
@@ -90,6 +91,17 @@ export function useTTS(suspectGender: string | undefined, sessionId?: string, on
       }
     });
   }, [playTTS, onTTSError]);
+
+  // Sync volume with settings changes (mute/unmute mid-speech)
+  useEffect(() => {
+    const sync = () => {
+      const vol = getVoiceVolume();
+      if (audioRef.current) audioRef.current.volume = vol;
+      if (vol === 0) skipSpeech();
+    };
+    window.addEventListener('settingsChanged', sync);
+    return () => window.removeEventListener('settingsChanged', sync);
+  }, [skipSpeech]);
 
   // Stop all audio on unmount (e.g. user navigates away)
   useEffect(() => {

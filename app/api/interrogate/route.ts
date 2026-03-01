@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
       const questionCount = session.conversationHistory.filter(m => m.role === 'user').length;
       const currentStress = session.currentStress;
 
+      const userMistralKey = request.headers.get('x-mistral-api-key') || undefined;
       const response = await interrogate(
         session.caseData as Parameters<typeof interrogate>[0],
         session.conversationHistory,
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest) {
         questionCount,
         currentStress,
         session.learnedTactics,
+        userMistralKey,
       );
 
       addMessage(session.id, 'user', sanitized);

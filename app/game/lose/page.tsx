@@ -10,6 +10,7 @@ import TranscriptViewer from '../components/TranscriptViewer';
 import { saveCaseResult } from '../../data/case-history';
 
 import { playClick, playSfx } from '../../lib/sfx-utils';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 interface GameResult {
   caseData: {
@@ -23,6 +24,8 @@ interface GameResult {
   conversationHistory: Array<{ role: string; content: string }>;
   maxStress: number;
   gaveUp?: boolean;
+  timeUp?: boolean;
+  timeUpRemark?: string;
   cleverRemark?: string;
 }
 
@@ -79,7 +82,7 @@ function LoseContent() {
 
     fetch('/api/evaluate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() },
       body: JSON.stringify({
         type: 'lose',
         sessionId: parsed.sessionId,
@@ -145,7 +148,7 @@ function LoseContent() {
             variants={fadeUp}
             transition={{ duration: 0.6 }}
           >
-            {result.gaveUp ? 'You gave up. The suspect walks free.' : 'Out of accusations. The suspect walks free.'}
+            {result.timeUp ? 'Time\u2019s up. The suspect walks free.' : result.gaveUp ? 'You gave up. The suspect walks free.' : 'Out of accusations. The suspect walks free.'}
           </motion.p>
         </motion.div>
 
@@ -169,7 +172,7 @@ function LoseContent() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-300">Outcome</span>
-                <span className="text-sm font-bold text-accent">{result.gaveUp ? 'Surrendered' : 'Out of attempts'}</span>
+                <span className="text-sm font-bold text-accent">{result.timeUp ? 'Time expired' : result.gaveUp ? 'Surrendered' : 'Out of attempts'}</span>
               </div>
               <div className="border-t border-surface my-3" />
               <div className="flex justify-between items-center">
@@ -192,7 +195,7 @@ function LoseContent() {
           <h2 className="text-xs uppercase tracking-[0.3em] text-accent mb-1">{result.caseData.suspect_name}</h2>
           <p className="text-xs text-gray-500 mb-3">{result.caseData.suspect_role}</p>
           <p className="text-base leading-relaxed italic text-gray-200">
-            &ldquo;{result.cleverRemark || 'You had your chance, detective. Better luck next time.'}&rdquo;
+            &ldquo;{result.timeUpRemark || result.cleverRemark || 'You had your chance, detective. Better luck next time.'}&rdquo;
           </p>
         </motion.div>
 
@@ -262,7 +265,7 @@ function LoseContent() {
               onClick={async () => {
                 playClick();
                 const url = typeof window !== 'undefined' ? window.location.origin : '';
-                const msg = result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
+                const msg = result.timeUp ? `Ran out of time on Case #${result.caseData.case_number}. ${result.caseData.suspect_name} escaped. Can you do better?` : result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
                 const outcome = await shareResult(`\ud83d\udd0d INTERROGATION \u2014 ${msg}\n${url}`);
                 if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); }
               }}

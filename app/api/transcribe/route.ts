@@ -3,8 +3,6 @@ import { Mistral } from '@mistralai/mistralai';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { getSession } from '../../../src/lib/game-session';
 
-const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-
 const MAX_AUDIO_SIZE = 25 * 1024 * 1024; // 25MB
 const ALLOWED_PREFIXES = ['audio/mpeg', 'audio/wav', 'audio/webm', 'audio/ogg', 'audio/mp4', 'video/webm'];
 
@@ -37,6 +35,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid audio format' }, { status: 400 });
     }
 
+    const userMistralKey = request.headers.get('x-mistral-api-key') || undefined;
+    const mistral = new Mistral({ apiKey: userMistralKey || process.env.MISTRAL_API_KEY });
     const result = await mistral.audio.transcriptions.complete({
       model: 'voxtral-mini-latest',
       file: audioFile,

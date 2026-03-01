@@ -25,14 +25,15 @@ export async function POST(request: NextRequest) {
     const caseData = session.caseData as Parameters<typeof evaluateWin>[0] & Parameters<typeof generateLossSummary>[0];
     const history = session.conversationHistory;
 
+    const userMistralKey = request.headers.get('x-mistral-api-key') || undefined;
     let result;
     if (body.type === 'win') {
       const accusation = typeof body.playerAccusation === 'string'
         ? sanitizeInput(body.playerAccusation.slice(0, 1000)) : '';
-      result = await evaluateWin(caseData, history, accusation);
+      result = await evaluateWin(caseData, history, accusation, userMistralKey);
     } else {
       const maxStress = validateNumber(body.maxStress, 0, 10) ?? 0;
-      result = await generateLossSummary(caseData, history, maxStress);
+      result = await generateLossSummary(caseData, history, maxStress, userMistralKey);
     }
 
     if (body.type === 'lose') {

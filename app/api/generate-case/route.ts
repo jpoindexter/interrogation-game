@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
     const setting = rawSetting && ALLOWED_SETTINGS.has(rawSetting.toLowerCase())
       ? rawSetting : undefined;
     const difficulty = validateDifficulty(request.nextUrl.searchParams.get('difficulty')) || 'medium';
-    const caseData = await generateCase(setting, difficulty);
+    const userMistralKey = request.headers.get('x-mistral-api-key') || undefined;
+    const caseData = await generateCase(setting, difficulty, userMistralKey);
 
     if (!caseData || !caseData.the_lie) {
       return NextResponse.json({ error: 'Failed to generate valid case' }, { status: 500 });
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     let totalPriorGames = 0;
     try {
       const queryText = `Setting: ${setting || 'any'}\nDifficulty: ${difficulty}\nEffective interrogation tactics`;
-      const queryEmbedding = await embedOne(queryText);
+      const queryEmbedding = await embedOne(queryText, userMistralKey);
       const { data } = await supabase.rpc('match_patterns', {
         query_embedding: JSON.stringify(queryEmbedding),
         match_threshold: 0.5,

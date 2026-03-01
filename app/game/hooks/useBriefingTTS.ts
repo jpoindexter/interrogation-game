@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getVoiceVolume } from './useTTS';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 export function useBriefingTTS(
   active: boolean,
@@ -21,7 +22,7 @@ export function useBriefingTTS(
       try {
         const res = await fetch('/api/tts', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() },
           body: JSON.stringify({ text: fullText, stress: 0, suspectName: caseData.suspect_name, suspectGender: caseData.suspect_gender, sessionId: caseData.sessionId, role: 'detective' }),
         });
         if (cancelled) return;

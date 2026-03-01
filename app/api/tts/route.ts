@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     const suspectGender = typeof body.suspectGender === 'string' ? body.suspectGender : undefined;
     const role = body.role === 'detective' ? 'detective' : 'suspect';
 
-    const apiKey = process.env.ELEVENLABS_API_KEY;
+    const apiKey = req.headers.get('x-elevenlabs-api-key') || process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: 'ElevenLabs not configured' }, { status: 500 });
     }

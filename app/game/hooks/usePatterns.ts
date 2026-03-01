@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { ConversationMessage } from '@/lib/mistral';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 /** Stores interrogation patterns for cross-session RAG learning. */
 export function usePatterns(
@@ -21,7 +22,7 @@ export function usePatterns(
       : [];
     fetch('/api/patterns', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() },
       body: JSON.stringify({
         sessionId, setting, difficulty, outcome,
         questions, effectiveQuestions,

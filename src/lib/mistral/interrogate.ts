@@ -1,4 +1,4 @@
-import { mistralClient, extractContent } from './client';
+import { extractContent, getClient } from './client';
 import { sanitizeInterrogationResponse } from './sanitize-response';
 import type { ConversationMessage } from './index';
 import { DIFFICULTY_CLUES } from '../game-state';
@@ -86,6 +86,7 @@ export async function interrogate(
   questionCount?: number,
   currentStress?: number,
   learnedTactics?: string[],
+  apiKey?: string,
 ) {
   const difficulty = caseData.difficulty || 'medium';
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
@@ -289,7 +290,7 @@ Your opening should reflect your role (${caseData.suspect_role}), your setting (
     { role: 'user', content: playerQuestion },
   ];
 
-  const response = await mistralClient.chat.complete({
+  const response = await getClient(apiKey).chat.complete({
     model: 'mistral-large-latest',
     messages,
     responseFormat: { type: 'json_object' },

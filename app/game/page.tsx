@@ -26,9 +26,16 @@ import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { useSettings } from './hooks/useSettings';
 import { useSfx } from './hooks/useSfx';
-import { usePatterns } from './hooks/usePatterns';import { useEndGame } from './hooks/useEndGame';
+import { usePatterns } from './hooks/usePatterns';
+import { useEndGame } from './hooks/useEndGame';
 import { Spinner } from '../components/ui';
 import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
+import { getUserApiHeaders } from '../lib/api-keys';
+
+const NERVOUS_NEUTRAL = ['nervous_1', 'nervous_knock', 'nervous_tap', 'nervous_scratch', 'nervous_ac', 'clothes_rustle'] as const;
+const NERVOUS_MALE = ['nervous_foot', 'nervous_cough_m'] as const;
+const NERVOUS_FEMALE = ['nervous_heel', 'nervous_cough_f', 'female_sigh'] as const;
+function getNervousSounds(gender?: string) { return [...NERVOUS_NEUTRAL, ...(gender?.toLowerCase() === 'female' ? NERVOUS_FEMALE : NERVOUS_MALE)]; }
 
 export default function GamePage() {
   return (
@@ -65,7 +72,6 @@ function GameContent() {
   const cluesNeeded = DIFFICULTY_CLUES[difficulty] || 3;
   const [clueIcons] = useState<string[]>(() => pickRandomIcons(cluesNeeded));
   const [lastTranscript, setLastTranscript] = useState('');
-  const [textInput, setTextInput] = useState('');
   const [notes, setNotes] = useState('');
   const [showNotes, setShowNotes] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
@@ -74,6 +80,7 @@ function GameContent() {
   const [settingsPos, setSettingsPos] = useState<{ x: number; y: number } | null>(null);
   const [showMicHint, setShowMicHint] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [fadingOut, setFadingOut] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const sfx = useSfx();
   const showToast = useCallback((msg: string) => { sfx('error'); setToast(msg); setTimeout(() => setToast(null), 4000); }, [sfx]);
@@ -85,7 +92,7 @@ function GameContent() {
   const { handleLose, handleTimeUp, handleGiveUp } = useEndGame({
     caseData, conversationHistory, maxStress, cluesLength: clues.length,
     timerRef, sfx, speakResponse, ttsEnabled: settings.ttsEnabled,
-    setPhase, setLastResponse, setShowGiveUpConfirm: setShowGiveUpConfirm,
+    setPhase, setLastResponse, setLastTranscript, setShowGiveUpConfirm, setFadingOut,
     storePatterns, router,
   });
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
@@ -104,7 +111,7 @@ function GameContent() {
         if (setting && setting !== 'random') params.set('setting', setting);
         if (difficulty) params.set('difficulty', difficulty);
         params.set('t', Date.now().toString());
-        const attempt = async () => { const res = await fetchWithTimeout(`/api/generate-case?${params}`, { cache: 'no-store' }, 30000); return res.json(); };
+        const attempt = async () => { const res = await fetchWithTimeout(`/api/generate-case?${params}`, { cache: 'no-store', headers: getUserApiHeaders() }, 30000); return res.json(); };
         let data;
         try { data = await attempt(); } catch {
           if (!cancelled) showToast("Couldn't generate case — retrying...");
@@ -125,26 +132,15 @@ function GameContent() {
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
   useEffect(() => { window.dispatchEvent(new CustomEvent('gamePhaseChange', { detail: phase })); }, [phase]);
 
-  // Ambient nervous fidgeting at high stress + clock tick (more frequent as time runs low)
   useEffect(() => {
     if (phase !== 'active') return;
-    const isFemale = caseData?.suspect_gender?.toLowerCase() === 'female';
-    const neutral = ['nervous_1', 'nervous_knock', 'nervous_tap', 'nervous_scratch', 'nervous_ac', 'clothes_rustle'] as const;
-    const male = ['nervous_foot', 'nervous_cough_m'] as const;
-    const female = ['nervous_heel', 'nervous_cough_f', 'female_sigh'] as const;
-    const nervousSounds = [...neutral, ...(isFemale ? female : male)];
+    const sounds = getNervousSounds(caseData?.suspect_gender);
     const interval = setInterval(() => {
-      const s = stressRef.current;
-      const t = remaining;
-      // Clock tick: always 30% chance, but guaranteed under 2 min, double-tick under 1 min
+      const s = stressRef.current, t = remaining;
       const tickChance = t <= 60 ? 1.0 : t <= 120 ? 0.7 : 0.3;
       if (Math.random() < tickChance) sfx('clock_tick');
       if (t <= 60 && Math.random() < 0.5) setTimeout(() => sfx('clock_tick'), 3000);
-      // Nervous sounds at high stress
-      if (s >= 6 && Math.random() < (s - 5) * 0.15) {
-        const pick = nervousSounds[Math.floor(Math.random() * nervousSounds.length)];
-        sfx(pick);
-      }
+      if (s >= 6 && Math.random() < (s - 5) * 0.15) sfx(sounds[Math.floor(Math.random() * sounds.length)]);
     }, 12000);
     return () => clearInterval(interval);
   }, [phase, sfx, caseData?.suspect_gender, remaining]);
@@ -167,7 +163,7 @@ function GameContent() {
     const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question, timestamp: elapsed }];
     try {
       const body = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question });
-      const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body };
+      const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body };
       let res;
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
@@ -177,17 +173,14 @@ function GameContent() {
       const newStress = data.stress_level ?? 0;
       if (newStress > stressRef.current + 1) {
         sfx('tension');
-        const isFemale = caseData?.suspect_gender?.toLowerCase() === 'female';
-        const stressNeutral = ['nervous_1', 'nervous_knock', 'nervous_tap', 'nervous_scratch', 'nervous_ac', 'clothes_rustle'];
-        const stressGendered = isFemale ? ['nervous_heel', 'nervous_cough_f', 'female_sigh'] : ['nervous_foot', 'nervous_cough_m'];
-        const stressSounds = [...stressNeutral, ...stressGendered];
-        const pick = stressSounds[Math.floor(Math.random() * stressSounds.length)];
-        setTimeout(() => sfx(pick), 800);
+        const sounds = getNervousSounds(caseData?.suspect_gender);
+        setTimeout(() => sfx(sounds[Math.floor(Math.random() * sounds.length)]), 800);
       }
       setStressLevel(newStress);
       setMaxStress((prev) => Math.max(prev, newStress));
       if (data.clue_unlocked && !isOpening) {
         setClues((prev) => {
+          if (prev.length >= cluesNeeded) return prev;
           if (prev.includes(data.clue_unlocked)) return prev;
           const next = [...prev, data.clue_unlocked];
           setClueNotification(next.length);
@@ -209,7 +202,7 @@ function GameContent() {
     setLastTranscript(text);
     setPhase('processing');
     try {
-      const res = await fetchWithTimeout('/api/accuse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId, accusation: text }) });
+      const res = await fetchWithTimeout('/api/accuse', { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body: JSON.stringify({ sessionId: caseData.sessionId, accusation: text }) });
       const data = await res.json();
       if (typeof data.accusationsLeft === 'number') setAccusationsLeft(data.accusationsLeft);
       else setAccusationsLeft((prev) => Math.max(0, prev - 1));
@@ -219,10 +212,14 @@ function GameContent() {
       if (data.correct) {
         sfx('win');
         if (timerRef.current) clearInterval(timerRef.current);
+        setLastTranscript('');
         storePatterns('win', updatedHistory, stressLevel, clues.length);
-        sessionStorage.setItem('gameResult', JSON.stringify({ type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession, timeElapsed: elapsed, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft) }));
+        sessionStorage.setItem('gameResult', JSON.stringify({ type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession, timeElapsed: elapsed, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft), questionsAsked: updatedHistory.filter(m => m.role === 'user' && !m.content.startsWith('*') && !m.content.startsWith('[ACCUSATION')).length }));
         try { await speakConfession(data.confession, 10, caseData.suspect_name); } catch {}
-        router.push('/game/win');
+        sfx('handcuff');
+        setTimeout(() => sfx('stampthud'), 1000);
+        setTimeout(() => setFadingOut(true), 1800);
+        setTimeout(() => router.push('/game/win'), 2500);
       } else {
         sfx('wrong');
         await speakResponse(data.confession, stressLevel, caseData.suspect_name, () => setPhase('active'), settings.ttsEnabled);
@@ -267,12 +264,12 @@ function GameContent() {
         }
       }} />
       <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0 overflow-hidden">
         {caseData ? <SuspectZone caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} lastResponse={lastResponse} phase={phase} onSkipSpeech={skipSpeech} /> : <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-surface-darker bg-black" />}
         {caseData && <CaseFile caseData={caseData} clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} conversationHistory={conversationHistory} />}
       </div>
       <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
-      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('click_short'); sendQuestion(v); setTextInput(''); }} onMic={() => { setShowTextInput(false); startListening(); }} onClickOutside={() => setShowTextInput(false)} />
+      <TextInputPanel show={showTextInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onSubmit={(v) => { sfx('click_short'); sendQuestion(v); }} onMic={() => { setShowTextInput(false); startListening(); }} onClickOutside={() => setShowTextInput(false)} />
       <NotesPanel show={showNotes} notes={notes} pos={notesPos} onChange={setNotes} onClose={() => setShowNotes(false)} onPosChange={setNotesPos} />
       <ExitConfirmDialog show={showExitConfirm} onConfirm={() => { if (timerRef.current) clearInterval(timerRef.current); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } speechSynthesis.cancel(); router.push('/cases'); }} onCancel={() => setShowExitConfirm(false)} />
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
@@ -284,7 +281,7 @@ function GameContent() {
           sfx('click');
           if (!caseData) return;
           try {
-            const res = await fetch('/api/hint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId }) });
+            const res = await fetch('/api/hint', { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body: JSON.stringify({ sessionId: caseData.sessionId }) });
             const data = await res.json();
             if (data.hint) { sfx('chime'); setHintsUsed(data.hintsUsed); setHintTexts((prev) => [...prev, data.hint]); }
             else if (data.error) showToast(data.error);
@@ -295,6 +292,9 @@ function GameContent() {
         {toast && (<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.25 }} className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-accent/90 text-foreground font-mono text-xs px-4 py-2 rounded border border-accent">{toast}</motion.div>)}
       </AnimatePresence>
       {showOnboarding && <OnboardingOverlay onClose={() => setShowOnboarding(false)} />}
+      <AnimatePresence>
+        {fadingOut && <motion.div className="fixed inset-0 bg-black z-[100] pointer-events-none" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, ease: 'easeIn' }} />}
+      </AnimatePresence>
     </motion.div>
   );
 }

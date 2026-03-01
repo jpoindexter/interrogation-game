@@ -53,10 +53,12 @@ export async function POST(req: NextRequest) {
       const sanitized = sanitizeInput(accusation);
 
       try {
+        const userMistralKey = req.headers.get('x-mistral-api-key') || undefined;
         const result = await evaluateAccusation(
           session.caseData as Parameters<typeof evaluateAccusation>[0],
           session.conversationHistory,
           sanitized,
+          userMistralKey,
         );
 
         addMessage(session.id, 'user', `[ACCUSATION] ${sanitized}`);

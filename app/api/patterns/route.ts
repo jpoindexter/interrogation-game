@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
       `Stress: ${safeStress}/9`, `Clues: ${safeClues}`,
     ].filter(Boolean).join('\n');
 
-    const embedding = await embedOne(summary);
+    const userMistralKey = req.headers.get('x-mistral-api-key') || undefined;
+    const embedding = await embedOne(summary, userMistralKey);
 
     const { error } = await supabase.from('interrogation_patterns').upsert({
       session_id: sessionId,
@@ -82,9 +83,10 @@ export async function GET(req: NextRequest) {
     const difficulty = validateDifficulty(url.searchParams.get('difficulty'));
     if (!difficulty) return NextResponse.json({ tactics: [], totalGames: 0 });
 
+    const userMistralKey = req.headers.get('x-mistral-api-key') || undefined;
     const setting = url.searchParams.get('setting');
     const queryText = `Setting: ${setting || 'any'}\nDifficulty: ${difficulty}\nOutcome: win\nEffective interrogation tactics`;
-    const queryEmbedding = await embedOne(queryText);
+    const queryEmbedding = await embedOne(queryText, userMistralKey);
 
     const { data, error } = await supabase.rpc('match_patterns', {
       query_embedding: JSON.stringify(queryEmbedding),

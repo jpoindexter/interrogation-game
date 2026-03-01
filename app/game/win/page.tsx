@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
 import { fadeUp, stagger } from '../../components/motion';
 import { formatTime, shareResult } from '../components/utils';
-import { calculateScore, getDetectiveRating } from '../../../src/lib/scoring';
+import { calculateScore, getDetectiveRating, PAR_QUESTIONS } from '../../../src/lib/scoring';
 import type { Difficulty } from '../../../src/lib/scoring';
 import InitialsEntry from './InitialsEntry';
 import TranscriptViewer from '../components/TranscriptViewer';
@@ -15,6 +15,7 @@ import ScoreBreakdown from './ScoreBreakdown';
 import CaseDetails from './CaseDetails';
 import { saveCaseResult } from '../../data/case-history';
 import { playClick, playSfx } from '../../lib/sfx-utils';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 interface GameResult {
   caseData: { case_number: string; suspect_name: string; suspect_role: string; setting: string; crime: string };
@@ -28,6 +29,7 @@ interface GameResult {
   cluesFound?: number;
   hintsUsed?: number;
   accusationsUsed?: number;
+  questionsAsked?: number;
 }
 
 const DIFF_LABELS: Record<string, { parTime: number; multiplier: number; label: string }> = {
@@ -39,12 +41,16 @@ const DIFF_LABELS: Record<string, { parTime: number; multiplier: number; label: 
 
 function computeBreakdown(result: GameResult) {
   const diff = DIFF_LABELS[result.difficulty] || DIFF_LABELS.medium;
+  const difficulty = (result.difficulty || 'medium') as Difficulty;
   const hintsUsed = result.hintsUsed ?? 0;
   const wrongAccusations = Math.max(0, (result.accusationsUsed ?? 1) - 1);
+  const questionsAsked = result.questionsAsked ?? 0;
+  const parQ = PAR_QUESTIONS[difficulty] ?? 10;
   const timeRatio = Math.max(0, 1 - result.timeElapsed / (diff.parTime * 2));
   const timeScore = Math.round(1000 * Math.sqrt(timeRatio));
-  const finalScore = calculateScore(result.timeElapsed, (result.difficulty || 'medium') as Difficulty, hintsUsed, wrongAccusations);
-  return { timeScore, diffMultiplier: diff.multiplier, diff, hintsUsed, hintMultiplier: Math.pow(0.85, hintsUsed), wrongAccusations, accusationMultiplier: Math.max(0, 1 - wrongAccusations * 0.1), finalScore };
+  const efficiencyMultiplier = questionsAsked >= parQ ? 1.0 : 1.0 + 0.5 * ((parQ - questionsAsked) / (parQ - 1));
+  const finalScore = calculateScore(result.timeElapsed, difficulty, hintsUsed, wrongAccusations, questionsAsked);
+  return { timeScore, diffMultiplier: diff.multiplier, diff, hintsUsed, hintMultiplier: Math.pow(0.85, hintsUsed), wrongAccusations, accusationMultiplier: Math.max(0, 1 - wrongAccusations * 0.1), questionsAsked, parQuestions: parQ, efficiencyMultiplier, finalScore };
 }
 
 const staggerChildren = stagger(0.15);
@@ -107,7 +113,7 @@ function WinContent() {
       saveCaseResult({ setting: parsed.caseData.setting || '', won: true, score: b.finalScore, difficulty: parsed.difficulty || 'medium', timestamp: Date.now() });
     } catch {}
 
-    fetch('/api/evaluate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'win', sessionId: parsed.sessionId, playerAccusation: parsed.conversationHistory.filter((m) => m.role === 'user').pop()?.content ?? '' }) })
+    fetch('/api/evaluate', { method: 'POST', headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() }, body: JSON.stringify({ type: 'win', sessionId: parsed.sessionId, playerAccusation: parsed.conversationHistory.filter((m) => m.role === 'user').pop()?.content ?? '' }) })
       .then((res) => res.json())
       .then((data) => setEvaluation(data.error ? fallbackEval : data))
       .catch(() => setEvaluation(fallbackEval));
@@ -130,13 +136,13 @@ function WinContent() {
 
   useEffect(() => {
     if (!result || !breakdown) return;
-    const delays = [1000, 1800, 2400, 3000, 3800];
+    const delays = [1000, 1800, 2400, 3000, 3600, 4200];
     const timers = delays.map((d, i) => setTimeout(() => setRevealStep(i + 1), d));
     return () => timers.forEach(clearTimeout);
   }, [result, breakdown !== null]);
 
   useEffect(() => {
-    if (revealStep < 5 || !breakdown) return;
+    if (revealStep < 6 || !breakdown) return;
     const target = breakdown.finalScore;
     const start = performance.now();
     const animate = (now: number) => {
@@ -149,7 +155,7 @@ function WinContent() {
   }, [revealStep, breakdown?.finalScore]);
 
   useEffect(() => {
-    if (revealStep < 5 || playerInitials || showInitials) return;
+    if (revealStep < 6 || playerInitials || showInitials) return;
     const el = totalRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(([entry]) => {
@@ -195,7 +201,7 @@ function WinContent() {
         {breakdown && <ScoreBreakdown breakdown={breakdown} timeElapsed={result.timeElapsed} revealStep={revealStep} displayScore={displayScore} totalRef={totalRef} />}
         <CaseDetails suspectName={result.caseData.suspect_name} suspectRole={result.caseData.suspect_role} confession={result.confession} evaluation={evaluation} revealStep={revealStep} />
 
-        <motion.div className="mt-10" initial={{ opacity: 0 }} animate={revealStep >= 5 ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 1.5 }}>
+        <motion.div className="mt-10" initial={{ opacity: 0 }} animate={revealStep >= 6 ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 1.5 }}>
           <div className="flex flex-wrap gap-2 justify-center">
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); const next = difficulty === 'easy' ? 'medium' : difficulty === 'medium' ? 'hard' : 'expert'; router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${next}`); }} className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">Try Harder</button>
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }} className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors">New Case</button>

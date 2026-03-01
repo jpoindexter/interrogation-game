@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback } from 'react';
+import { getUserApiHeaders } from '../../lib/api-keys';
 
 export function useVoiceRecorder(sessionId?: string) {
   const [isListening, setIsListening] = useState(false);
@@ -14,7 +15,7 @@ export function useVoiceRecorder(sessionId?: string) {
     const fd = new FormData();
     fd.append('audio', blob, 'recording.webm');
     if (sessionIdRef.current) fd.append('sessionId', sessionIdRef.current);
-    const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
+    const res = await fetch('/api/transcribe', { method: 'POST', headers: getUserApiHeaders(), body: fd });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     return (data.text ?? '').trim();

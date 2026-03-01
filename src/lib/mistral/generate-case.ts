@@ -1,4 +1,4 @@
-import { mistralClient, extractContent } from './client';
+import { extractContent, getClient } from './client';
 import { DIFFICULTY_CLUES } from '../game-state';
 
 const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
@@ -16,7 +16,7 @@ const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
 - Generate exactly 5 stress_triggers.`,
 };
 
-export async function generateCase(settingHint?: string, difficulty: string = 'medium') {
+export async function generateCase(settingHint?: string, difficulty: string = 'medium', apiKey?: string) {
   const settingInstruction = settingHint
     ? `- MUST be set in a ${settingHint} — use this exact type of workplace`
     : '- Set in a realistic workplace (tech company, bank, law firm, hospital, etc.)';
@@ -24,7 +24,7 @@ export async function generateCase(settingHint?: string, difficulty: string = 'm
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
   const difficultyGuide = DIFFICULTY_INSTRUCTIONS[difficulty] || DIFFICULTY_INSTRUCTIONS.medium;
 
-  const response = await mistralClient.chat.complete({
+  const response = await getClient(apiKey).chat.complete({
     model: 'mistral-large-latest',
     messages: [{
       role: 'user',
@@ -44,6 +44,7 @@ Respond ONLY in this exact JSON format:
   "case_number": "a random 4-digit number between 1000-9999 (never 4729 or 4829)",
   "setting": "company name only, max 3 words (e.g. 'Vanguard Analytics', 'Apex Labs')",
   "crime": "what happened in one sentence",
+  "objective": "a short challenge for the detective, max 6 words, phrased as a task starting with a verb (e.g. 'Find who leaked the source code', 'Prove the transfer was fraudulent', 'Expose the insider trading scheme'). Must NOT name the suspect.",
   "briefing": "3 sentence briefing the detective reads before starting. Written in second person. Direct. No fluff.",
   "detective_leads": ["Exactly 3 short leads (max 8 words each). Written as brief sticky-note scribbles. One hints at the real weak spot. Two are red herrings. Shuffle order. Examples: 'Security logs don't match his timeline', 'Colleague filed complaint last month', 'Mentions a glitch — but system was stable'"],
   "suspect_name": "a realistic full name",
