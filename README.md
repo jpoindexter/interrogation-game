@@ -253,6 +253,36 @@ CREATE POLICY "anon_insert" ON interrogation_patterns FOR INSERT TO anon WITH CH
 CREATE POLICY "anon_read" ON interrogation_patterns FOR SELECT TO anon USING (true);
 ```
 
+## Hackathon
+
+**Mistral Worldwide Hackathon 2026** — Online Track, "Anything Goes" category.
+
+**Judging criteria:** Creativity/uniqueness (most important), future potential, technical implementation, pitch quality.
+
+**Special prizes:** Best Mistral Vibe (AirPods), Best Voice AI (ElevenLabs 6mo subscription).
+
+**Sponsors:** Mistral, ElevenLabs, NVIDIA, AWS, Hugging Face, Jump Trading, Weights & Biases, Giant, Raise, Tilde Research, White Circle.
+
+### Why This Project
+
+Most hackathon AI projects are assistants or chatbots. This flips the script — the AI isn't helping you, it's lying to you. The player is adversarial to the model, not collaborative. This creates a fundamentally different interaction: you're probing for inconsistencies, applying pressure, and reading behavioral cues rather than asking for help.
+
+The game also generates training data. Every completed session — questions asked, stress progression, which tactics worked, which didn't — is exportable as JSONL. This creates a feedback loop: play the game, export the data, fine-tune the model, make it harder to catch.
+
+### Mistral Ecosystem Usage
+
+- **Mistral Large 3** — suspect AI brain (adversarial roleplay with structured JSON output), case generation (procedural crime scenarios), accusation evaluation (separate judge call)
+- **Voxtral STT** — player voice input transcription
+- **Mistral Embeddings** — vector similarity for cross-session pattern matching (RAG learning)
+
+### Future Potential
+
+- Fine-tune Mistral on exported game data to create increasingly difficult suspects
+- Multiplayer mode — one player interrogates, another watches and advises
+- Case editor — community-created scenarios with custom suspects
+- Mobile app with always-on voice
+- Training tool for real interrogation technique practice
+
 ## Built By
 
-Jason Poindexter — Designer, 15 years. Apple, Google, YouTube, FedEx, London Stock Exchange. Solo entry from Barcelona.
+Jason Poindexter — Solo entry, online track from Barcelona.
