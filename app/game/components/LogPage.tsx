@@ -10,15 +10,16 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
   conversationHistory: ConversationMessage[]; suspectName: string;
   logEndRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const pairs: { question: string; answer: string }[] = [];
+  const fmt = (s: number) => { const m = Math.floor(s / 60); return `${m}:${(s % 60) < 10 ? '0' : ''}${s % 60}`; };
+  const pairs: { question: string; answer: string; time?: number }[] = [];
   for (let i = 0; i < conversationHistory.length; i++) {
     const msg = conversationHistory[i];
     if (msg.role === 'user') {
       const next = conversationHistory[i + 1];
-      pairs.push({ question: msg.content, answer: next?.role === 'assistant' ? next.content : '' });
+      pairs.push({ question: msg.content, answer: next?.role === 'assistant' ? next.content : '', time: msg.timestamp });
       if (next?.role === 'assistant') i++;
     } else if (msg.role === 'assistant' && (i === 0 || conversationHistory[i - 1]?.role !== 'user')) {
-      pairs.push({ question: '', answer: msg.content });
+      pairs.push({ question: '', answer: msg.content, time: msg.timestamp });
     }
   }
 
@@ -39,31 +40,39 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
       {pairs.length > 0 && (
         <div>
           <div className={SECTION_HEADER} style={LOG_HEADER_BG}>Exchanges</div>
-          {pairs.map((pair, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: 0.02 }}
-              className={`py-2.5 ${i < pairs.length - 1 ? 'border-b border-black/15' : ''}`}
-            >
-              <p className="text-[10px] uppercase tracking-widest text-black/25 mb-1.5" style={MONO}>
-                Exchange {String(i + 1).padStart(2, '0')}
-              </p>
-              {pair.question && (
-                <div className="mb-2">
-                  <p className={`${LABEL} underline mb-0.5`}>Detective</p>
-                  <p className="text-sm leading-relaxed text-black/80">{pair.question}</p>
+          {pairs.map((pair, i) => {
+            const isLatest = i === pairs.length - 1;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.02 }}
+                className={`py-2.5 ${!isLatest ? 'border-b border-black/15 opacity-50' : ''}`}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-[10px] uppercase tracking-widest text-black/25" style={MONO}>
+                    Exchange {String(i + 1).padStart(2, '0')}
+                  </p>
+                  {pair.time != null && (
+                    <p className="text-[10px] tabular-nums text-black/25" style={MONO}>{fmt(pair.time)}</p>
+                  )}
                 </div>
-              )}
-              {pair.answer && (
-                <div>
-                  <p className={`${LABEL} underline mb-0.5`}>Subject</p>
-                  <p className={`text-sm leading-relaxed ${i === pairs.length - 1 ? 'text-black' : 'text-black/65'}`}>{pair.answer}</p>
-                </div>
-              )}
-            </motion.div>
-          ))}
+                {pair.question && (
+                  <div className="mb-2">
+                    <p className={`${LABEL} underline mb-0.5`}>Detective</p>
+                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/60'}`}>{pair.question}</p>
+                  </div>
+                )}
+                {pair.answer && (
+                  <div>
+                    <p className={`${LABEL} underline mb-0.5`}>Subject</p>
+                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/60'}`}>{pair.answer}</p>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
       )}
 

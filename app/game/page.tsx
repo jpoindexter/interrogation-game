@@ -71,6 +71,7 @@ function GameContent() {
   const [showTextInput, setShowTextInput] = useState(false);
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsPos, setSettingsPos] = useState<{ x: number; y: number } | null>(null);
   const [showMicHint, setShowMicHint] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -125,7 +126,7 @@ function GameContent() {
     if (!caseData || (!isOpening && phase !== 'active')) return;
     setPhase('processing');
     setLastTranscript(question);
-    const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question }];
+    const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question, timestamp: timer }];
     try {
       const body = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question });
       const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body };
@@ -133,7 +134,7 @@ function GameContent() {
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
-      setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response }]);
+      setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: timer }]);
       setLastResponse(data.spoken_response);
       setStressLevel(data.stress_level ?? 0);
       setMaxStress((prev) => Math.max(prev, data.stress_level ?? 0));
@@ -163,7 +164,7 @@ function GameContent() {
       const data = await res.json();
       if (typeof data.accusationsLeft === 'number') setAccusationsLeft(data.accusationsLeft);
       else setAccusationsLeft((prev) => Math.max(0, prev - 1));
-      const updatedHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: `[ACCUSATION] ${text}` }, { role: 'assistant', content: data.confession }];
+      const updatedHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: `[ACCUSATION] ${text}`, timestamp: timer }, { role: 'assistant', content: data.confession, timestamp: timer }];
       setConversationHistory(updatedHistory);
       setLastResponse(data.confession);
       if (data.correct) {
@@ -248,7 +249,7 @@ function GameContent() {
       <ExitConfirmDialog show={showExitConfirm} onConfirm={() => { if (timerRef.current) clearInterval(timerRef.current); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } speechSynthesis.cancel(); router.push('/cases'); }} onCancel={() => setShowExitConfirm(false)} />
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
       <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
-      <SettingsPanel show={showSettings} settings={settings} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} />
+      <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
       <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
       <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={isListening ? stopListening : startListening} onTypeToggle={() => setShowTextInput(!showTextInput)} onNotesToggle={() => setShowNotes(!showNotes)}
         onHintClick={async () => {

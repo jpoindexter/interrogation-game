@@ -43,7 +43,7 @@ export default function SuspectZone({
 
       <div className="relative z-10 flex flex-col items-center w-full">
         <motion.div
-          className="mb-2"
+          className="mb-2 relative"
           initial="hidden"
           animate="visible"
           variants={scaleIn}
@@ -56,22 +56,23 @@ export default function SuspectZone({
             size="md"
             speaking={isSpeaking}
           />
-        </motion.div>
-
-        {/* Waveform + skip */}
-        <div className="w-full max-w-xl mb-2 relative">
-          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
           {isSpeaking && onSkipSpeech && (
             <button
               onClick={onSkipSpeech}
-              className="absolute right-0 top-1/2 -translate-y-1/2 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold border border-surface-hover bg-surface/80 text-gray-400 hover:text-foreground hover:bg-surface-hover rounded-sm transition-colors flex items-center gap-1.5"
+              className="absolute -bottom-1 -right-1 z-20 px-2 py-1 text-[10px] uppercase tracking-wider font-bold bg-black/80 text-gray-300 hover:text-white border border-surface-hover rounded-sm transition-colors flex items-center gap-1"
+              style={{ imageRendering: 'pixelated' }}
             >
               Skip
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
                 <path d="M1 1.5L5 5L1 8.5" /><line x1="7" y1="2" x2="7" y2="8" />
               </svg>
             </button>
           )}
+        </motion.div>
+
+        {/* Waveform */}
+        <div className="w-full max-w-xl mb-2">
+          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
         </div>
 
         {/* Dialogue */}

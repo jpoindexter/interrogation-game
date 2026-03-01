@@ -15,8 +15,6 @@ export default function CaseSelectPage() {
   const [solvedCases, setSolvedCases] = useState<string[]>([]);
   const [stats, setStats] = useState<CaseStats | null>(null);
   const [expanded, setExpanded] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-
   useEffect(() => {
     try { setSolvedCases(JSON.parse(localStorage.getItem('solvedCases') || '[]')); } catch {}
     try { setStats(getCaseStats()); } catch {}
@@ -38,20 +36,12 @@ export default function CaseSelectPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [current, go, router]);
 
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => setMousePos({ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight });
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
   const getOffset = (i: number) => ((i - current) % CASES.length + CASES.length + Math.floor(CASES.length / 2)) % CASES.length - Math.floor(CASES.length / 2);
-  const deskX = (mousePos.x - 0.5) * -8;
-  const deskY = (mousePos.y - 0.5) * -8;
   const rotations = [-3, 2.5, -1.5, 4, -2, 3.5, -4];
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <motion.div className="absolute -inset-4" animate={{ x: deskX, y: deskY }} transition={{ duration: 0.6, ease: 'easeOut' }} style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '90%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000' }} />
       <svg className="absolute w-0 h-0"><defs><filter id="sticky-wrinkle"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="5" result="noise" /><feDiffuseLighting in="noise" lightingColor="white" surfaceScale="1.5" result="light"><feDistantLight azimuth="45" elevation="55" /></feDiffuseLighting><feComposite in="SourceGraphic" in2="light" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" /></filter></defs></svg>
       <div className="absolute inset-0 bg-black/30" />
       <motion.div className="absolute inset-0 pointer-events-none" animate={{ opacity: [0, 0.15, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%)' }} />

@@ -41,7 +41,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
 
   return (
     <div className="min-h-screen text-foreground font-mono flex items-center justify-center p-8 relative overflow-hidden">
-      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: 'url(/detective/desk.png)', backgroundSize: '90%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundColor: '#000' }} />
       <div className="absolute inset-0 bg-black/50" />
 
       <svg className="absolute w-0 h-0">
