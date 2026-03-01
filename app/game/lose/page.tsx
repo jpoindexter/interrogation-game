@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { Spinner } from '../../components/ui';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
-import { shareResult } from '../components/utils';
 import TranscriptViewer from '../components/TranscriptViewer';
+import ShareModal from '../components/ShareModal';
 import { saveCaseResult } from '../../data/case-history';
 
 import { playClick, playSfx } from '../../lib/sfx-utils';
@@ -46,7 +46,7 @@ function LoseContent() {
   const searchParams = useSearchParams();
   const [result, setResult] = useState<GameResult | null>(null);
   const [stampVisible, setStampVisible] = useState(false);
-  const [shareLabel, setShareLabel] = useState('SHARE');
+  const [showShare, setShowShare] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const [summary, setSummary] = useState<{
     detective_rating: string;
@@ -263,15 +263,9 @@ function LoseContent() {
               Other Cases
             </button>
             <button
-              onClick={async () => {
-                playClick();
-                const url = typeof window !== 'undefined' ? window.location.origin : '';
-                const msg = result.lawyeredUp ? `The suspect in Case #${result.caseData.case_number} lawyered up on me. ${result.caseData.suspect_name} walked out. Can you crack them without pushing too hard?` : result.timeUp ? `Ran out of time on Case #${result.caseData.case_number}. ${result.caseData.suspect_name} escaped. Can you do better?` : result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`;
-                const outcome = await shareResult(`\ud83d\udd0d INTERROGATION \u2014 ${msg}\n${url}`);
-                if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); }
-              }}
+              onClick={() => { playClick(); setShowShare(true); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
-            >{shareLabel}</button>
+            >Share</button>
             <button
               onClick={() => { playClick(); setShowTranscript(true); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
@@ -291,6 +285,12 @@ function LoseContent() {
           />
         )}
       </AnimatePresence>
+      <ShareModal
+        show={showShare}
+        text={`\ud83d\udd0d INTERROGATION \u2014 ${result.lawyeredUp ? `The suspect in Case #${result.caseData.case_number} lawyered up on me. ${result.caseData.suspect_name} walked out. Can you crack them without pushing too hard?` : result.timeUp ? `Ran out of time on Case #${result.caseData.case_number}. ${result.caseData.suspect_name} escaped. Can you do better?` : result.gaveUp ? `I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?` : `Case #${result.caseData.case_number} defeated me. ${result.caseData.suspect_name} escaped. Can you do better?`}`}
+        url={typeof window !== 'undefined' ? window.location.origin : ''}
+        onClose={() => setShowShare(false)}
+      />
     </div>
   );
 }

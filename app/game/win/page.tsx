@@ -6,7 +6,8 @@ import { Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Spinner } from '../../components/ui';
 import { fadeUp, stagger } from '../../components/motion';
-import { formatTime, shareResult } from '../components/utils';
+import { formatTime } from '../components/utils';
+import ShareModal from '../components/ShareModal';
 import { calculateScore, getDetectiveRating, PAR_QUESTIONS } from '../../../src/lib/scoring';
 import type { Difficulty } from '../../../src/lib/scoring';
 import InitialsEntry from './InitialsEntry';
@@ -74,7 +75,7 @@ function WinContent() {
   const [leaderboardSubmitted, setLeaderboardSubmitted] = useState(false);
   const [playerInitials, setPlayerInitials] = useState<string | null>(null);
   const [showInitials, setShowInitials] = useState(false);
-  const [shareLabel, setShareLabel] = useState('SHARE');
+  const [showShare, setShowShare] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
   const scoreFrameRef = useRef<number>(0);
   const timeFrameRef = useRef<number>(0);
@@ -206,7 +207,7 @@ function WinContent() {
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); const next = difficulty === 'easy' ? 'medium' : difficulty === 'medium' ? 'hard' : 'expert'; router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${next}`); }} className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">Try Harder</button>
             <button onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }} className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors">New Case</button>
             <button onClick={() => { playClick(); router.push('/leaderboard'); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Leaderboard</button>
-            <button onClick={async () => { playClick(); if (!breakdown) return; const url = typeof window !== 'undefined' ? window.location.origin : ''; const text = [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getDetectiveRating(breakdown.finalScore)}`, `Can you beat my score?`, url].join('\n'); const outcome = await shareResult(text); if (outcome === 'copied') { setShareLabel('COPIED!'); setTimeout(() => setShareLabel('SHARE'), 2000); } }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">{shareLabel}</button>
+            <button onClick={() => { playClick(); setShowShare(true); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Share</button>
             <button onClick={() => { playClick(); setShowTranscript(true); }} className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors">Transcript</button>
           </div>
         </motion.div>
@@ -220,6 +221,12 @@ function WinContent() {
           <InitialsEntry score={breakdown.finalScore} onSubmit={(val) => { setPlayerInitials(val); sessionStorage.setItem('newLeaderboardEntry', val); }} onViewScore={() => setShowInitials(false)} onViewLeaderboard={() => router.push('/leaderboard')} />
         )}
       </AnimatePresence>
+      <ShareModal
+        show={showShare}
+        text={breakdown ? [`\ud83d\udd0d INTERROGATION \u2014 Case #${result.caseData.case_number}`, `Cracked ${result.caseData.suspect_name} in ${formatTime(result.timeElapsed)}`, `Score: ${breakdown.finalScore.toLocaleString()} | Rating: ${getDetectiveRating(breakdown.finalScore)}`, 'Can you beat my score?'].join('\n') : `\ud83d\udd0d INTERROGATION \u2014 Cracked Case #${result.caseData.case_number}`}
+        url={typeof window !== 'undefined' ? window.location.origin : ''}
+        onClose={() => setShowShare(false)}
+      />
     </div>
   );
 }
