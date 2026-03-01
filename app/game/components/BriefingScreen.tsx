@@ -98,9 +98,12 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
         >
           Begin Interrogation
         </motion.button>
+
+        <motion.div className="mt-6" variants={fadeUp} transition={smooth}>
+          <TapePlayer onClick={() => setShowBriefing(true)} />
+        </motion.div>
       </motion.div>
 
-      <TapePlayer onClick={() => setShowBriefing(true)} />
       <BriefingDialog
         show={showBriefing}
         sections={sections}

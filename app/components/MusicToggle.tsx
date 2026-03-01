@@ -296,8 +296,9 @@ export default function MusicToggle() {
     }
   };
 
-  // Hide before hydration (avoids mismatch) and on game pages
-  if (!ready || isGame) return null;
+  // Hide before hydration; on game pages, only show during briefing/loading (TopBar handles active)
+  if (!ready) return null;
+  if (isGame && gameActive) return null;
 
   return (
     <button

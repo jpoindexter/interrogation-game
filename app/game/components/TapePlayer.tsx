@@ -3,7 +3,7 @@ import { motion } from '../../components/motion';
 export default function TapePlayer({ onClick }: { onClick: () => void }) {
   return (
     <motion.button
-      className="absolute bottom-8 right-8 z-20 group cursor-pointer"
+      className="group cursor-pointer"
       onClick={onClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
