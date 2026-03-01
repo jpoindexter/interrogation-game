@@ -5,6 +5,7 @@ const DEFAULTS: GameSettings = {
   ttsEnabled: process.env.NODE_ENV !== 'development',
   musicVolume: 0.05,
   sfxVolume: 0.5,
+  voiceVolume: 0.7,
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,

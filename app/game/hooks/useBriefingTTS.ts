@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+function getVoiceVolume(): number {
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.7; } catch {}
+  return 0.7;
+}
+
 export function useBriefingTTS(
   active: boolean,
   fullText: string,
@@ -21,13 +26,14 @@ export function useBriefingTTS(
         const res = await fetch('/api/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: fullText, stress: 0, suspectName: caseData.suspect_name, suspectGender: caseData.suspect_gender, sessionId: caseData.sessionId }),
+          body: JSON.stringify({ text: fullText, stress: 0, suspectName: caseData.suspect_name, suspectGender: caseData.suspect_gender, sessionId: caseData.sessionId, role: 'detective' }),
         });
         if (cancelled) return;
         if (!res.ok) throw new Error('TTS failed');
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
+        audio.volume = getVoiceVolume();
         audioRef.current = audio;
 
         const tick = () => {

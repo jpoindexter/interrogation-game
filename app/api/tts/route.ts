@@ -26,6 +26,9 @@ const VOICES = {
   ],
 };
 
+// Detective voice — Clyde: war veteran, gravelly noir detective
+const DETECTIVE_VOICE = '2EiwWnXFnvU5JabPnv8n';
+
 function hashName(name: string): number {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
@@ -63,19 +66,32 @@ export async function POST(req: NextRequest) {
     const stress = validateNumber(body.stress, 0, 10) ?? 0;
     const suspectName = typeof body.suspectName === 'string' ? body.suspectName : 'Suspect';
     const suspectGender = typeof body.suspectGender === 'string' ? body.suspectGender : undefined;
+    const role = body.role === 'detective' ? 'detective' : 'suspect';
 
     const apiKey = process.env.ELEVENLABS_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: 'ElevenLabs not configured' }, { status: 500 });
     }
 
-    const voiceId = pickVoice(suspectName, suspectGender);
+    let voiceId: string;
+    let stability: number;
+    let similarityBoost: number;
+    let speed: number;
 
-    // Stress affects voice: higher stress = faster, less stable
-    const stressNorm = Math.min(stress / 10, 1);
-    const stability = 0.7 - stressNorm * 0.35;
-    const similarityBoost = 0.75;
-    const speed = 0.9 + stressNorm * 0.25;
+    if (role === 'detective') {
+      // Detective: steady, authoritative, no stress wobble
+      voiceId = DETECTIVE_VOICE;
+      stability = 0.65;
+      similarityBoost = 0.8;
+      speed = 0.85;
+    } else {
+      // Suspect: stress affects voice — higher stress = faster, less stable
+      voiceId = pickVoice(suspectName, suspectGender);
+      const stressNorm = Math.min(stress / 10, 1);
+      stability = 0.7 - stressNorm * 0.35;
+      similarityBoost = 0.75;
+      speed = 0.9 + stressNorm * 0.25;
+    }
 
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,

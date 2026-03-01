@@ -83,6 +83,7 @@ function GameContent() {
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   const prevVolumeRef = useRef(settings.musicVolume > 0 ? settings.musicVolume : 0.1);
   const prevSfxRef = useRef((settings.sfxVolume ?? 0.5) > 0 ? (settings.sfxVolume ?? 0.5) : 0.5);
+  const prevVoiceRef = useRef((settings.voiceVolume ?? 0.7) > 0 ? (settings.voiceVolume ?? 0.7) : 0.7);
   const stressRef = useRef(0);
   stressRef.current = stressLevel;
 
@@ -261,12 +262,13 @@ function GameContent() {
       style={{ fontFamily: settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif' : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : 'var(--font-mono)' }}
     >
       <TopBar timer={timer} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
-        if (settings.musicVolume > 0 || (settings.sfxVolume ?? 0.5) > 0) {
+        if (settings.musicVolume > 0 || (settings.sfxVolume ?? 0.5) > 0 || (settings.voiceVolume ?? 0.7) > 0) {
           prevVolumeRef.current = settings.musicVolume || 0.05;
           prevSfxRef.current = (settings.sfxVolume ?? 0.5) || 0.5;
-          updateSettings({ ...settings, musicVolume: 0, sfxVolume: 0 });
+          prevVoiceRef.current = (settings.voiceVolume ?? 0.7) || 0.7;
+          updateSettings({ ...settings, musicVolume: 0, sfxVolume: 0, voiceVolume: 0 });
         } else {
-          updateSettings({ ...settings, musicVolume: prevVolumeRef.current || 0.05, sfxVolume: prevSfxRef.current || 0.5 });
+          updateSettings({ ...settings, musicVolume: prevVolumeRef.current || 0.05, sfxVolume: prevSfxRef.current || 0.5, voiceVolume: prevVoiceRef.current || 0.7 });
         }
       }} />
       <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />

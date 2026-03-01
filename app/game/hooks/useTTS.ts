@@ -1,5 +1,10 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
+function getVoiceVolume(): number {
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.7; } catch {}
+  return 0.7;
+}
+
 export function useTTS(suspectGender: string | undefined, sessionId?: string, onTTSError?: () => void) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -48,6 +53,7 @@ export function useTTS(suspectGender: string | undefined, sessionId?: string, on
     if (skippedRef.current) return;
     const url = URL.createObjectURL(await res.blob());
     const audio = new Audio(url);
+    audio.volume = getVoiceVolume();
     audioRef.current = audio;
     const cleanup = () => {
       if (skippedRef.current) return;

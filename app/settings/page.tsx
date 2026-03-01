@@ -17,6 +17,7 @@ import {
 interface AppSettings {
   ttsEnabled: boolean;
   musicVolume: number;
+  voiceVolume: number;
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
@@ -25,6 +26,7 @@ interface AppSettings {
 const DEFAULT_SETTINGS: AppSettings = {
   ttsEnabled: true,
   musicVolume: 0.1,
+  voiceVolume: 0.7,
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,
@@ -95,6 +97,24 @@ export default function SettingsPage() {
                 step="0.05"
                 value={settings.musicVolume}
                 onChange={(e) => update({ musicVolume: parseFloat(e.target.value) })}
+                className="w-full h-1.5 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
+              />
+            </motion.div>
+
+            {/* Voice Volume */}
+            <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm text-gray-300 font-bold">Voice Volume</h3>
+                <span className="text-xs text-gray-500 tabular-nums">{settings.voiceVolume === 0 ? 'Off' : `${Math.round(settings.voiceVolume * 100)}%`}</span>
+              </div>
+              <p className="text-xs text-gray-500 mb-4">AI suspect and detective voice level</p>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={settings.voiceVolume}
+                onChange={(e) => update({ voiceVolume: parseFloat(e.target.value) })}
                 className="w-full h-1.5 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
               />
             </motion.div>

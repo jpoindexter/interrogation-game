@@ -6,6 +6,7 @@ export interface GameSettings {
   ttsEnabled: boolean;
   musicVolume: number; // 0 = off, 0-1 range
   sfxVolume: number; // 0 = off, 0-1 range
+  voiceVolume: number; // 0 = off, 0-1 range — TTS voice output level
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
@@ -117,6 +118,21 @@ export default function SettingsPanel({ show, settings, pos, onSettingsChange, o
                 step="0.05"
                 value={settings.sfxVolume ?? 0.5}
                 onChange={(e) => update({ sfxVolume: parseFloat(e.target.value) })}
+                className="w-full h-1 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
+              />
+            </motion.div>
+            <motion.div className="space-y-1.5" variants={fadeUp} transition={smooth}>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-300">Voice Volume</span>
+                <span className="text-[10px] text-gray-500 tabular-nums">{(settings.voiceVolume ?? 0.7) === 0 ? 'Off' : `${Math.round((settings.voiceVolume ?? 0.7) * 100)}%`}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={settings.voiceVolume ?? 0.7}
+                onChange={(e) => update({ voiceVolume: parseFloat(e.target.value) })}
                 className="w-full h-1 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
               />
             </motion.div>
