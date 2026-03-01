@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import supabase from '@/lib/db';
+import { getSupabaseClient } from '@/lib/db';
 import { calculateScore, getDetectiveRating, type Difficulty } from '@/lib/scoring';
 import { validateString, validateDifficulty } from '@/lib/sanitize';
 import { consumeWinToken, getSessionStats, getWinTokenStats } from '@/lib/game-session';
@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
+    const supabase = getSupabaseClient(request);
     const { data, error } = await supabase
       .from('leaderboard')
       .select('player_name, case_setting, suspect_name, time_remaining, detective_rating, score, clues_found, hints_used, accusations_used, created_at')
@@ -70,6 +71,7 @@ export async function POST(request: NextRequest) {
     );
     const detectiveRating = getDetectiveRating(score);
 
+    const supabase = getSupabaseClient(request);
     const { data, error } = await supabase
       .from('leaderboard')
       .insert({
