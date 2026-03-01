@@ -5,9 +5,13 @@ import { validateString, validateNumber, validateDifficulty } from '@/lib/saniti
 import { consumeWinToken, getSessionStats, getWinTokenStats } from '@/lib/game-session';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
-// GET — fetch top scores
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    if (!rateLimit(ip, 20)) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const { data, error } = await supabase
       .from('leaderboard')
       .select('player_name, case_setting, suspect_name, time_remaining, detective_rating, score, clues_found, hints_used, accusations_used, created_at')
@@ -22,7 +26,6 @@ export async function GET() {
   }
 }
 
-// POST — submit a score
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request);
@@ -31,20 +34,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-
-    // Require a valid win token to prevent fake score submissions
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
     const winToken = typeof body.winToken === 'string' ? body.winToken : '';
 
-    // Snapshot stats BEFORE consuming the token (getWinTokenStats reads from the token entry)
     const tokenStats = getWinTokenStats(sessionId);
     const sessionStats = getSessionStats(sessionId);
 
     if (!sessionId || !winToken || !consumeWinToken(sessionId, winToken)) {
-      return NextResponse.json({ error: 'Invalid or expired win token' }, { status: 403 });
+      return NextResponse.json({ error: 'Invalid or expired win token' }, { status: 401 });
     }
 
-    // Use server-side stats — never trust client-supplied timeElapsed/hintsUsed/accusationsUsed
     const stats = tokenStats ?? sessionStats;
     if (!stats) {
       return NextResponse.json({ error: 'Session stats unavailable' }, { status: 400 });
@@ -55,6 +54,7 @@ export async function POST(request: NextRequest) {
     const timeElapsed = stats.timeElapsed;
     const hintsUsed = stats.hintsUsed;
     const accusationsUsed = stats.accusationsUsed;
+    const questionsAsked = stats.questionsAsked ?? 0;
     const stressLevel = validateNumber(body.stressLevel, 0, 10) ?? 0;
     const cluesFound = validateNumber(body.cluesFound, 0, 10) ?? 0;
     const caseNumber = validateString(body.caseNumber, 100) ?? '';
@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
       difficulty,
       hintsUsed,
       Math.max(0, accusationsUsed - 1),
+      questionsAsked,
     );
     const detectiveRating = getDetectiveRating(score);
 

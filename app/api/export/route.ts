@@ -1,13 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { timingSafeEqual } from 'crypto';
+import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
+
+function safeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  try { return timingSafeEqual(Buffer.from(a), Buffer.from(b)); } catch { return false; }
+}
 
 export async function GET(req: NextRequest) {
-  const secret = req.nextUrl.searchParams.get('secret');
-  if (!process.env.EXPORT_SECRET || secret !== process.env.EXPORT_SECRET) {
+  const ip = getClientIp(req);
+  if (!rateLimit(ip, 10)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
+
+  const secret = req.nextUrl.searchParams.get('secret') ?? '';
+  if (!process.env.EXPORT_SECRET || !safeCompare(secret, process.env.EXPORT_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Use service role key to bypass RLS (no public read policy on game_exports)
   const serviceClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -36,7 +47,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Return JSONL (one JSON object per line)
   const lines = (data ?? []).map(row => JSON.stringify(row)).join('\n');
   return new Response(lines + (lines ? '\n' : ''), {
     headers: {

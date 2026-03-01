@@ -17,13 +17,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid evaluation type' }, { status: 400 });
     }
 
-    // Validate session
     const session = getSession(body.sessionId);
     if (!session) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
-    // Use server-side case data and conversation history
     const caseData = session.caseData as Parameters<typeof evaluateWin>[0] & Parameters<typeof generateLossSummary>[0];
     const history = session.conversationHistory;
 
@@ -37,9 +35,7 @@ export async function POST(request: NextRequest) {
       result = await generateLossSummary(caseData, history, maxStress);
     }
 
-    // Export session data before cleanup (fire-and-forget)
     if (body.type === 'lose') {
-      // Determine specific lose reason from request context
       const lastMsg = session.conversationHistory.at(-1)?.content ?? '';
       const outcome = lastMsg.includes('[Time') ? 'lose_time'
         : lastMsg.includes('[The detective') ? 'lose_giveup'
@@ -47,7 +43,6 @@ export async function POST(request: NextRequest) {
       exportSession(session.id, outcome);
     }
 
-    // Clean up session after evaluation
     deleteSession(session.id);
 
     return NextResponse.json(result);

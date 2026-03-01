@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    // Validate session
     const session = getSession(body.sessionId);
     if (!session) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
@@ -24,12 +23,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Accusation is required (max 1000 chars)' }, { status: 400 });
     }
 
-    // Check accusations remaining (server-side enforcement)
     if (session.accusationsLeft <= 0) {
       return NextResponse.json({ error: 'No accusations remaining' }, { status: 403 });
     }
 
-    // Enforce minimum clues collected before allowing accusation
     const requiredClues = DIFFICULTY_CLUES[(session.caseData.difficulty as string) || 'medium'] || 3;
     if (session.cluesCollected < requiredClues) {
       return NextResponse.json(
@@ -38,7 +35,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Block flagged injection attempts
     if (isInjectionAttempt(accusation)) {
       return NextResponse.json({
         correct: false,
@@ -47,16 +43,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Prevent race condition: lock session during accusation processing
     if (!acquireSessionLock(session.id)) {
       return NextResponse.json({ error: 'Accusation already in progress' }, { status: 409 });
     }
 
     try {
-      // Consume an accusation server-side (inside lock)
       useAccusation(session.id);
       incrementAccusation(session.id);
-
       const sanitized = sanitizeInput(accusation);
 
       try {
@@ -66,14 +59,10 @@ export async function POST(req: NextRequest) {
           sanitized,
         );
 
-        // Store accusation in conversation
         addMessage(session.id, 'user', `[ACCUSATION] ${sanitized}`);
         addMessage(session.id, 'assistant', (result.confession as string) || '');
-
-        // Include remaining accusations in response
         result.accusationsLeft = session.accusationsLeft;
 
-        // Issue a win token if correct — required for leaderboard submission
         if (result.correct) {
           const winToken = issueWinToken(session.id);
           if (winToken) result.winToken = winToken;

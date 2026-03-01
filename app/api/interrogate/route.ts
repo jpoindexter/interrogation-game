@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { interrogate } from '../../../src/lib/mistral';
-import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
+import { sanitizeInput, validateString, isInjectionAttempt, isGibberish } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { getSession, addMessage, updateStress, incrementClue, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
 
@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate session
     const session = getSession(body.sessionId);
     if (!session) {
       return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
@@ -24,31 +23,34 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Question is required (max 500 chars)' }, { status: 400 });
     }
 
-    // Block flagged injection attempts outright
     if (isInjectionAttempt(question)) {
-      // Return an in-character deflection instead of processing
-      const deflection = {
+      return NextResponse.json({
         spoken_response: "I don't understand what you're asking. Can we stay on topic?",
-        stress_level: session.conversationHistory.filter(m => m.role === 'assistant').length > 0 ? 2 : 0,
+        stress_level: session.currentStress,
         clue_unlocked: null,
         caught: false,
-      };
-      return NextResponse.json(deflection);
+      });
+    }
+
+    if (isGibberish(question)) {
+      return NextResponse.json({
+        spoken_response: "I'm sorry, what? That didn't make any sense. Ask me a real question.",
+        stress_level: session.currentStress,
+        clue_unlocked: null,
+        caught: false,
+      });
     }
 
     const sanitized = sanitizeInput(question);
 
-    // Prevent race condition: lock session during question processing
     if (!acquireSessionLock(session.id)) {
       return NextResponse.json({ error: 'Question already in progress' }, { status: 409 });
     }
 
     try {
       const questionCount = session.conversationHistory.filter(m => m.role === 'user').length;
-      // Use server-tracked stress — never trust client-supplied value
       const currentStress = session.currentStress;
 
-      // Use server-side case data and conversation history
       const response = await interrogate(
         session.caseData as Parameters<typeof interrogate>[0],
         session.conversationHistory,
@@ -58,26 +60,19 @@ export async function POST(request: NextRequest) {
         session.learnedTactics,
       );
 
-      // Store conversation on server
       addMessage(session.id, 'user', sanitized);
       addMessage(session.id, 'assistant', (response.spoken_response as string) || '');
 
-      // Track stress server-side so client can't manipulate it
-      // Prevent stress from jumping more than 2 per exchange
+      // Clamp stress — max +2 per exchange
       const stressVal = response.stress_level as number;
       const clampedStress = Math.min(stressVal, currentStress + 2);
       response.stress_level = clampedStress;
       updateStress(session.id, clampedStress);
 
-      // Track clues server-side so client can't skip ahead to accusation
-      // Skip clue on opening message (starts with *)
+      // Block clue on opening message or if stress too low
       const isOpening = sanitized.startsWith('*');
-
-      // Server-side clue gate: block clue if stress is too low or too early
-      if (response.clue_unlocked) {
-        if (isOpening || questionCount < 2 || clampedStress < 1) {
-          response.clue_unlocked = null;
-        }
+      if (response.clue_unlocked && (isOpening || questionCount < 2 || clampedStress < 1)) {
+        response.clue_unlocked = null;
       }
 
       if (response.clue_unlocked) {

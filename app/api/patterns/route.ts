@@ -23,18 +23,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Validate session exists (prevents fabricated data)
     const session = getSession(sessionId);
     if (!session) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    // Validate fields
     const validDifficulty = validateDifficulty(difficulty);
     if (!validDifficulty) return NextResponse.json({ error: 'Invalid difficulty' }, { status: 400 });
     if (!ALLOWED_OUTCOMES.has(outcome)) return NextResponse.json({ error: 'Invalid outcome' }, { status: 400 });
 
-    // Sanitize question arrays — prevent prompt injection via stored data
     const safeQuestions = sanitizeQuestionArray(Array.isArray(questions) ? questions : []);
     const safeEffective = sanitizeQuestionArray(Array.isArray(effectiveQuestions) ? effectiveQuestions : []);
     const safeStress = Math.max(0, Math.min(9, Math.floor(Number(maxStress) || 0)));
@@ -50,7 +47,6 @@ export async function POST(req: NextRequest) {
 
     const embedding = await embedOne(summary);
 
-    // Upsert on session_id to prevent duplicates
     const { error } = await supabase.from('interrogation_patterns').upsert({
       session_id: sessionId,
       setting: String(setting).slice(0, 100),
@@ -116,7 +112,6 @@ function sanitizeQuestionArray(arr: unknown[]): string[] {
 }
 
 function buildResponse(patterns: Array<{ effective_questions?: string[]; questions?: string[]; outcome?: string }>) {
-  // Only learn from winning games
   const wins = patterns.filter(p => p.outcome === 'win');
   if (wins.length === 0) return NextResponse.json({ tactics: [], totalGames: patterns.length });
 

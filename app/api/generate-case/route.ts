@@ -24,7 +24,6 @@ export async function GET(request: NextRequest) {
     }
 
     const rawSetting = request.nextUrl.searchParams.get('setting') || undefined;
-    // Only allow whitelisted settings — reject arbitrary user input
     const setting = rawSetting && ALLOWED_SETTINGS.has(rawSetting.toLowerCase())
       ? rawSetting : undefined;
     const difficulty = validateDifficulty(request.nextUrl.searchParams.get('difficulty')) || 'medium';
@@ -34,13 +33,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to generate valid case' }, { status: 500 });
     }
 
-    // Validate and sanitize Mistral's output before trusting it
     const validatedCase = validateCaseData(caseData);
     if (!validatedCase) {
       return NextResponse.json({ error: 'Generated case failed validation' }, { status: 500 });
     }
 
-    // Fetch learned patterns from prior games (RAG)
     let learnedTactics: string[] = [];
     let totalPriorGames = 0;
     try {
@@ -72,7 +69,6 @@ export async function GET(request: NextRequest) {
       console.error('Pattern retrieval failed (non-fatal):', err);
     }
 
-    // Store validated case data server-side, return only safe fields + session ID
     const sessionId = createSession(validatedCase, learnedTactics, totalPriorGames);
     const clientData = sanitizeCaseForClient(validatedCase);
 
