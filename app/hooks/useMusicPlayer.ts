@@ -4,15 +4,27 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 const MENU_TRACKS = ['/music/VelvetAlleyLoop.mp3', '/music/VelvetAlleyLoop2.mp3', '/music/MoonlitSavePoint4.mp3', '/music/MoonlitSavePoint5.mp3'];
 const GAME_TRACKS = ['/music/MidnightSavePoint.mp3', '/music/MidnightSavePoint2.mp3', '/music/MidnightSavePoint3.mp3', '/music/MidnightSavePoint4.mp3', '/music/MidnightSavePoint6.mp3', '/music/MidnightSavePoint7.mp3', '/music/SmokeInTheSavePoint.mp3', '/music/SmokeInTheSavePoint2.mp3'];
 
+/** Exponential curve so low slider values are actually quiet. 5% slider → ~0.0025 volume. */
+function expVol(linear: number): number {
+  if (linear <= 0) return 0;
+  return Math.pow(linear, 3);
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
 }
 
-function getVolume(): number {
+/** Raw slider value (0–1) from settings */
+function getSliderVolume(): number {
   try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).musicVolume ?? 0.05; } catch {}
   return 0.05;
+}
+
+/** Perceptual volume for audio.volume */
+function getVolume(): number {
+  return expVol(getSliderVolume());
 }
 
 function setVolumeStorage(musicVol: number, sfxVol?: number, voiceVol?: number) {
@@ -45,18 +57,19 @@ export function useMusicPlayer(isGame: boolean) {
   const desiredMode = isGame && gameActive ? 'game' : 'menu';
 
   useEffect(() => {
-    const vol = getVolume();
-    if (vol > 0) prevVolumeRef.current = vol;
+    const slider = getSliderVolume();
+    if (slider > 0) prevVolumeRef.current = slider;
     try { const s = localStorage.getItem('appSettings'); if (s) { const p = JSON.parse(s); if (p.sfxVolume > 0) prevSfxRef.current = p.sfxVolume; if (p.voiceVolume > 0) prevVoiceRef.current = p.voiceVolume; } } catch {}
-    setMuted(vol === 0);
+    setMuted(slider === 0);
     setReady(true);
   }, []);
 
   useEffect(() => {
     const handler = () => {
-      const vol = getVolume();
-      setMuted(vol === 0);
-      if (vol > 0) { prevVolumeRef.current = vol; if (audioRef.current && !fadingRef.current) audioRef.current.volume = vol; }
+      const slider = getSliderVolume();
+      const vol = expVol(slider);
+      setMuted(slider === 0);
+      if (slider > 0) { prevVolumeRef.current = slider; if (audioRef.current && !fadingRef.current) audioRef.current.volume = vol; }
       else {
         fadeTimersRef.current.forEach(clearInterval); fadeTimersRef.current = []; fadingRef.current = false;
         if (incomingRef.current) { incomingRef.current.pause(); incomingRef.current.src = ''; incomingRef.current = null; }
@@ -157,7 +170,7 @@ export function useMusicPlayer(isGame: boolean) {
       setVolumeStorage(prevVolumeRef.current || 0.05, prevSfxRef.current || 0.5, prevVoiceRef.current || 0.7);
       setMuted(false);
     } else {
-      prevVolumeRef.current = getVolume() || 0.05;
+      prevVolumeRef.current = getSliderVolume() || 0.05;
       try { const s = localStorage.getItem('appSettings'); if (s) { const p = JSON.parse(s); if (p.sfxVolume > 0) prevSfxRef.current = p.sfxVolume; if (p.voiceVolume > 0) prevVoiceRef.current = p.voiceVolume; } } catch {}
       setVolumeStorage(0, 0, 0); setMuted(true);
     }

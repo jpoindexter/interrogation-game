@@ -155,25 +155,34 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">05</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Four outcomes. Catch the lie and the suspect is apprehended. Run out of time or accusations and they escape. Give up and they walk. Push too hard and they lawyer up.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">One way to win. Four ways to lose.</p>
+
+              {/* Win */}
+              <div className="bg-surface-darker border border-green-500/20 rounded-sm p-5 text-center mb-4">
+                <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
+                <p className="text-xs uppercase tracking-wider text-green-500 font-bold">Apprehended</p>
+                <p className="text-[10px] text-gray-500 mt-1">You identified the lie. Suspect confesses. Score + leaderboard.</p>
+              </div>
+
+              {/* 4 lose conditions */}
+              <div className="grid grid-cols-2 gap-3">
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
-                  <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
-                  <p className="text-xs uppercase tracking-wider text-green-500 font-bold">Apprehended</p>
-                  <p className="text-[10px] text-gray-500 mt-1">You caught the lie. Score + leaderboard.</p>
+                  <img src="/solved/timesup.png" alt="Time's Up" className="w-20 mx-auto mb-2" />
+                  <p className="text-xs uppercase tracking-wider text-accent font-bold">Time&apos;s Up</p>
+                  <p className="text-[10px] text-gray-500 mt-1">Clock hit zero. Suspect walks.</p>
                 </div>
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
-                  <img src="/solved/escaped.png" alt="Escaped" className="w-28 mx-auto mb-3" />
-                  <p className="text-xs uppercase tracking-wider text-accent font-bold">Escaped</p>
-                  <p className="text-[10px] text-gray-500 mt-1">Out of time or accusations.</p>
+                  <img src="/solved/accusations.png" alt="Out of Accusations" className="w-20 mx-auto mb-2" />
+                  <p className="text-xs uppercase tracking-wider text-accent font-bold">No Accusations Left</p>
+                  <p className="text-[10px] text-gray-500 mt-1">3 wrong accusations. Suspect walks.</p>
                 </div>
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
-                  <img src="/solved/escaped.png" alt="Gave Up" className="w-28 mx-auto mb-3" />
+                  <img src="/solved/escaped.png" alt="Gave Up" className="w-20 mx-auto mb-2" />
                   <p className="text-xs uppercase tracking-wider text-gray-400 font-bold">Gave Up</p>
-                  <p className="text-[10px] text-gray-500 mt-1">You surrendered. Suspect walks free.</p>
+                  <p className="text-[10px] text-gray-500 mt-1">You surrendered. Suspect walks.</p>
                 </div>
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
-                  <img src="/solved/lawyered_up.png" alt="Lawyered Up" className="w-28 mx-auto mb-3" />
+                  <img src="/solved/lawyered_up.png" alt="Lawyered Up" className="w-20 mx-auto mb-2" />
                   <p className="text-xs uppercase tracking-wider text-warn font-bold">Lawyered Up</p>
                   <p className="text-[10px] text-gray-500 mt-1">Stress 8+ too long. They call a lawyer.</p>
                 </div>

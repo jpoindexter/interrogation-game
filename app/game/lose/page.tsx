@@ -117,7 +117,7 @@ function LoseContent() {
         transition={{ duration: 0.7, ease: 'easeOut' }}
       >
         <img
-          src={result.lawyeredUp ? '/solved/lawyered_up.png' : '/solved/escaped.png'}
+          src={result.lawyeredUp ? '/solved/lawyered_up.png' : result.timeUp ? '/solved/timesup.png' : result.gaveUp ? '/solved/escaped.png' : '/solved/accusations.png'}
           alt=""
           className="w-[600px] sm:w-[800px] md:w-[900px]"
           style={{ imageRendering: 'auto' }}
