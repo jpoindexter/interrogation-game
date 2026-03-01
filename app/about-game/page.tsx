@@ -137,45 +137,83 @@ export default function AboutGamePage() {
             </motion.div>
 
             {/* Adaptive Suspect AI */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Adaptive Suspect AI</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">The suspect isn&apos;t a static character. Behavior shifts in real-time based on multiple signals:</p>
-              <div className="space-y-2 mb-4">
-                <div className="flex gap-3 text-xs">
-                  <span className="text-green-500 font-bold shrink-0 w-24">Q1&ndash;3</span>
-                  <span className="text-gray-500">Relaxed, confident. Full sentences, willing to share. Guards down.</span>
+            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-3">Adaptive Suspect AI</h2>
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">The suspect isn&apos;t a static character. Behavior shifts in real-time based on multiple signals:</p>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-sm font-bold text-green-500 mb-1.5">Q1&ndash;3</p>
+                  <p className="text-[11px] text-gray-500">Relaxed, confident. Full sentences, willing to share. Guards down.</p>
                 </div>
-                <div className="flex gap-3 text-xs">
-                  <span className="text-warn font-bold shrink-0 w-24">Q4&ndash;7</span>
-                  <span className="text-gray-500">Guarded. Active deflection, measured answers, redirects questions back at you.</span>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-sm font-bold text-warn mb-1.5">Q4&ndash;7</p>
+                  <p className="text-[11px] text-gray-500">Guarded. Active deflection, measured answers, redirects questions back at you.</p>
                 </div>
-                <div className="flex gap-3 text-xs">
-                  <span className="text-accent font-bold shrink-0 w-24">Q8+</span>
-                  <span className="text-gray-500">Cornered. Counter-interrogates, desperate tactics, fragmented speech.</span>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-sm font-bold text-accent mb-1.5">Q8+</p>
+                  <p className="text-[11px] text-gray-500">Cornered. Counter-interrogates, desperate tactics, fragmented speech.</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Stress degrades speech patterns independently: self-corrections, run-on explanations, or monosyllabic shutdown. The ElevenLabs voice stability parameter decreases with stress &mdash; you can literally <em>hear</em> the suspect breaking.</p>
-              <p className="text-sm text-gray-400 leading-relaxed">In Unlimited mode on Hard/Expert, 4 consecutive high-stress exchanges trigger a <span className="text-accent font-bold">lawyer-up</span> &mdash; the suspect demands a lawyer and the game ends. This prevents brute-force strategies and rewards careful pressure management.</p>
+              <div className="bg-surface-darker border border-surface-dark rounded-sm p-5 space-y-3">
+                <p className="text-xs text-gray-400 leading-relaxed">Stress degrades speech patterns independently: self-corrections, run-on explanations, or monosyllabic shutdown. The ElevenLabs voice stability parameter decreases with stress &mdash; you can literally <em>hear</em> the suspect breaking.</p>
+                <p className="text-xs text-gray-400 leading-relaxed">In Unlimited mode on Hard/Expert, 4 consecutive high-stress exchanges trigger a <span className="text-accent font-bold">lawyer-up</span> &mdash; the suspect demands a lawyer and the game ends. This prevents brute-force strategies and rewards careful pressure management.</p>
+              </div>
             </motion.div>
 
             {/* Security */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Security &amp; Anti-Jailbreak</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Since the game is literally about adversarial prompting, the suspect AI is hardened across multiple layers:</p>
-              <ul className="space-y-1.5 text-xs text-gray-500 ml-2">
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Prompt injection defense:</strong> 30+ regex patterns catching injection attempts, role markers (<code className="text-gray-500">[INST]</code>, <code className="text-gray-500">system:</code>), unicode homoglyphs, full-width chars, base64 encoded payloads, anti-extraction paraphrases, and judge manipulation attempts</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Unicode normalization:</strong> All input NFKD-normalized before pattern matching &mdash; Cyrillic homoglyph substitution attacks (e.g. &ldquo;sуstem&rdquo; using Cyrillic &lsquo;y&rsquo;) are caught</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Output scanning:</strong> AI responses scanned for secret leaks using 40% fuzzy word-match threshold with stop-word filtering &mdash; blocks any response that inadvertently reveals the lie, truth, or contradiction</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Judge isolation:</strong> Accusation judge uses a separate Mistral call with its own system message, randomized boundary tokens per request, injection stripping on accusation text &mdash; and never uses player-provided API keys</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Stress monotonic enforcement:</strong> Server clamps stress to max +1 per turn and never allows decrease &mdash; AI cannot game clue gates by spiking or dropping stress</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Session locking:</strong> Mutex prevents race conditions on concurrent requests to the same session</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Win token security:</strong> 128-bit cryptographic tokens, timing-safe comparison, single-use, 30-minute TTL &mdash; prevents score forging</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Server-side scoring:</strong> Score calculated from server-tracked stats (time, hints, accusations, questions) &mdash; client values are never trusted</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">TTS abuse prevention:</strong> Voice synthesis validates text against conversation history &mdash; can&apos;t use the endpoint as a free TTS proxy</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">RAG poisoning defense:</strong> Learned tactics from prior games are filtered through injection detection before prompt inclusion &mdash; poisoned embeddings can&apos;t inject instructions</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Timer mode pinned server-side:</strong> Stored in session at creation &mdash; can&apos;t be spoofed via headers mid-game</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Additional hardening:</strong> Input length limits, rate limiting (30/min interrogate, 10/min case gen), gibberish detection, non-English blocking, setting whitelist, conversation history caps</li>
-              </ul>
+            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-3">Security &amp; Anti-Jailbreak</h2>
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">Since the game is literally about adversarial prompting, the suspect AI is hardened across multiple layers:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Prompt Injection Defense</p>
+                  <p className="text-[11px] text-gray-500">30+ regex patterns catching role markers, unicode homoglyphs, full-width chars, base64 payloads, anti-extraction paraphrases, and judge manipulation.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Unicode Normalization</p>
+                  <p className="text-[11px] text-gray-500">All input NFKD-normalized before pattern matching. Cyrillic homoglyph substitution attacks are caught.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Output Scanning</p>
+                  <p className="text-[11px] text-gray-500">AI responses scanned for secret leaks using 40% fuzzy word-match with stop-word filtering. Blocks accidental reveals.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Judge Isolation</p>
+                  <p className="text-[11px] text-gray-500">Separate Mistral call with its own system message, randomized boundary tokens, injection stripping. Never uses player API keys.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Stress Enforcement</p>
+                  <p className="text-[11px] text-gray-500">Server clamps stress to max +1 per turn, never allows decrease. AI cannot game clue gates.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Win Token Security</p>
+                  <p className="text-[11px] text-gray-500">128-bit cryptographic tokens, timing-safe comparison, single-use, 30-minute TTL. Prevents score forging.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Server-Side Scoring</p>
+                  <p className="text-[11px] text-gray-500">Score calculated from server-tracked stats. Client values are never trusted.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Session Locking</p>
+                  <p className="text-[11px] text-gray-500">Mutex prevents race conditions on concurrent requests to the same session.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">RAG Poisoning Defense</p>
+                  <p className="text-[11px] text-gray-500">Learned tactics filtered through injection detection before prompt inclusion. Poisoned embeddings can&apos;t inject instructions.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">TTS Abuse Prevention</p>
+                  <p className="text-[11px] text-gray-500">Voice synthesis validates text against conversation history. Can&apos;t use the endpoint as a free TTS proxy.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Timer Pinned Server-Side</p>
+                  <p className="text-[11px] text-gray-500">Stored in session at creation. Can&apos;t be spoofed via headers mid-game.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
+                  <p className="text-xs font-bold text-accent mb-1.5">Additional Hardening</p>
+                  <p className="text-[11px] text-gray-500">Input length limits, rate limiting, gibberish detection, non-English blocking, setting whitelist, history caps.</p>
+                </div>
+              </div>
             </motion.div>
 
             {/* Models & Tech */}
