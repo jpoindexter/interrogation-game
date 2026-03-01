@@ -44,11 +44,11 @@ ${difficultyGuide}
 Respond ONLY in this exact JSON format:
 
 {
-  "case_number": "a random 4-digit number",
-  "setting": "where this takes place (company name and type)",
+  "case_number": "a random 4-digit number between 1000-9999 (never 4729 or 4829)",
+  "setting": "company name only, max 3 words (e.g. 'Vanguard Analytics', 'Apex Labs')",
   "crime": "what happened in one sentence",
   "briefing": "3 sentence briefing the detective reads before starting. Written in second person. Direct. No fluff.",
-  "detective_leads": ["Exactly 3 first-person detective leads written as inner monologue. One lead points toward the real weak spot (without revealing the lie). The other two are plausible red herrings — they sound suspicious but lead nowhere. Shuffle the order randomly. Example: 'He mentioned a software glitch caused the data loss... but the logs show the system was stable that day. I should press him on that.', 'The security guard said he saw someone near the server room at 2am. Could be worth digging into.', 'His colleague filed a complaint last month — maybe there is bad blood here.'"],
+  "detective_leads": ["Exactly 3 short leads (max 8 words each). Written as brief sticky-note scribbles. One hints at the real weak spot. Two are red herrings. Shuffle order. Examples: 'Security logs don't match his timeline', 'Colleague filed complaint last month', 'Mentions a glitch — but system was stable'"],
   "suspect_name": "a realistic full name",
   "suspect_gender": "male or female",
   "suspect_role": "their job title",
@@ -66,8 +66,9 @@ Make the contradiction discoverable but not obvious. The player should need ${di
 
 IMPORTANT: All text fields (briefing, stress_triggers, deflection_tactics, suspect_true_story, suspect_cover_story, the_lie, the_truth, the_contradiction) MUST use the correct pronouns matching suspect_gender. If female, use she/her/hers. If male, use he/him/his. Never mix pronouns.
 
-Generate one case now.`,
+Generate one case now. CRITICAL: Every case must be completely unique. Use a DIFFERENT suspect name (never Daniel, Emily, Sarah, Michael, or Carter), DIFFERENT company name, DIFFERENT case number, and DIFFERENT crime every single time. Randomization seed: ${Date.now()}-${Math.random().toString(36).slice(2)}`,
     }],
+    temperature: 1.3,
     responseFormat: { type: 'json_object' },
   });
 

@@ -9,7 +9,9 @@ export const dynamic = 'force-dynamic';
 // Whitelist of allowed settings to prevent prompt injection via query param
 const ALLOWED_SETTINGS = new Set([
   'tech startup', 'bank', 'law firm', 'hospital', 'trading floor',
-  'police station', 'server room',
+  'police station', 'server room', 'startup', 'corporate office',
+  'hospital or medical facility', 'bank or financial trading firm',
+  'tech company', 'police precinct',
 ]);
 
 export async function GET(request: NextRequest) {

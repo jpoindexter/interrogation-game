@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from '../../components/motion';
+import type { BriefingSection } from './BriefingScreen';
 import LeadStickies from './LeadStickies';
 
 interface BriefingDialogProps {
   show: boolean;
+  sections: BriefingSection[];
   fullText: string;
   charIndex: number;
   isPlaying: boolean;
@@ -12,7 +14,33 @@ interface BriefingDialogProps {
   onStart: () => void;
 }
 
-export default function BriefingDialog({ show, fullText, charIndex, isPlaying, leads, onClose, onSkip, onStart }: BriefingDialogProps) {
+function SectionedText({ sections, charIndex }: { sections: BriefingSection[]; charIndex: number }) {
+  let offset = 0;
+  return (
+    <>
+      {sections.map((s, i) => {
+        const start = offset;
+        const end = offset + s.text.length;
+        offset = end + 1; // +1 for the space join
+        const visible = charIndex > start;
+        if (!visible) return null;
+        const sliceEnd = Math.min(charIndex - start, s.text.length);
+        const showCursor = charIndex < end;
+        return (
+          <div key={i} className={i > 0 ? 'mt-3' : ''}>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-red-800/70 font-bold mb-1">{s.label}</p>
+            <p className="text-sm text-gray-800 leading-relaxed">
+              {s.text.slice(0, sliceEnd)}
+              {showCursor && <span className="inline-block w-[2px] h-[1em] bg-red-800 align-text-bottom animate-pulse ml-[1px]" />}
+            </p>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+export default function BriefingDialog({ show, sections, fullText, charIndex, isPlaying, leads, onClose, onSkip, onStart }: BriefingDialogProps) {
   return (
     <AnimatePresence>
       {show && (
@@ -30,6 +58,7 @@ export default function BriefingDialog({ show, fullText, charIndex, isPlaying, l
               style={{
                 background: 'repeating-linear-gradient(transparent, transparent 19px, rgba(100,140,180,0.2) 19px, rgba(100,140,180,0.2) 20px), linear-gradient(180deg, #F5E6A3 0%, #EDD98B 100%)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
+                minHeight: '420px',
               }}
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
@@ -48,12 +77,9 @@ export default function BriefingDialog({ show, fullText, charIndex, isPlaying, l
                 <p className="text-xs uppercase tracking-[0.3em] text-red-800 font-bold">Case Briefing</p>
               </div>
 
-              <p className="text-sm text-gray-800 leading-relaxed mb-4 min-h-[4rem]">
-                {fullText.slice(0, charIndex)}
-                {charIndex < fullText.length && (
-                  <span className="inline-block w-[2px] h-[1em] bg-red-800 align-text-bottom animate-pulse ml-[1px]" />
-                )}
-              </p>
+              <div className="mb-4 min-h-[280px]">
+                <SectionedText sections={sections} charIndex={charIndex} />
+              </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

@@ -14,12 +14,14 @@ interface BriefingScreenProps {
   onBack: () => void;
 }
 
-function buildBriefingText(c: Case): string {
-  const parts: string[] = [];
-  if (c.briefing) parts.push(c.briefing);
-  parts.push(`Crime: ${c.crime}.`);
-  parts.push(`Cover story: ${c.suspect_cover_story}.`);
-  return parts.join(' ');
+export interface BriefingSection { label: string; text: string }
+
+function buildBriefingSections(c: Case): BriefingSection[] {
+  const sections: BriefingSection[] = [];
+  if (c.briefing) sections.push({ label: 'Briefing', text: c.briefing });
+  sections.push({ label: 'Crime', text: c.crime });
+  sections.push({ label: 'Cover Story', text: c.suspect_cover_story });
+  return sections;
 }
 
 const STICKIES = [
@@ -30,7 +32,8 @@ const STICKIES = [
 
 export default function BriefingScreen({ caseData, difficulty, onStart, onBack }: BriefingScreenProps) {
   const [showBriefing, setShowBriefing] = useState(false);
-  const fullText = buildBriefingText(caseData);
+  const sections = buildBriefingSections(caseData);
+  const fullText = sections.map(s => s.text).join(' ');
   const diff = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.easy;
   const { charIndex, isPlaying, skip, stop } = useBriefingTTS(showBriefing, fullText, caseData);
 
@@ -79,8 +82,8 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
               <div className="absolute inset-0 pointer-events-none" style={{
                 background: 'linear-gradient(125deg, transparent 30%, rgba(0,0,0,0.06) 30.5%, transparent 31%), linear-gradient(65deg, transparent 55%, rgba(255,255,255,0.1) 55.5%, transparent 56%)',
               }} />
-              <p className={`text-[9px] text-${s.text}-900/60 uppercase tracking-wider mb-1 relative z-10`}>{s.label}</p>
-              <p className={`${s.label === 'Location' ? 'text-sm' : 'text-lg'} text-${s.text}-950 font-bold leading-snug relative z-10`} style={{ fontFamily: 'var(--font-handwriting)' }}>{caseData[s.key]}</p>
+              <p className="text-[9px] text-black/60 uppercase tracking-wider mb-1 relative z-10">{s.label}</p>
+              <p className={`text-2xl text-black font-bold leading-snug relative z-10`} style={{ fontFamily: 'var(--font-handwriting)' }}>{caseData[s.key]}</p>
             </div>
           ))}
         </motion.div>
@@ -89,6 +92,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
       <TapePlayer onClick={() => setShowBriefing(true)} />
       <BriefingDialog
         show={showBriefing}
+        sections={sections}
         fullText={fullText}
         charIndex={charIndex}
         isPlaying={isPlaying}

@@ -27,7 +27,23 @@ export interface GameSession {
   accusationsUsed: number;      // Server-side accusation count — prevents client manipulation
 }
 
-const sessions = new Map<string, GameSession>();
+interface WinTokenEntry {
+  token: string;
+  issuedAt: number;
+  stats: { timeElapsed: number; hintsUsed: number; accusationsUsed: number; difficulty: string };
+}
+
+// Use globalThis to persist sessions across Next.js hot reloads in dev mode
+const globalSessions = globalThis as typeof globalThis & {
+  __gameSessions?: Map<string, GameSession>;
+  __winTokens?: Map<string, WinTokenEntry>;
+  __sessionLocks?: Set<string>;
+};
+if (!globalSessions.__gameSessions) globalSessions.__gameSessions = new Map();
+if (!globalSessions.__winTokens) globalSessions.__winTokens = new Map();
+if (!globalSessions.__sessionLocks) globalSessions.__sessionLocks = new Set();
+
+const sessions = globalSessions.__gameSessions;
 
 const SESSION_TTL = 60 * 60 * 1000; // 1 hour
 const MAX_SESSIONS = 5000;
@@ -136,12 +152,7 @@ export function getSessionStats(sessionId: string): {
 
 // Win tokens live in a separate Map so they survive session deletion.
 // Flow: accuse → issueWinToken → evaluate (deletes session) → leaderboard (consumes token)
-interface WinTokenEntry {
-  token: string;
-  issuedAt: number;
-  stats: { timeElapsed: number; hintsUsed: number; accusationsUsed: number; difficulty: string };
-}
-const winTokens = new Map<string, WinTokenEntry>();
+const winTokens = globalSessions.__winTokens!;
 const WIN_TOKEN_TTL = 30 * 60 * 1000; // 30 minutes
 
 /** Issue a one-time win token when the player wins. Returns the token or null if already issued. */
@@ -204,7 +215,7 @@ export function consumeWinToken(sessionId: string, token: string): boolean {
 }
 
 // Per-session locks to prevent race conditions (concurrent accusation requests)
-const sessionLocks = new Set<string>();
+const sessionLocks = globalSessions.__sessionLocks!;
 
 /** Acquire a lock for a session. Returns true if acquired, false if already locked. */
 export function acquireSessionLock(sessionId: string): boolean {
