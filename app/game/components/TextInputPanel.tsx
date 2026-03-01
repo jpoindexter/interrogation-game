@@ -14,14 +14,14 @@ export default function TextInputPanel({ show, value, disabled, onChange, onSubm
 
   const playKeystroke = useCallback(() => {
     try {
-      if (!audioRef.current) {
-        audioRef.current = new Audio('/efx/typewriter.wav');
-      }
+      let m = 0.5;
+      try { const s = localStorage.getItem('appSettings'); if (s) m = JSON.parse(s).sfxVolume ?? 0.5; } catch {}
+      if (m === 0) return;
+      if (!audioRef.current) audioRef.current = new Audio('/efx/typewriter.wav');
       const a = audioRef.current;
       a.currentTime = 0;
-      a.volume = 0.12;
+      a.volume = 0.12 * m;
       a.play().catch(() => {});
-      // Cut it short after 60ms
       setTimeout(() => { a.volume = 0; a.pause(); }, 60);
     } catch {}
   }, []);

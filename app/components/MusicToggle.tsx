@@ -40,11 +40,12 @@ function getVolume(): number {
   return 0.05;
 }
 
-function setVolumeStorage(v: number) {
+function setVolumeStorage(musicVol: number, sfxVol?: number) {
   try {
     const s = localStorage.getItem('appSettings');
     const settings = s ? JSON.parse(s) : {};
-    settings.musicVolume = v;
+    settings.musicVolume = musicVol;
+    if (sfxVol !== undefined) settings.sfxVolume = sfxVol;
     localStorage.setItem('appSettings', JSON.stringify(settings));
     window.dispatchEvent(new Event('settingsChanged'));
   } catch {}
@@ -62,6 +63,7 @@ export default function MusicToggle() {
   const playlistRef = useRef<string[]>([]);
   const indexRef = useRef(0);
   const prevVolumeRef = useRef(0.05);
+  const prevSfxRef = useRef(0.5);
   const fadingRef = useRef(false);
   const fadeTimersRef = useRef<number[]>([]);
   const incomingRef = useRef<HTMLAudioElement | null>(null);
@@ -73,6 +75,7 @@ export default function MusicToggle() {
   useEffect(() => {
     const vol = getVolume();
     if (vol > 0) prevVolumeRef.current = vol;
+    try { const s = localStorage.getItem('appSettings'); if (s) { const sv = JSON.parse(s).sfxVolume; if (sv != null && sv > 0) prevSfxRef.current = sv; } } catch {}
     setMuted(vol === 0);
     setReady(true);
   }, []);
@@ -279,14 +282,16 @@ export default function MusicToggle() {
   });
 
   const toggle = () => {
-    try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
+    try { let sv = 0.5; try { const st = localStorage.getItem('appSettings'); if (st) sv = JSON.parse(st).sfxVolume ?? 0.5; } catch {} if (sv > 0) { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * sv; a.play().catch(() => {}); } } catch {}
     if (muted) {
       const vol = prevVolumeRef.current || 0.05;
-      setVolumeStorage(vol);
+      const sfx = prevSfxRef.current || 0.5;
+      setVolumeStorage(vol, sfx);
       setMuted(false);
     } else {
       prevVolumeRef.current = getVolume() || 0.05;
-      setVolumeStorage(0);
+      try { const s = localStorage.getItem('appSettings'); if (s) { const sv = JSON.parse(s).sfxVolume; if (sv != null && sv > 0) prevSfxRef.current = sv; } } catch {}
+      setVolumeStorage(0, 0);
       setMuted(true);
     }
   };

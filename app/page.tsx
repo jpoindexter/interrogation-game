@@ -14,8 +14,12 @@ import {
   snappy,
 } from './components/motion';
 
+function _sfxVol(): number {
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
+}
 const playSfx = () => {
-  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
+  const m = _sfxVol(); if (m === 0) return;
+  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * m; a.play().catch(() => {}); } catch {}
 };
 
 export default function HomePage() {

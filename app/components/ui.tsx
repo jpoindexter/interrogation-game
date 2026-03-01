@@ -3,8 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 
+function _sfxVol(): number {
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
+}
 const clickSfx = () => {
-  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
+  const m = _sfxVol(); if (m === 0) return;
+  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * m; a.play().catch(() => {}); } catch {}
 };
 
 export function BackButton({ href = '/', label = 'Home' }: { href?: string; label?: string }) {

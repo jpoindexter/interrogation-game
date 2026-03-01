@@ -12,8 +12,9 @@ import ScoreBreakdown from './ScoreBreakdown';
 import CaseDetails from './CaseDetails';
 import { saveCaseResult } from '../../data/case-history';
 
-const clickSfx = () => { try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {} };
-const playSfx = (src: string, vol: number) => { try { const a = new Audio(src); a.volume = vol; a.play().catch(() => {}); } catch {} };
+function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
+const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * m; a.play().catch(() => {}); } catch {} };
+const playSfx = (src: string, vol: number) => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio(src); a.volume = vol * m; a.play().catch(() => {}); } catch {} };
 
 interface GameResult {
   caseData: { case_number: string; suspect_name: string; suspect_role: string; setting: string; crime: string };

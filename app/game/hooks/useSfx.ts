@@ -19,24 +19,31 @@ const SFX: Record<string, { src: string; vol: number }> = {
 
 export type SfxName = keyof typeof SFX;
 
+function getSfxVolume(): number {
+  try {
+    const s = localStorage.getItem('appSettings');
+    if (s) {
+      const parsed = JSON.parse(s);
+      return parsed.sfxVolume ?? 0.5;
+    }
+  } catch {}
+  return 0.5;
+}
+
 export function useSfx() {
   const cache = useRef<Map<string, HTMLAudioElement>>(new Map());
-  const muted = useRef(false);
+  const volumeRef = useRef(0.5);
 
   useEffect(() => {
-    const sync = () => {
-      try {
-        const s = localStorage.getItem('appSettings');
-        if (s) muted.current = JSON.parse(s).musicVolume === 0;
-      } catch {}
-    };
+    const sync = () => { volumeRef.current = getSfxVolume(); };
     sync();
     window.addEventListener('settingsChanged', sync);
     return () => window.removeEventListener('settingsChanged', sync);
   }, []);
 
   const play = useCallback((name: SfxName) => {
-    if (muted.current) return;
+    const masterVol = volumeRef.current;
+    if (masterVol === 0) return;
     const entry = SFX[name];
     if (!entry) return;
     let audio = cache.current.get(name);
@@ -45,11 +52,11 @@ export function useSfx() {
       cache.current.set(name, audio);
     }
     audio.currentTime = 0;
-    audio.volume = entry.vol;
+    audio.volume = entry.vol * masterVol;
     audio.play().catch(() => {});
     // Tension: fade in (400ms) → hold (600ms) → fade out (500ms)
     if (name === 'tension') {
-      const peakVol = 0.2;
+      const peakVol = 0.2 * masterVol;
       const steps = 10;
       let inStep = 0;
       const fadeInTimer = setInterval(() => {
@@ -79,7 +86,7 @@ export function useSfx() {
     };
     const fade = fadeConfig[name];
     if (fade) {
-      const targetVol = entry.vol;
+      const targetVol = entry.vol * masterVol;
       setTimeout(() => {
         const steps = 15;
         let step = 0;

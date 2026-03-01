@@ -8,8 +8,12 @@ import { getCaseStats, type CaseStats } from '../data/case-history';
 import { motion, PageMotion, fadeIn, fadeUp, smooth } from '../components/motion';
 import PolaroidCard from './PolaroidCard';
 
+function _sfxVol(): number {
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5;
+}
 const playSfx = (name: 'click' | 'paper' | 'paperslide' | 'paper_ruffle') => {
-  try { const a = new Audio(`/efx/${name}.wav`); a.volume = name === 'click' ? 0.25 : 0.2; a.play().catch(() => {}); } catch {}
+  const m = _sfxVol(); if (m === 0) return;
+  try { const a = new Audio(`/efx/${name}.wav`); a.volume = (name === 'click' ? 0.25 : 0.2) * m; a.play().catch(() => {}); } catch {}
 };
 
 export default function CaseSelectPage() {
