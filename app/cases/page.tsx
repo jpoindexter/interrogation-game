@@ -13,7 +13,7 @@ function _sfxVol(): number {
 }
 const playSfx = (name: 'click' | 'paper' | 'paperslide' | 'paper_ruffle') => {
   const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio(`/efx/${name}.wav`); a.volume = (name === 'click' ? 0.25 : 0.2) * m; a.play().catch(() => {}); } catch {}
+  try { const a = new Audio(`/efx/${name}.mp3`); a.volume = (name === 'click' ? 0.15 : 0.12) * m; a.play().catch(() => {}); } catch {}
 };
 
 export default function CaseSelectPage() {

@@ -46,7 +46,7 @@ export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle 
           </div>
         </div>
         <button
-          onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * m; a.play().catch(() => {}); } } catch {} onMusicToggle(); }}
+          onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } } catch {} onMusicToggle(); }}
           className="text-gray-500 hover:text-foreground transition-colors"
           title={muted ? 'Unmute music' : 'Mute music'}
         >

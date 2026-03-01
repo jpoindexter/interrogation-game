@@ -17,10 +17,10 @@ export default function TextInputPanel({ show, value, disabled, onChange, onSubm
       let m = 0.5;
       try { const s = localStorage.getItem('appSettings'); if (s) m = JSON.parse(s).sfxVolume ?? 0.5; } catch {}
       if (m === 0) return;
-      if (!audioRef.current) audioRef.current = new Audio('/efx/typewriter.wav');
+      if (!audioRef.current) audioRef.current = new Audio('/efx/typewriter.mp3');
       const a = audioRef.current;
       a.currentTime = 0;
-      a.volume = 0.12 * m;
+      a.volume = 0.08 * m;
       a.play().catch(() => {});
       setTimeout(() => { a.volume = 0; a.pause(); }, 60);
     } catch {}

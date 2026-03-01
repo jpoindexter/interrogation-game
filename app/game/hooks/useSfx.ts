@@ -1,27 +1,30 @@
 import { useRef, useCallback, useEffect } from 'react';
 
 const SFX: Record<string, { src: string; vol: number }> = {
-  click:        { src: '/efx/click.wav',        vol: 0.25 },
-  click_short:  { src: '/efx/click.wav',        vol: 0.2 },
-  paper:        { src: '/efx/paper.wav',         vol: 0.2 },
-  close:        { src: '/efx/close.wav',         vol: 0.2 },
-  typewriter:   { src: '/efx/typewriter.wav',    vol: 0.2 },
-  papershuffle: { src: '/efx/papershuffle.wav',  vol: 0.2 },
-  paperslide:   { src: '/efx/paperslide.wav',    vol: 0.2 },
-  paper_ruffle: { src: '/efx/paper_ruffle.wav',  vol: 0.2 },
-  mic_on:       { src: '/efx/mic_on.wav',        vol: 0.25 },
-  mic_off:      { src: '/efx/mic_off.wav',       vol: 0.25 },
-  folderopen:   { src: '/efx/folderopen.mp3',    vol: 0.25 },
-  chair_slide:  { src: '/efx/chair_slide.mp3',  vol: 0.3 },
-  sigh:         { src: '/efx/sigh.mp3',          vol: 0.25 },
-  slam:         { src: '/efx/slam.mp3',          vol: 0.35 },
-  chime:        { src: '/efx/chime.mp3',         vol: 0.25 },
-  error:        { src: '/efx/error.mp3',         vol: 0.2 },
-  clock_tick:   { src: '/efx/clock_ticking.mp3', vol: 0.1 },
-  nervous_1:    { src: '/efx/nervous_1.mp3',    vol: 0.2 },
-  nervous_knock:{ src: '/efx/nervous_knocking.mp3', vol: 0.15 },
-  female_sigh:  { src: '/efx/female_sigh.mp3',  vol: 0.2 },
-  clothes_rustle:{ src: '/efx/clothes_russle.mp3', vol: 0.15 },
+  // UI — short, crisp, quiet
+  click:        { src: '/efx/click.mp3',        vol: 0.15 },
+  click_short:  { src: '/efx/click.mp3',        vol: 0.12 },
+  paper:        { src: '/efx/paper.mp3',         vol: 0.12 },
+  close:        { src: '/efx/close.mp3',         vol: 0.12 },
+  typewriter:   { src: '/efx/typewriter.mp3',    vol: 0.12 },
+  papershuffle: { src: '/efx/papershuffle.mp3',  vol: 0.12 },
+  paperslide:   { src: '/efx/paperslide.mp3',    vol: 0.12 },
+  paper_ruffle: { src: '/efx/paper_ruffle.mp3',  vol: 0.12 },
+  mic_on:       { src: '/efx/mic_on.mp3',        vol: 0.15 },
+  mic_off:      { src: '/efx/mic_off.mp3',       vol: 0.15 },
+  folderopen:   { src: '/efx/folderopen.mp3',    vol: 0.15 },
+  // Dramatic — punchier but still controlled
+  chair_slide:  { src: '/efx/chair_slide.mp3',  vol: 0.18 },
+  sigh:         { src: '/efx/sigh.mp3',          vol: 0.15 },
+  slam:         { src: '/efx/slam.mp3',          vol: 0.22 },
+  chime:        { src: '/efx/chime.mp3',         vol: 0.15 },
+  error:        { src: '/efx/error.mp3',         vol: 0.12 },
+  // Ambient — very subtle, background texture
+  clock_tick:   { src: '/efx/clock_ticking.mp3', vol: 0.06 },
+  nervous_1:    { src: '/efx/nervous_1.mp3',    vol: 0.08 },
+  nervous_knock:{ src: '/efx/nervous_knocking.mp3', vol: 0.07 },
+  female_sigh:  { src: '/efx/female_sigh.mp3',  vol: 0.08 },
+  clothes_rustle:{ src: '/efx/clothes_russle.mp3', vol: 0.07 },
   tension:      { src: '/efx/tension.mp3',       vol: 0.0 },
 };
 
@@ -64,7 +67,7 @@ export function useSfx() {
     audio.play().catch(() => {});
     // Tension: fade in (400ms) → hold (600ms) → fade out (500ms)
     if (name === 'tension') {
-      const peakVol = 0.2 * masterVol;
+      const peakVol = 0.12 * masterVol;
       const steps = 10;
       let inStep = 0;
       const fadeInTimer = setInterval(() => {
@@ -85,20 +88,31 @@ export function useSfx() {
       return;
     }
 
-    // Quick fade-out for slam, chime, etc
+    // Fade-out configs: delay = play time before fade starts, duration = fade length
     const fadeConfig: Record<string, { delay: number; duration: number }> = {
-      click_short: { delay: 80, duration: 200 },
-      folderopen: { delay: 500, duration: 400 },
-      chair_slide: { delay: 600, duration: 500 },
-      sigh: { delay: 800, duration: 600 },
-      clock_tick: { delay: 800, duration: 500 },
-      nervous_1: { delay: 700, duration: 500 },
-      nervous_knock: { delay: 600, duration: 400 },
-      female_sigh: { delay: 700, duration: 500 },
-      clothes_rustle: { delay: 600, duration: 400 },
-      slam: { delay: 400, duration: 500 },
-      chime: { delay: 600, duration: 800 },
-      error: { delay: 300, duration: 500 },
+      // UI clicks — snap cut
+      click_short: { delay: 60, duration: 120 },
+      // Paper / folder — short rustle then gone
+      paper:        { delay: 300, duration: 250 },
+      papershuffle: { delay: 350, duration: 300 },
+      paperslide:   { delay: 300, duration: 250 },
+      paper_ruffle: { delay: 300, duration: 250 },
+      folderopen:   { delay: 400, duration: 300 },
+      // Mic — quick blip
+      mic_on:       { delay: 200, duration: 200 },
+      mic_off:      { delay: 200, duration: 200 },
+      // Dramatic — a beat then out
+      chair_slide:  { delay: 400, duration: 350 },
+      sigh:         { delay: 500, duration: 400 },
+      slam:         { delay: 300, duration: 350 },
+      chime:        { delay: 400, duration: 500 },
+      error:        { delay: 200, duration: 300 },
+      // Ambient — very short, barely there
+      clock_tick:     { delay: 400, duration: 300 },
+      nervous_1:      { delay: 400, duration: 300 },
+      nervous_knock:  { delay: 350, duration: 300 },
+      female_sigh:    { delay: 450, duration: 350 },
+      clothes_rustle: { delay: 350, duration: 300 },
     };
     const fade = fadeConfig[name];
     if (fade) {

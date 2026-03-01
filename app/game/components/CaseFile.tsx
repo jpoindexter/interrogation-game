@@ -9,7 +9,7 @@ import LogPage from './LogPage';
 function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
 const playPaper = () => {
   const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/paper.wav'); a.volume = 0.2 * m; a.play().catch(() => {}); } catch {}
+  try { const a = new Audio('/efx/paper.mp3'); a.volume = 0.12 * m; a.play().catch(() => {}); } catch {}
 };
 
 interface CaseFileProps {

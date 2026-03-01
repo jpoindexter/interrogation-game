@@ -10,7 +10,7 @@ import TranscriptViewer from '../components/TranscriptViewer';
 import { saveCaseResult } from '../../data/case-history';
 
 function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
-const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.wav'); a.volume = 0.25 * m; a.play().catch(() => {}); } catch {} };
+const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } catch {} };
 const playSfx = (src: string, vol: number) => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio(src); a.volume = vol * m; a.play().catch(() => {}); } catch {} };
 
 interface GameResult {
