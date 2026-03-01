@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from '../../components/motion';
 import type { BriefingSection } from './BriefingScreen';
+import { useSfx } from '../hooks/useSfx';
 import LeadStickies from './LeadStickies';
 
 interface BriefingDialogProps {
@@ -41,6 +42,7 @@ function SectionedText({ sections, charIndex }: { sections: BriefingSection[]; c
 }
 
 export default function BriefingDialog({ show, sections, fullText, charIndex, isPlaying, leads, onClose, onSkip, onStart }: BriefingDialogProps) {
+  const sfx = useSfx();
   return (
     <AnimatePresence>
       {show && (
@@ -67,7 +69,7 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
               <div className="absolute top-0 bottom-0 left-[26px] w-[1px] pointer-events-none" style={{ background: 'rgba(196,60,60,0.35)' }} />
               <div className="absolute -top-[1px] left-0 right-0 h-[4px] pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(139,119,70,0.4) 0%, transparent 100%)' }} />
 
-              <button onClick={onClose} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 transition-colors">
+              <button onClick={() => { sfx('close'); onClose(); }} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
 
@@ -82,13 +84,13 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
 
               <div className="flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                  <button onClick={onClose} className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wider transition-colors">Close</button>
+                  <button onClick={() => { sfx('close'); onClose(); }} className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wider transition-colors">Close</button>
                   {charIndex < fullText.length && (
-                    <button onClick={onSkip} className="text-xs text-gray-500 hover:text-gray-900 uppercase tracking-wider transition-colors">Skip</button>
+                    <button onClick={() => { sfx('click'); onSkip(); }} className="text-xs text-gray-500 hover:text-gray-900 uppercase tracking-wider transition-colors">Skip</button>
                   )}
                 </div>
                 <button
-                  onClick={onStart}
+                  onClick={() => { sfx('click'); onStart(); }}
                   className="text-xs text-red-800 hover:text-red-900 uppercase tracking-wider font-bold transition-colors underline underline-offset-2"
                 >
                   Begin Interrogation &rarr;

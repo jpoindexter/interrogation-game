@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
+
+function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
+const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } catch {} };
 import {
   motion,
   PageMotion,
@@ -70,7 +73,7 @@ export default function SettingsPage() {
                 </div>
                 <motion.button
                   variants={fadeIn}
-                  onClick={() => update({ ttsEnabled: !settings.ttsEnabled })}
+                  onClick={() => { clickSfx(); update({ ttsEnabled: !settings.ttsEnabled }); }}
                   className={`w-12 h-6 rounded-full transition-colors relative ${settings.ttsEnabled ? 'bg-accent' : 'bg-surface'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${settings.ttsEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
@@ -105,7 +108,7 @@ export default function SettingsPage() {
                   <motion.button
                     key={size}
                     whileHover={{ scale: 1.03 }}
-                    onClick={() => update({ fontSize: size })}
+                    onClick={() => { clickSfx(); update({ fontSize: size }); }}
                     className={`flex-1 px-3 py-2 text-xs uppercase tracking-wider rounded-sm transition-colors ${
                       settings.fontSize === size ? 'bg-accent text-white' : 'bg-surface text-gray-400 hover:text-foreground'
                     }`}
@@ -129,7 +132,7 @@ export default function SettingsPage() {
                   <motion.button
                     key={key}
                     whileHover={{ scale: 1.03 }}
-                    onClick={() => update({ fontFamily: key })}
+                    onClick={() => { clickSfx(); update({ fontFamily: key }); }}
                     className={`flex-1 px-3 py-2 text-xs uppercase tracking-wider rounded-sm transition-colors ${
                       settings.fontFamily === key ? 'bg-accent text-white' : 'bg-surface text-gray-400 hover:text-foreground'
                     }`}
@@ -149,7 +152,7 @@ export default function SettingsPage() {
                 </div>
                 <motion.button
                   variants={fadeIn}
-                  onClick={() => update({ highContrast: !settings.highContrast })}
+                  onClick={() => { clickSfx(); update({ highContrast: !settings.highContrast }); }}
                   className={`w-12 h-6 rounded-full transition-colors relative ${settings.highContrast ? 'bg-accent' : 'bg-surface'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${settings.highContrast ? 'translate-x-6' : 'translate-x-0.5'}`} />
@@ -162,6 +165,7 @@ export default function SettingsPage() {
               variants={fadeIn}
               whileHover={{ scale: 1.03 }}
               onClick={() => {
+                clickSfx();
                 setSettings(DEFAULT_SETTINGS);
                 try { localStorage.setItem('appSettings', JSON.stringify(DEFAULT_SETTINGS)); } catch { /* private browsing */ }
               }}
