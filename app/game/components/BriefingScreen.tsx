@@ -4,6 +4,7 @@ import SuspectAvatar from '../SuspectAvatar';
 import { motion, fadeUp, stagger, smooth } from '../../components/motion';
 import { DIFFICULTY_CONFIG } from '../../data/cases';
 import { useBriefingTTS } from '../hooks/useBriefingTTS';
+import { useSfx } from '../hooks/useSfx';
 import TapePlayer from './TapePlayer';
 import BriefingDialog from './BriefingDialog';
 
@@ -32,12 +33,13 @@ const STICKIES = [
 
 export default function BriefingScreen({ caseData, difficulty, onStart, onBack }: BriefingScreenProps) {
   const [showBriefing, setShowBriefing] = useState(false);
+  const sfx = useSfx();
   const sections = buildBriefingSections(caseData);
   const fullText = sections.map(s => s.text).join(' ');
   const diff = DIFFICULTY_CONFIG[difficulty] || DIFFICULTY_CONFIG.easy;
   const { charIndex, isPlaying, skip, stop } = useBriefingTTS(showBriefing, fullText, caseData);
 
-  const closeBriefing = useCallback(() => { setShowBriefing(false); stop(); }, [stop]);
+  const closeBriefing = useCallback(() => { sfx('tape_start'); setShowBriefing(false); stop(); }, [stop, sfx]);
 
   return (
     <div className="min-h-screen text-foreground font-mono flex items-center justify-center p-8 relative overflow-hidden">
@@ -56,7 +58,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
         </defs>
       </svg>
 
-      <button onClick={onBack} className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20">&larr; Cases</button>
+      <button onClick={() => { sfx('click'); onBack(); }} className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20">&larr; Cases</button>
 
       <motion.div className="max-w-2xl text-center relative z-10" initial="hidden" animate="visible" variants={stagger(0.1)}>
         <motion.div className="flex items-center justify-center gap-3 mb-3" variants={fadeUp} transition={smooth}>
@@ -89,7 +91,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
         </motion.div>
 
         <motion.button
-          onClick={onStart}
+          onClick={() => { sfx('click'); onStart(); }}
           className="mt-8 px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors"
           variants={fadeUp}
           transition={smooth}
@@ -100,7 +102,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
         </motion.button>
 
         <motion.div className="mt-6" variants={fadeUp} transition={smooth}>
-          <TapePlayer onClick={() => setShowBriefing(true)} />
+          <TapePlayer onClick={() => { sfx('tape_start'); setShowBriefing(true); }} />
         </motion.div>
       </motion.div>
 

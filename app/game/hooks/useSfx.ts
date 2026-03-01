@@ -13,6 +13,7 @@ const SFX: Record<string, { src: string; vol: number }> = {
   mic_on:       { src: '/efx/mic_on.mp3',        vol: 0.15 },
   mic_off:      { src: '/efx/mic_off.mp3',       vol: 0.15 },
   folderopen:   { src: '/efx/folderopen.mp3',    vol: 0.15 },
+  tape_start:   { src: '/efx/tape_start.mp3',   vol: 0.2 },
   // Dramatic — punchier but still controlled
   chair_slide:  { src: '/efx/chair_slide.mp3',  vol: 0.18 },
   sigh:         { src: '/efx/sigh.mp3',          vol: 0.15 },
@@ -98,6 +99,7 @@ export function useSfx() {
       paperslide:   { delay: 300, duration: 250 },
       paper_ruffle: { delay: 300, duration: 250 },
       folderopen:   { delay: 400, duration: 300 },
+      tape_start:   { delay: 800, duration: 400 },
       // Mic — quick blip
       mic_on:       { delay: 200, duration: 200 },
       mic_off:      { delay: 200, duration: 200 },

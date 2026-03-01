@@ -20,9 +20,9 @@ export default function TextInputPanel({ show, value, disabled, onChange, onSubm
       if (!audioRef.current) audioRef.current = new Audio('/efx/typewriter.mp3');
       const a = audioRef.current;
       a.currentTime = 0;
-      a.volume = 0.08 * m;
+      a.volume = 0.18 * m;
       a.play().catch(() => {});
-      setTimeout(() => { a.volume = 0; a.pause(); }, 60);
+      setTimeout(() => { a.volume = 0; a.pause(); }, 100);
     } catch {}
   }, []);
 
