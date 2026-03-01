@@ -17,7 +17,6 @@ export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClic
 
   useEffect(() => { if (!show) setValue(''); }, [show]);
 
-  // Cache volume once on mount + on settings changes
   useEffect(() => {
     const sync = () => {
       try { const s = localStorage.getItem('appSettings'); if (s) volRef.current = JSON.parse(s).sfxVolume ?? 0.5; } catch {}

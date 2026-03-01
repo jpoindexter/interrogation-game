@@ -89,7 +89,6 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
           {stickies.map((s) => {
             const val = caseData[s.key] || (s.key === 'objective' ? 'Find the lie' : '');
             const len = val.length;
-            // Dynamic font: short text = big, long text = small
             const fontSize = len > 60 ? '11px' : len > 30 ? '13px' : len > 15 ? '16px' : '20px';
             return (
               <div key={s.label} className="relative p-4 pt-3 text-left w-36 h-36 flex flex-col overflow-hidden" style={{

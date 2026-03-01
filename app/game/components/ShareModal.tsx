@@ -63,7 +63,6 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="pointer-events-auto w-[340px] bg-surface-darker border border-surface rounded-sm shadow-2xl">
-              {/* Header */}
               <div className="flex items-center justify-between px-5 pt-5 pb-3">
                 <h2 className="text-sm font-bold uppercase tracking-wider">Share Result</h2>
                 <button onClick={() => { playClick(); onClose(); }} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-foreground transition-colors">
@@ -71,12 +70,10 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
                 </button>
               </div>
 
-              {/* Preview text */}
               <div className="px-5 pb-4">
                 <p className="text-[11px] text-gray-500 leading-relaxed whitespace-pre-line line-clamp-3">{text}</p>
               </div>
 
-              {/* Copy link */}
               <div className="px-5 pb-4">
                 <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-1.5">Copy Link</p>
                 <button
@@ -90,7 +87,6 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
                 </button>
               </div>
 
-              {/* Social buttons */}
               <div className="px-5 pb-5">
                 <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-3">Share To</p>
                 <div className="flex items-center justify-between">

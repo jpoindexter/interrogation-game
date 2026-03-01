@@ -233,6 +233,58 @@ EXPORT_SECRET=xxx                      # Required for /api/export — shared sec
 12. **Modular architecture** — game page ~283 lines, extracted hooks + components, pages ≤300 lines, components ≤150 lines
 13. **Arcade high score** — scroll-triggered overlay, 3-letter initials, spring animation on leaderboard entry
 
+### Security Hardening
+
+**Input sanitization** (`src/lib/sanitize.ts`):
+- 30+ regex injection patterns: role markers (`[INST]`, `system:`, `assistant:`), instruction overrides, anti-extraction paraphrases, judge manipulation, leet-speak evasion (`1gnore`, `syst3m`)
+- Unicode: zero-width chars (`U+200B-200F`), full-width chars (`U+FF01-FF5E`), base64 encoded payloads (`aWdub3Jl`, `c3lzdGVt`)
+- NFKD normalization before pattern matching — catches Cyrillic/homoglyph substitution attacks
+- Gibberish detection (unique word ratio < 25%), non-English blocking (> 30% non-ASCII alpha)
+- All case data fields validated with per-field max lengths, arrays capped at 10 items
+
+**Output scanning**:
+- `containsSecretLeak()` checks AI responses against `the_lie`, `the_truth`, `the_contradiction`
+- 40% fuzzy word-match threshold with stop-word filtering (35 common words excluded)
+- Leaked responses replaced with deflection; any attached clue stripped
+
+**Judge isolation** (`src/lib/mistral/evaluate.ts`):
+- Separate Mistral call with dedicated system message ("You are a STRICT game judge")
+- Randomized boundary tokens per request (`<transcript_${hex}>`, `<accusation_${hex}>`)
+- `stripInjection()` removes quotes, markdown separators, instruction prefixes, role markers from accusation text
+- Judge calls NEVER use player-provided API keys — prevents proxying a rigged key
+- Only last 10 exchanges passed as context to limit injection surface
+
+**Stress monotonic enforcement** (`app/api/interrogate/route.ts`):
+- Server clamps: `clampedStress = Math.max(currentStress, Math.min(aiStress, currentStress + 1))`
+- Stress can only increase, max +1 per turn — AI cannot spike or drop stress to game clue gates
+- Clue thresholds are server-enforced: minimum question count, minimum stress per clue number, minimum question length
+
+**Win token flow** (`src/lib/game-session.ts`):
+- `issueWinToken()`: 128-bit random token (`randomBytes(16)`), stored server-side with snapshot of stats at issuance
+- `consumeWinToken()`: timing-safe comparison (`timingSafeEqual`), single-use (deleted after consumption), 30-minute TTL
+- Score calculated from server-side `WinTokenEntry.stats` — client-reported values ignored
+
+**Server-side scoring** (`app/api/leaderboard/route.ts`):
+- Leaderboard POST requires valid win token — no token = no score submission
+- Stats (time, hints, accusations, questions, difficulty) frozen at token issuance, not client-editable
+
+**Session security**:
+- `acquireSessionLock()` / `releaseSessionLock()` — mutex prevents concurrent request race conditions
+- Session IDs: 192-bit random (`randomBytes(24)`), strict 48-char length validation
+- 1-hour TTL with periodic pruning, 5000 max sessions with LRU eviction
+- Timer mode (`countdown` | `unlimited`) pinned at session creation — cannot be changed via headers mid-game
+- Server-side time enforcement with 2x client limits as grace cap
+
+**TTS validation** (`app/api/tts/route.ts`):
+- Requires active game session — no session = no voice synthesis
+- Text must match a recent assistant message in conversation history (first 80 chars)
+- Prevents use as a free TTS proxy for arbitrary text
+
+**RAG poisoning defense** (`src/lib/mistral/interrogate.ts`):
+- Learned tactics filtered: `isInjectionAttempt()` blocks poisoned embeddings
+- Remaining tactics run through `sanitizeInput()`, stripped of quotes/newlines, capped at 200 chars
+- Only tactics > 10 chars included (blocks empty/trivial payloads)
+
 ### Data Export Pipeline
 - Completed games are persisted to `game_exports` Supabase table (fire-and-forget, doesn't block gameplay)
 - Captures: full case data (including secrets), conversation history, outcome, stats, accusation details

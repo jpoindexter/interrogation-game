@@ -70,7 +70,6 @@ function LoseContent() {
       setTimeout(() => playSfx('/efx/door_open_close.mp3', 0.25), 1200);
     }, 300);
 
-    // Track case history
     try {
       const diff = searchParams.get('difficulty') || 'medium';
       saveCaseResult({
@@ -104,7 +103,6 @@ function LoseContent() {
 
   return (
     <div className="min-h-screen bg-black text-foreground font-mono overflow-y-auto relative">
-      {/* Main Menu — top right, consistent with other pages */}
       <button
         onClick={() => { playClick(); sessionStorage.removeItem('gameResult'); router.push('/'); }}
         className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
@@ -112,7 +110,6 @@ function LoseContent() {
         &larr; Home
       </button>
 
-      {/* Background image — LAWYERED UP or ESCAPED */}
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
         initial={{ opacity: 0, scale: 1.5 }}
@@ -126,11 +123,9 @@ function LoseContent() {
           style={{ imageRendering: 'auto' }}
         />
       </motion.div>
-      {/* Gradient fade */}
       <div className="absolute top-48 sm:top-64 left-0 right-0 h-32 z-[1] pointer-events-none bg-gradient-to-b from-transparent to-black" />
 
       <div className="max-w-2xl mx-auto px-6 sm:px-8 pb-6 sm:pb-8 relative z-10">
-        {/* Case header — mirrors win screen */}
         <motion.div
           className="text-center pt-40 sm:pt-56 mb-8"
           initial="hidden"
@@ -153,7 +148,6 @@ function LoseContent() {
           </motion.p>
         </motion.div>
 
-        {/* Card 1: Case Summary — mirrors Score Breakdown card */}
         {summary ? (
           <motion.div
             className="bg-surface-dark/80 backdrop-blur-sm rounded-sm p-6 sm:p-8 mb-6"
@@ -186,7 +180,6 @@ function LoseContent() {
           <div className="flex justify-center py-12"><Spinner /></div>
         )}
 
-        {/* Card 2: Suspect quote — mirrors Confession card */}
         <motion.div
           className="bg-surface-dark/80 backdrop-blur-sm rounded-sm p-6 sm:p-8 mb-6"
           initial={{ opacity: 0, y: 20 }}
@@ -200,7 +193,6 @@ function LoseContent() {
           </p>
         </motion.div>
 
-        {/* Card 3: Case breakdown — mirrors The Lie / The Truth / How You Caught It card */}
         {summary ? (
           <motion.div
             className="bg-surface-dark/80 backdrop-blur-sm rounded-sm p-6 sm:p-8 space-y-4"
@@ -225,7 +217,6 @@ function LoseContent() {
           <div className="flex justify-center py-12"><Spinner /></div>
         )}
 
-        {/* Post-game actions — same pattern as win */}
         <motion.div
           className="mt-10 space-y-3"
           initial={{ opacity: 0 }}
@@ -275,7 +266,6 @@ function LoseContent() {
           </div>
         </motion.div>
       </div>
-      {/* Transcript overlay */}
       <AnimatePresence>
         {showTranscript && (
           <TranscriptViewer

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   motion,
@@ -15,8 +16,44 @@ import {
 } from './components/motion';
 import { playClick } from './lib/sfx-utils';
 
+interface ServiceStatus {
+  mistral: boolean;
+  elevenlabs: boolean;
+  supabase: boolean;
+}
+
+function useSystemStatus() {
+  const [status, setStatus] = useState<ServiceStatus>({ mistral: false, elevenlabs: false, supabase: false });
+
+  useEffect(() => {
+    const check = () => {
+      try {
+        const stored = localStorage.getItem('appSettings');
+        if (!stored) return;
+        const s = JSON.parse(stored);
+        setStatus({
+          mistral: !!s.mistralApiKey,
+          elevenlabs: !!s.elevenlabsApiKey,
+          supabase: !!(s.supabaseUrl && s.supabaseAnonKey),
+        });
+      } catch { /* ignore */ }
+    };
+    check();
+    window.addEventListener('settingsChanged', check);
+    window.addEventListener('storage', check);
+    return () => {
+      window.removeEventListener('settingsChanged', check);
+      window.removeEventListener('storage', check);
+    };
+  }, []);
+
+  return status;
+}
+
 export default function HomePage() {
   const router = useRouter();
+  const status = useSystemStatus();
+  const coreOnline = status.mistral && status.elevenlabs;
 
   return (
     <PageMotion>
@@ -49,9 +86,15 @@ export default function HomePage() {
           animate="visible"
           transition={{ ...smooth, delay: 0.6 }}
         >
-          <span className="w-[6px] h-[6px] bg-green-500 animate-pulse" />
-          <span className="text-[10px] text-gray-500 uppercase tracking-widest">
-            System Online &bull; Mistral AI &bull; ElevenLabs
+          <span className={`w-[6px] h-[6px] animate-pulse ${coreOnline ? 'bg-diff-easy' : 'bg-warn'}`} />
+          <span className="text-[10px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
+            {coreOnline ? 'System Online' : 'Keys Required'}
+            <span className="text-gray-700 mx-0.5">/</span>
+            <span className={status.mistral ? 'text-diff-easy' : 'text-gray-700'}>Mistral</span>
+            <span className="text-gray-700">&bull;</span>
+            <span className={status.elevenlabs ? 'text-diff-easy' : 'text-gray-700'}>ElevenLabs</span>
+            <span className="text-gray-700">&bull;</span>
+            <span className={status.supabase ? 'text-diff-easy' : 'text-gray-700'}>Supabase</span>
           </span>
         </motion.div>
 

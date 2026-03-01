@@ -52,7 +52,6 @@ export default function VoiceWaveform({ isActive, stressLevel, className }: Voic
     };
   }, []);
 
-  // Update amplitude, speed reactively
   useEffect(() => {
     const wave = waveRef.current;
     if (!wave) return;

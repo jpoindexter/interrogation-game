@@ -49,7 +49,6 @@ export default function OnboardingOverlay({ onClose }: OnboardingOverlayProps) {
     else finish();
   };
 
-  // Position the tooltip card based on which area it highlights
   const getPositionClasses = () => {
     switch (current.target) {
       case 'top':
@@ -76,7 +75,6 @@ export default function OnboardingOverlay({ onClose }: OnboardingOverlayProps) {
 
   return (
     <div className="fixed inset-0 z-40" onClick={next}>
-      {/* Backdrop */}
       <motion.div
         className="absolute inset-0 bg-black/70"
         initial={{ opacity: 0 }}
@@ -85,7 +83,6 @@ export default function OnboardingOverlay({ onClose }: OnboardingOverlayProps) {
         transition={{ duration: 0.3 }}
       />
 
-      {/* Tooltip */}
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -100,27 +97,23 @@ export default function OnboardingOverlay({ onClose }: OnboardingOverlayProps) {
           <div className="relative bg-surface-dark border border-gold/30 rounded-sm p-4">
             {getArrow()}
 
-            {/* Step number */}
             {current.target !== 'center' && (
               <p className="text-[10px] uppercase tracking-[0.2em] text-gold/60 mb-2">
                 Step {step + 1} of {STEPS.length - 1}
               </p>
             )}
 
-            {/* Body text */}
             <p className={`text-sm text-foreground leading-relaxed ${
               current.target === 'center' ? 'text-center text-gold text-base font-bold' : ''
             }`}>
               {current.text}
             </p>
 
-            {/* Navigation */}
             <div className="flex items-center justify-between mt-4">
               <button onClick={finish} className="text-gray-600 text-xs uppercase tracking-wider hover:text-gray-400 transition-colors">
                 Skip
               </button>
 
-              {/* Dots */}
               <div className="flex gap-1.5">
                 {STEPS.map((_, i) => (
                   <span

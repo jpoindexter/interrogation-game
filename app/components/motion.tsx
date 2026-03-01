@@ -2,8 +2,6 @@
 
 import { motion } from 'framer-motion';
 
-// Reusable animation variants for consistent feel across the site
-
 export const fadeIn = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
@@ -34,19 +32,16 @@ export const slideRight = {
   visible: { opacity: 1, x: 0 },
 };
 
-// Container that staggers children
 export const stagger = (staggerDelay = 0.08) => ({
   hidden: {},
   visible: { transition: { staggerChildren: staggerDelay } },
 });
 
-// Standard transition presets
 export const smooth = { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
 export const snappy = { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
 export const springy = { type: 'spring' as const, stiffness: 300, damping: 20 };
 export const gentle = { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
 
-// Page wrapper — fades in entire page content
 export function PageMotion({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <motion.div

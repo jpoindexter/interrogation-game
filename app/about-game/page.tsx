@@ -161,14 +161,20 @@ export default function AboutGamePage() {
             {/* Security */}
             <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
               <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Security &amp; Anti-Jailbreak</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Since the game is literally about adversarial prompting, the suspect AI is hardened:</p>
+              <p className="text-sm text-gray-400 leading-relaxed mb-3">Since the game is literally about adversarial prompting, the suspect AI is hardened across multiple layers:</p>
               <ul className="space-y-1.5 text-xs text-gray-500 ml-2">
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>System prompt and case secrets are never revealed, regardless of how the player phrases the request</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>Output scanning detects and blocks any response containing internal case data (the lie, contradictions, stress triggers)</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>The accusation judge is a completely separate Mistral call &mdash; isolated from the suspect&apos;s conversation context</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>Prompt injection patterns are detected and deflected in-character (&ldquo;What are you talking about?&rdquo;)</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>Input sanitization, length limits, and rate limiting (30 req/min interrogate, 10 case gen, 5 patterns) on all endpoints</li>
-                <li className="flex gap-2"><span className="text-accent">&bull;</span>Judge calls never use player-provided API keys to prevent manipulation</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Prompt injection defense:</strong> 30+ regex patterns catching injection attempts, role markers (<code className="text-gray-500">[INST]</code>, <code className="text-gray-500">system:</code>), unicode homoglyphs, full-width chars, base64 encoded payloads, anti-extraction paraphrases, and judge manipulation attempts</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Unicode normalization:</strong> All input NFKD-normalized before pattern matching &mdash; Cyrillic homoglyph substitution attacks (e.g. &ldquo;sуstem&rdquo; using Cyrillic &lsquo;y&rsquo;) are caught</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Output scanning:</strong> AI responses scanned for secret leaks using 40% fuzzy word-match threshold with stop-word filtering &mdash; blocks any response that inadvertently reveals the lie, truth, or contradiction</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Judge isolation:</strong> Accusation judge uses a separate Mistral call with its own system message, randomized boundary tokens per request, injection stripping on accusation text &mdash; and never uses player-provided API keys</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Stress monotonic enforcement:</strong> Server clamps stress to max +1 per turn and never allows decrease &mdash; AI cannot game clue gates by spiking or dropping stress</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Session locking:</strong> Mutex prevents race conditions on concurrent requests to the same session</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Win token security:</strong> 128-bit cryptographic tokens, timing-safe comparison, single-use, 30-minute TTL &mdash; prevents score forging</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Server-side scoring:</strong> Score calculated from server-tracked stats (time, hints, accusations, questions) &mdash; client values are never trusted</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">TTS abuse prevention:</strong> Voice synthesis validates text against conversation history &mdash; can&apos;t use the endpoint as a free TTS proxy</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">RAG poisoning defense:</strong> Learned tactics from prior games are filtered through injection detection before prompt inclusion &mdash; poisoned embeddings can&apos;t inject instructions</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Timer mode pinned server-side:</strong> Stored in session at creation &mdash; can&apos;t be spoofed via headers mid-game</li>
+                <li className="flex gap-2"><span className="text-accent">&bull;</span><strong className="text-gray-400">Additional hardening:</strong> Input length limits, rate limiting (30/min interrogate, 10/min case gen), gibberish detection, non-English blocking, setting whitelist, conversation history caps</li>
               </ul>
             </motion.div>
 
@@ -222,7 +228,15 @@ export default function AboutGamePage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Anti-jailbreak hardening</span>
-                  <span className="text-green-500 font-bold">Live &mdash; multi-layer</span>
+                  <span className="text-green-500 font-bold">Live &mdash; 12 defense layers</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Server-side scoring</span>
+                  <span className="text-green-500 font-bold">Live &mdash; win tokens + server stats</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Session security</span>
+                  <span className="text-green-500 font-bold">Live &mdash; mutex + TTL + pruning</span>
                 </div>
                 <div className="border-t border-surface my-2" />
                 <div className="flex justify-between items-center">

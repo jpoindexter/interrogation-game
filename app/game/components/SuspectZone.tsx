@@ -71,12 +71,10 @@ export default function SuspectZone({
           )}
         </motion.div>
 
-        {/* Waveform */}
         <div className="w-full max-w-xl mb-2">
           <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
         </div>
 
-        {/* Dialogue */}
         <div
           className="w-full max-w-xl border border-surface-darker rounded-sm p-4 space-y-3"
           style={{ background: 'rgba(0, 0, 0, 0.85)', minHeight: '120px' }}

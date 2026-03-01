@@ -37,20 +37,14 @@ interface SuspectAvatarProps {
 
 type AnimState = {
   time: number;
-  // Breathing
   breathPhase: number;
-  // Idle head bob
   bobPhase: number;
-  // Fidget (stress-based lateral jitter)
   fidgetX: number;
   fidgetTimer: number;
   fidgetNext: number;
-  // Speaking
   speakPhase: number;
-  // Stress shake (micro-tremor)
   shakeX: number;
   shakeY: number;
-  // Sweat drops
   sweatDrops: { x: number; y: number; speed: number }[];
 };
 
@@ -101,16 +95,11 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
       const anim = animRef.current;
       anim.time += dt;
 
-      // ===== UPDATE ANIMATIONS =====
-
-      // Breathing — speed increases with stress
       const breathSpeed = stress >= 7 ? 3.5 : stress >= 4 ? 2.2 : 1.4;
       anim.breathPhase += dt * breathSpeed;
 
-      // Idle head bob — slow gentle sway
       anim.bobPhase += dt * 0.6;
 
-      // Fidget — sudden lateral shifts at high stress
       if (stress >= 5) {
         anim.fidgetTimer += dt;
         if (anim.fidgetTimer >= anim.fidgetNext) {
@@ -119,14 +108,12 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
           anim.fidgetX = (Math.random() > 0.5 ? 1 : -1) * intensity;
           anim.fidgetNext = stress >= 8 ? 0.3 + Math.random() * 0.5 : 1 + Math.random() * 2;
         }
-        // Exponential decay back to center
         anim.fidgetX *= Math.pow(0.02, dt);
         if (Math.abs(anim.fidgetX) < 0.05) anim.fidgetX = 0;
       } else {
         anim.fidgetX = 0;
       }
 
-      // Stress shake — constant micro-tremor at very high stress
       if (stress >= 8) {
         const shakeIntensity = stress >= 9 ? 1.5 : 0.8;
         anim.shakeX = (Math.random() - 0.5) * shakeIntensity;
@@ -136,36 +123,24 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
         anim.shakeY = 0;
       }
 
-      // Speaking phase
       if (isSpeaking) {
         anim.speakPhase += dt * 7;
       }
 
-      // ===== APPLY TRANSFORMS TO IMAGE =====
       const scale = size === 'sm' ? 0.5 : size === 'md' ? 0.75 : 1;
-
-      // Breathing: gentle vertical oscillation
       const breathY = Math.sin(anim.breathPhase) * 1.5 * scale;
-
-      // Idle bob: very subtle head sway
       const bobX = Math.sin(anim.bobPhase) * 0.4 * scale;
       const bobRotate = Math.sin(anim.bobPhase * 0.7) * 0.25;
-
-      // Speaking: rhythmic subtle bounce
       const speakBounce = isSpeaking ? Math.abs(Math.sin(anim.speakPhase)) * 1.2 * scale : 0;
       const speakScale = isSpeaking ? 1 + Math.sin(anim.speakPhase * 0.5) * 0.003 : 1;
-
-      // Combine all transforms
       const tx = anim.fidgetX + bobX + anim.shakeX;
       const ty = breathY - speakBounce + anim.shakeY;
       const rotate = bobRotate + anim.fidgetX * 0.15;
 
       img.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) rotate(${rotate.toFixed(3)}deg) scale(${speakScale.toFixed(4)})`;
 
-      // ===== DRAW CANVAS OVERLAY =====
       ctx.clearRect(0, 0, w, h);
 
-      // Speaking glow — subtle warm highlight when speaking
       if (isSpeaking) {
         const glowAlpha = 0.04 + Math.sin(anim.speakPhase * 0.5) * 0.02;
         const grad = ctx.createRadialGradient(w * 0.5, h * 0.4, w * 0.1, w * 0.5, h * 0.4, w * 0.5);
@@ -175,7 +150,6 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
         ctx.fillRect(0, 0, w, h);
       }
 
-      // Sweat drops
       if (stress >= 7) {
         const target = stress >= 9 ? 4 : stress >= 8 ? 3 : 2;
         while (anim.sweatDrops.length < target) {
@@ -208,7 +182,6 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
         anim.sweatDrops = [];
       }
 
-      // Stress vignette — red tint pulsing at edges
       if (stress >= 5) {
         const intensity = Math.min((stress - 4) / 6, 1) * 0.3;
         const pulse = Math.sin(anim.time * 2) * 0.05;
@@ -241,7 +214,6 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
         position: 'relative',
       }}
     >
-      {/* Portrait image — animated via rAF transform */}
       <img
         ref={imgRef}
         src={src}
@@ -256,7 +228,6 @@ export default function SuspectAvatarPixi({ name, gender, stressLevel, size = 'l
           willChange: 'transform',
         }}
       />
-      {/* Animation overlay canvas */}
       <canvas
         ref={canvasRef}
         width={w}

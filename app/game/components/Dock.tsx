@@ -58,7 +58,6 @@ export default function Dock({
         initial="hidden"
         animate="visible"
       >
-        {/* Speak */}
         <motion.button
           variants={fadeUp}
           whileHover={{ scale: 1.05 }}

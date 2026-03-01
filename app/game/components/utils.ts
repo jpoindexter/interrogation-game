@@ -29,14 +29,6 @@ export function formatTime(secs: number) {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-export async function shareResult(text: string): Promise<'shared' | 'copied' | 'failed'> {
-  if (typeof navigator !== 'undefined' && navigator.share) {
-    try { await navigator.share({ text }); return 'shared'; }
-    catch (err: unknown) { if (err instanceof DOMException && err.name === 'AbortError') return 'failed'; }
-  }
-  try { await navigator.clipboard.writeText(text); return 'copied'; } catch { return 'failed'; }
-}
-
 export async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs = 15000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);

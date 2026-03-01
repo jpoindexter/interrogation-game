@@ -148,7 +148,6 @@ function GameContent() {
     return () => clearInterval(interval);
   }, [phase, sfx, caseData?.suspect_gender, remaining]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
-  // Timer expired — alarm → AI remark → standing up → door → gameover → lose
   useEffect(() => { onExpire(() => { handleTimeUp(); }); }, [onExpire]);
   useEffect(() => { if (phase === 'active' && !localStorage.getItem('onboardingComplete')) setShowOnboarding(true); }, [phase]);
   useEffect(() => {
@@ -173,14 +172,12 @@ function GameContent() {
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
-      // Server-side time cap hit (unlimited mode 30min safety net)
       if (data.timeExpired) {
         handleTimeUp();
         return;
       }
       setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: elapsed }]);
       setLastResponse(data.spoken_response);
-      // Lawyer-up: suspect demands a lawyer — game over
       if (data.lawyered_up) {
         handleLawyerUp(data.spoken_response);
         return;

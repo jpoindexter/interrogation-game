@@ -33,7 +33,6 @@ export default function CaseFile({
     if (page === 'log') logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversationHistory, page]);
 
-  // Auto-flip to evidence tab when a new hint or clue arrives
   useEffect(() => {
     if (hintTexts.length > prevHintCount.current) setPage('evidence');
     prevHintCount.current = hintTexts.length;
@@ -56,7 +55,6 @@ export default function CaseFile({
       className="relative h-full min-h-0"
       initial="hidden" animate="visible" variants={slideRight} transition={smooth}
     >
-      {/* Folder tabs — float over game board */}
       <div className="absolute top-3 right-full flex flex-col z-20">
         {tabs.map(({ key, label, badge, color, activeColor }) => (
           <button
@@ -81,11 +79,9 @@ export default function CaseFile({
         ))}
       </div>
 
-      {/* Paper panel */}
       <div className="flex flex-col h-full border-l border-surface-darker relative overflow-hidden"
         style={{ background: '#F0EDE6' }}
       >
-        {/* Paper texture */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" preserveAspectRatio="none">
           <filter id="paper-noise">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch" />
@@ -97,7 +93,6 @@ export default function CaseFile({
           background: 'linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 3%, transparent 97%, rgba(0,0,0,0.02) 100%)',
         }} />
 
-        {/* Page content */}
         <div className="relative z-10 flex-1 min-h-0 overflow-y-auto paper-scroll">
           {page === 'case' && <CasePage caseData={caseData} />}
           {page === 'evidence' && (

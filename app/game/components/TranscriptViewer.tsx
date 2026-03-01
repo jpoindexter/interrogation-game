@@ -20,7 +20,6 @@ export default function TranscriptViewer({ conversationHistory, suspectName, onC
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  // Filter out system messages
   const exchanges = conversationHistory.filter(
     (m) => m.role === 'user' || m.role === 'assistant',
   );
@@ -33,7 +32,6 @@ export default function TranscriptViewer({ conversationHistory, suspectName, onC
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-surface">
         <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500">
           Interrogation Transcript
@@ -47,20 +45,16 @@ export default function TranscriptViewer({ conversationHistory, suspectName, onC
         </button>
       </div>
 
-      {/* Transcript body */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 sm:px-8 py-6">
         <div className="max-w-2xl mx-auto space-y-6">
           {exchanges.map((msg, i) => {
             const isUser = msg.role === 'user';
-            // For assistant messages, try to parse spoken_response from JSON
             let displayText = msg.content;
             if (!isUser) {
               try {
                 const parsed = JSON.parse(msg.content);
                 if (parsed.spoken_response) displayText = parsed.spoken_response;
-              } catch {
-                // plain text, use as-is
-              }
+              } catch {}
             }
 
             return (

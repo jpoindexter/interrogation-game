@@ -39,7 +39,6 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
           exit="hidden"
           transition={snappy}
         >
-          {/* Top binding strip */}
           <div
             className="flex items-center justify-between px-4 py-1.5 cursor-grab active:cursor-grabbing select-none"
             style={{ background: '#4a6a4a', borderBottom: '2px solid #3a5a3a' }}
@@ -75,7 +74,6 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
             </button>
           </div>
 
-          {/* Notepad body */}
           <motion.div
             className="relative"
             variants={fadeIn}
@@ -83,7 +81,6 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
             animate="visible"
             transition={{ ...smooth, delay: 0.1 }}
           >
-            {/* Yellow paper with ruled lines */}
             <div
               className="relative"
               style={{
@@ -92,7 +89,6 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
                 backgroundPositionY: '11px',
               }}
             >
-              {/* Red margin line */}
               <div className="absolute top-0 bottom-0 left-[44px] w-[1px]" style={{ background: '#d4888870' }} />
 
               <textarea
@@ -112,7 +108,6 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
               />
             </div>
           </motion.div>
-          {/* Resize handle */}
           <div
             className="h-2 cursor-ns-resize flex items-center justify-center select-none"
             style={{ background: '#4a6a4a', borderTop: '1px solid #3a5a3a' }}

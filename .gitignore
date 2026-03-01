@@ -49,6 +49,11 @@ next-env.d.ts
 .vscode/
 .idea/
 
+# AI tools
+.claude/
+.cursor/
+.copilot/
+
 # OS
 *.tmp
 *~

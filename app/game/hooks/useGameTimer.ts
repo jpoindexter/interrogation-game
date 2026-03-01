@@ -30,7 +30,6 @@ export function useGameTimer(phase: string, isSpeaking: boolean, difficulty: str
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const onExpireRef = useRef<(() => void) | null>(null);
 
-  // Reset when difficulty/timeLimit changes (new game)
   useEffect(() => {
     if (isUnlimited) { setElapsedUp(0); } else { setRemaining(timeLimit); }
   }, [timeLimit, isUnlimited]);
@@ -45,12 +44,10 @@ export function useGameTimer(phase: string, isSpeaking: boolean, difficulty: str
     }
 
     if (isUnlimited) {
-      // Count UP — no expiry
       timerRef.current = setInterval(() => {
         setElapsedUp((prev) => prev + 1);
       }, 1000);
     } else {
-      // Countdown — expire at 0
       timerRef.current = setInterval(() => {
         setRemaining((prev) => {
           if (prev <= 1) {
@@ -70,7 +67,6 @@ export function useGameTimer(phase: string, isSpeaking: boolean, difficulty: str
 
   const onExpire = useCallback((cb: () => void) => { onExpireRef.current = cb; }, []);
 
-  // Elapsed time (for scoring)
   const elapsed = isUnlimited ? elapsedUp : (timeLimit - remaining);
 
   return { remaining, elapsed, timeLimit, timerRef, onExpire, isUnlimited };

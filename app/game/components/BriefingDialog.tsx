@@ -46,7 +46,6 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
   const sfx = useSfx();
   const lastTypeRef = useRef(0);
 
-  // Typewriter keystroke sound as text appears
   useEffect(() => {
     if (!isPlaying || charIndex <= 0 || charIndex >= fullText.length) return;
     const now = Date.now();
