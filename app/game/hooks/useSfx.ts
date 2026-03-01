@@ -17,6 +17,11 @@ const SFX: Record<string, { src: string; vol: number }> = {
   slam:         { src: '/efx/slam.mp3',          vol: 0.35 },
   chime:        { src: '/efx/chime.mp3',         vol: 0.25 },
   error:        { src: '/efx/error.mp3',         vol: 0.2 },
+  clock_tick:   { src: '/efx/clock_ticking.mp3', vol: 0.1 },
+  nervous_1:    { src: '/efx/nervous_1.mp3',    vol: 0.2 },
+  nervous_knock:{ src: '/efx/nervous_knocking.mp3', vol: 0.15 },
+  female_sigh:  { src: '/efx/female_sigh.mp3',  vol: 0.2 },
+  clothes_rustle:{ src: '/efx/clothes_russle.mp3', vol: 0.15 },
   tension:      { src: '/efx/tension.mp3',       vol: 0.0 },
 };
 
@@ -86,6 +91,11 @@ export function useSfx() {
       folderopen: { delay: 500, duration: 400 },
       chair_slide: { delay: 600, duration: 500 },
       sigh: { delay: 800, duration: 600 },
+      clock_tick: { delay: 800, duration: 500 },
+      nervous_1: { delay: 700, duration: 500 },
+      nervous_knock: { delay: 600, duration: 400 },
+      female_sigh: { delay: 700, duration: 500 },
+      clothes_rustle: { delay: 600, duration: 400 },
       slam: { delay: 400, duration: 500 },
       chime: { delay: 600, duration: 800 },
       error: { delay: 300, duration: 500 },

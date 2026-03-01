@@ -115,6 +115,23 @@ function GameContent() {
 
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
   useEffect(() => { window.dispatchEvent(new CustomEvent('gamePhaseChange', { detail: phase })); }, [phase]);
+
+  // Ambient nervous fidgeting at high stress + subtle clock tick
+  useEffect(() => {
+    if (phase !== 'active') return;
+    const nervousSounds = ['nervous_1', 'nervous_knock', 'clothes_rustle', 'female_sigh'] as const;
+    const interval = setInterval(() => {
+      const s = stressRef.current;
+      // Clock tick every ~12s when active (very subtle)
+      if (Math.random() < 0.3) sfx('clock_tick');
+      // Nervous fidget sounds at high stress — more frequent the higher it goes
+      if (s >= 6 && Math.random() < (s - 5) * 0.15) {
+        const pick = nervousSounds[Math.floor(Math.random() * nervousSounds.length)];
+        sfx(pick);
+      }
+    }, 12000);
+    return () => clearInterval(interval);
+  }, [phase, sfx]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
   useEffect(() => { if (phase === 'active' && !localStorage.getItem('onboardingComplete')) setShowOnboarding(true); }, [phase]);
   useEffect(() => {
@@ -140,7 +157,12 @@ function GameContent() {
       setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: timer }]);
       setLastResponse(data.spoken_response);
       const newStress = data.stress_level ?? 0;
-      if (newStress > stressRef.current + 1) sfx('tension');
+      if (newStress > stressRef.current + 1) {
+        sfx('tension');
+        const nervousSounds = ['nervous_1', 'nervous_knock', 'clothes_rustle', 'female_sigh'] as const;
+        const pick = nervousSounds[Math.floor(Math.random() * nervousSounds.length)];
+        setTimeout(() => sfx(pick), 800);
+      }
       setStressLevel(newStress);
       setMaxStress((prev) => Math.max(prev, newStress));
       if (data.clue_unlocked && !isOpening) {
