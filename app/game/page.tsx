@@ -209,6 +209,8 @@ function GameContent() {
   const handleGiveUp = useCallback(async () => {
     setShowGiveUpConfirm(false);
     if (!caseData) return;
+    sfx('chair_slide');
+    setTimeout(() => sfx('sigh'), 500);
     setPhase('processing');
     if (timerRef.current) clearInterval(timerRef.current);
     let cleverRemark = '';
