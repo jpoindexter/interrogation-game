@@ -155,8 +155,8 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">05</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Three outcomes. Catch the lie and the suspect is apprehended. Run out of time, accusations, or give up and they walk. Push too hard and they lawyer up.</p>
-              <div className="grid grid-cols-3 gap-4">
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Four outcomes. Catch the lie and the suspect is apprehended. Run out of time or accusations and they escape. Give up and they walk. Push too hard and they lawyer up.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
                   <p className="text-xs uppercase tracking-wider text-green-500 font-bold">Apprehended</p>
@@ -165,7 +165,12 @@ export default function HelpPage() {
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/escaped.png" alt="Escaped" className="w-28 mx-auto mb-3" />
                   <p className="text-xs uppercase tracking-wider text-accent font-bold">Escaped</p>
-                  <p className="text-[10px] text-gray-500 mt-1">Time, accusations, or gave up. They walk.</p>
+                  <p className="text-[10px] text-gray-500 mt-1">Out of time or accusations.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
+                  <img src="/solved/escaped.png" alt="Gave Up" className="w-28 mx-auto mb-3" />
+                  <p className="text-xs uppercase tracking-wider text-gray-400 font-bold">Gave Up</p>
+                  <p className="text-[10px] text-gray-500 mt-1">You surrendered. Suspect walks free.</p>
                 </div>
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/lawyered_up.png" alt="Lawyered Up" className="w-28 mx-auto mb-3" />
