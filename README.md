@@ -1,5 +1,7 @@
 # Interrogation
 
+![Interrogation — Title Screen](public/screenshots/hero.png)
+
 A voice-based detective interrogation game. You're a detective. Mistral is a suspect who's lying. Your job is to catch the lie through questioning alone.
 
 Every case is procedurally generated — a unique white-collar crime, suspect, cover story, and one hidden lie. The suspect is played by Mistral Large, given a full backstory and instructed to defend it under adversarial pressure. No two cases are the same.
