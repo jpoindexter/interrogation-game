@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Press_Start_2P } from 'next/font/google';
+import { JetBrains_Mono, Press_Start_2P, Indie_Flower } from 'next/font/google';
 import '@fontsource/opendyslexic/400.css';
 import '@fontsource/opendyslexic/700.css';
 import './globals.css';
@@ -13,6 +13,12 @@ const pressStart2P = Press_Start_2P({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-pixel',
+});
+
+const indieFlower = Indie_Flower({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-handwriting',
 });
 
 export const metadata: Metadata = {
@@ -38,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} font-sans`}>
+    <html lang="en" className={`${jetBrainsMono.variable} ${pressStart2P.variable} ${indieFlower.variable} font-sans`}>
       <body className="bg-black text-foreground">
         {children}
       </body>
