@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
 import { motion, fadeIn, fadeUp, stagger, smooth, PageMotion } from '../components/motion';
 
@@ -34,8 +33,6 @@ const TECH = [
 ];
 
 export default function HelpPage() {
-  const router = useRouter();
-
   return (
     <PageShell>
       <motion.div variants={fadeIn} initial="hidden" animate="visible" transition={smooth}><BackButton /></motion.div>
@@ -99,7 +96,7 @@ export default function HelpPage() {
               <motion.div className="flex items-end justify-center gap-8 bg-surface-darker border border-surface-dark rounded-sm py-6 px-4" variants={stagger(0.1)} initial="hidden" animate="visible">
                 {EVIDENCE.map((item, n) => (
                   <motion.div key={n} className="flex flex-col items-center gap-2" variants={fadeUp} transition={smooth}>
-                    <img src={item.src} alt={item.label} className="object-contain drop-shadow-lg" style={{ imageRendering: 'pixelated', width: `${48 + n * 8}px`, height: `${48 + n * 8}px` }} />
+                    <img src={item.src} alt={item.label} className="object-contain drop-shadow-lg" style={{ imageRendering: 'pixelated', width: `${80 + n * 12}px`, height: `${80 + n * 12}px` }} />
                     <span className="text-[9px] text-gray-500 uppercase tracking-wider">{item.label}</span>
                     <span className="text-[8px] text-gray-600">{item.sub}</span>
                   </motion.div>
@@ -219,10 +216,6 @@ export default function HelpPage() {
             </motion.div>
           </motion.div>
 
-          <motion.div className="flex gap-4 justify-center" variants={stagger(0.1)} initial="hidden" animate="visible">
-            <motion.button onClick={() => router.push('/cases')} className="px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>PLAY</motion.button>
-            <motion.button onClick={() => router.push('/')} className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors" variants={fadeUp} transition={smooth} whileHover={{ scale: 1.03 }}>BACK</motion.button>
-          </motion.div>
         </div>
       </PageMotion>
     </PageShell>

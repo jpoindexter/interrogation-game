@@ -8,7 +8,7 @@ export function BackButton({ href = '/', label = 'Home' }: { href?: string; labe
   return (
     <button
       onClick={() => router.push(href)}
-      className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
+      className="fixed top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
     >
       &larr; {label}
     </button>

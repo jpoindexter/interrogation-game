@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
 import {
   motion,
@@ -14,6 +13,7 @@ import {
 
 interface AppSettings {
   ttsEnabled: boolean;
+  musicVolume: number;
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
@@ -21,13 +21,13 @@ interface AppSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   ttsEnabled: true,
+  musicVolume: 0.1,
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,
 };
 
 export default function SettingsPage() {
-  const router = useRouter();
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
@@ -39,20 +39,11 @@ export default function SettingsPage() {
     }
   }, []);
 
-  // Apply settings live to the page
-  useEffect(() => {
-    const root = document.documentElement;
-    root.style.fontFamily = settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif'
-      : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : '';
-    root.style.fontSize = settings.fontSize === 'small' ? '14px' : settings.fontSize === 'large' ? '18px' : '';
-    root.classList.toggle('high-contrast', settings.highContrast);
-    return () => { root.style.fontFamily = ''; root.style.fontSize = ''; root.classList.remove('high-contrast'); };
-  }, [settings]);
-
   const update = (patch: Partial<AppSettings>) => {
     const next = { ...settings, ...patch };
     setSettings(next);
     try { localStorage.setItem('appSettings', JSON.stringify(next)); } catch { /* private browsing */ }
+    window.dispatchEvent(new Event('settingsChanged'));
   };
 
   return (
@@ -85,6 +76,24 @@ export default function SettingsPage() {
                   <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${settings.ttsEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
                 </motion.button>
               </div>
+            </motion.div>
+
+            {/* Music Volume */}
+            <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm text-gray-300 font-bold">Music Volume</h3>
+                <span className="text-xs text-gray-500 tabular-nums">{settings.musicVolume === 0 ? 'Off' : `${Math.round(settings.musicVolume * 100)}%`}</span>
+              </div>
+              <p className="text-xs text-gray-500 mb-4">Background music during interrogation</p>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={settings.musicVolume}
+                onChange={(e) => update({ musicVolume: parseFloat(e.target.value) })}
+                className="w-full h-1.5 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
+              />
             </motion.div>
 
             {/* Text Size */}

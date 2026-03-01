@@ -3,6 +3,7 @@ import type { GameSettings } from '../components/SettingsPanel';
 
 const DEFAULTS: GameSettings = {
   ttsEnabled: process.env.NODE_ENV !== 'development',
+  musicVolume: 0.1,
   fontSize: 'medium',
   fontFamily: 'mono',
   highContrast: false,
@@ -22,6 +23,7 @@ export function useSettings() {
   const updateSettings = useCallback((next: GameSettings) => {
     setSettings(next);
     localStorage.setItem('appSettings', JSON.stringify(next));
+    window.dispatchEvent(new Event('settingsChanged'));
   }, []);
 
   return { settings, updateSettings };

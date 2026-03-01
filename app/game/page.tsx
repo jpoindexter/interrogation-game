@@ -25,6 +25,7 @@ import { useVoiceRecorder } from './hooks/useVoiceRecorder';
 import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { useSettings } from './hooks/useSettings';
+import { useBackgroundMusic } from './hooks/useBackgroundMusic';
 import { Spinner } from '../components/ui';
 import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
 
@@ -40,6 +41,7 @@ function GameContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { settings, updateSettings } = useSettings();
+  useBackgroundMusic('/music/Shadowed_Keys_1.mp3', settings.musicVolume, settings.musicVolume > 0);
 
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [phase, setPhase] = useState<'loading' | 'briefing' | 'active' | 'processing'>('loading');
@@ -78,6 +80,7 @@ function GameContent() {
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId);
   const { timer, timerRef } = useGameTimer(phase, isSpeaking);
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
+  const prevVolumeRef = useRef(settings.musicVolume > 0 ? settings.musicVolume : 0.1);
 
   useEffect(() => {
     let cancelled = false;
@@ -219,7 +222,14 @@ function GameContent() {
       className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-surface ${settings.highContrast ? 'bg-black text-white' : 'bg-black text-foreground'} ${settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'} ${settings.highContrast ? 'high-contrast' : ''}`}
       style={{ fontFamily: settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif' : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : 'var(--font-mono)' }}
     >
-      <TopBar timer={timer} stressLevel={stressLevel} />
+      <TopBar timer={timer} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
+        if (settings.musicVolume > 0) {
+          prevVolumeRef.current = settings.musicVolume;
+          updateSettings({ ...settings, musicVolume: 0 });
+        } else {
+          updateSettings({ ...settings, musicVolume: prevVolumeRef.current || 0.1 });
+        }
+      }} />
       <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
         {caseData ? <SuspectZone caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} lastResponse={lastResponse} phase={phase} /> : <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-surface bg-black" />}

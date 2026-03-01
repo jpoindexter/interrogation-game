@@ -63,6 +63,14 @@ body {
   font-family: var(--font-mono);
 }
 
+/* When --app-font is set (via settings), override font-mono everywhere */
+body[data-font] {
+  font-family: var(--app-font) !important;
+}
+body[data-font] * {
+  font-family: inherit !important;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--text-primary);
