@@ -3,11 +3,15 @@
 import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 
+const clickSfx = () => {
+  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
+};
+
 export function BackButton({ href = '/', label = 'Home' }: { href?: string; label?: string }) {
   const router = useRouter();
   return (
     <button
-      onClick={() => router.push(href)}
+      onClick={() => { clickSfx(); router.push(href); }}
       className="fixed top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
     >
       &larr; {label}

@@ -9,7 +9,7 @@ import LogPage from './LogPage';
 const playPaper = () => {
   try {
     const a = new Audio('/efx/paper.wav');
-    a.volume = 0.25;
+    a.volume = 0.2;
     a.play().catch(() => {});
   } catch {}
 };

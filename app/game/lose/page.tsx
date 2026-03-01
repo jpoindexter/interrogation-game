@@ -9,6 +9,9 @@ import { shareResult } from '../components/utils';
 import TranscriptViewer from '../components/TranscriptViewer';
 import { saveCaseResult } from '../../data/case-history';
 
+const clickSfx = () => { try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {} };
+const playSfx = (src: string, vol: number) => { try { const a = new Audio(src); a.volume = vol; a.play().catch(() => {}); } catch {} };
+
 interface GameResult {
   caseData: {
     case_number: string;
@@ -58,7 +61,11 @@ function LoseContent() {
     const parsed = JSON.parse(stored) as GameResult;
     setResult(parsed);
 
-    setTimeout(() => setStampVisible(true), 300);
+    setTimeout(() => {
+      setStampVisible(true);
+      playSfx('/efx/walking.mp3', 0.25);
+      setTimeout(() => playSfx('/efx/door_open_close.mp3', 0.25), 1200);
+    }, 300);
 
     // Track case history
     try {
@@ -101,7 +108,7 @@ function LoseContent() {
     <div className="min-h-screen bg-black text-foreground font-mono overflow-y-auto relative">
       {/* Main Menu — top right, consistent with other pages */}
       <button
-        onClick={() => { sessionStorage.removeItem('gameResult'); router.push('/'); }}
+        onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/'); }}
         className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white uppercase tracking-wider transition-colors z-20"
       >
         &larr; Home
@@ -230,6 +237,7 @@ function LoseContent() {
           <div className="flex flex-wrap gap-2 justify-center">
             <button
               onClick={() => {
+                clickSfx();
                 sessionStorage.removeItem('gameResult');
                 router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${difficulty}`);
               }}
@@ -240,6 +248,7 @@ function LoseContent() {
             {difficulty !== 'easy' && (
               <button
                 onClick={() => {
+                  clickSfx();
                   sessionStorage.removeItem('gameResult');
                   const easier = difficulty === 'expert' ? 'hard' : difficulty === 'hard' ? 'medium' : 'easy';
                   router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${easier}`);
@@ -250,13 +259,14 @@ function LoseContent() {
               </button>
             )}
             <button
-              onClick={() => { sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
+              onClick={() => { clickSfx(); sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
               Other Cases
             </button>
             <button
               onClick={async () => {
+                clickSfx();
                 const url = typeof window !== 'undefined' ? window.location.origin : '';
                 const text = result.gaveUp
                   ? `\ud83d\udd0d INTERROGATION \u2014 I surrendered on Case #${result.caseData.case_number}. The suspect walked free. Think you can crack them?\n${url}`
@@ -272,7 +282,7 @@ function LoseContent() {
               {shareLabel}
             </button>
             <button
-              onClick={() => setShowTranscript(true)}
+              onClick={() => { clickSfx(); setShowTranscript(true); }}
               className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
               Transcript

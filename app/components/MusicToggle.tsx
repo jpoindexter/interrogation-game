@@ -229,6 +229,7 @@ export default function MusicToggle() {
   });
 
   const toggle = () => {
+    try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
     if (muted) {
       const vol = prevVolumeRef.current || 0.05;
       setVolumeStorage(vol);

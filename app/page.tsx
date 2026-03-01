@@ -15,7 +15,7 @@ import {
 } from './components/motion';
 
 const playSfx = () => {
-  try { const a = new Audio('/efx/click.wav'); a.volume = 0.3; a.play().catch(() => {}); } catch {}
+  try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {}
 };
 
 export default function HomePage() {
@@ -67,7 +67,7 @@ export default function HomePage() {
         >
           {/* Leaderboard — trophy */}
           <motion.button
-            onClick={() => router.push('/leaderboard')}
+            onClick={() => { playSfx(); router.push('/leaderboard'); }}
             className="text-gray-500 hover:text-gold transition-colors"
             data-tooltip="Leaderboard"
             variants={fadeDown}
@@ -82,7 +82,7 @@ export default function HomePage() {
           </motion.button>
           {/* Help — question mark */}
           <motion.button
-            onClick={() => router.push('/help')}
+            onClick={() => { playSfx(); router.push('/help'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="How to Play"
             variants={fadeDown}
@@ -96,7 +96,7 @@ export default function HomePage() {
           </motion.button>
           {/* About — user */}
           <motion.button
-            onClick={() => router.push('/about')}
+            onClick={() => { playSfx(); router.push('/about'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="About"
             variants={fadeDown}
@@ -109,7 +109,7 @@ export default function HomePage() {
           </motion.button>
           {/* Settings — gear */}
           <motion.button
-            onClick={() => router.push('/settings')}
+            onClick={() => { playSfx(); router.push('/settings'); }}
             className="text-gray-500 hover:text-white transition-colors"
             data-tooltip="Settings"
             variants={fadeDown}

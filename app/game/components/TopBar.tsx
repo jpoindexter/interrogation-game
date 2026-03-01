@@ -46,7 +46,7 @@ export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle 
           </div>
         </div>
         <button
-          onClick={onMusicToggle}
+          onClick={() => { try { const a = new Audio('/efx/click.wav'); a.volume = 0.25; a.play().catch(() => {}); } catch {} onMusicToggle(); }}
           className="text-gray-500 hover:text-foreground transition-colors"
           title={muted ? 'Unmute music' : 'Mute music'}
         >

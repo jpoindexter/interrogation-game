@@ -8,8 +8,8 @@ import { getCaseStats, type CaseStats } from '../data/case-history';
 import { motion, PageMotion, fadeIn, fadeUp, smooth } from '../components/motion';
 import PolaroidCard from './PolaroidCard';
 
-const playSfx = (name: 'click' | 'paper') => {
-  try { const a = new Audio(`/efx/${name}.wav`); a.volume = 0.3; a.play().catch(() => {}); } catch {}
+const playSfx = (name: 'click' | 'paper' | 'paperslide' | 'paper_ruffle') => {
+  try { const a = new Audio(`/efx/${name}.wav`); a.volume = name === 'click' ? 0.25 : 0.2; a.play().catch(() => {}); } catch {}
 };
 
 export default function CaseSelectPage() {
@@ -25,7 +25,7 @@ export default function CaseSelectPage() {
   }, []);
 
   const go = useCallback((dir: number) => {
-    playSfx('paper');
+    playSfx('paperslide');
     setExpanded(false);
     setDirection(dir);
     setCurrent((prev) => { const next = prev + dir; if (next < 0) return CASES.length - 1; if (next >= CASES.length) return 0; return next; });
@@ -84,7 +84,7 @@ export default function CaseSelectPage() {
               return (
                 <PolaroidCard key={caseItem.id} caseData={caseItem} isActive={isActive} expanded={expanded && isActive} isSolved={solvedCases.includes(caseItem.id)} index={i}
                   fanX={offset * 18} fanY={isActive ? 0 : absOffset * 4} fanRotate={isActive ? 0 : baseRotation + offset * 3} fanScale={isActive ? 1 : 1 - absOffset * 0.04} zIndex={isActive ? 20 : 10 - absOffset} opacity={absOffset > 2 ? 0.3 : absOffset > 1 ? 0.6 : 1}
-                  onClick={() => { playSfx('click'); if (isActive) setExpanded(!expanded); else { setExpanded(false); setDirection(offset > 0 ? 1 : -1); setCurrent(i); } }}
+                  onClick={() => { if (isActive) { playSfx('paper_ruffle'); setExpanded(!expanded); } else { playSfx('paperslide'); setExpanded(false); setDirection(offset > 0 ? 1 : -1); setCurrent(i); } }}
                 />
               );
             })}

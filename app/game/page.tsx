@@ -253,7 +253,7 @@ function GameContent() {
       <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
       <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
       <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
-      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx('click'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
+      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx(isListening ? 'mic_off' : 'mic_on'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
         onHintClick={async () => {
           sfx('click');
           if (!caseData) return;
@@ -264,7 +264,7 @@ function GameContent() {
             else if (data.error) showToast(data.error);
           } catch { showToast('Could not retrieve hint'); }
         }}
-        onAccuseClick={isAccusing && isListening ? stopListening : () => { sfx('click'); setShowAccuseConfirm(true); }} onSettingsToggle={() => { sfx(showSettings ? 'close' : 'click'); setShowSettings(!showSettings); }} onGiveUpClick={() => { sfx('click'); setShowGiveUpConfirm(true); }} onHelpToggle={() => { sfx(showHelp ? 'close' : 'paper'); setShowHelp(!showHelp); }} onExitClick={() => { sfx('click'); setShowExitConfirm(true); }} />
+        onAccuseClick={isAccusing && isListening ? stopListening : () => { sfx('slam'); setShowAccuseConfirm(true); }} onSettingsToggle={() => { sfx(showSettings ? 'close' : 'click'); setShowSettings(!showSettings); }} onGiveUpClick={() => { sfx('click'); setShowGiveUpConfirm(true); }} onHelpToggle={() => { sfx(showHelp ? 'close' : 'paper'); setShowHelp(!showHelp); }} onExitClick={() => { sfx('click'); setShowExitConfirm(true); }} />
       <AnimatePresence>
         {toast && (<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.25 }} className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-accent/90 text-foreground font-mono text-xs px-4 py-2 rounded border border-accent">{toast}</motion.div>)}
       </AnimatePresence>
