@@ -6,7 +6,7 @@ import { getSession } from '../../../src/lib/game-session';
 const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
 const MAX_AUDIO_SIZE = 25 * 1024 * 1024; // 25MB
-const ALLOWED_TYPES = ['audio/mpeg', 'audio/wav', 'audio/webm', 'audio/ogg', 'audio/mp4', 'video/webm'];
+const ALLOWED_PREFIXES = ['audio/mpeg', 'audio/wav', 'audio/webm', 'audio/ogg', 'audio/mp4', 'video/webm'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Audio file too large (max 25MB)' }, { status: 413 });
     }
 
-    if (audioFile.type && !ALLOWED_TYPES.includes(audioFile.type)) {
+    if (audioFile.type && !ALLOWED_PREFIXES.some(prefix => audioFile.type.startsWith(prefix))) {
       return NextResponse.json({ error: 'Invalid audio format' }, { status: 400 });
     }
 
@@ -48,8 +48,9 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ text: result.text });
-  } catch (error) {
-    console.error('Voxtral transcription error:', error);
-    return NextResponse.json({ error: 'Transcription failed' }, { status: 500 });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('Voxtral transcription error:', msg, error);
+    return NextResponse.json({ error: `Transcription failed: ${msg}` }, { status: 500 });
   }
 }

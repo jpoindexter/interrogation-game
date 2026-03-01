@@ -12,6 +12,7 @@ interface SuspectZoneProps {
   lastTranscript: string;
   lastResponse: string;
   phase: string;
+  onSkipSpeech?: () => void;
 }
 
 export default function SuspectZone({
@@ -22,6 +23,7 @@ export default function SuspectZone({
   lastTranscript,
   lastResponse,
   phase,
+  onSkipSpeech,
 }: SuspectZoneProps) {
   return (
     <motion.div
@@ -56,9 +58,17 @@ export default function SuspectZone({
           />
         </motion.div>
 
-        {/* Waveform */}
-        <div className="w-full max-w-xl mb-2">
+        {/* Waveform + skip */}
+        <div className="w-full max-w-xl mb-2 relative">
           <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
+          {isSpeaking && onSkipSpeech && (
+            <button
+              onClick={onSkipSpeech}
+              className="absolute right-0 top-1/2 -translate-y-1/2 px-3 py-1 text-[10px] text-gray-400 hover:text-foreground uppercase tracking-wider transition-colors"
+            >
+              Skip &raquo;
+            </button>
+          )}
         </div>
 
         {/* Dialogue */}

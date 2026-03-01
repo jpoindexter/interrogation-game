@@ -3,6 +3,7 @@ import { motion, AnimatePresence, fadeUp, stagger, smooth, snappy } from '../../
 
 export interface GameSettings {
   ttsEnabled: boolean;
+  musicVolume: number; // 0 = off, 0-1 range
   fontSize: 'small' | 'medium' | 'large';
   fontFamily: 'mono' | 'dyslexia' | 'sans';
   highContrast: boolean;
@@ -52,6 +53,21 @@ export default function SettingsPanel({ show, settings, onSettingsChange, onClos
               >
                 <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${settings.ttsEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
               </motion.button>
+            </motion.div>
+            <motion.div className="space-y-1.5" variants={fadeUp} transition={smooth}>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-300">Music</span>
+                <span className="text-[10px] text-gray-500 tabular-nums">{settings.musicVolume === 0 ? 'Off' : `${Math.round(settings.musicVolume * 100)}%`}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={settings.musicVolume}
+                onChange={(e) => update({ musicVolume: parseFloat(e.target.value) })}
+                className="w-full h-1 bg-surface rounded-full appearance-none cursor-pointer accent-accent"
+              />
             </motion.div>
             <motion.div variants={fadeUp} transition={smooth}>
               <span className="text-sm text-gray-300 block mb-2">Text Size</span>

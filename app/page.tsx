@@ -20,7 +20,7 @@ export default function HomePage() {
   return (
     <PageMotion>
       <div
-        className="min-h-screen flex flex-col items-center justify-center p-6 font-mono bg-black relative overflow-hidden"
+        className="min-h-screen flex flex-col items-center justify-center p-6 pb-32 font-mono bg-black relative overflow-hidden"
       >
         {/* Animated pixel particles */}
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -128,7 +128,7 @@ export default function HomePage() {
 
         {/* Hero image — title baked in */}
         <motion.div
-          className="relative -mb-6 z-10"
+          className="relative -mb-24 z-10"
           variants={scaleIn}
           initial="hidden"
           animate="visible"
@@ -168,7 +168,7 @@ export default function HomePage() {
 
         {/* Primary CTA */}
         <motion.div
-          className="flex flex-col items-center gap-3 mb-6 z-10"
+          className="flex flex-col items-center gap-3 z-10"
           variants={fadeUp}
           initial="hidden"
           animate="visible"

@@ -227,15 +227,15 @@ function LoseContent() {
           animate={summary ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 1.5 }}
         >
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             <button
               onClick={() => {
                 sessionStorage.removeItem('gameResult');
                 router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${difficulty}`);
               }}
-              className="px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors text-center"
+              className="px-5 py-2 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors"
             >
-              RETRY CASE
+              Retry Case
             </button>
             {difficulty !== 'easy' && (
               <button
@@ -244,16 +244,16 @@ function LoseContent() {
                   const easier = difficulty === 'expert' ? 'hard' : difficulty === 'hard' ? 'medium' : 'easy';
                   router.push(`/game?setting=${encodeURIComponent(caseSetting)}&difficulty=${easier}`);
                 }}
-                className="px-8 py-3 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors text-center"
+                className="px-5 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors"
               >
-                TRY EASIER
+                Try Easier
               </button>
             )}
             <button
               onClick={() => { sessionStorage.removeItem('gameResult'); router.push('/cases'); }}
-              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
-              OTHER CASES
+              Other Cases
             </button>
             <button
               onClick={async () => {
@@ -267,15 +267,15 @@ function LoseContent() {
                   setTimeout(() => setShareLabel('SHARE'), 2000);
                 }
               }}
-              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
               {shareLabel}
             </button>
             <button
               onClick={() => setShowTranscript(true)}
-              className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors text-center"
+              className="px-5 py-2 bg-surface text-gray-400 text-xs font-bold uppercase tracking-wider rounded-sm hover:text-foreground hover:bg-surface-hover transition-colors"
             >
-              TRANSCRIPT
+              Transcript
             </button>
           </div>
         </motion.div>

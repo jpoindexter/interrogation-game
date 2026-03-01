@@ -199,6 +199,18 @@ body[data-font] * {
   opacity: 1;
 }
 
+/* Tooltips above for dock buttons (bottom of screen) */
+.dock-icon[data-tooltip]::after {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+.dock-icon[data-tooltip]::before {
+  top: auto;
+  bottom: calc(100% + 3px);
+  border-bottom-color: transparent;
+  border-top-color: var(--surface);
+}
+
 /* Dock icon button */
 .dock-icon {
   display: flex;

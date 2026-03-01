@@ -7,16 +7,18 @@ export function useVoiceRecorder(sessionId?: string) {
   const streamRef = useRef<MediaStream | null>(null);
   const silenceRef = useRef<number>(0);
   const rafRef = useRef<number>(0);
+  const sessionIdRef = useRef(sessionId);
+  sessionIdRef.current = sessionId;
 
-  const transcribe = async (blob: Blob): Promise<string> => {
+  const transcribe = useCallback(async (blob: Blob): Promise<string> => {
     const fd = new FormData();
     fd.append('audio', blob, 'recording.webm');
-    if (sessionId) fd.append('sessionId', sessionId);
+    if (sessionIdRef.current) fd.append('sessionId', sessionIdRef.current);
     const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     return (data.text ?? '').trim();
-  };
+  }, []);
 
   const stopListening = useCallback(() => {
     if (recorderRef.current?.state === 'recording') recorderRef.current.stop();

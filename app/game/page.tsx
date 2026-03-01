@@ -207,7 +207,13 @@ function GameContent() {
     try {
       const res = await fetch('/api/interrogate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: '[The detective has given up and is leaving. Respond with one short, smug remark as the suspect who got away with it. Max 2 sentences.]' }) });
       const data = await res.json();
-      if (data.spoken_response) { cleverRemark = data.spoken_response; setLastResponse(cleverRemark); await speakResponse(cleverRemark, 1, caseData.suspect_name, () => {}, settings.ttsEnabled); }
+      if (data.spoken_response) {
+        cleverRemark = data.spoken_response;
+        setLastResponse(cleverRemark);
+        await new Promise<void>((resolve) => {
+          speakResponse(cleverRemark, 1, caseData.suspect_name, resolve, settings.ttsEnabled);
+        });
+      }
     } catch {}
     sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData.sessionId, conversationHistory, maxStress, gaveUp: true, cleverRemark }));
     router.push('/game/lose');
@@ -219,7 +225,7 @@ function GameContent() {
   return (
     <motion.div
       initial="hidden" animate="visible" variants={fadeIn} transition={smooth}
-      className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-surface ${settings.highContrast ? 'bg-black text-white' : 'bg-black text-foreground'} ${settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'} ${settings.highContrast ? 'high-contrast' : ''}`}
+      className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-surface border-t-black border-b-black ${settings.highContrast ? 'bg-black text-white' : 'bg-black text-foreground'} ${settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'} ${settings.highContrast ? 'high-contrast' : ''}`}
       style={{ fontFamily: settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif' : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : 'var(--font-mono)' }}
     >
       <TopBar timer={timer} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
@@ -232,7 +238,7 @@ function GameContent() {
       }} />
       <MicPermissionBanner show={showMicHint} onDismiss={() => { setShowMicHint(false); sessionStorage.setItem('micHintDismissed', '1'); }} />
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-0">
-        {caseData ? <SuspectZone caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} lastResponse={lastResponse} phase={phase} /> : <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-surface bg-black" />}
+        {caseData ? <SuspectZone caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} lastResponse={lastResponse} phase={phase} onSkipSpeech={skipSpeech} /> : <div className="lg:col-span-2 flex items-center justify-center p-4 border-r border-surface bg-black" />}
         {caseData && <CaseFile caseData={caseData} clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} conversationHistory={conversationHistory} />}
       </div>
       <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
