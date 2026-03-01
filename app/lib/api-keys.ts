@@ -7,6 +7,8 @@ export function getUserApiHeaders(): Record<string, string> {
     const s = JSON.parse(raw);
     if (s.mistralApiKey) headers['x-mistral-api-key'] = s.mistralApiKey;
     if (s.elevenlabsApiKey) headers['x-elevenlabs-api-key'] = s.elevenlabsApiKey;
+    if (s.supabaseUrl) headers['x-supabase-url'] = s.supabaseUrl;
+    if (s.supabaseAnonKey) headers['x-supabase-anon-key'] = s.supabaseAnonKey;
   } catch { /* private browsing */ }
   return headers;
 }

@@ -22,6 +22,8 @@ interface AppSettings {
   highContrast: boolean;
   mistralApiKey: string;
   elevenlabsApiKey: string;
+  supabaseUrl: string;
+  supabaseAnonKey: string;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -34,6 +36,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   highContrast: false,
   mistralApiKey: '',
   elevenlabsApiKey: '',
+  supabaseUrl: '',
+  supabaseAnonKey: '',
 };
 
 export default function SettingsPage() {
@@ -187,7 +191,7 @@ export default function SettingsPage() {
             {/* API Keys */}
             <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
               <h3 className="text-sm text-gray-300 font-bold mb-1">API Keys</h3>
-              <p className="text-xs text-gray-500 mb-4">Use your own keys instead of the shared server keys. Stored locally in your browser only.</p>
+              <p className="text-xs text-gray-500 mb-4">Provide your own API keys to play. Stored locally in your browser — never sent to third parties.</p>
               <div className="space-y-3">
                 <div>
                   <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">Mistral API Key</label>
@@ -208,6 +212,30 @@ export default function SettingsPage() {
                     placeholder="sk_..."
                     value={settings.elevenlabsApiKey}
                     onChange={(e) => update({ elevenlabsApiKey: e.target.value.trim() })}
+                    className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">Supabase URL</label>
+                  <input
+                    type="text"
+                    placeholder="https://xxxxx.supabase.co"
+                    value={settings.supabaseUrl}
+                    onChange={(e) => update({ supabaseUrl: e.target.value.trim() })}
+                    className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">Supabase Anon Key</label>
+                  <input
+                    type="password"
+                    placeholder="eyJ..."
+                    value={settings.supabaseAnonKey}
+                    onChange={(e) => update({ supabaseAnonKey: e.target.value.trim() })}
                     className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
                     autoComplete="off"
                     spellCheck={false}
