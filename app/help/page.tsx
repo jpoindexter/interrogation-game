@@ -17,7 +17,7 @@ const TIPS = [
   'If the suspect gets nervous (stress rises), you\u2019re on the right track.',
   'Listen for inconsistencies \u2014 times, places, names that don\u2019t add up.',
   'You get 3 hints. Use them wisely \u2014 each one costs points.',
-  'No time limit, but faster solves score higher.',
+  'You have limited time (5-10 min by difficulty). Faster solves score higher.',
 ];
 
 const SCORING = [
@@ -67,7 +67,7 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">02</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Interrogate the Suspect</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice. The suspect will respond &mdash; but they&apos;re hiding something. Faster solves earn higher scores.</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice or keyboard. The suspect will respond &mdash; but they&apos;re hiding something. You have limited time (5&ndash;10 minutes depending on difficulty), so work fast.</p>
               <div className="relative bg-surface-darker border border-surface-dark rounded-sm p-5 flex items-center gap-5">
                 <div className="absolute inset-0 opacity-15 rounded-sm" style={{ backgroundImage: 'url(/bg/police.png)', backgroundSize: 'cover', backgroundPosition: 'center', imageRendering: 'pixelated' }} />
                 <div className="relative shrink-0">
@@ -144,7 +144,7 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">05</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. Run out of accusations or give up and they escape.</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. Run out of time, accusations, or give up and they escape.</p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />

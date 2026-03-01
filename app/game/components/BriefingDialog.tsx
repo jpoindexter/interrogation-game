@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from '../../components/motion';
 import type { BriefingSection } from './BriefingScreen';
 import { useSfx } from '../hooks/useSfx';
@@ -43,6 +44,17 @@ function SectionedText({ sections, charIndex }: { sections: BriefingSection[]; c
 
 export default function BriefingDialog({ show, sections, fullText, charIndex, isPlaying, leads, onClose, onSkip, onStart }: BriefingDialogProps) {
   const sfx = useSfx();
+  const lastTypeRef = useRef(0);
+
+  // Typewriter keystroke sound as text appears
+  useEffect(() => {
+    if (!isPlaying || charIndex <= 0 || charIndex >= fullText.length) return;
+    const now = Date.now();
+    if (now - lastTypeRef.current > 80) {
+      lastTypeRef.current = now;
+      sfx('typewriter');
+    }
+  }, [charIndex, isPlaying, fullText.length, sfx]);
   return (
     <AnimatePresence>
       {show && (

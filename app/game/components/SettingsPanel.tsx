@@ -28,6 +28,8 @@ export default function SettingsPanel({ show, settings, pos, onSettingsChange, o
   return (
     <AnimatePresence>
       {show && (
+        <>
+        <div key="settings-backdrop" className="fixed inset-0 z-39" onClick={onClose} />
         <motion.div
           key="settings-panel"
           className="absolute z-40 w-[320px] bg-surface-darker border border-surface rounded-sm shadow-2xl"
@@ -185,6 +187,7 @@ export default function SettingsPanel({ show, settings, pos, onSettingsChange, o
             </motion.div>
           </motion.div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

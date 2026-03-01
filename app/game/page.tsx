@@ -79,7 +79,7 @@ function GameContent() {
   const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder(caseData?.sessionId);
   const ttsErrorToast = useCallback(() => showToast('Voice server unavailable — reading text instead'), [showToast]);
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId, ttsErrorToast);
-  const { timer, timerRef } = useGameTimer(phase, isSpeaking);
+  const { remaining, elapsed, timeLimit, timerRef, onExpire } = useGameTimer(phase, isSpeaking, difficulty);
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   const prevVolumeRef = useRef(settings.musicVolume > 0 ? settings.musicVolume : 0.1);
   const prevSfxRef = useRef((settings.sfxVolume ?? 0.5) > 0 ? (settings.sfxVolume ?? 0.5) : 0.5);
@@ -117,23 +117,32 @@ function GameContent() {
   useEffect(() => { dialogueEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [conversationHistory, lastTranscript, isListening, phase]);
   useEffect(() => { window.dispatchEvent(new CustomEvent('gamePhaseChange', { detail: phase })); }, [phase]);
 
-  // Ambient nervous fidgeting at high stress + subtle clock tick
+  // Ambient nervous fidgeting at high stress + clock tick (more frequent as time runs low)
   useEffect(() => {
     if (phase !== 'active') return;
-    const nervousSounds = ['nervous_1', 'nervous_knock', 'clothes_rustle', 'female_sigh'] as const;
+    const isFemale = caseData?.suspect_gender?.toLowerCase() === 'female';
+    const neutral = ['nervous_1', 'nervous_knock', 'nervous_tap', 'nervous_scratch', 'nervous_ac', 'clothes_rustle'] as const;
+    const male = ['nervous_foot', 'nervous_cough_m'] as const;
+    const female = ['nervous_heel', 'nervous_cough_f', 'female_sigh'] as const;
+    const nervousSounds = [...neutral, ...(isFemale ? female : male)];
     const interval = setInterval(() => {
       const s = stressRef.current;
-      // Clock tick every ~12s when active (very subtle)
-      if (Math.random() < 0.3) sfx('clock_tick');
-      // Nervous fidget sounds at high stress — more frequent the higher it goes
+      const t = remaining;
+      // Clock tick: always 30% chance, but guaranteed under 2 min, double-tick under 1 min
+      const tickChance = t <= 60 ? 1.0 : t <= 120 ? 0.7 : 0.3;
+      if (Math.random() < tickChance) sfx('clock_tick');
+      if (t <= 60 && Math.random() < 0.5) setTimeout(() => sfx('clock_tick'), 3000);
+      // Nervous sounds at high stress
       if (s >= 6 && Math.random() < (s - 5) * 0.15) {
         const pick = nervousSounds[Math.floor(Math.random() * nervousSounds.length)];
         sfx(pick);
       }
     }, 12000);
     return () => clearInterval(interval);
-  }, [phase, sfx]);
+  }, [phase, sfx, caseData?.suspect_gender, remaining]);
   useEffect(() => { if (accusationsLeft <= 0 && !isAccusing && phase === 'active') handleLose(); }, [accusationsLeft, isAccusing, phase]);
+  // Timer expired — alarm → AI remark → standing up → door → gameover → lose
+  useEffect(() => { onExpire(() => { handleTimeUp(); }); }, [onExpire]);
   useEffect(() => { if (phase === 'active' && !localStorage.getItem('onboardingComplete')) setShowOnboarding(true); }, [phase]);
   useEffect(() => {
     if (phase !== 'active') return;
@@ -147,7 +156,7 @@ function GameContent() {
     if (!caseData || (!isOpening && phase !== 'active')) return;
     setPhase('processing');
     setLastTranscript(question);
-    const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question, timestamp: timer }];
+    const newHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: question, timestamp: elapsed }];
     try {
       const body = JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: question });
       const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body };
@@ -155,13 +164,16 @@ function GameContent() {
       try { res = await fetchWithTimeout('/api/interrogate', opts); } catch { res = await fetchWithTimeout('/api/interrogate', opts); }
       const data = await res.json();
       if (data.error) { showToast("Couldn't reach the suspect — try again"); setPhase('active'); return; }
-      setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: timer }]);
+      setConversationHistory([...newHistory, { role: 'assistant', content: data.spoken_response, timestamp: elapsed }]);
       setLastResponse(data.spoken_response);
       const newStress = data.stress_level ?? 0;
       if (newStress > stressRef.current + 1) {
         sfx('tension');
-        const nervousSounds = ['nervous_1', 'nervous_knock', 'clothes_rustle', 'female_sigh'] as const;
-        const pick = nervousSounds[Math.floor(Math.random() * nervousSounds.length)];
+        const isFemale = caseData?.suspect_gender?.toLowerCase() === 'female';
+        const stressNeutral = ['nervous_1', 'nervous_knock', 'nervous_tap', 'nervous_scratch', 'nervous_ac', 'clothes_rustle'];
+        const stressGendered = isFemale ? ['nervous_heel', 'nervous_cough_f', 'female_sigh'] : ['nervous_foot', 'nervous_cough_m'];
+        const stressSounds = [...stressNeutral, ...stressGendered];
+        const pick = stressSounds[Math.floor(Math.random() * stressSounds.length)];
         setTimeout(() => sfx(pick), 800);
       }
       setStressLevel(newStress);
@@ -193,15 +205,17 @@ function GameContent() {
       const data = await res.json();
       if (typeof data.accusationsLeft === 'number') setAccusationsLeft(data.accusationsLeft);
       else setAccusationsLeft((prev) => Math.max(0, prev - 1));
-      const updatedHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: `[ACCUSATION] ${text}`, timestamp: timer }, { role: 'assistant', content: data.confession, timestamp: timer }];
+      const updatedHistory: ConversationMessage[] = [...conversationHistory, { role: 'user', content: `[ACCUSATION] ${text}`, timestamp: elapsed }, { role: 'assistant', content: data.confession, timestamp: elapsed }];
       setConversationHistory(updatedHistory);
       setLastResponse(data.confession);
       if (data.correct) {
+        sfx('win');
         if (timerRef.current) clearInterval(timerRef.current);
-        sessionStorage.setItem('gameResult', JSON.stringify({ type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession, timeElapsed: timer, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft) }));
+        sessionStorage.setItem('gameResult', JSON.stringify({ type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession, timeElapsed: elapsed, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft) }));
         try { await speakConfession(data.confession, 10, caseData.suspect_name); } catch {}
         router.push('/game/win');
       } else {
+        sfx('wrong');
         await speakResponse(data.confession, stressLevel, caseData.suspect_name, () => setPhase('active'), settings.ttsEnabled);
       }
     } catch (err) {
@@ -210,7 +224,7 @@ function GameContent() {
       setPhase('active');
     }
     setIsAccusing(false);
-  }, [caseData, conversationHistory, timer, stressLevel, clues.length, hintsUsed, accusationsLeft, speakResponse, speakConfession, settings.ttsEnabled, timerRef, difficulty, router, showToast]);
+  }, [caseData, conversationHistory, elapsed, stressLevel, clues.length, hintsUsed, accusationsLeft, speakResponse, speakConfession, settings.ttsEnabled, timerRef, difficulty, router, showToast]);
 
   const startListening = () => {
     if (phase !== 'active' || isSpeaking) return;
@@ -224,10 +238,38 @@ function GameContent() {
     startRecording(async (t) => { setIsListening(false); await submitAccusation(t); }, (msg) => { setIsListening(false); setIsAccusing(false); setLastTranscript(msg); }, setLastTranscript);
   };
 
-  const handleLose = () => {
-    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData?.sessionId, conversationHistory, maxStress }));
+  const handleLose = (extra?: Record<string, unknown>) => {
+    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData?.sessionId, conversationHistory, maxStress, ...extra }));
     router.push('/game/lose');
   };
+
+  const handleTimeUp = useCallback(async () => {
+    sfx('alarm');
+    setPhase('processing');
+    if (timerRef.current) clearInterval(timerRef.current);
+    let timeUpRemark = '';
+    if (caseData) {
+      try {
+        const res = await fetch('/api/interrogate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: '[Time is up. The interrogation is over and the suspect is free to go. Respond with one short, smug remark about the detective running out of time. Max 2 sentences.]' }) });
+        const data = await res.json();
+        if (data.spoken_response) {
+          timeUpRemark = data.spoken_response;
+          setLastResponse(timeUpRemark);
+          await new Promise<void>((resolve) => {
+            speakResponse(timeUpRemark, 1, caseData.suspect_name, resolve, settings.ttsEnabled);
+          });
+        }
+      } catch {}
+    }
+    // Sound sequence: standing up → chair → door → gameover → navigate
+    sfx('standing_up');
+    setTimeout(() => sfx('chair_slide'), 800);
+    setTimeout(() => sfx('door'), 1800);
+    setTimeout(() => sfx('gameover'), 2800);
+    setTimeout(() => {
+      handleLose({ timeUp: true, timeUpRemark });
+    }, 4500);
+  }, [caseData, sfx, timerRef, speakResponse, settings.ttsEnabled]);
 
   const handleGiveUp = useCallback(async () => {
     setShowGiveUpConfirm(false);
@@ -261,7 +303,7 @@ function GameContent() {
       className={`h-screen flex flex-col overflow-hidden max-w-[1400px] mx-auto w-full relative border border-surface-darker ${settings.highContrast ? 'bg-black text-white' : 'bg-black text-foreground'} ${settings.fontSize === 'small' ? 'text-xs' : settings.fontSize === 'large' ? 'text-lg' : 'text-base'} ${settings.highContrast ? 'high-contrast' : ''}`}
       style={{ fontFamily: settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif' : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : 'var(--font-mono)' }}
     >
-      <TopBar timer={timer} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
+      <TopBar remaining={remaining} timeLimit={timeLimit} stressLevel={stressLevel} musicVolume={settings.musicVolume} onMusicToggle={() => {
         if (settings.musicVolume > 0 || (settings.sfxVolume ?? 0.5) > 0 || (settings.voiceVolume ?? 0.7) > 0) {
           prevVolumeRef.current = settings.musicVolume || 0.05;
           prevSfxRef.current = (settings.sfxVolume ?? 0.5) || 0.5;
@@ -277,11 +319,11 @@ function GameContent() {
         {caseData && <CaseFile caseData={caseData} clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} conversationHistory={conversationHistory} />}
       </div>
       <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
-      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('click_short'); sendQuestion(v); setTextInput(''); }} />
+      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('click_short'); sendQuestion(v); setTextInput(''); }} onMic={() => { setShowTextInput(false); startListening(); }} onClickOutside={() => setShowTextInput(false)} />
       <NotesPanel show={showNotes} notes={notes} pos={notesPos} onChange={setNotes} onClose={() => setShowNotes(false)} onPosChange={setNotesPos} />
       <ExitConfirmDialog show={showExitConfirm} onConfirm={() => { if (timerRef.current) clearInterval(timerRef.current); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } speechSynthesis.cancel(); router.push('/cases'); }} onCancel={() => setShowExitConfirm(false)} />
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
-      <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
+      <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} onClickOutside={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
       <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
       <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
       <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx(isListening ? 'mic_off' : 'mic_on'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click_short'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}

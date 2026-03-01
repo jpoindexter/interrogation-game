@@ -62,18 +62,25 @@ export async function POST(request: NextRequest) {
       addMessage(session.id, 'assistant', (response.spoken_response as string) || '');
 
       // Track stress server-side so client can't manipulate it
-      updateStress(session.id, response.stress_level as number);
+      // Prevent stress from jumping more than 2 per exchange
+      const stressVal = response.stress_level as number;
+      const clampedStress = Math.min(stressVal, currentStress + 2);
+      response.stress_level = clampedStress;
+      updateStress(session.id, clampedStress);
 
       // Track clues server-side so client can't skip ahead to accusation
       // Skip clue on opening message (starts with *)
       const isOpening = sanitized.startsWith('*');
-      if (response.clue_unlocked && !isOpening) {
-        incrementClue(session.id);
+
+      // Server-side clue gate: block clue if stress is too low or too early
+      if (response.clue_unlocked) {
+        if (isOpening || questionCount < 2 || clampedStress < 1) {
+          response.clue_unlocked = null;
+        }
       }
 
-      // Strip clue from opening so client never sees it
-      if (isOpening && response.clue_unlocked) {
-        response.clue_unlocked = null;
+      if (response.clue_unlocked) {
+        incrementClue(session.id);
       }
       return NextResponse.json(response);
     } finally {

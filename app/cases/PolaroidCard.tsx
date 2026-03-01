@@ -114,7 +114,7 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; {caseDiff.clues} clues to find</span>
                     <motion.span className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2" animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
-                      onClick={(e) => { e.stopPropagation(); try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } } catch {} router.push(`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`); }}
+                      onClick={(e) => { e.stopPropagation(); try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } } catch {} router.push(`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`); }}
                     >PLAY &rarr;</motion.span>
                   </div>
                 </div>

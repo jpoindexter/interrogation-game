@@ -219,8 +219,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx      # Required — Supabase anon key (public,
 4. **MediaRecorder + silence detection** — 2s silence auto-stops recording, no manual stop needed
 5. **sessionStorage** for game results — no URL size limits, cleaner URLs
 6. **Supabase** for leaderboard — RLS policies for public read + insert, no auth needed
-7. **Timer counts UP** — no arbitrary time pressure, speed rewarded through scoring formula
-8. **3 accusations max** — only lose condition (no timer-based lose). Forces careful play.
+7. **Countdown timer** — easy 5min, medium 7min, hard 9min, expert 10min. Time runs out = lose. Alarm at expiry, clock ticks intensify in final 2 min.
+8. **3 accusations max** — accusation available anytime (no clue gate). Run out of time OR accusations = lose.
 9. **Give Up option** — AI generates smug remark, reveals answers, counts as loss
 10. **Separate accusation judge** — different Mistral call evaluates the accusation independently from the suspect character
 11. **Structured JSON responses** — stress_level, clue_unlocked fields let game state be driven by AI assessment

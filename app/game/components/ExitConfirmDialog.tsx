@@ -9,6 +9,8 @@ interface ExitConfirmProps {
 export default function ExitConfirmDialog({ show, onConfirm, onCancel }: ExitConfirmProps) {
   if (!show) return null;
   return (
+    <>
+    <div className="fixed inset-0 z-39" onClick={onCancel} />
     <motion.div
       className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-surface-dark border border-accent rounded-sm p-3 w-48 z-40"
       initial="hidden"
@@ -26,5 +28,6 @@ export default function ExitConfirmDialog({ show, onConfirm, onCancel }: ExitCon
         </button>
       </div>
     </motion.div>
+    </>
   );
 }

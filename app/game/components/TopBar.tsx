@@ -7,14 +7,18 @@ export function formatTime(secs: number) {
 }
 
 interface TopBarProps {
-  timer: number;
+  remaining: number;
+  timeLimit: number;
   stressLevel: number;
   musicVolume: number;
   onMusicToggle: () => void;
 }
 
-export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle }: TopBarProps) {
+export default function TopBar({ remaining, timeLimit, stressLevel, musicVolume, onMusicToggle }: TopBarProps) {
   const muted = musicVolume === 0;
+  const pct = remaining / timeLimit;
+  const urgent = remaining <= 60;
+  const warning = remaining <= 120 && !urgent;
   return (
     <motion.div
       className="p-3 border-b border-surface-darker flex-shrink-0"
@@ -24,8 +28,8 @@ export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle 
       transition={snappy}
     >
       <div className="flex items-center gap-6">
-        <div className="text-4xl font-bold tabular-nums">
-          {formatTime(timer)}
+        <div className={`text-4xl font-bold tabular-nums ${urgent ? 'text-accent animate-pulse' : warning ? 'text-warn' : ''}`}>
+          {formatTime(remaining)}
         </div>
         <div className="flex-1">
           <div className="flex justify-between text-xs uppercase tracking-wider mb-1">
@@ -46,7 +50,7 @@ export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle 
           </div>
         </div>
         <button
-          onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } } catch {} onMusicToggle(); }}
+          onClick={() => { try { const m = (() => { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; })(); if (m > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } } catch {} onMusicToggle(); }}
           className="text-gray-500 hover:text-foreground transition-colors"
           title={muted ? 'Unmute music' : 'Mute music'}
         >

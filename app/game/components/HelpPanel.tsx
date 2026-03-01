@@ -14,14 +14,12 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
   return (
     <AnimatePresence>
       {show && (
+        <>
+        <div key="help-backdrop" className="fixed inset-0 z-39" onClick={() => { onClose(); onPosChange(null); }} />
         <motion.div
           key="help-panel"
-          className={`${pos ? 'absolute' : 'fixed'} z-40 w-[340px] max-h-[70vh] overflow-y-auto bg-surface-darker border border-surface rounded-sm shadow-2xl`}
-          style={{
-            left: pos ? pos.x : '50%',
-            top: pos ? pos.y : '50%',
-            transform: pos ? 'none' : 'translate(-50%, -50%)',
-          }}
+          className={`${pos ? 'absolute' : 'fixed inset-0 m-auto'} z-40 w-[340px] max-h-[70vh] h-fit overflow-y-auto bg-surface-darker border border-surface rounded-sm shadow-2xl`}
+          style={pos ? { left: pos.x, top: pos.y } : undefined}
           variants={fadeUp}
           initial="hidden"
           animate="visible"
@@ -64,7 +62,7 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
               <span className="text-sm font-bold text-accent shrink-0">01</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Ask Questions</p>
-                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic and ask the suspect questions. Look for inconsistencies in their story.</p>
+                <p className="text-[11px] text-gray-400 leading-relaxed">Tap the mic or keyboard to question the suspect. Watch the clock &mdash; you have limited time.</p>
               </div>
             </motion.div>
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>
@@ -92,11 +90,13 @@ export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, onClose, 
                 <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Ask open-ended questions first</li>
                 <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Rising stress = right track</li>
                 <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Use hints sparingly (-15% score each)</li>
+                <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>You have limited time (5-10 min by difficulty)</li>
                 <li className="text-[11px] text-gray-400 flex gap-2"><span className="text-gold">&bull;</span>Faster solve = higher score</li>
               </ul>
             </motion.div>
           </motion.div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

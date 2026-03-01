@@ -1,8 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-export function useGameTimer(phase: string, isSpeaking: boolean) {
-  const [timer, setTimer] = useState(0);
+// Time limits in seconds per difficulty
+export const TIME_LIMITS: Record<string, number> = {
+  easy: 300,    // 5 min
+  medium: 420,  // 7 min
+  hard: 540,    // 9 min
+  expert: 600,  // 10 min
+};
+
+export function useGameTimer(phase: string, isSpeaking: boolean, difficulty: string) {
+  const timeLimit = TIME_LIMITS[difficulty] || 420;
+  const [remaining, setRemaining] = useState(timeLimit);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const onExpireRef = useRef<(() => void) | null>(null);
+
+  // Reset when difficulty/timeLimit changes (new game)
+  useEffect(() => { setRemaining(timeLimit); }, [timeLimit]);
 
   useEffect(() => {
     if (phase !== 'active' && phase !== 'processing') return;
@@ -14,7 +27,14 @@ export function useGameTimer(phase: string, isSpeaking: boolean) {
     }
 
     timerRef.current = setInterval(() => {
-      setTimer((prev) => prev + 1);
+      setRemaining((prev) => {
+        if (prev <= 1) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          onExpireRef.current?.();
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => {
@@ -22,5 +42,10 @@ export function useGameTimer(phase: string, isSpeaking: boolean) {
     };
   }, [phase, isSpeaking]);
 
-  return { timer, timerRef };
+  const onExpire = useCallback((cb: () => void) => { onExpireRef.current = cb; }, []);
+
+  // Elapsed time (for scoring) = timeLimit - remaining
+  const elapsed = timeLimit - remaining;
+
+  return { remaining, elapsed, timeLimit, timerRef, onExpire };
 }

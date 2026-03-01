@@ -8,7 +8,7 @@ function _sfxVol(): number {
 }
 const clickSfx = () => {
   const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } catch {}
+  try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {}
 };
 
 export function BackButton({ href = '/', label = 'Home' }: { href?: string; label?: string }) {

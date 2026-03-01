@@ -1,8 +1,8 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
 function getVoiceVolume(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.7; } catch {}
-  return 0.7;
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.45; } catch {}
+  return 0.45;
 }
 
 export function useTTS(suspectGender: string | undefined, sessionId?: string, onTTSError?: () => void) {

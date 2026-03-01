@@ -9,6 +9,8 @@ interface GiveUpConfirmProps {
 export default function GiveUpConfirmDialog({ show, onConfirm, onCancel }: GiveUpConfirmProps) {
   if (!show) return null;
   return (
+    <>
+    <div className="fixed inset-0 z-39" onClick={onCancel} />
     <motion.div
       className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-surface-dark border border-accent rounded-sm p-3 w-64 z-40"
       initial="hidden"
@@ -26,5 +28,6 @@ export default function GiveUpConfirmDialog({ show, onConfirm, onCancel }: GiveU
         </button>
       </div>
     </motion.div>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 function getVoiceVolume(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.7; } catch {}
-  return 0.7;
+  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).voiceVolume ?? 0.45; } catch {}
+  return 0.45;
 }
 
 export function useBriefingTTS(

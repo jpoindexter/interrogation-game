@@ -22,6 +22,8 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
   return (
     <AnimatePresence>
       {show && (
+        <>
+        <div key="notes-backdrop" className="fixed inset-0 z-29" onClick={onClose} />
         <motion.div
           key="notes-panel"
           className="absolute z-30 w-[360px] rounded-sm overflow-hidden"
@@ -134,6 +136,7 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
             <div className="w-8 h-[2px] rounded-full bg-white/30" />
           </div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

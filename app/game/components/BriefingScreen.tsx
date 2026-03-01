@@ -101,7 +101,7 @@ export default function BriefingScreen({ caseData, difficulty, onStart, onBack }
           Begin Interrogation
         </motion.button>
 
-        <motion.div className="mt-6" variants={fadeUp} transition={smooth}>
+        <motion.div className="mt-8" variants={fadeUp} transition={smooth}>
           <TapePlayer onClick={() => { sfx('tape_start'); setShowBriefing(true); }} />
         </motion.div>
       </motion.div>

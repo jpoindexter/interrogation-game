@@ -284,7 +284,7 @@ export default function MusicToggle() {
   });
 
   const toggle = () => {
-    try { let sv = 0.5; try { const st = localStorage.getItem('appSettings'); if (st) sv = JSON.parse(st).sfxVolume ?? 0.5; } catch {} if (sv > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * sv; a.play().catch(() => {}); } } catch {}
+    try { let sv = 0.5; try { const st = localStorage.getItem('appSettings'); if (st) sv = JSON.parse(st).sfxVolume ?? 0.5; } catch {} if (sv > 0) { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * sv; a.play().catch(() => {}); } } catch {}
     if (muted) {
       const vol = prevVolumeRef.current || 0.05;
       const sfx = prevSfxRef.current || 0.5;

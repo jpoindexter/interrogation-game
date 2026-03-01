@@ -56,9 +56,9 @@ export default function LoadingScreen() {
             <div className="absolute top-0 bottom-0 left-[26px] w-[1px] pointer-events-none" style={{ background: 'rgba(196,60,60,0.35)' }} />
             <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-3">How to Play</h3>
             <div className="space-y-3 text-[12px] text-gray-700 leading-relaxed">
-              <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic and ask the suspect questions. Rising stress means you&rsquo;re getting close.</p>
-              <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> As stress rises, detective badges unlock. Collect them all to enable the ACCUSE button.</p>
-              <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about and <span className="text-gray-900 font-bold">what actually happened</span>. A separate AI judge evaluates your accusation. You get <span className="text-gray-900 font-bold">3 tries</span>.</p>
+              <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic or type to question the suspect. Watch the clock &mdash; you have limited time (5&ndash;10 min).</p>
+              <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> As stress rises, detective badges unlock. Rising stress means you&rsquo;re getting close.</p>
+              <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about and <span className="text-gray-900 font-bold">what actually happened</span>. You get <span className="text-gray-900 font-bold">3 tries</span>. Run out of time or attempts and they escape.</p>
             </div>
           </div>
           {/* Torn bottom edge — SVG with hand-drawn bezier path */}

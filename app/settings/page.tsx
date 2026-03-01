@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
 
 function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
-const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.15 * m; a.play().catch(() => {}); } catch {} };
+const clickSfx = () => { const m = _sfxVol(); if (m === 0) return; try { const a = new Audio('/efx/click.mp3'); a.volume = 0.4 * m; a.play().catch(() => {}); } catch {} };
 import {
   motion,
   PageMotion,

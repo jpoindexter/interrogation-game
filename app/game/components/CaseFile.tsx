@@ -9,7 +9,7 @@ import LogPage from './LogPage';
 function _sfxVol(): number { try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {} return 0.5; }
 const playPaper = () => {
   const m = _sfxVol(); if (m === 0) return;
-  try { const a = new Audio('/efx/paper.mp3'); a.volume = 0.12 * m; a.play().catch(() => {}); } catch {}
+  try { const a = new Audio('/efx/paper.mp3'); a.volume = 0.3 * m; a.play().catch(() => {}); } catch {}
 };
 
 interface CaseFileProps {
@@ -47,7 +47,7 @@ export default function CaseFile({
     prevClueCount.current = clues.length;
   }, [clues.length]);
 
-  const filtered = conversationHistory.filter(m => !m.content.startsWith('*'));
+  const filtered = conversationHistory.filter(m => m.content && !m.content.startsWith('*'));
   const tabs: { key: Page; label: string; badge?: number; color: string; activeColor: string }[] = [
     { key: 'case', label: 'Case', color: 'bg-[#b8a88a]', activeColor: 'bg-[#d4c4a0]' },
     { key: 'evidence', label: 'Evidence', badge: clues.length > 0 ? clues.length : undefined, color: 'bg-[#8aabb8]', activeColor: 'bg-[#a0c4d4]' },
