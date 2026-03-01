@@ -160,7 +160,7 @@ export default function HomePage() {
             }}
           />
           {/* REC indicator */}
-          <div className="absolute top-3 right-3 flex items-center gap-1">
+          <div className="absolute bottom-8 left-4 flex items-center gap-1">
             <span className="w-[5px] h-[5px] bg-accent animate-pulse rounded-full" />
             <span className="text-[9px] text-accent/50 uppercase tracking-wider">Rec</span>
           </div>
