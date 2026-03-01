@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { evaluateWin, generateLossSummary } from '../../../src/lib/mistral';
 import { validateNumber, sanitizeInput } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, deleteSession } from '../../../src/lib/game-session';
+import { getSession, deleteSession, exportSession } from '../../../src/lib/game-session';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,6 +35,16 @@ export async function POST(request: NextRequest) {
     } else {
       const maxStress = validateNumber(body.maxStress, 0, 10) ?? 0;
       result = await generateLossSummary(caseData, history, maxStress);
+    }
+
+    // Export session data before cleanup (fire-and-forget)
+    if (body.type === 'lose') {
+      // Determine specific lose reason from request context
+      const lastMsg = session.conversationHistory.at(-1)?.content ?? '';
+      const outcome = lastMsg.includes('[Time') ? 'lose_time'
+        : lastMsg.includes('[The detective') ? 'lose_giveup'
+        : 'lose_accusations' as const;
+      exportSession(session.id, outcome);
     }
 
     // Clean up session after evaluation

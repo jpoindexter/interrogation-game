@@ -80,7 +80,8 @@ interrogation/
 │       ├── accuse/route.ts           # POST — formal accusation evaluation (correct/incorrect + confession/denial)
 │       ├── tts/route.ts              # POST — ElevenLabs TTS with stress-based stability
 │       ├── transcribe/route.ts       # POST — Voxtral STT (audio blob → text)
-│       └── leaderboard/route.ts      # GET/POST — Supabase leaderboard with scoring formula
+│       ├── leaderboard/route.ts      # GET/POST — Supabase leaderboard with scoring formula
+│       └── export/route.ts           # GET — admin JSONL export of game sessions (requires EXPORT_SECRET)
 ├── src/
 │   ├── lib/
 │   │   ├── mistral.ts                # Mistral client: generateCase, interrogate, evaluateAccusation, evaluateWin, generateLossSummary
@@ -104,7 +105,8 @@ interrogation/
 │   ├── ui/                           # UI assets (logos)
 │   └── logo/                         # Game logos
 ├── scripts/
-│   └── generate-suspects.ts          # PixelLab suspect portrait generation
+│   ├── generate-suspects.ts          # PixelLab suspect portrait generation
+│   └── export-data.ts               # CLI: npx tsx scripts/export-data.ts --output=data/export.jsonl
 └── .env                              # MISTRAL_API_KEY, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, SUPABASE vars
 ```
 
@@ -131,13 +133,15 @@ interrogation/
 
 ### Scoring Formula (src/lib/scoring.ts)
 ```
-score = timeScore × difficultyMultiplier × hintPenalty × accusationPenalty
+score = timeScore × difficultyMultiplier × efficiencyBonus × hintPenalty × accusationPenalty
 
-timeScore     = 1000 × sqrt(max(0, 1 - elapsed / (parTime × 2)))
-parTime       = easy: 240s, medium: 360s, hard: 480s, expert: 600s
-multiplier    = easy: 1.0×, medium: 1.5×, hard: 2.0×, expert: 2.5×
-hintPenalty   = 0.85^hintsUsed  (−15% each)
-accusePenalty = max(0, 1 − wrongAccusations × 0.1)  (−10% each)
+timeScore       = 1000 × sqrt(max(0, 1 - elapsed / (parTime × 2)))
+parTime         = easy: 240s, medium: 360s, hard: 480s, expert: 600s
+multiplier      = easy: 1.0×, medium: 1.5×, hard: 2.0×, expert: 2.5×
+efficiencyBonus = 1.0–1.5× (fewer questions than par = bonus; at/above par = 1.0×)
+parQuestions    = easy: 6, medium: 10, hard: 14, expert: 18
+hintPenalty     = 0.85^hintsUsed  (−15% each)
+accusePenalty   = max(0, 1 − wrongAccusations × 0.1)  (−10% each)
 ```
 
 ### Difficulty System
@@ -209,6 +213,8 @@ ELEVENLABS_API_KEY=xxx                 # Required — ElevenLabs TTS for suspect
 ELEVENLABS_VOICE_ID=xxx                # Optional — specific ElevenLabs voice ID
 NEXT_PUBLIC_SUPABASE_URL=xxx           # Required — Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx      # Required — Supabase anon key (public, RLS-protected)
+SUPABASE_SERVICE_ROLE_KEY=xxx          # Required for /api/export — bypasses RLS for admin reads
+EXPORT_SECRET=xxx                      # Required for /api/export — shared secret for admin auth
 ```
 
 ## Key Decisions
@@ -227,11 +233,23 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx      # Required — Supabase anon key (public,
 12. **Modular architecture** — game page ~283 lines, extracted hooks + components, pages ≤300 lines, components ≤150 lines
 13. **Arcade high score** — scroll-triggered overlay, 3-letter initials, spring animation on leaderboard entry
 
-## File Size Limits
+### Data Export Pipeline
+- Completed games are persisted to `game_exports` Supabase table (fire-and-forget, doesn't block gameplay)
+- Captures: full case data (including secrets), conversation history, outcome, stats, accusation details
+- Outcomes: `win`, `lose_accusations`, `lose_time`, `lose_giveup`
+- Admin export: `GET /api/export?secret=EXPORT_SECRET&limit=100&offset=0&outcome=win&difficulty=hard`
+  - Returns JSONL (`application/x-ndjson`), requires `EXPORT_SECRET` + `SUPABASE_SERVICE_ROLE_KEY`
+- CLI: `EXPORT_SECRET=xxx npx tsx scripts/export-data.ts --output=data/export.jsonl --limit=1000`
 
-- Pages: ≤300 lines
-- Components: ≤150 lines
-- Utilities: ≤50 lines
+## File Size Guidelines
+
+Soft targets — don't split cohesive code just to hit a number.
+
+- Pages: ~300 lines
+- Components: ~150 lines
+- Hooks: ~100 lines
+- Server modules (`src/lib/`): ~150 lines (game-session.ts is an exception — single cohesive store)
+- Utilities / data constants: ~50 lines
 
 ## Hackathon Context
 

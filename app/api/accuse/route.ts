@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { evaluateAccusation } from '../../../src/lib/mistral';
 import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, incrementAccusation, acquireSessionLock, releaseSessionLock, DIFFICULTY_CLUES } from '../../../src/lib/game-session';
+import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, incrementAccusation, acquireSessionLock, releaseSessionLock, exportSession, DIFFICULTY_CLUES } from '../../../src/lib/game-session';
 
 export async function POST(req: NextRequest) {
   try {
@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
         if (result.correct) {
           const winToken = issueWinToken(session.id);
           if (winToken) result.winToken = winToken;
+          exportSession(session.id, 'win', sanitized, true);
         }
 
         return NextResponse.json(result);

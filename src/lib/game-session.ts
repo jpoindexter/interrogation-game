@@ -4,6 +4,7 @@
 import { randomBytes, timingSafeEqual } from 'crypto';
 import type { ConversationMessage } from './mistral';
 import { DIFFICULTY_CLUES } from './game-state';
+import supabase from './db';
 export { DIFFICULTY_CLUES };
 
 export interface GameSession {
@@ -26,7 +27,7 @@ export interface GameSession {
 interface WinTokenEntry {
   token: string;
   issuedAt: number;
-  stats: { timeElapsed: number; hintsUsed: number; accusationsUsed: number; difficulty: string };
+  stats: { timeElapsed: number; hintsUsed: number; accusationsUsed: number; questionsAsked: number; difficulty: string };
 }
 
 // Use globalThis to persist sessions across Next.js hot reloads in dev mode
@@ -135,15 +136,16 @@ export function getSessionStats(sessionId: string): {
   timeElapsed: number;
   hintsUsed: number;
   accusationsUsed: number;
+  questionsAsked: number;
   difficulty: string;
 } | null {
   const session = getSession(sessionId);
-  // Also check winTokens — session might have been deleted after win
   if (!session) return null;
   return {
     timeElapsed: (Date.now() - session.startTime) / 1000,
     hintsUsed: session.hintsUsed,
     accusationsUsed: session.accusationsUsed,
+    questionsAsked: session.conversationHistory.filter(m => m.role === 'user' && !m.content.startsWith('*') && !m.content.startsWith('[Time') && !m.content.startsWith('[The detective')).length,
     difficulty: (session.caseData.difficulty as string) || 'medium',
   };
 }
@@ -167,6 +169,7 @@ export function issueWinToken(sessionId: string): string | null {
       timeElapsed: (Date.now() - session.startTime) / 1000,
       hintsUsed: session.hintsUsed,
       accusationsUsed: session.accusationsUsed,
+      questionsAsked: session.conversationHistory.filter(m => m.role === 'user' && !m.content.startsWith('*') && !m.content.startsWith('[Time') && !m.content.startsWith('[The detective')).length,
       difficulty: (session.caseData.difficulty as string) || 'medium',
     },
   });
@@ -231,6 +234,40 @@ export function updateStress(sessionId: string, stress: number): void {
   const session = getSession(sessionId);
   if (!session) return;
   session.currentStress = Math.max(0, Math.min(9, Math.floor(stress)));
+}
+
+/** Fire-and-forget: snapshot a completed game session to Supabase for analysis/fine-tuning. */
+export function exportSession(
+  sessionId: string,
+  outcome: 'win' | 'lose_accusations' | 'lose_time' | 'lose_giveup',
+  accusationText?: string,
+  accusationCorrect?: boolean,
+): void {
+  const session = getSession(sessionId);
+  if (!session) return;
+  const questionsAsked = session.conversationHistory.filter(
+    m => m.role === 'user' && !m.content.startsWith('*') && !m.content.startsWith('[Time') && !m.content.startsWith('[The detective'),
+  ).length;
+  supabase.from('game_exports').upsert({
+    session_id: sessionId,
+    case_data: session.caseData,
+    conversation: session.conversationHistory,
+    outcome,
+    difficulty: (session.caseData.difficulty as string) || 'medium',
+    setting: (session.caseData.setting as string) || null,
+    stats: {
+      timeElapsed: (Date.now() - session.startTime) / 1000,
+      hintsUsed: session.hintsUsed,
+      accusationsUsed: session.accusationsUsed,
+      questionsAsked,
+      maxStress: session.currentStress,
+      cluesCollected: session.cluesCollected,
+    },
+    accusation_text: accusationText ?? null,
+    accusation_correct: accusationCorrect ?? null,
+  }, { onConflict: 'session_id' }).then(({ error }) => {
+    if (error) console.error('[exportSession] Failed:', error.message);
+  });
 }
 
 export function deleteSession(id: string): void {
