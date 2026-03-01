@@ -119,6 +119,27 @@ export default function HelpPage() {
               </div>
             </motion.div>
 
+            {/* Step 5 */}
+            <motion.div className="mb-12" variants={fadeUp} transition={smooth}>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl font-bold text-accent">05</span>
+                <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
+              </div>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. Run out of accusations or give up and they escape.</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
+                  <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
+                  <p className="text-xs uppercase tracking-wider text-green-500 font-bold">Apprehended</p>
+                  <p className="text-[10px] text-gray-500 mt-1">You caught the lie. Score + leaderboard.</p>
+                </div>
+                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
+                  <img src="/solved/escaped.png" alt="Escaped" className="w-28 mx-auto mb-3" />
+                  <p className="text-xs uppercase tracking-wider text-accent font-bold">Escaped</p>
+                  <p className="text-[10px] text-gray-500 mt-1">Suspect walks free. Case details revealed.</p>
+                </div>
+              </div>
+            </motion.div>
+
             {/* Tips */}
             <motion.div className="mb-12 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
               <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Detective Tips</h2>

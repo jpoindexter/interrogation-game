@@ -39,6 +39,16 @@ export default function SettingsPage() {
     }
   }, []);
 
+  // Apply settings live to the page
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.fontFamily = settings.fontFamily === 'dyslexia' ? '"OpenDyslexic", sans-serif'
+      : settings.fontFamily === 'sans' ? 'system-ui, -apple-system, sans-serif' : '';
+    root.style.fontSize = settings.fontSize === 'small' ? '14px' : settings.fontSize === 'large' ? '18px' : '';
+    root.classList.toggle('high-contrast', settings.highContrast);
+    return () => { root.style.fontFamily = ''; root.style.fontSize = ''; root.classList.remove('high-contrast'); };
+  }, [settings]);
+
   const update = (patch: Partial<AppSettings>) => {
     const next = { ...settings, ...patch };
     setSettings(next);
