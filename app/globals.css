@@ -52,6 +52,7 @@
   --color-diff-medium: var(--diff-medium);
   --color-diff-hard: var(--diff-hard);
   --color-diff-expert: var(--diff-expert);
+  --color-black: #000000;
   --color-bronze: var(--bronze);
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-pixel: var(--font-pixel), 'Press Start 2P', cursive;
@@ -237,9 +238,16 @@ body[data-font] * {
 .high-contrast {
   --background: #000000;
   --foreground: #ffffff;
-}
-.high-contrast * {
-  border-color: #666666 !important;
+  --surface: #444444;
+  --surface-dark: #333333;
+  --surface-darker: #222222;
+  --surface-hover: #555555;
+  --text-secondary: #ffffff;
+  --text-muted: #cccccc;
+  --text-dim: #999999;
+  --gold: #FFD700;
+  --accent: #FF4444;
+  --warn: #FFCC00;
 }
 .high-contrast .text-gray-300,
 .high-contrast .text-gray-400,
@@ -247,27 +255,6 @@ body[data-font] * {
 .high-contrast .text-gray-600,
 .high-contrast .text-gray-700 {
   color: #ffffff !important;
-}
-.high-contrast .text-text-secondary,
-.high-contrast .text-foreground {
-  color: #ffffff !important;
-}
-.high-contrast .text-gold {
-  color: #FFD700 !important;
-}
-.high-contrast .text-accent {
-  color: #FF4444 !important;
-}
-.high-contrast .text-warn {
-  color: #FFCC00 !important;
-}
-.high-contrast .bg-surface-darker,
-.high-contrast .bg-surface-dark,
-.high-contrast .bg-black {
-  background-color: #000000 !important;
-}
-.high-contrast .bg-surface {
-  background-color: #333333 !important;
 }
 .high-contrast .placeholder-gray-600::placeholder {
   color: #999999 !important;

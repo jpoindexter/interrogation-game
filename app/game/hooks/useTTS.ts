@@ -1,9 +1,13 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
-export function useTTS(suspectGender: string | undefined, sessionId?: string) {
+export function useTTS(suspectGender: string | undefined, sessionId?: string, onTTSError?: () => void) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
+  const onDoneRef = useRef<(() => void) | null>(null);
+  const skippedRef = useRef(false);
+  const sessionIdRef = useRef(sessionId);
+  sessionIdRef.current = sessionId;
 
   useEffect(() => {
     const load = () => { voicesRef.current = speechSynthesis.getVoices(); };
@@ -22,46 +26,64 @@ export function useTTS(suspectGender: string | undefined, sessionId?: string) {
   }, [suspectGender]);
 
   const skipSpeech = useCallback(() => {
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    skippedRef.current = true;
+    if (audioRef.current) {
+      audioRef.current.onended = null;
+      audioRef.current.onerror = null;
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     speechSynthesis.cancel();
     setIsSpeaking(false);
+    const cb = onDoneRef.current;
+    onDoneRef.current = null;
+    cb?.();
   }, []);
 
   const playTTS = useCallback(async (text: string, stress: number, suspectName: string | undefined, onDone: () => void) => {
-    const res = await fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId }) });
+    skippedRef.current = false;
+    onDoneRef.current = onDone;
+    const res = await fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, stress, suspectName, suspectGender, sessionId: sessionIdRef.current }) });
     if (!res.ok) throw new Error('TTS failed');
+    if (skippedRef.current) return;
     const url = URL.createObjectURL(await res.blob());
     const audio = new Audio(url);
     audioRef.current = audio;
-    const cleanup = () => { setIsSpeaking(false); URL.revokeObjectURL(url); audioRef.current = null; onDone(); };
+    const cleanup = () => {
+      if (skippedRef.current) return;
+      onDoneRef.current = null;
+      setIsSpeaking(false);
+      URL.revokeObjectURL(url);
+      audioRef.current = null;
+      onDone();
+    };
     audio.onended = cleanup;
     audio.onerror = cleanup;
     await audio.play();
-  }, [suspectGender, sessionId]);
-
-  const fallbackTTS = useCallback((text: string, rate: number, onDone: () => void) => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = rate;
-    pickVoice(u);
-    u.onend = () => { setIsSpeaking(false); onDone(); };
-    u.onerror = () => { setIsSpeaking(false); onDone(); };
-    speechSynthesis.speak(u);
-  }, [pickVoice]);
+  }, [suspectGender]);
 
   const speakResponse = useCallback(async (text: string, stress: number, suspectName: string | undefined, onDone: () => void, ttsEnabled: boolean) => {
     if (!ttsEnabled) { onDone(); return; }
     setIsSpeaking(true);
     try { await playTTS(text, stress, suspectName, onDone); }
-    catch { fallbackTTS(text, 0.9, onDone); }
-  }, [playTTS, fallbackTTS]);
+    catch {
+      setIsSpeaking(false);
+      onTTSError?.();
+      onDone();
+    }
+  }, [playTTS, onTTSError]);
 
   const speakConfession = useCallback((text: string, stress: number, suspectName: string | undefined): Promise<void> => {
     setIsSpeaking(true);
     return new Promise(async (resolve) => {
       try { await playTTS(text, stress, suspectName, resolve); }
-      catch { fallbackTTS(text, 0.85, resolve); }
+      catch {
+        setIsSpeaking(false);
+        onTTSError?.();
+        resolve();
+      }
     });
-  }, [playTTS, fallbackTTS]);
+  }, [playTTS, onTTSError]);
 
   // Stop all audio on unmount (e.g. user navigates away)
   useEffect(() => {

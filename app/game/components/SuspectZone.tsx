@@ -27,7 +27,7 @@ export default function SuspectZone({
 }: SuspectZoneProps) {
   return (
     <motion.div
-      className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-surface relative overflow-hidden"
+      className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-surface-darker relative overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={fadeIn}
@@ -64,17 +64,20 @@ export default function SuspectZone({
           {isSpeaking && onSkipSpeech && (
             <button
               onClick={onSkipSpeech}
-              className="absolute right-0 top-1/2 -translate-y-1/2 px-3 py-1 text-[10px] text-gray-400 hover:text-foreground uppercase tracking-wider transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold border border-surface-hover bg-surface/80 text-gray-400 hover:text-foreground hover:bg-surface-hover rounded-sm transition-colors flex items-center gap-1.5"
             >
-              Skip &raquo;
+              Skip
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 1.5L5 5L1 8.5" /><line x1="7" y1="2" x2="7" y2="8" />
+              </svg>
             </button>
           )}
         </div>
 
         {/* Dialogue */}
         <div
-          className="w-full max-w-xl border border-[#3A3A4A] rounded-sm p-4 space-y-3"
-          style={{ background: 'rgba(10, 12, 18, 0.88)', minHeight: '120px' }}
+          className="w-full max-w-xl border border-surface-darker rounded-sm p-4 space-y-3"
+          style={{ background: 'rgba(0, 0, 0, 0.85)', minHeight: '120px' }}
         >
           <div>
             <span className="text-gray-500 font-bold text-sm">You</span>
@@ -92,7 +95,7 @@ export default function SuspectZone({
             )}
           </div>
 
-          <div className="border-t border-surface" />
+          <div className="border-t border-surface-darker" />
 
           <div>
             <span className="text-gold font-bold text-sm">{caseData.suspect_name}</span>

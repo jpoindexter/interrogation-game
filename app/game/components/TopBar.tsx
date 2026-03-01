@@ -17,7 +17,7 @@ export default function TopBar({ timer, stressLevel, musicVolume, onMusicToggle 
   const muted = musicVolume === 0;
   return (
     <motion.div
-      className="p-3 border-b border-surface flex-shrink-0"
+      className="p-3 border-b border-surface-darker flex-shrink-0"
       initial="hidden"
       animate="visible"
       variants={fadeDown}

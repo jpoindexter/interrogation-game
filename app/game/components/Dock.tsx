@@ -46,14 +46,14 @@ export default function Dock({
 
   return (
     <motion.div
-      className="flex-shrink-0 flex justify-center p-3 border-t border-surface"
+      className="flex-shrink-0 flex justify-center p-3 border-t border-surface-darker"
       initial="hidden"
       animate="visible"
       variants={fadeUp}
       transition={snappy}
     >
       <motion.div
-        className="flex items-end gap-1 px-3 py-2 bg-surface-dark/80 backdrop-blur-sm border border-surface rounded-2xl"
+        className="flex items-end gap-1 px-3 py-2 bg-surface-dark/80 backdrop-blur-sm border border-surface-darker rounded-2xl"
         variants={stagger(0.04)}
         initial="hidden"
         animate="visible"
