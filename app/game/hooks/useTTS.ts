@@ -63,5 +63,13 @@ export function useTTS(suspectGender: string | undefined, sessionId?: string) {
     });
   }, [playTTS, fallbackTTS]);
 
+  // Stop all audio on unmount (e.g. user navigates away)
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      speechSynthesis.cancel();
+    };
+  }, []);
+
   return { isSpeaking, setIsSpeaking, audioRef, speakResponse, speakConfession, skipSpeech };
 }
