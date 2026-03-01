@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, AnimatePresence, fadeUp, fadeIn, smooth, snappy } from '../../components/motion';
 
 interface NotesPanelProps {
@@ -11,9 +11,13 @@ interface NotesPanelProps {
 }
 
 const LINE_HEIGHT = 24;
+const MIN_HEIGHT = 120;
+const MAX_HEIGHT = 600;
 
 export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosChange }: NotesPanelProps) {
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const resizeRef = useRef<{ startY: number; origH: number } | null>(null);
+  const [height, setHeight] = useState(312);
 
   return (
     <AnimatePresence>
@@ -94,17 +98,41 @@ export default function NotesPanel({ show, notes, pos, onChange, onClose, onPosC
                 onChange={(e) => onChange(e.target.value)}
                 autoFocus
                 placeholder="Write your notes here..."
-                className="w-full h-[312px] bg-transparent focus:outline-none resize-none"
+                className="w-full bg-transparent focus:outline-none resize-none"
                 style={{
                   fontFamily: 'var(--font-handwriting)',
                   fontSize: '14px',
                   lineHeight: `${LINE_HEIGHT}px`,
                   padding: '12px 16px 12px 52px',
                   color: '#2a2a3a',
+                  height,
                 }}
               />
             </div>
           </motion.div>
+          {/* Resize handle */}
+          <div
+            className="h-2 cursor-ns-resize flex items-center justify-center select-none"
+            style={{ background: '#4a6a4a', borderTop: '1px solid #3a5a3a' }}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              resizeRef.current = { startY: e.clientY, origH: height };
+              const onMove = (ev: MouseEvent) => {
+                if (!resizeRef.current) return;
+                const newH = Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, resizeRef.current.origH + (ev.clientY - resizeRef.current.startY)));
+                setHeight(newH);
+              };
+              const onUp = () => {
+                resizeRef.current = null;
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onUp);
+              };
+              window.addEventListener('mousemove', onMove);
+              window.addEventListener('mouseup', onUp);
+            }}
+          >
+            <div className="w-8 h-[2px] rounded-full bg-white/30" />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
