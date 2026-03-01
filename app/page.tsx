@@ -14,6 +14,10 @@ import {
   snappy,
 } from './components/motion';
 
+const playSfx = () => {
+  try { const a = new Audio('/efx/click.wav'); a.volume = 0.3; a.play().catch(() => {}); } catch {}
+};
+
 export default function HomePage() {
   const router = useRouter();
 
@@ -175,7 +179,7 @@ export default function HomePage() {
           transition={{ ...smooth, delay: 0.3 }}
         >
           <motion.button
-            onClick={() => router.push('/cases')}
+            onClick={() => { playSfx(); router.push('/cases'); }}
             className="px-8 py-3 bg-accent hover:bg-accent-hover text-white text-xs font-bold uppercase tracking-wider rounded-sm transition-colors"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}

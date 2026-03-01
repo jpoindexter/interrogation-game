@@ -6,6 +6,14 @@ import CasePage from './CaseFilePage';
 import EvidencePage from './EvidencePage';
 import LogPage from './LogPage';
 
+const playPaper = () => {
+  try {
+    const a = new Audio('/efx/paper.wav');
+    a.volume = 0.25;
+    a.play().catch(() => {});
+  } catch {}
+};
+
 interface CaseFileProps {
   caseData: Case;
   clues: string[];
@@ -58,7 +66,7 @@ export default function CaseFile({
         {tabs.map(({ key, label, badge, color, activeColor }) => (
           <button
             key={key}
-            onClick={() => setPage(key)}
+            onClick={() => { if (page !== key) playPaper(); setPage(key); }}
             className={`px-2 py-5 text-[11px] font-bold transition-colors rounded-l-sm mb-0.5 ${
               page === key ? `${activeColor} text-black/80` : `${color} text-black/30 opacity-70 hover:opacity-90`
             }`}

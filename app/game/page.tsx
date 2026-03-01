@@ -25,6 +25,7 @@ import { useVoiceRecorder } from './hooks/useVoiceRecorder';
 import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { useSettings } from './hooks/useSettings';
+import { useSfx } from './hooks/useSfx';
 import { Spinner } from '../components/ui';
 import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
 
@@ -75,6 +76,7 @@ function GameContent() {
   const [toast, setToast] = useState<string | null>(null);
   const showToast = useCallback((msg: string) => { setToast(msg); setTimeout(() => setToast(null), 4000); }, []);
 
+  const sfx = useSfx();
   const { isListening, setIsListening, startRecording, stopListening } = useVoiceRecorder(caseData?.sessionId);
   const ttsErrorToast = useCallback(() => showToast('Voice server unavailable — reading text instead'), [showToast]);
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId, ttsErrorToast);
@@ -142,6 +144,7 @@ function GameContent() {
           if (prev.includes(data.clue_unlocked)) return prev;
           const next = [...prev, data.clue_unlocked];
           setClueNotification(next.length);
+          sfx('papershuffle');
           setTimeout(() => setClueNotification(null), 3000);
           return next;
         });
@@ -243,15 +246,16 @@ function GameContent() {
         {caseData && <CaseFile caseData={caseData} clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} conversationHistory={conversationHistory} />}
       </div>
       <ClueNotification clueNumber={clueNotification} clueIcons={clueIcons} cluesNeeded={cluesNeeded} />
-      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sendQuestion(v); setTextInput(''); }} />
+      <TextInputPanel show={showTextInput} value={textInput} disabled={phase !== 'active' || isSpeaking || isAccusing} onChange={setTextInput} onSubmit={(v) => { sfx('typewriter'); sendQuestion(v); setTextInput(''); }} />
       <NotesPanel show={showNotes} notes={notes} pos={notesPos} onChange={setNotes} onClose={() => setShowNotes(false)} onPosChange={setNotesPos} />
       <ExitConfirmDialog show={showExitConfirm} onConfirm={() => { if (timerRef.current) clearInterval(timerRef.current); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } speechSynthesis.cancel(); router.push('/cases'); }} onCancel={() => setShowExitConfirm(false)} />
       <GiveUpConfirmDialog show={showGiveUpConfirm} onConfirm={handleGiveUp} onCancel={() => setShowGiveUpConfirm(false)} />
       <AccuseConfirmDialog show={showAccuseConfirm} accusationsLeft={accusationsLeft} accuseText={accuseText} onChange={setAccuseText} onSubmitText={(v) => { setShowAccuseConfirm(false); setIsAccusing(true); submitAccusation(v); setAccuseText(''); }} onVoice={() => { setShowAccuseConfirm(false); startAccusation(); }} onCancel={() => { setShowAccuseConfirm(false); setAccuseText(''); }} />
       <SettingsPanel show={showSettings} settings={settings} pos={settingsPos} onSettingsChange={updateSettings} onClose={() => setShowSettings(false)} onPosChange={setSettingsPos} />
       <HelpPanel show={showHelp} pos={helpPos} cluesNeeded={cluesNeeded} clueIcons={clueIcons} onClose={() => setShowHelp(false)} onPosChange={setHelpPos} />
-      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={isListening ? stopListening : startListening} onTypeToggle={() => setShowTextInput(!showTextInput)} onNotesToggle={() => setShowNotes(!showNotes)}
+      <Dock isListening={isListening} isSpeaking={isSpeaking} isAccusing={isAccusing} phase={phase} showTextInput={showTextInput} showNotes={showNotes} showSettings={showSettings} showAccuseConfirm={showAccuseConfirm} clues={clues} cluesNeeded={cluesNeeded} accusationsLeft={accusationsLeft} hintsUsed={hintsUsed} caseData={caseData} onMicToggle={() => { sfx('click'); (isListening ? stopListening : startListening)(); }} onTypeToggle={() => { sfx(showTextInput ? 'close' : 'click'); setShowTextInput(!showTextInput); }} onNotesToggle={() => { sfx(showNotes ? 'close' : 'paper'); setShowNotes(!showNotes); }}
         onHintClick={async () => {
+          sfx('click');
           if (!caseData) return;
           try {
             const res = await fetch('/api/hint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId }) });
@@ -260,7 +264,7 @@ function GameContent() {
             else if (data.error) showToast(data.error);
           } catch { showToast('Could not retrieve hint'); }
         }}
-        onAccuseClick={isAccusing && isListening ? stopListening : () => setShowAccuseConfirm(true)} onSettingsToggle={() => setShowSettings(!showSettings)} onGiveUpClick={() => setShowGiveUpConfirm(true)} onHelpToggle={() => setShowHelp(!showHelp)} onExitClick={() => setShowExitConfirm(true)} />
+        onAccuseClick={isAccusing && isListening ? stopListening : () => { sfx('click'); setShowAccuseConfirm(true); }} onSettingsToggle={() => { sfx(showSettings ? 'close' : 'click'); setShowSettings(!showSettings); }} onGiveUpClick={() => { sfx('click'); setShowGiveUpConfirm(true); }} onHelpToggle={() => { sfx(showHelp ? 'close' : 'paper'); setShowHelp(!showHelp); }} onExitClick={() => { sfx('click'); setShowExitConfirm(true); }} />
       <AnimatePresence>
         {toast && (<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.25 }} className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-accent/90 text-foreground font-mono text-xs px-4 py-2 rounded border border-accent">{toast}</motion.div>)}
       </AnimatePresence>
