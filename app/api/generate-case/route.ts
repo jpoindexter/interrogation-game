@@ -3,6 +3,8 @@ import { generateCase } from '../../../src/lib/mistral';
 import { validateDifficulty, validateCaseData } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
 import { createSession, sanitizeCaseForClient } from '../../../src/lib/game-session';
+import supabase from '../../../src/lib/db';
+import { embedOne } from '../../../src/lib/mistral/embeddings';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,11 +40,42 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Generated case failed validation' }, { status: 500 });
     }
 
+    // Fetch learned patterns from prior games (RAG)
+    let learnedTactics: string[] = [];
+    let totalPriorGames = 0;
+    try {
+      const queryText = `Setting: ${setting || 'any'}\nDifficulty: ${difficulty}\nEffective interrogation tactics`;
+      const queryEmbedding = await embedOne(queryText);
+      const { data } = await supabase.rpc('match_patterns', {
+        query_embedding: JSON.stringify(queryEmbedding),
+        match_threshold: 0.25,
+        match_count: 30,
+        filter_difficulty: difficulty,
+      });
+      if (data && data.length > 0) {
+        totalPriorGames = data.length;
+        const freq = new Map<string, number>();
+        for (const p of data) {
+          const qs = (p.effective_questions?.length ? p.effective_questions : p.questions) || [];
+          for (const q of qs) {
+            const n = q.toLowerCase().trim();
+            if (n.length > 10) freq.set(n, (freq.get(n) || 0) + 1);
+          }
+        }
+        learnedTactics = [...freq.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 8)
+          .map(([q]) => q);
+      }
+    } catch (err) {
+      console.error('Pattern retrieval failed (non-fatal):', err);
+    }
+
     // Store validated case data server-side, return only safe fields + session ID
-    const sessionId = createSession(validatedCase);
+    const sessionId = createSession(validatedCase, learnedTactics, totalPriorGames);
     const clientData = sanitizeCaseForClient(validatedCase);
 
-    return NextResponse.json({ ...clientData, sessionId });
+    return NextResponse.json({ ...clientData, sessionId, priorGames: totalPriorGames });
   } catch (error) {
     console.error('Error generating case:', error);
     return NextResponse.json(

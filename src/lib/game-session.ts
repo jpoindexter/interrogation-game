@@ -25,6 +25,8 @@ export interface GameSession {
   startTime: number;            // Timestamp when session was created (for score calculation)
   hintsUsed: number;            // Server-side hint count — prevents client manipulation
   accusationsUsed: number;      // Server-side accusation count — prevents client manipulation
+  learnedTactics: string[];     // Cross-session learning — common player strategies to defend against
+  totalPriorGames: number;      // How many prior games inform this suspect's knowledge
 }
 
 interface WinTokenEntry {
@@ -48,7 +50,7 @@ const sessions = globalSessions.__gameSessions;
 const SESSION_TTL = 60 * 60 * 1000; // 1 hour
 const MAX_SESSIONS = 5000;
 
-export function createSession(caseData: Record<string, unknown>): string {
+export function createSession(caseData: Record<string, unknown>, learnedTactics: string[] = [], totalPriorGames = 0): string {
   // Enforce max sessions to prevent memory exhaustion
   if (sessions.size >= MAX_SESSIONS) {
     pruneOldest(Math.floor(MAX_SESSIONS * 0.2));
@@ -69,6 +71,8 @@ export function createSession(caseData: Record<string, unknown>): string {
     startTime: now,
     hintsUsed: 0,
     accusationsUsed: 0,
+    learnedTactics,
+    totalPriorGames,
   });
   return id;
 }

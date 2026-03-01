@@ -26,6 +26,7 @@ import { useTTS } from './hooks/useTTS';
 import { useGameTimer } from './hooks/useGameTimer';
 import { useSettings } from './hooks/useSettings';
 import { useSfx } from './hooks/useSfx';
+import { usePatterns } from './hooks/usePatterns';import { useEndGame } from './hooks/useEndGame';
 import { Spinner } from '../components/ui';
 import { motion, AnimatePresence, fadeIn, smooth } from '../components/motion';
 
@@ -80,6 +81,13 @@ function GameContent() {
   const ttsErrorToast = useCallback(() => showToast('Voice server unavailable — reading text instead'), [showToast]);
   const { isSpeaking, audioRef, speakResponse, speakConfession, skipSpeech } = useTTS(caseData?.suspect_gender, caseData?.sessionId, ttsErrorToast);
   const { remaining, elapsed, timeLimit, timerRef, onExpire } = useGameTimer(phase, isSpeaking, difficulty);
+  const storePatterns = usePatterns(caseData?.sessionId, caseData?.setting, difficulty, elapsed);
+  const { handleLose, handleTimeUp, handleGiveUp } = useEndGame({
+    caseData, conversationHistory, maxStress, cluesLength: clues.length,
+    timerRef, sfx, speakResponse, ttsEnabled: settings.ttsEnabled,
+    setPhase, setLastResponse, setShowGiveUpConfirm: setShowGiveUpConfirm,
+    storePatterns, router,
+  });
   const dialogueEndRef = useRef<HTMLDivElement | null>(null);
   const prevVolumeRef = useRef(settings.musicVolume > 0 ? settings.musicVolume : 0.1);
   const prevSfxRef = useRef((settings.sfxVolume ?? 0.5) > 0 ? (settings.sfxVolume ?? 0.5) : 0.5);
@@ -211,6 +219,7 @@ function GameContent() {
       if (data.correct) {
         sfx('win');
         if (timerRef.current) clearInterval(timerRef.current);
+        storePatterns('win', updatedHistory, stressLevel, clues.length);
         sessionStorage.setItem('gameResult', JSON.stringify({ type: 'win', caseData, sessionId: caseData.sessionId, winToken: data.winToken || '', conversationHistory: updatedHistory, confession: data.confession, timeElapsed: elapsed, difficulty, stressLevel, cluesFound: clues.length, hintsUsed, accusationsUsed: 3 - (data.accusationsLeft ?? accusationsLeft) }));
         try { await speakConfession(data.confession, 10, caseData.suspect_name); } catch {}
         router.push('/game/win');
@@ -237,62 +246,6 @@ function GameContent() {
     setIsAccusing(true);
     startRecording(async (t) => { setIsListening(false); await submitAccusation(t); }, (msg) => { setIsListening(false); setIsAccusing(false); setLastTranscript(msg); }, setLastTranscript);
   };
-
-  const handleLose = (extra?: Record<string, unknown>) => {
-    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData?.sessionId, conversationHistory, maxStress, ...extra }));
-    router.push('/game/lose');
-  };
-
-  const handleTimeUp = useCallback(async () => {
-    sfx('alarm');
-    setPhase('processing');
-    if (timerRef.current) clearInterval(timerRef.current);
-    let timeUpRemark = '';
-    if (caseData) {
-      try {
-        const res = await fetch('/api/interrogate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: '[Time is up. The interrogation is over and the suspect is free to go. Respond with one short, smug remark about the detective running out of time. Max 2 sentences.]' }) });
-        const data = await res.json();
-        if (data.spoken_response) {
-          timeUpRemark = data.spoken_response;
-          setLastResponse(timeUpRemark);
-          await new Promise<void>((resolve) => {
-            speakResponse(timeUpRemark, 1, caseData.suspect_name, resolve, settings.ttsEnabled);
-          });
-        }
-      } catch {}
-    }
-    // Sound sequence: standing up → chair → door → gameover → navigate
-    sfx('standing_up');
-    setTimeout(() => sfx('chair_slide'), 800);
-    setTimeout(() => sfx('door'), 1800);
-    setTimeout(() => sfx('gameover'), 2800);
-    setTimeout(() => {
-      handleLose({ timeUp: true, timeUpRemark });
-    }, 4500);
-  }, [caseData, sfx, timerRef, speakResponse, settings.ttsEnabled]);
-
-  const handleGiveUp = useCallback(async () => {
-    setShowGiveUpConfirm(false);
-    if (!caseData) return;
-    sfx('chair_slide');
-    setTimeout(() => sfx('sigh'), 500);
-    setPhase('processing');
-    if (timerRef.current) clearInterval(timerRef.current);
-    let cleverRemark = '';
-    try {
-      const res = await fetch('/api/interrogate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: caseData.sessionId, playerQuestion: '[The detective has given up and is leaving. Respond with one short, smug remark as the suspect who got away with it. Max 2 sentences.]' }) });
-      const data = await res.json();
-      if (data.spoken_response) {
-        cleverRemark = data.spoken_response;
-        setLastResponse(cleverRemark);
-        await new Promise<void>((resolve) => {
-          speakResponse(cleverRemark, 1, caseData.suspect_name, resolve, settings.ttsEnabled);
-        });
-      }
-    } catch {}
-    sessionStorage.setItem('gameResult', JSON.stringify({ type: 'lose', caseData, sessionId: caseData.sessionId, conversationHistory, maxStress, gaveUp: true, cleverRemark }));
-    router.push('/game/lose');
-  }, [caseData, conversationHistory, maxStress, timerRef, speakResponse, settings.ttsEnabled, router]);
 
   if (phase === 'loading') return <LoadingScreen />;
   if (phase === 'briefing' && caseData) return <BriefingScreen caseData={caseData} difficulty={difficulty} onStart={() => sendQuestion('*Detective sits down and opens the case file*', true)} onBack={() => router.push('/cases')} />;

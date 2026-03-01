@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         sanitized,
         questionCount,
         currentStress,
+        session.learnedTactics,
       );
 
       // Store conversation on server

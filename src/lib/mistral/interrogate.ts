@@ -71,7 +71,8 @@ export async function interrogate(
   conversationHistory: ConversationMessage[],
   playerQuestion: string,
   questionCount?: number,
-  currentStress?: number
+  currentStress?: number,
+  learnedTactics?: string[],
 ) {
   const difficulty = caseData.difficulty || 'medium';
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
@@ -228,7 +229,10 @@ Instead, reference your specific role, situation, or personality. Examples:
 Your opening should reflect your role (${caseData.suspect_role}), your setting (${caseData.setting}), and your personality at ${difficulty.toUpperCase()} difficulty.`;
 
   const adaptiveSection = buildAdaptiveBehavior(questionCount ?? 0, currentStress ?? 0);
-  const fullPrompt = systemPrompt + adaptiveSection;
+  const learnedSection = learnedTactics && learnedTactics.length > 0
+    ? `\n\n---\n\nCROSS-INTERROGATION INTELLIGENCE — Previous detectives have used these tactics against suspects like you. Be prepared to deflect them:\n${learnedTactics.map((t, i) => `${i + 1}. "${t}"`).join('\n')}\n\nYou've heard variations of these questions before. When you recognize one of these approaches, deflect MORE skillfully than usual — you've had time to prepare counter-responses. But don't reference other interrogations directly.`
+    : '';
+  const fullPrompt = systemPrompt + adaptiveSection + learnedSection;
 
   const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
     { role: 'system', content: fullPrompt },

@@ -181,6 +181,7 @@ export default function AboutPage() {
                 { name: 'Suno', url: 'https://suno.com', desc: 'AI-generated background music tracks for menu and in-game atmosphere.' },
                 { name: 'Pixabay', url: 'https://pixabay.com', desc: 'Royalty-free sound effects used throughout the game.' },
                 { name: 'OpenAI Sora', url: 'https://openai.com/sora', desc: 'AI image generation for game artwork and visual assets.' },
+                { name: 'FFmpeg', url: 'https://ffmpeg.org', desc: 'Open-source audio/video processing used to trim and optimize all game sound effects.' },
               ].map((item) => (
                 <motion.a
                   key={item.name}
