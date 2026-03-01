@@ -11,6 +11,7 @@ const SFX: Record<string, { src: string; vol: number }> = {
   paper_ruffle: { src: '/efx/paper_ruffle.wav',  vol: 0.2 },
   mic_on:       { src: '/efx/mic_on.wav',        vol: 0.25 },
   mic_off:      { src: '/efx/mic_off.wav',       vol: 0.25 },
+  folderopen:   { src: '/efx/folderopen.mp3',    vol: 0.25 },
   slam:         { src: '/efx/slam.mp3',          vol: 0.35 },
   chime:        { src: '/efx/chime.mp3',         vol: 0.25 },
   error:        { src: '/efx/error.mp3',         vol: 0.2 },
@@ -80,6 +81,7 @@ export function useSfx() {
     // Quick fade-out for slam, chime, etc
     const fadeConfig: Record<string, { delay: number; duration: number }> = {
       click_short: { delay: 80, duration: 200 },
+      folderopen: { delay: 500, duration: 400 },
       slam: { delay: 400, duration: 500 },
       chime: { delay: 600, duration: 800 },
       error: { delay: 300, duration: 500 },

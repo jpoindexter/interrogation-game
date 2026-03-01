@@ -103,7 +103,7 @@ function GameContent() {
           if (cancelled) return;
           data = await attempt();
         }
-        if (!cancelled) { setCaseData(data); setPhase('briefing'); }
+        if (!cancelled) { setCaseData(data); setPhase('briefing'); sfx('folderopen'); }
       } catch (err) {
         console.error('Failed to load case:', err);
         if (!cancelled) router.push('/');
