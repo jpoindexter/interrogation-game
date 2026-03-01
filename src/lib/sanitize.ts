@@ -60,7 +60,8 @@ export function validateDifficulty(val: unknown): string | null {
 }
 
 const CASE_FIELDS: Record<string, number> = {
-  suspect_name: 100, suspect_role: 200, setting: 200, crime: 500,
+  case_number: 20, setting: 200, crime: 500, briefing: 1000,
+  suspect_name: 100, suspect_gender: 10, suspect_role: 200,
   suspect_true_story: 1000, suspect_cover_story: 1000,
   the_lie: 500, the_truth: 500, the_contradiction: 500, difficulty: 20,
 };
@@ -76,6 +77,11 @@ export function validateCaseData(data: unknown): Record<string, unknown> | null 
     if (!Array.isArray(d[key])) return null;
     clean[key] = (d[key] as string[]).slice(0, 10).map((s) =>
       typeof s === 'string' ? sanitizeInput(s.slice(0, 300)) : '');
+  }
+  // Optional arrays
+  if (Array.isArray(d.detective_leads)) {
+    clean.detective_leads = (d.detective_leads as string[]).slice(0, 5).map((s) =>
+      typeof s === 'string' ? sanitizeInput(s.slice(0, 500)) : '');
   }
   return clean;
 }

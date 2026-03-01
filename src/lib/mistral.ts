@@ -110,6 +110,7 @@ Respond ONLY in this exact JSON format:
   "setting": "where this takes place (company name and type)",
   "crime": "what happened in one sentence",
   "briefing": "3 sentence briefing the detective reads before starting. Written in second person. Direct. No fluff.",
+  "detective_leads": ["Exactly 3 first-person detective leads written as inner monologue. One lead points toward the real weak spot (without revealing the lie). The other two are plausible red herrings — they sound suspicious but lead nowhere. Shuffle the order randomly. Example: 'He mentioned a software glitch caused the data loss... but the logs show the system was stable that day. I should press him on that.', 'The security guard said he saw someone near the server room at 2am. Could be worth digging into.', 'His colleague filed a complaint last month — maybe there is bad blood here.'"],
   "suspect_name": "a realistic full name",
   "suspect_gender": "male or female",
   "suspect_role": "their job title",

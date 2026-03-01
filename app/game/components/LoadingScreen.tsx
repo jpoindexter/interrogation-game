@@ -36,7 +36,7 @@ export default function LoadingScreen() {
           GENERATING CASE...
         </motion.h1>
         <div
-          className="relative p-6 pl-10 rounded-sm text-left overflow-hidden"
+          className="relative p-6 pl-10 rounded-sm text-left"
           style={{
             background: 'repeating-linear-gradient(transparent, transparent 19px, rgba(100,140,180,0.2) 19px, rgba(100,140,180,0.2) 20px), linear-gradient(180deg, #F5E6A3 0%, #EDD98B 100%)',
             boxShadow: '0 4px 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',

@@ -263,13 +263,13 @@ export default function CaseSelectPage() {
                     scale: fanScale,
                     opacity,
                   }}
-                  transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                   style={{ zIndex, transformOrigin: 'bottom center' }}
                 >
                   {/* Floating bob on active card (disabled when expanded) */}
                   <motion.div
-                    animate={isActive && !expanded ? { y: [0, -6, 0] } : { y: 0 }}
-                    transition={isActive && !expanded ? { duration: 3, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
+                    animate={isActive && !expanded ? { y: [0, -4, 0] } : { y: 0 }}
+                    transition={isActive && !expanded ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.15 }}
                   >
                     <button
                       onClick={() => {
@@ -292,9 +292,9 @@ export default function CaseSelectPage() {
                             ? '3px 5px 20px rgba(0,0,0,0.7), 1px 2px 4px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.05)'
                             : '2px 3px 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.03)',
                         }}
-                        animate={isActive && expanded ? { scale: 1.08 } : { scale: 1 }}
-                        whileHover={isActive && !expanded ? { scale: 1.03, rotate: 1 } : {}}
-                        transition={expanded ? { duration: 0.35, type: 'spring', damping: 20 } : { duration: 0.15 }}
+                        animate={isActive && expanded ? { scale: 1.05 } : { scale: 1 }}
+                        whileHover={isActive && !expanded ? { scale: 1.02 } : {}}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
                       >
                         {/* Worn edge effects */}
                         <div className="absolute inset-0 pointer-events-none" style={{
@@ -403,11 +403,11 @@ export default function CaseSelectPage() {
                       <AnimatePresence>
                         {isActive && expanded && (
                           <motion.div
-                            initial={{ opacity: 0, y: -10, scaleY: 0 }}
-                            animate={{ opacity: 1, y: 0, scaleY: 1 }}
-                            exit={{ opacity: 0, y: -10, scaleY: 0 }}
-                            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-                            className="mt-2 origin-top"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.12, ease: 'easeOut' }}
+                            className="mt-2 overflow-hidden"
                           >
                             <div
                               className="relative p-4 text-left"

@@ -4,6 +4,7 @@ export interface Case {
   setting: string;
   crime: string;
   briefing: string;
+  detective_leads?: string[];
   suspect_name: string;
   suspect_gender: string;
   suspect_role: string;
