@@ -3,130 +3,82 @@ import { useRef, useState, useCallback } from 'react';
 export function useVoiceRecorder(sessionId?: string) {
   const [isListening, setIsListening] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
+  const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const silenceTimerRef = useRef<number>(0);
-  const rafSilenceRef = useRef<number>(0);
+  const silenceRef = useRef<number>(0);
+  const rafRef = useRef<number>(0);
 
-  const transcribeAudio = async (blob: Blob): Promise<string> => {
-    const formData = new FormData();
-    formData.append('audio', blob, 'recording.webm');
-    if (sessionId) formData.append('sessionId', sessionId);
-    const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+  const transcribe = async (blob: Blob): Promise<string> => {
+    const fd = new FormData();
+    fd.append('audio', blob, 'recording.webm');
+    if (sessionId) fd.append('sessionId', sessionId);
+    const res = await fetch('/api/transcribe', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     return (data.text ?? '').trim();
   };
 
   const stopListening = useCallback(() => {
-    if (recorderRef.current && recorderRef.current.state === 'recording') {
-      recorderRef.current.stop();
-    }
-    cancelAnimationFrame(rafSilenceRef.current);
+    if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
+    cancelAnimationFrame(rafRef.current);
     setIsListening(false);
   }, []);
 
   const startSilenceDetection = useCallback((stream: MediaStream) => {
-    const audioCtx = new AudioContext();
-    const source = audioCtx.createMediaStreamSource(stream);
-    const analyser = audioCtx.createAnalyser();
+    const ctx = new AudioContext();
+    const analyser = ctx.createAnalyser();
     analyser.fftSize = 512;
-    source.connect(analyser);
-    analyserRef.current = analyser;
-    silenceTimerRef.current = 0;
-
-    const data = new Uint8Array(analyser.frequencyBinCount);
-    let lastTime = performance.now();
-
+    ctx.createMediaStreamSource(stream).connect(analyser);
+    silenceRef.current = 0;
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+    let last = performance.now();
     const check = () => {
-      analyser.getByteFrequencyData(data);
-      const rms = Math.sqrt(data.reduce((sum, v) => sum + v * v, 0) / data.length);
+      analyser.getByteFrequencyData(buf);
+      const rms = Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length);
       const now = performance.now();
-      const dt = (now - lastTime) / 1000;
-      lastTime = now;
-
-      if (rms < 15) {
-        silenceTimerRef.current += dt;
-        if (silenceTimerRef.current >= 2) {
-          stopListening();
-          audioCtx.close();
-          return;
-        }
-      } else {
-        silenceTimerRef.current = 0;
-      }
-      rafSilenceRef.current = requestAnimationFrame(check);
+      if (rms < 15) { silenceRef.current += (now - last) / 1000; if (silenceRef.current >= 2) { stopListening(); ctx.close(); return; } }
+      else silenceRef.current = 0;
+      last = now;
+      rafRef.current = requestAnimationFrame(check);
     };
-    rafSilenceRef.current = requestAnimationFrame(check);
-    return audioCtx;
+    rafRef.current = requestAnimationFrame(check);
   }, [stopListening]);
 
   const startRecording = useCallback(async (
-    onTranscript: (transcript: string) => void,
+    onTranscript: (t: string) => void,
     onError: (msg: string) => void,
     setLastTranscript?: (t: string) => void,
   ) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : MediaRecorder.isTypeSupported('audio/webm')
-          ? 'audio/webm'
-          : 'audio/mp4';
-
-      const recorder = new MediaRecorder(stream, { mimeType });
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m)) || 'audio/mp4';
+      const recorder = new MediaRecorder(stream, { mimeType: mime });
       recorderRef.current = recorder;
-      audioChunksRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       recorder.onstop = async () => {
-        cancelAnimationFrame(rafSilenceRef.current);
+        cancelAnimationFrame(rafRef.current);
         stream.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
-
-        const blob = new Blob(audioChunksRef.current, { type: mimeType });
-        if (blob.size < 2000) {
-          onError('(no speech detected — try again)');
-          return;
-        }
-
+        const blob = new Blob(chunksRef.current, { type: mime });
+        if (blob.size < 2000) { onError('(no speech detected — try again)'); return; }
         try {
           setLastTranscript?.('(transcribing...)');
-          const transcript = await transcribeAudio(blob);
-          if (transcript) {
-            onTranscript(transcript);
-          } else {
-            onError('(no speech detected — try again)');
-          }
-        } catch (err) {
-          console.error('Transcription failed:', err);
-          onError('(transcription failed — try again or type below)');
-        }
+          const text = await transcribe(blob);
+          text ? onTranscript(text) : onError('(no speech detected — try again)');
+        } catch { onError('(transcription failed — try again or type below)'); }
       };
-
       recorder.start(250);
       setIsListening(true);
       startSilenceDetection(stream);
     } catch (err) {
-      console.error('Microphone access error:', err);
       if (err instanceof DOMException && err.name === 'NotAllowedError') {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-          (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        if (isIOS && isSafari) {
-          onError('(mic blocked — go to Settings > Safari > Microphone to enable)');
-        } else {
-          onError('(mic access denied — allow microphone in browser settings, or tap the keyboard icon to type)');
-        }
-      } else {
-        onError('(microphone unavailable — use the keyboard icon to type instead)');
-      }
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+        onError(isIOS && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+          ? '(mic blocked — go to Settings > Safari > Microphone to enable)'
+          : '(mic access denied — allow microphone in browser settings, or tap the keyboard icon to type)');
+      } else onError('(microphone unavailable — use the keyboard icon to type instead)');
     }
   }, [startSilenceDetection]);
 

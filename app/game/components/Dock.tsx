@@ -38,8 +38,8 @@ export default function Dock({
   onAccuseClick, onSettingsToggle, onGiveUpClick, onHelpToggle, onExitClick,
 }: DockProps) {
   const busy = phase === 'processing' || isSpeaking;
-  const hintsMax = Math.min(cluesNeeded, caseData?.stress_triggers?.length ?? 0);
-  const hintsExhausted = !caseData || hintsUsed >= hintsMax;
+  // Server enforces actual limit; client uses cluesNeeded as the visible cap
+  const hintsExhausted = !caseData || hintsUsed >= cluesNeeded;
   const accuseDisabled =
     (!isAccusing && (busy || accusationsLeft <= 0 || clues.length < cluesNeeded || showAccuseConfirm))
     || (isAccusing && !isListening);

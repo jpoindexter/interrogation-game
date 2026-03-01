@@ -1,8 +1,16 @@
 // Server-side game session store
 // Keeps case secrets + conversation history on the server so the client never sees answers
 
-import { randomBytes } from 'crypto';
+import { randomBytes, timingSafeEqual } from 'crypto';
 import type { ConversationMessage } from './mistral';
+
+// Difficulty → minimum clues required before accusation is allowed
+export const DIFFICULTY_CLUES: Record<string, number> = {
+  easy: 2,
+  medium: 3,
+  hard: 4,
+  expert: 5,
+};
 
 export interface GameSession {
   id: string;
@@ -13,6 +21,10 @@ export interface GameSession {
   winToken: string | null; // Set when player wins — required for leaderboard submission
   createdAt: number;
   lastActivity: number;
+  cluesCollected: number;       // Server-side clue count — enforced before accusation
+  startTime: number;            // Timestamp when session was created (for score calculation)
+  hintsUsed: number;            // Server-side hint count — prevents client manipulation
+  accusationsUsed: number;      // Server-side accusation count — prevents client manipulation
 }
 
 const sessions = new Map<string, GameSession>();
@@ -27,6 +39,7 @@ export function createSession(caseData: Record<string, unknown>): string {
   }
 
   const id = randomBytes(24).toString('hex');
+  const now = Date.now();
   sessions.set(id, {
     id,
     caseData,
@@ -34,8 +47,12 @@ export function createSession(caseData: Record<string, unknown>): string {
     accusationsLeft: 3,
     currentStress: 0,
     winToken: null,
-    createdAt: Date.now(),
-    lastActivity: Date.now(),
+    createdAt: now,
+    lastActivity: now,
+    cluesCollected: 0,
+    startTime: now,
+    hintsUsed: 0,
+    accusationsUsed: 0,
   });
   return id;
 }
@@ -75,9 +92,56 @@ export function restoreAccusation(sessionId: string): void {
   session.accusationsLeft = Math.min(3, session.accusationsLeft + 1);
 }
 
+/** Increment the server-side clue count. Returns new total. */
+export function incrementClue(sessionId: string): number {
+  const session = getSession(sessionId);
+  if (!session) return 0;
+  session.cluesCollected += 1;
+  return session.cluesCollected;
+}
+
+/** Increment the server-side hint count. Returns new total. */
+export function incrementHint(sessionId: string): number {
+  const session = getSession(sessionId);
+  if (!session) return 0;
+  session.hintsUsed += 1;
+  return session.hintsUsed;
+}
+
+/** Increment the server-side accusation count. Returns new total. */
+export function incrementAccusation(sessionId: string): number {
+  const session = getSession(sessionId);
+  if (!session) return 0;
+  session.accusationsUsed += 1;
+  return session.accusationsUsed;
+}
+
+/** Get server-side session stats for leaderboard scoring. */
+export function getSessionStats(sessionId: string): {
+  timeElapsed: number;
+  hintsUsed: number;
+  accusationsUsed: number;
+  difficulty: string;
+} | null {
+  const session = getSession(sessionId);
+  // Also check winTokens — session might have been deleted after win
+  if (!session) return null;
+  return {
+    timeElapsed: (Date.now() - session.startTime) / 1000,
+    hintsUsed: session.hintsUsed,
+    accusationsUsed: session.accusationsUsed,
+    difficulty: (session.caseData.difficulty as string) || 'medium',
+  };
+}
+
 // Win tokens live in a separate Map so they survive session deletion.
 // Flow: accuse → issueWinToken → evaluate (deletes session) → leaderboard (consumes token)
-const winTokens = new Map<string, { token: string; issuedAt: number }>();
+interface WinTokenEntry {
+  token: string;
+  issuedAt: number;
+  stats: { timeElapsed: number; hintsUsed: number; accusationsUsed: number; difficulty: string };
+}
+const winTokens = new Map<string, WinTokenEntry>();
 const WIN_TOKEN_TTL = 30 * 60 * 1000; // 30 minutes
 
 /** Issue a one-time win token when the player wins. Returns the token or null if already issued. */
@@ -86,9 +150,34 @@ export function issueWinToken(sessionId: string): string | null {
   if (!session || session.winToken) return null; // Already issued
   const token = randomBytes(16).toString('hex');
   session.winToken = token;
-  // Store in standalone Map so it survives session deletion
-  winTokens.set(sessionId, { token, issuedAt: Date.now() });
+  // Snapshot session stats so they survive session deletion
+  winTokens.set(sessionId, {
+    token,
+    issuedAt: Date.now(),
+    stats: {
+      timeElapsed: (Date.now() - session.startTime) / 1000,
+      hintsUsed: session.hintsUsed,
+      accusationsUsed: session.accusationsUsed,
+      difficulty: (session.caseData.difficulty as string) || 'medium',
+    },
+  });
   return token;
+}
+
+/** Get session stats from win token entry (survives session deletion). */
+export function getWinTokenStats(sessionId: string): WinTokenEntry['stats'] | null {
+  const entry = winTokens.get(sessionId);
+  return entry?.stats ?? null;
+}
+
+/** Timing-safe comparison of two token strings. */
+function safeTokenCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  try {
+    return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+  } catch {
+    return false;
+  }
 }
 
 /** Validate and consume a win token. Returns true if valid. Token is single-use.
@@ -101,7 +190,7 @@ export function consumeWinToken(sessionId: string, token: string): boolean {
       winTokens.delete(sessionId);
       return false;
     }
-    if (stored.token === token) {
+    if (safeTokenCompare(stored.token, token)) {
       winTokens.delete(sessionId); // Consume — single use
       return true;
     }
@@ -109,7 +198,7 @@ export function consumeWinToken(sessionId: string, token: string): boolean {
   }
   // Fallback: check session (if not yet deleted)
   const session = getSession(sessionId);
-  if (!session || !session.winToken || session.winToken !== token) return false;
+  if (!session || !session.winToken || !safeTokenCompare(session.winToken, token)) return false;
   session.winToken = null;
   return true;
 }
@@ -147,9 +236,9 @@ export function sanitizeCaseForClient(caseData: Record<string, unknown>): Record
     the_truth: _3,
     the_contradiction: _4,
     deflection_tactics: _5,
+    stress_triggers: _6,
     ...safe
   } = caseData;
-  // Keep stress_triggers — they're used for the hint system (not the actual lie/truth)
   return safe;
 }
 

@@ -8,6 +8,7 @@ interface CaseFileProps {
   clueIcons: string[];
   cluesNeeded: number;
   hintsUsed: number;
+  hintTexts?: string[];
   conversationHistory: ConversationMessage[];
 }
 
@@ -17,6 +18,7 @@ export default function CaseFile({
   clueIcons,
   cluesNeeded,
   hintsUsed,
+  hintTexts = [],
   conversationHistory,
 }: CaseFileProps) {
   return (
@@ -77,11 +79,11 @@ export default function CaseFile({
           )}
         </div>
 
-        {hintsUsed > 0 && (
+        {hintsUsed > 0 && hintTexts.length > 0 && (
           <div>
             <h3 className="text-xs uppercase tracking-wider text-warn mb-2">Hints</h3>
             <div className="space-y-2">
-              {(caseData.stress_triggers ?? []).slice(0, hintsUsed).map((trigger, i) => (
+              {hintTexts.map((trigger, i) => (
                 <div key={i} className="p-3 bg-surface-dark rounded border-l-2 border-warn">
                   <p className="text-sm text-gray-300">Try asking about: {trigger}</p>
                 </div>

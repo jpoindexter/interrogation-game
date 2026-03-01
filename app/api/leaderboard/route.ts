@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import supabase from '@/lib/db';
 import { calculateScore, type Difficulty } from '@/lib/scoring';
 import { validateString, validateNumber, validateDifficulty } from '@/lib/sanitize';
-import { consumeWinToken } from '@/lib/game-session';
+import { consumeWinToken, getSessionStats, getWinTokenStats } from '@/lib/game-session';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // GET — fetch top scores
@@ -35,15 +35,26 @@ export async function POST(request: NextRequest) {
     // Require a valid win token to prevent fake score submissions
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
     const winToken = typeof body.winToken === 'string' ? body.winToken : '';
+
+    // Snapshot stats BEFORE consuming the token (getWinTokenStats reads from the token entry)
+    const tokenStats = getWinTokenStats(sessionId);
+    const sessionStats = getSessionStats(sessionId);
+
     if (!sessionId || !winToken || !consumeWinToken(sessionId, winToken)) {
       return NextResponse.json({ error: 'Invalid or expired win token' }, { status: 403 });
     }
 
+    // Use server-side stats — never trust client-supplied timeElapsed/hintsUsed/accusationsUsed
+    const stats = tokenStats ?? sessionStats;
+    if (!stats) {
+      return NextResponse.json({ error: 'Session stats unavailable' }, { status: 400 });
+    }
+
     const playerName = (validateString(body.playerName, 3) ?? 'DET').toUpperCase().slice(0, 3);
-    const difficulty = validateDifficulty(body.difficulty) ?? 'medium';
-    const timeElapsed = validateNumber(body.timeElapsed, 0, 7200) ?? 0;
-    const hintsUsed = validateNumber(body.hintsUsed, 0, 10) ?? 0;
-    const accusationsUsed = validateNumber(body.accusationsUsed, 0, 3) ?? 0;
+    const difficulty = (validateDifficulty(stats.difficulty) ?? 'medium') as Difficulty;
+    const timeElapsed = stats.timeElapsed;
+    const hintsUsed = stats.hintsUsed;
+    const accusationsUsed = stats.accusationsUsed;
     const stressLevel = validateNumber(body.stressLevel, 0, 10) ?? 0;
     const caseNumber = validateString(body.caseNumber, 100) ?? '';
     const caseSetting = validateString(body.caseSetting, 100) ?? '';
@@ -52,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const score = calculateScore(
       timeElapsed,
-      difficulty as Difficulty,
+      difficulty,
       hintsUsed,
       Math.max(0, accusationsUsed - 1),
     );

@@ -11,8 +11,7 @@ export interface Case {
   suspect_cover_story: string;
   difficulty: string;
   sessionId: string;
-  // Hints are sent to client for the hint system
-  stress_triggers?: string[];
+  // stress_triggers are now server-only — hints fetched via /api/hint
 }
 
 /** Full case data (server-side only, includes secrets) */

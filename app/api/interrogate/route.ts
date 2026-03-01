@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { interrogate } from '../../../src/lib/mistral';
 import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, addMessage, updateStress, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
+import { getSession, addMessage, updateStress, incrementClue, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,6 +63,11 @@ export async function POST(request: NextRequest) {
 
       // Track stress server-side so client can't manipulate it
       updateStress(session.id, response.stress_level as number);
+
+      // Track clues server-side so client can't skip ahead to accusation
+      if (response.clue_unlocked) {
+        incrementClue(session.id);
+      }
 
       return NextResponse.json(response);
     } finally {

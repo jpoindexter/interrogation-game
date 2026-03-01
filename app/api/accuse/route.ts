@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { evaluateAccusation } from '../../../src/lib/mistral';
 import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
 import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, acquireSessionLock, releaseSessionLock } from '../../../src/lib/game-session';
+import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, incrementAccusation, acquireSessionLock, releaseSessionLock, DIFFICULTY_CLUES } from '../../../src/lib/game-session';
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,6 +29,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No accusations remaining' }, { status: 403 });
     }
 
+    // Enforce minimum clues collected before allowing accusation
+    const requiredClues = DIFFICULTY_CLUES[(session.caseData.difficulty as string) || 'medium'] || 3;
+    if (session.cluesCollected < requiredClues) {
+      return NextResponse.json(
+        { error: `Not enough clues collected. Need ${requiredClues}, have ${session.cluesCollected}.` },
+        { status: 403 },
+      );
+    }
+
     // Block flagged injection attempts
     if (isInjectionAttempt(accusation)) {
       return NextResponse.json({
@@ -46,6 +55,7 @@ export async function POST(req: NextRequest) {
     try {
       // Consume an accusation server-side (inside lock)
       useAccusation(session.id);
+      incrementAccusation(session.id);
 
       const sanitized = sanitizeInput(accusation);
 

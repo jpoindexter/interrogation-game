@@ -1,26 +1,16 @@
-// Pool of evidence icons — random ones are picked per case
 export const EVIDENCE_ICONS = [
-  '/clues/folder.png',
-  '/clues/recorder.png',
-  '/clues/recorder2.png',
-  '/clues/coffee.png',
-  '/clues/clue1.png',
-  '/clues/clue2.png',
-  '/clues/clue3.png',
-  '/clues/notepad_pl.png',
-  '/clues/magnifying_glass.png',
-  '/clues/handcuffs.png',
-  '/clues/key.png',
-  '/clues/flashlight.png',
+  '/clues/folder.png', '/clues/recorder.png', '/clues/recorder2.png', '/clues/coffee.png',
+  '/clues/clue1.png', '/clues/clue2.png', '/clues/clue3.png', '/clues/notepad_pl.png',
+  '/clues/magnifying_glass.png', '/clues/handcuffs.png', '/clues/key.png', '/clues/flashlight.png',
   '/clues/walkie_talkie.png',
 ];
 
+export const DIFFICULTY_CLUES: Record<string, number> = { easy: 2, medium: 3, hard: 4, expert: 5 };
+
 export function pickRandomIcons(count: number): string[] {
-  const shuffled = [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+  return [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5).slice(0, count);
 }
 
-// Map case setting text to background image
 export function getSceneBg(setting: string): string {
   const s = setting.toLowerCase();
   if (s.includes('hospital') || s.includes('medical') || s.includes('clinic') || s.includes('doctor') || s.includes('pharma')) return '/bg/medical.png';
@@ -32,50 +22,27 @@ export function getSceneBg(setting: string): string {
   return '/bg/office.png';
 }
 
-// Difficulty → clues needed
-export const DIFFICULTY_CLUES: Record<string, number> = {
-  easy: 2,
-  medium: 3,
-  hard: 4,
-  expert: 5,
-};
-
 export function formatTime(secs: number) {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-// Share result via Web Share API or clipboard fallback
 export async function shareResult(text: string): Promise<'shared' | 'copied' | 'failed'> {
   if (typeof navigator !== 'undefined' && navigator.share) {
-    try {
-      await navigator.share({ text });
-      return 'shared';
-    } catch (err: unknown) {
-      if (err instanceof DOMException && err.name === 'AbortError') return 'failed';
-      // Share cancelled or unsupported — fall through to clipboard
-    }
+    try { await navigator.share({ text }); return 'shared'; }
+    catch (err: unknown) { if (err instanceof DOMException && err.name === 'AbortError') return 'failed'; }
   }
-  try {
-    await navigator.clipboard.writeText(text);
-    return 'copied';
-  } catch {
-    return 'failed';
-  }
+  try { await navigator.clipboard.writeText(text); return 'copied'; } catch { return 'failed'; }
 }
 
-// Fetch with AbortController timeout
 export async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs = 15000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(url, { ...opts, signal: controller.signal });
-    return res;
+    return await fetch(url, { ...opts, signal: controller.signal });
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === 'AbortError') throw new Error('Request timed out');
     throw err;
-  } finally {
-    clearTimeout(id);
-  }
+  } finally { clearTimeout(id); }
 }
