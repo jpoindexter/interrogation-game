@@ -31,11 +31,6 @@ const SCORING = [
   ['Each wrong accusation', '\u2212 10%', 'text-accent'],
 ];
 
-const TECH = [
-  { icon: '/sponsors/mistral.webp', name: 'Mistral Large 3', desc: 'The suspect\u2019s brain. Generates cases, plays the character, evaluates accusations, and judges your performance.' },
-  { icon: '/sponsors/11labs.webp', name: 'ElevenLabs Voice', desc: 'The suspect\u2019s voice. Text-to-speech with dynamic stability that degrades as stress increases.' },
-];
-
 function getTimerMode(): 'countdown' | 'unlimited' {
   if (typeof window === 'undefined') return 'countdown';
   try {
@@ -83,10 +78,7 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">02</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Interrogate the Suspect</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice or keyboard. The suspect will respond &mdash; but they&apos;re hiding something. {isUnlimited
-                ? <>In <span className="text-warn font-bold">Unlimited</span> mode, there&apos;s no time limit &mdash; but the suspect is tougher and won&apos;t crack as easily. Take your time, but stay sharp.</>
-                : <>You have limited time (5&ndash;10 minutes depending on difficulty) in <span className="text-accent font-bold">Countdown</span> mode, so work fast.</>
-              }</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Ask questions using your voice or keyboard. The suspect will respond &mdash; but they&apos;re hiding something. Watch their stress level rise as you press on the right topics.</p>
               <div className="relative bg-surface-darker border border-surface-dark rounded-sm p-5 flex items-center gap-5">
                 <div className="absolute inset-0 opacity-15 rounded-sm" style={{ backgroundImage: 'url(/bg/police.png)', backgroundSize: 'cover', backgroundPosition: 'center', imageRendering: 'pixelated' }} />
                 <div className="relative shrink-0">
@@ -163,10 +155,7 @@ export default function HelpPage() {
                 <span className="text-2xl font-bold text-accent">05</span>
                 <h2 className="text-sm font-bold uppercase tracking-wider">Case Outcome</h2>
               </div>
-              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. {isUnlimited
-                ? 'Run out of accusations or give up and they escape.'
-                : 'Run out of time, accusations, or give up and they escape.'
-              }</p>
+              <p className="text-sm text-gray-400 mb-5 leading-relaxed">Two outcomes. Catch the lie and the suspect is apprehended. Run out of time, accusations, or give up and they walk free.</p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-surface-darker border border-surface-dark rounded-sm p-4 text-center">
                   <img src="/solved/caught.png" alt="Apprehended" className="w-28 mx-auto mb-3" />
@@ -193,34 +182,42 @@ export default function HelpPage() {
               </motion.ul>
             </motion.div>
 
-            {/* Timer Mode Info */}
-            <motion.div className="mb-12 p-5 bg-surface-darker border border-surface-dark rounded-sm" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">Game Mode: {isUnlimited ? 'Unlimited' : 'Countdown'}</h2>
-              {isUnlimited ? (
-                <div className="space-y-3 text-sm text-gray-400">
-                  <p>No time limit &mdash; explore at your own pace. But the suspect is <span className="text-warn font-bold">harder to crack</span>:</p>
-                  <ul className="space-y-1.5 ml-2">
-                    <li className="flex gap-2"><span className="text-warn">&bull;</span>The AI leaks less information under stress</li>
-                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Clues are more cryptic and require interpretation</li>
-                    <li className="flex gap-2"><span className="text-warn">&bull;</span>The suspect fills silence less often</li>
-                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Scoring is based on efficiency, not speed</li>
-                    <li className="flex gap-2"><span className="text-accent">&bull;</span><span>On Hard/Expert: push too hard and the suspect <span className="text-accent font-bold">lawyers up</span> &mdash; game over</span></li>
-                  </ul>
-                  <p className="text-xs text-gray-600 mt-2">Change to Countdown mode in Settings for a timed challenge with higher scores.</p>
-                  <p className="text-xs text-warn mt-1">Note: Unlimited mode uses more API credits (ElevenLabs TTS + Mistral) per game.</p>
-                </div>
-              ) : (
-                <div className="space-y-3 text-sm text-gray-400">
-                  <p>Race the clock. You have <span className="text-accent font-bold">5&ndash;10 minutes</span> depending on difficulty.</p>
-                  <ul className="space-y-1.5 ml-2">
-                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Easy: 5 min &middot; Medium: 7 min &middot; Hard: 9 min &middot; Expert: 10 min</li>
-                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Timer pauses while the suspect is speaking</li>
+            {/* Game Modes */}
+            <motion.div className="mb-12" variants={fadeUp} transition={smooth}>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">Game Modes</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Countdown */}
+                <div className={`p-5 bg-surface-darker border rounded-sm ${!isUnlimited ? 'border-accent' : 'border-surface-dark'}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent shrink-0"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                    <h3 className="text-sm font-bold uppercase tracking-wider">Countdown</h3>
+                    {!isUnlimited && <span className="text-[8px] bg-accent text-white px-1.5 py-0.5 uppercase tracking-wider font-bold rounded-sm ml-auto">Active</span>}
+                  </div>
+                  <p className="text-xs text-gray-400 mb-3 leading-relaxed">Race the clock. Solve fast for higher scores.</p>
+                  <ul className="space-y-1.5 text-xs text-gray-500">
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Easy: 5 min &middot; Medium: 7 min</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Hard: 9 min &middot; Expert: 10 min</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span>Timer pauses while suspect speaks</li>
                     <li className="flex gap-2"><span className="text-accent">&bull;</span>Faster solves = higher scores</li>
-                    <li className="flex gap-2"><span className="text-accent">&bull;</span>The suspect gives up more under pressure when time is tight</li>
                   </ul>
-                  <p className="text-xs text-gray-600 mt-2">Change to Unlimited mode in Settings for a relaxed, exploration-focused experience.</p>
                 </div>
-              )}
+                {/* Unlimited */}
+                <div className={`p-5 bg-surface-darker border rounded-sm ${isUnlimited ? 'border-warn' : 'border-surface-dark'}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-warn shrink-0"><path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-5.095-8-10.19-8-5.096 0-5.096 8 0 8 5.095 0 5.095-8 10.19-8z" /></svg>
+                    <h3 className="text-sm font-bold uppercase tracking-wider">Unlimited</h3>
+                    {isUnlimited && <span className="text-[8px] bg-warn text-black px-1.5 py-0.5 uppercase tracking-wider font-bold rounded-sm ml-auto">Active</span>}
+                  </div>
+                  <p className="text-xs text-gray-400 mb-3 leading-relaxed">No timer. Suspect is harder to crack.</p>
+                  <ul className="space-y-1.5 text-xs text-gray-500">
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>AI leaks less under stress</li>
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Clues are more cryptic</li>
+                    <li className="flex gap-2"><span className="text-warn">&bull;</span>Scoring based on efficiency</li>
+                    <li className="flex gap-2"><span className="text-accent">&bull;</span><span>Hard/Expert: push too hard &rarr; <span className="text-accent font-bold">lawyer up</span></span></li>
+                  </ul>
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-600 mt-3 text-center">Change mode in Settings before starting a case.</p>
             </motion.div>
 
             {/* Scoring */}
@@ -234,38 +231,6 @@ export default function HelpPage() {
               <p className="text-xs text-gray-600 mt-3">Harder cases are worth more. Expert clean solves top the leaderboard.</p>
             </motion.div>
 
-            {/* About */}
-            <motion.div className="mb-12" variants={fadeUp} transition={smooth}>
-              <p className="text-xs uppercase tracking-[0.3em] text-accent mb-2">Behind the Scenes</p>
-              <h2 className="text-2xl font-bold tracking-wide mb-6">ABOUT THIS GAME</h2>
-              <motion.div className="space-y-6" variants={stagger(0.1)} initial="hidden" animate="visible">
-                <motion.div className="bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3">The Concept</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-3">Every case is procedurally generated by Mistral AI &mdash; a unique crime, suspect, cover story, and one hidden lie. No two cases are the same. The suspect is played by Mistral Large 3, given a backstory and instructed to defend it under pressure.</p>
-                  <p className="text-sm text-gray-400 leading-relaxed">You interrogate using your voice or text. As you press on the right topics, the suspect&apos;s stress rises and evidence unlocks. The AI will deflect, redirect, and stall &mdash; but it will never confess. You win by identifying the specific contradiction and making a formal accusation that a separate AI judge evaluates.</p>
-                </motion.div>
-                <motion.div className="bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3">Why Red Teaming?</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-3">Red teaming is the practice of probing AI systems for weaknesses &mdash; finding the gaps between what a model is told to do and what it actually does. It&apos;s how organizations stress-test AI before deploying it in the real world.</p>
-                  <p className="text-sm text-gray-400 leading-relaxed">In INTERROGATION, you&apos;re doing exactly that. The AI is instructed to maintain a consistent narrative, but language models struggle with logical consistency under sustained adversarial pressure. The harder the difficulty, the better the model is at deflecting &mdash; but the contradiction is always there. Your job is to find where the story breaks.</p>
-                </motion.div>
-                <motion.div className="bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-                  <h3 className="text-xs uppercase tracking-wider text-gold mb-3">The Tech</h3>
-                  <div className="space-y-4">
-                    {TECH.map((t, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <img src={t.icon} alt={t.name} className="w-6 h-6 mt-0.5 shrink-0" style={{ filter: 'brightness(0) invert(1)' }} />
-                        <div><p className="text-sm text-gray-300 font-bold">{t.name}</p><p className="text-xs text-gray-500">{t.desc}</p></div>
-                      </div>
-                    ))}
-                    <div className="flex items-start gap-3">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="shrink-0 mt-0.5 opacity-60"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" /></svg>
-                      <div><p className="text-sm text-gray-300 font-bold">Voxtral STT</p><p className="text-xs text-gray-500">Your voice, transcribed. Mistral&apos;s speech-to-text model converts your spoken questions into text.</p></div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
           </motion.div>
 
         </div>

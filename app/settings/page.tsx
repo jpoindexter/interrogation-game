@@ -44,6 +44,9 @@ const DEFAULT_SETTINGS: AppSettings = {
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [exportSecret, setExportSecret] = useState('');
+  const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [exportCount, setExportCount] = useState<number | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('appSettings');
@@ -268,6 +271,61 @@ export default function SettingsPage() {
                     autoComplete="off"
                     spellCheck={false}
                   />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Export Training Data */}
+            <motion.div variants={fadeUp} transition={smooth} className="bg-surface-darker border border-surface-dark rounded-sm p-6">
+              <h3 className="text-sm text-gray-300 font-bold mb-1">Export Training Data</h3>
+              <p className="text-xs text-gray-500 mb-4">Download completed game sessions as JSONL for fine-tuning. Full transcripts, case secrets, outcomes, and player stats.</p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs text-gray-500 uppercase tracking-wider block mb-1.5">Export Secret</label>
+                  <input
+                    type="password"
+                    placeholder="Enter admin secret..."
+                    value={exportSecret}
+                    onChange={(e) => setExportSecret(e.target.value.trim())}
+                    className="w-full bg-surface border border-surface-dark rounded-sm px-3 py-2 text-xs text-foreground placeholder-gray-600 focus:outline-none focus:border-accent transition-colors"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    disabled={!exportSecret || exportStatus === 'loading'}
+                    onClick={async () => {
+                      playClick();
+                      setExportStatus('loading');
+                      setExportCount(null);
+                      try {
+                        const res = await fetch(`/api/export?secret=${encodeURIComponent(exportSecret)}&limit=1000`);
+                        if (!res.ok) { setExportStatus('error'); return; }
+                        const text = await res.text();
+                        const lines = text.trim().split('\n').filter(Boolean);
+                        setExportCount(lines.length);
+                        if (lines.length === 0) { setExportStatus('done'); return; }
+                        const blob = new Blob([text], { type: 'application/x-ndjson' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `interrogation_export_${new Date().toISOString().slice(0, 10)}.jsonl`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        setExportStatus('done');
+                      } catch { setExportStatus('error'); }
+                    }}
+                    className="px-4 py-2 bg-gold text-black text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-gold-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    {exportStatus === 'loading' ? 'Exporting...' : 'Download JSONL'}
+                  </button>
+                  {exportStatus === 'done' && exportCount !== null && (
+                    <span className="text-xs text-green-500">{exportCount === 0 ? 'No games recorded yet' : `${exportCount} game${exportCount === 1 ? '' : 's'} exported`}</span>
+                  )}
+                  {exportStatus === 'error' && (
+                    <span className="text-xs text-accent">Invalid secret or server error</span>
+                  )}
                 </div>
               </div>
             </motion.div>

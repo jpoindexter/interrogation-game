@@ -91,11 +91,24 @@ export default function HomePage() {
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </motion.button>
-          {/* About — user */}
+          {/* About Game — brain/circuit */}
+          <motion.button
+            onClick={() => { playClick(); router.push('/about-game'); }}
+            className="text-gray-500 hover:text-white transition-colors"
+            data-tooltip="About the Game"
+            variants={fadeDown}
+            transition={snappy}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z" />
+              <path d="M9 22h6" /><path d="M9 18h6" /><path d="M10 18v4" /><path d="M14 18v4" />
+            </svg>
+          </motion.button>
+          {/* About Developer — user */}
           <motion.button
             onClick={() => { playClick(); router.push('/about'); }}
             className="text-gray-500 hover:text-white transition-colors"
-            data-tooltip="About"
+            data-tooltip="Developer"
             variants={fadeDown}
             transition={snappy}
           >
@@ -160,11 +173,6 @@ export default function HomePage() {
               background: 'rgba(255,255,255,0.01)',
             }}
           />
-          {/* REC indicator */}
-          <div className="absolute bottom-8 left-4 flex items-center gap-1">
-            <span className="w-[5px] h-[5px] bg-accent animate-pulse rounded-full" />
-            <span className="text-[9px] text-accent/50 uppercase tracking-wider">Rec</span>
-          </div>
         </motion.div>
 
         {/* Primary CTA */}

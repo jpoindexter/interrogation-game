@@ -156,52 +156,6 @@ export default function AboutPage() {
             </motion.div>
           </motion.div>
 
-          {/* Tools & Credits */}
-          <motion.div
-            className="mb-12"
-            variants={stagger(0.08)}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.h2
-              className="text-xs uppercase tracking-[0.3em] text-gold mb-6"
-              variants={fadeUp}
-              transition={smooth}
-            >
-              Tools &amp; Credits
-            </motion.h2>
-            <motion.div
-              className="space-y-3"
-              variants={stagger(0.06)}
-            >
-              {[
-                { name: 'Mistral AI', url: 'https://mistral.ai', desc: 'Large language model powering case generation, suspect AI, accusation evaluation, and Voxtral speech-to-text.' },
-                { name: 'ElevenLabs', url: 'https://elevenlabs.io', desc: 'Text-to-speech voice synthesis with dynamic stress-based stability for suspect and detective voices.' },
-                { name: 'PixelLab', url: 'https://pixellab.ai', desc: 'AI-generated pixel art suspect portraits and character assets.' },
-                { name: 'Suno', url: 'https://suno.com', desc: 'AI-generated background music tracks for menu and in-game atmosphere.' },
-                { name: 'Pixabay', url: 'https://pixabay.com', desc: 'Royalty-free sound effects used throughout the game.' },
-                { name: 'OpenAI Sora', url: 'https://openai.com/sora', desc: 'AI image generation for game artwork and visual assets.' },
-                { name: 'FFmpeg', url: 'https://ffmpeg.org', desc: 'Open-source audio/video processing used to trim and optimize all game sound effects.' },
-              ].map((item) => (
-                <motion.a
-                  key={item.name}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-surface-darker border border-surface-dark rounded-sm p-4 hover:border-surface transition-colors"
-                  variants={fadeUp}
-                  transition={snappy}
-                >
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-sm font-bold text-gray-300">{item.name}</span>
-                    <span className="text-[10px] text-accent">&#x2197;</span>
-                  </div>
-                  <p className="text-xs text-gray-500">{item.desc}</p>
-                </motion.a>
-              ))}
-            </motion.div>
-          </motion.div>
-
           {/* Social links */}
           <motion.div
             className="flex gap-4 justify-center"
