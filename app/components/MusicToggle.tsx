@@ -140,12 +140,12 @@ export default function MusicToggle() {
   const fadeIn = useCallback((audio: HTMLAudioElement, targetVol: number) => {
     audio.volume = 0;
     let step = 0;
-    const steps = 30;
+    const steps = 20;
     const timer = setInterval(() => {
       step++;
       audio.volume = Math.min(targetVol, targetVol * (step / steps));
       if (step >= steps) clearInterval(timer);
-    }, 3000 / steps);
+    }, 1500 / steps);
   }, []);
 
   const fadeOut = useCallback((audio: HTMLAudioElement, cb?: () => void) => {
@@ -187,18 +187,26 @@ export default function MusicToggle() {
       indexRef.current = 0;
       const src = getNextTrack(pool);
       const audio = new Audio(src);
+      audio.preload = 'auto';
       audio.volume = 0;
       audioRef.current = audio;
       const vol = getVolume();
 
-      const startWithFade = () => { audio.play().then(() => fadeIn(audio, vol)).catch(() => {}); };
+      const startWithFade = () => {
+        audio.play().then(() => fadeIn(audio, vol)).catch(() => {});
+      };
       startWithFade();
-      const handler = () => { startWithFade(); document.removeEventListener('click', handler); };
-      document.addEventListener('click', handler);
+
+      // Listen for any user interaction to unlock autoplay
+      const events = ['click', 'keydown', 'touchstart', 'pointerdown'];
+      const handler = () => {
+        startWithFade();
+        events.forEach(e => document.removeEventListener(e, handler));
+      };
+      events.forEach(e => document.addEventListener(e, handler, { once: true }));
 
       return () => {
-        document.removeEventListener('click', handler);
-        // Only cleanup if this audio is still the current one
+        events.forEach(e => document.removeEventListener(e, handler));
         if (audioRef.current === audio) {
           audio.pause();
           audio.src = '';
