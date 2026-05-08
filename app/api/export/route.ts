@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  const secret = req.nextUrl.searchParams.get('secret') ?? '';
+  const authHeader = req.headers.get('authorization') ?? '';
+  const secret = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
   if (!process.env.EXPORT_SECRET || !safeCompare(secret, process.env.EXPORT_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

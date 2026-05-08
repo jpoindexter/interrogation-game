@@ -169,7 +169,7 @@ The game runs adversarial AI against player input — security is a core feature
 
 Completed games are persisted to Supabase for analysis and model improvement:
 - Full case data (including secrets), conversation history, outcome, stats, accusation details
-- Admin export: `GET /api/export?secret=EXPORT_SECRET&limit=100&offset=0&outcome=win&difficulty=hard`
+- Admin export: `GET /api/export?limit=100&offset=0&outcome=win&difficulty=hard` with `Authorization: Bearer <EXPORT_SECRET>` header
 - CLI: `EXPORT_SECRET=xxx npx tsx scripts/export-data.ts --output=data/export.jsonl`
 
 ## Sound Design
