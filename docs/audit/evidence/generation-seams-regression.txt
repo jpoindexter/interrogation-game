@@ -1,0 +1,84 @@
+Generation seam regression evidence — 2026-10-03
+
+Provenance: transcript-collected from this agent's previously executed tool outputs.
+This file is a reassembled record, not redirected raw command output. Commands were
+not rerun to create this file. Working tree was uncommitted and concurrently under
+integration; these results do not establish the state of a later commit.
+
+Scope: local generation recovery, case materialization, controlled generation/review
+transport and authored gameplay through actual route handlers. No live provider,
+browser, ElevenLabs, Supabase deployment or Vercel verification. No full suite.
+
+COMMAND 1
+npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx --test tests/session-create-at.test.ts tests/generation-requests.test.ts tests/generation-guards.test.ts
+
+Observed exit: 0
+Observed checks (16 passed, 0 failed):
+PASS final receipt write failure never reports success or replays provider work
+PASS expired receipts are tombstones and require an explicit new intent rather than charging again
+PASS receipt admission enforces the bounded store without evicting retry protection
+PASS missing IDs, known failures and unsupported hosted storage never silently start another attempt
+PASS a completed case with a failed public receipt recovers from the private checkpoint without re-generation
+PASS a timed-out case records its actual cause and replay never starts another generation
+PASS completed generation survives a process restart without a second provider call or new session
+PASS a concurrent process cannot invoke the same generation provider twice
+PASS process death during provider work retains a pending receipt and never silently charges again
+PASS different inputs conflict while reordered identical inputs replay the completed case
+PASS a dropped HTTP response replays the persisted generated case after server restart
+PASS generation recovers the reserved case after checkpoint-crash without another provider call
+PASS generation recovers the reserved case after session-crash without another provider call
+PASS generation progress exposes only durable phases while private checkpoints remain hidden
+PASS materializing the same reserved ID retains accepted progress and creation time
+PASS reserved ID cannot be rebound to another case or materialized during a session action
+Observed runner duration: 1885.216166 ms
+
+COMMAND 2
+npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx --test --test-name-pattern='generation performs a separate review|rejected review never reaches' tests/generated-review.test.ts
+
+Observed exit: 0
+PASS generation performs a separate review with normalized objective and returns no private review findings (63.478834 ms)
+PASS rejected review never reaches the playable-case checkpoint or materializes a session (42.389375 ms)
+Observed summary: tests 2; pass 2; fail 0; duration 401.234208 ms
+
+COMMAND 3
+npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --input-type=module <<'JS'
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawn } from 'node:child_process';
+const directory = await mkdtemp(join(tmpdir(), 'case-seam-check-'));
+try {
+  const code = await new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, ['--import', './scripts/test-worker-env.mjs', '--import', 'tsx', '--test', 'tests/gameplay-routes.test.ts'], {
+      stdio: 'inherit', env: { ...process.env, INTERROGATION_TEST_ROOT: directory },
+    });
+    child.once('error', reject); child.once('exit', resolve);
+  });
+  process.exitCode = code ?? 1;
+} finally { await rm(directory, { recursive: true, force: true }); }
+JS
+
+Observed exit: 0
+PASS authored case plays through real routes: wrong exhibit, exact replay, contradiction, recovery, win (503.587083 ms)
+Observed summary: tests 1; pass 1; fail 0; duration 648.718625 ms
+Provider responses were controlled by the existing test. Temporary test root removed
+by the command's finally block; this was not a playthrough against live inference.
+
+SCOPED LINT / SIZE
+npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- eslint --config eslint.size.config.mjs src/lib/session/generate-case.ts src/lib/session/case-checkpoint.ts src/lib/session/create-record.ts src/lib/session/store.ts src/lib/session/generation-requests.ts src/lib/game-ai/generate-case.ts src/lib/ai/execution.ts
+Observed final exit: 0; no stdout/stderr diagnostics.
+
+TYPECHECK
+npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- tsc --noEmit
+First execution during concurrent integration exited 1, reporting root-owned
+hosted/generate-case.ts:65 (projection argument) and hosted/generation.ts:81–82
+(identity parameter inference). These were reported to root and corrected there.
+Latest execution after those corrections: exit 0; no stdout/stderr diagnostics.
+
+DIFF HYGIENE
+git diff --check
+Observed exit: 0; no diagnostics.
+
+Total selected existing regression checks: 19 passed, 0 failed.
+No assertion is made here that the new shared PostgreSQL generation path was run;
+its integration evidence is maintained separately by root.

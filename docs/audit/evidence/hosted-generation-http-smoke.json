@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-10-03T17:13:15.640301+00:00",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "expected_content": true
+    },
+    {
+      "path": "/cases",
+      "status": 200,
+      "expected_content": true
+    },
+    {
+      "path": "/about-game",
+      "status": 200,
+      "expected_content": true
+    }
+  ],
+  "scope": "Rebuilt production localhost HTTP. No browser, live provider, voice or hosted routing proof."
+}

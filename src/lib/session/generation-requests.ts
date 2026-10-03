@@ -7,8 +7,8 @@ import { generationFailure } from './generation-failure';
 export interface GenerationContext {
   sessionId: string;
   checkpoint?: Record<string, unknown>;
-  reportProgress: (phase: 'generating' | 'reviewing') => void;
-  saveCheckpoint: (value: Record<string, unknown>) => void;
+  reportProgress: (phase: 'generating' | 'reviewing') => void | Promise<void>;
+  saveCheckpoint: (value: Record<string, unknown>) => void | Promise<void>;
 }
 interface GenerationRequest {
   requestId: unknown;

@@ -1,0 +1,5 @@
+PASS real shared generation: awaited draft/review phases, controlled AI gateway, validated briefing and private projection
+PASS lost completion response replays exactly; uncertain checkpoint recovers without inference or duplicate session
+PASS generated session begins, wins, exports and redeems once; generation/gameplay share allowance and consumed grant survives later result commit
+Scope: real TypeScript generation/domain/adapters and isolated PostgreSQL; controlled OpenAI HTTP. No public HTTP route selection, live API, browser, voice or deployed Supabase proof.
+CLEANUP isolated PostgreSQL removed

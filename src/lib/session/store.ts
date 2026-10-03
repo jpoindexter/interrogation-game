@@ -4,6 +4,8 @@ import type { GameSession } from './types';
 import type { SessionRecord } from './repository-types';
 import { getSessionRepository, sessionRepositoryKey } from './repository';
 import { workspaceRecord, requireLocalSessionMutation } from './workspace';
+import { createSessionRecord, type CreateSessionOptions } from './create-record';
+export type { CreateSessionOptions } from './create-record';
 
 interface RuntimeStore { records: Map<string, SessionRecord>; locks: Set<string> }
 const runtime = globalThis as typeof globalThis & { __durableSessionStores?: Map<string, RuntimeStore> };
@@ -36,23 +38,6 @@ export function persistSession(id: string): void {
   record.revision += 1;
   try { getSessionRepository().save(record); } catch (error) { record.revision -= 1; throw error; }
 }
-export interface CreateSessionOptions {
-  sessionId: string;
-  caseData: Record<string, unknown>;
-  learnedTactics?: string[];
-  totalPriorGames?: number;
-  timerMode?: 'countdown' | 'unlimited';
-}
-function newSessionRecord(options: CreateSessionOptions): SessionRecord {
-  const { sessionId: id, caseData, learnedTactics = [], totalPriorGames = 0, timerMode = 'countdown' } = options;
-  const now = Date.now();
-  const session: GameSession = { id, caseData, learnedTactics, totalPriorGames, timerMode,
-    conversationHistory: [], accusationsLeft: 3, accusationsUsed: 0, currentStress: 0, winToken: null,
-    createdAt: now, lastActivity: now, cluesCollected: 0, clues: [], startTime: 0, endedAt: null,
-    status: 'briefing', outcome: null, questionsAsked: 0, hintsUsed: 0, highStressStreak: 0,
-    acceptedAccusation: null, evaluation: null };
-  return { version: 1, revision: 0, session, requests: {} };
-}
 function validateCreation(session: GameSession, options: CreateSessionOptions): void {
   if (!isDeepStrictEqual(session.caseData, options.caseData)
     || !isDeepStrictEqual(session.learnedTactics, options.learnedTactics ?? [])
@@ -67,22 +52,33 @@ function cacheRecord(record: SessionRecord): void {
 }
 /** Materialize a reserved generation ID once; retries preserve its existing progress. */
 export function createSessionAt(options: CreateSessionOptions): string {
+  return createSessionFromRecord(createSessionRecord(options));
+}
+
+/** Save a complete initial record once, preserving already accepted recovery progress. */
+export function createSessionFromRecord(initial: SessionRecord): string {
   requireLocalSessionMutation();
-  const id = options.sessionId;
+  const id = initial.session.id;
   if (!/^[a-f0-9]{48}$/.test(id)) throw new Error('Invalid reserved session ID');
   const repository = getSessionRepository();
   if (currentStore().locks.has(id) || !repository.acquire(id)) throw new Error('Reserved session is busy');
   try {
     let record = repository.load(id);
     if (record) {
-      validateCreation(record.session, options);
+      const { caseData, learnedTactics, totalPriorGames, timerMode } = initial.session;
+      validateCreation(record.session, { sessionId: id, caseData, learnedTactics, totalPriorGames, timerMode });
+      restoreInitialMetadata(record.session, initial.session);
       record.session.lastActivity = Date.now();
       record.revision++;
-    } else record = newSessionRecord(options);
+    } else record = structuredClone(initial);
     repository.save(record);
     cacheRecord(record);
     return id;
   } finally { repository.release(id); }
+}
+function restoreInitialMetadata(session: GameSession, initial: GameSession): void {
+  if (initial.caseProvenance && !session.caseProvenance) session.caseProvenance = structuredClone(initial.caseProvenance);
+  if (initial.gameplay && !session.gameplay) session.gameplay = structuredClone(initial.gameplay);
 }
 export function createSession(caseData: Record<string, unknown>, learnedTactics: string[] = [], totalPriorGames = 0,
   timerMode: 'countdown' | 'unlimited' = 'countdown'): string {

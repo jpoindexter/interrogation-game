@@ -22,7 +22,7 @@ function reservationWindow(result: Record<string, unknown>, input: WorkReservati
   return { scope: input.scope, units: input.units, windowStart: result.windowStart, windowEnd: result.windowEnd };
 }
 
-function reservationParameters(input: WorkReservation): Record<string, unknown> {
+export function reservationParameters(input: WorkReservation): Record<string, unknown> {
   const { policy } = input;
   requireInput(/^[A-Za-z0-9_.:-]{1,96}$/.test(input.deployment)
     && /^[A-Za-z0-9_.:-]{8,192}$/.test(input.operationId) && /^[a-f0-9]{64}$/.test(input.fingerprint));
@@ -37,7 +37,7 @@ function reservationParameters(input: WorkReservation): Record<string, unknown> 
     p_window_seconds: policy.windowSeconds };
 }
 
-function parseReservation(value: unknown, input: WorkReservation): ClaimedReservationResult {
+export function parseReservation(value: unknown, input: WorkReservation): ClaimedReservationResult {
   const result = parseKind(value,
     ['reserved', 'already_reserved', 'exhausted', 'invalid', 'conflict', 'policy_conflict', 'stale', 'unavailable']);
   if (result.kind === 'exhausted') {

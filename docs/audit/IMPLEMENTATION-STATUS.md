@@ -8,6 +8,12 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Shared generation and score checkpoint
+
+[Generation recovery and redemption](HOSTED-GENERATION-REDEMPTION.md) now connect the actual case preparation/review path to shared session creation, action execution, terminal export and score consumption. A disposable PostgreSQL integration recovered lost completion/checkpoint responses, preserved one session/export/score, and enforced the same lifetime allowance across generation and gameplay. Provider HTTP was controlled; no paid call or deployed acceptance is claimed. Nineteen affected existing local checks, strict lint, size and production build passed.
+
+**Next:** shared endpoint admission and consistent public asynchronous route selection, followed by independent-worker HTTP acceptance. Shared voice/private audio and retention remain unfinished; browser review and live provider/deployment checks remain external gates. The public hosted guard stays. The full goal is active.
+
 ## Shared action integration checkpoint
 
 [Shared action orchestration](HOSTED-ACTION-INTEGRATION.md) now executes existing game rules inside a validated request-scoped snapshot, restores prior verdict receipts, awaits claim-bound provider admission and atomically commits terminal state/response/export/grant. Actual PostgreSQL plus controlled AI HTTP exercised begin→question→wrong/right accusation→win→replay→recovered verdict map, with one export and quota denial before a third provider call. Local filesystem fallback was disabled during that fixture. Combined SQL checks and 21 relevant regression checks passed; lint, size and build passed.

@@ -28,6 +28,8 @@ The final production build and scoped lint passed after that wording change. The
 
 ## Remaining work and re-entry
 
+The subsequent [generation/redemption checkpoint](HOSTED-GENERATION-REDEMPTION.md) implements shared generation materialization and atomic score redemption. The numbered list below records the prior handoff; endpoint admission, public route selection, hosted voice and live acceptance remain open.
+
 1. Add shared generation request/phase/checkpoint materialization and endpoint admission. Maintain the current stable generated-request recovery semantics and apply the same awaited work protection before generation/review calls.
 2. Implement transactional score redemption from the stored grant, then route normal session reads/actions/results through the appropriate async backend. Hosted action snapshots already retain grants; leaderboard redemption has not moved from the local-token path.
 3. Exercise the complete public text HTTP path across independent workers with controlled provider transport before enabling hosted configuration. Then verify a disposable Supabase/PostgREST target, actual OpenAI key and protected Vercel preview when available.

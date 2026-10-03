@@ -11,14 +11,14 @@ export async function generateCase(settingHint?: string, difficulty = 'medium', 
   const options = executionOptions(execution);
   const timeout = Math.min(180000, Math.max(1000, Number(process.env.AI_GENERATION_TIMEOUT_MS) || 120000));
   const signal = executionSignal(options.signal, timeout);
-  options.onProgress?.('generating');
+  await options.onProgress?.('generating');
   const provenance: AiProvenance[] = [];
   const onProvenance = (value: AiProvenance) => { provenance.push(value); options.onProvenance?.(value); };
   const generated = await requestStructured({ signal, onProvenance, capability: 'case', instructions: buildCasePrompt(settingHint, difficulty),
     input: 'Generate the fictional case using the required output schema.', schema: CASE_SCHEMA });
   assertGeneratedContent(generated);
   const candidate = { ...generated, objective: GENERATED_CASE_OBJECTIVE };
-  options.onProgress?.('reviewing');
+  await options.onProgress?.('reviewing');
   await assertGeneratedReview(candidate, { signal, onProvenance });
   ensureNotAborted(signal);
   return { ...candidate, _aiProvenance: provenance };

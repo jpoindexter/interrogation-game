@@ -3,7 +3,7 @@ import { retrievePatterns } from '../ai/retrieval/service';
 
 /** Optional historical examples; correlation is not evidence that a tactic caused a win. */
 export async function retrieveLearnedTactics(options: {
-  request: NextRequest; setting?: string; difficulty: string;
+  request: Pick<NextRequest, 'signal'>; setting?: string; difficulty: string;
 }): Promise<{ learnedTactics: string[]; totalPriorGames: number }> {
   try {
     const result = await retrievePatterns(options.setting || 'any', options.difficulty, options.request.signal);

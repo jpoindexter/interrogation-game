@@ -3,7 +3,7 @@ import { AiError, type AiProvenance } from './contracts';
 export interface AiExecution {
   signal?: AbortSignal;
   onProvenance?: (provenance: AiProvenance) => void;
-  onProgress?: (phase: 'generating' | 'reviewing') => void;
+  onProgress?: (phase: 'generating' | 'reviewing') => void | Promise<void>;
 }
 /** Legacy credential strings are ignored; credentials are server configured. */
 export function executionOptions(execution?: AiExecution | string): AiExecution {

@@ -1,0 +1,8 @@
+Database: 14.18 (Homebrew)
+PASS generation atomicity: forced receipt failure rolls back session; completed response replay preserves later progress
+PASS generation work: non-AI scope denied; lease expiry during actual deployment-lock wait consumes no quota
+PASS generation finish: real session-lock wait expires authority; transaction rejected, checkpoint recovered and same session materialized once
+PASS generation admission: 1000 retained rows include expired tombstones; new intent refused rather than deleting replay protection
+PASS generation: claim/recovery/fencing; private checkpoint; work reserved once; no paid replay; atomic materialization/failure; retained tombstone bound
+Scope: disposable PostgreSQL transactions and privileges only; no live hosted/provider/browser verification.
+CLEANUP isolated cluster stopped and temporary directory removed

@@ -5,8 +5,12 @@ import type { NextRequest } from 'next/server';
 import { generateCase } from '../game-ai';
 import { selectPortrait, AUTHORED_PORTRAIT } from '../art/portraits';
 import { validateCaseData, validateDifficulty } from '../sanitize';
-import { sanitizeCaseForClient } from '../game-session';
-import { createSessionAt, getSession, persistSession } from './store';
+import { sanitizeCaseForClient } from './public-case';
+import { createSessionFromRecord, getSession } from './store';
+import { createSessionRecord } from './create-record';
+import type { SessionRecord } from './repository-types';
+import { restoreCaseCheckpoint, type CaseCheckpoint } from './case-checkpoint';
+export type { CaseCheckpoint } from './case-checkpoint';
 import { authoredCaseData, attachAuthoredGameplay, gameplayProjection } from '../gameplay/session';
 import { retrieveLearnedTactics } from './learning';
 
@@ -44,22 +48,7 @@ export function parseGenerationOptions(body: Record<string, unknown>): Generatio
     authored: body.mode === 'redteam', ...modeOptions(body) };
 }
 
-interface CaseCheckpoint extends Record<string, unknown> {
-  data: Record<string, unknown>;
-  learnedTactics: string[];
-  totalPriorGames: number;
-  provenance?: AiProvenance[];
-}
-
-function restoreCheckpoint(value: Record<string, unknown>): CaseCheckpoint {
-  if (!validateCaseData(value.data) || !Array.isArray(value.learnedTactics)
-    || !value.learnedTactics.every(item => typeof item === 'string') || typeof value.totalPriorGames !== 'number') {
-    throw new Error('The saved case checkpoint is invalid.');
-  }
-  return value as CaseCheckpoint;
-}
-
-async function prepareCase(options: GenerationOptions, request: NextRequest, context: GenerationContext): Promise<CaseCheckpoint> {
+async function prepareCase(options: GenerationOptions, request: Pick<NextRequest, 'signal'>, context: GenerationContext): Promise<CaseCheckpoint> {
   const { setting, difficulty, authored } = options;
   const raw = authored ? authoredCaseData() : await generateCase(setting, difficulty, { signal: request.signal, onProgress: context.reportProgress });
   const data = validateCaseData(raw);
@@ -71,21 +60,40 @@ async function prepareCase(options: GenerationOptions, request: NextRequest, con
   data.suspect_gender = normalizeGenderHint(data.suspect_gender) ?? data.suspect_gender;
   data.portraitId = authored ? AUTHORED_PORTRAIT : selectPortrait({ role: String(data.suspect_role), gender: String(data.suspect_gender) });
   if (authored) Object.assign(data, { mode: 'redteam', requiredClues: 1 });
-  return { data, learnedTactics, totalPriorGames, provenance: raw._aiProvenance as AiProvenance[] | undefined };
+  return { data, learnedTactics, totalPriorGames, options: { ...options }, provenance: raw._aiProvenance as AiProvenance[] | undefined };
+}
+
+/** Complete and confirm private inputs before either local or shared persistence materializes a session. */
+export async function preparePlayableCase(options: GenerationOptions, request: Pick<NextRequest, 'signal'>, context: GenerationContext): Promise<CaseCheckpoint> {
+  request.signal.throwIfAborted();
+  const checkpoint = restoreCaseCheckpoint(context.checkpoint ?? await prepareCase(options, request, context), options);
+  if (!context.checkpoint) await context.saveCheckpoint(checkpoint);
+  request.signal.throwIfAborted();
+  return checkpoint;
+}
+
+/** Stable creation time makes a retried shared materialization byte-for-byte reproducible. */
+export function createPlayableRecord(options: GenerationOptions, sessionId: string,
+  value: CaseCheckpoint, createdAt = Date.now()): SessionRecord {
+  const checkpoint = restoreCaseCheckpoint(value, options);
+  const { data, learnedTactics, totalPriorGames } = checkpoint;
+  const record = createSessionRecord({ sessionId, caseData: data, learnedTactics, totalPriorGames,
+    timerMode: options.timerMode }, createdAt);
+  if (checkpoint.provenance) record.session.caseProvenance = structuredClone(checkpoint.provenance);
+  if (options.authored) attachAuthoredGameplay(record.session);
+  return record;
+}
+
+export function projectPlayableCase(record: Pick<SessionRecord, 'session'>): Record<string, unknown> {
+  const session = record.session;
+  return { ...sanitizeCaseForClient(session.caseData), sessionId: session.id, timerMode: session.timerMode,
+    startedAt: session.startTime, priorGames: session.totalPriorGames, gameplay: gameplayProjection(session) };
 }
 
 export async function createPlayableCase(options: GenerationOptions, request: NextRequest, context: GenerationContext): Promise<Record<string, unknown>> {
-  const checkpoint = context.checkpoint ? restoreCheckpoint(context.checkpoint) : await prepareCase(options, request, context);
-  if (!context.checkpoint) context.saveCheckpoint(checkpoint);
-  request.signal.throwIfAborted();
-  const { data, learnedTactics, totalPriorGames } = checkpoint;
-  const sessionId = createSessionAt({ sessionId: context.sessionId, caseData: data, learnedTactics,
-    totalPriorGames, timerMode: options.timerMode });
+  const checkpoint = await preparePlayableCase(options, request, context);
+  const initial = createPlayableRecord(options, context.sessionId, checkpoint);
+  const sessionId = createSessionFromRecord(initial);
   const session = getSession(sessionId)!;
-  if (checkpoint.provenance && !session.caseProvenance) {
-    session.caseProvenance = checkpoint.provenance; persistSession(sessionId);
-  }
-  if (options.authored && !session.gameplay) { attachAuthoredGameplay(session); persistSession(sessionId); }
-  return { ...sanitizeCaseForClient(data), sessionId, timerMode: options.timerMode, startedAt: session.startTime,
-    priorGames: totalPriorGames, gameplay: gameplayProjection(session) };
+  return projectPlayableCase({ session });
 }

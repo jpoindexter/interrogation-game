@@ -1,0 +1,9 @@
+Transcript collected from the completed tool call; this file does not represent an additional run.
+Command: node --import tsx tests/hosted-redemption-postgres.ts
+Observed exit code: 0
+
+Database: 14.18 (Homebrew)
+PASS redemption: concurrent one-row insert/consume, canonical public receipt, revision advance, name/token binding and post-expiry replay; forced insert/consume rollback
+PASS redemption authority: expired/future grant, unranked, active lease, stale writer and anonymous RPC denied
+Scope: actual hosted TypeScript adapters plus PostgreSQL transactions. No live Supabase/PostgREST, hosted route, provider, voice, browser or deployment.
+CLEANUP isolated database removed
