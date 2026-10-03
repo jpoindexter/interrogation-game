@@ -18,7 +18,7 @@ Jason authorized implementing the audit findings, fixing errors, warnings and de
 ## Now, next, later and re-entry
 
 - **Now:** implementation resumed after the original planning-only turn. Read `IMPLEMENTATION-STATUS.md` for the current integration work and proof boundaries.
-- **Next:** finish current integration, rerun the full automated gate and execute the remaining authorized behavioral acceptance paths.
+- **Next:** finish current integration and execute the remaining authorized behavioral acceptance paths. Run focused checks for changed risks; reuse recorded full-suite evidence unless new failures or integration changes justify repeating that gate, following the user's request to keep testing proportionate.
 - **Later:** work through the dependency phases, validate the local demo first, then verify the hosted path when credentials and target infrastructure are available.
 - **Re-entry:** open this file and `evidence/trello-board.json`, refresh the real Trello state, inspect local changes, and resume the earliest unverified dependency. Never reset unrelated edits.
 

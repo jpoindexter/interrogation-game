@@ -1,3 +1,5 @@
+import { normalizeGenderHint } from '../character-identity';
+
 /** Existing fictional character art. Legacy filename suffixes are not identity labels. */
 export const PORTRAITS = [
   { id: '02-f', wardrobe: 'Navy blazer and cream blouse', agePresentation: 'adult', roles: ['office', 'leadership'] },
@@ -37,7 +39,7 @@ const ROLE_CASTING: { pattern: RegExp; female: PortraitId; other: PortraitId }[]
 /** Cast once during case creation, then persist the chosen ID through every view. */
 export function selectPortrait({ role, gender }: { role: string; gender?: string }): PortraitId {
   const rule = ROLE_CASTING.find(candidate => candidate.pattern.test(role));
-  const presentation = gender?.toLowerCase() === 'female' ? 'female' : 'other';
+  const presentation = normalizeGenderHint(gender) === 'female' ? 'female' : 'other';
   if (rule) return rule[presentation];
   return presentation === 'female' ? '02-f' : DEFAULT_PORTRAIT;
 }

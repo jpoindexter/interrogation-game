@@ -1,3 +1,4 @@
+import { normalizeGenderHint } from '../character-identity';
 import type { AiProvenance } from '../ai/contracts';
 import type { GenerationContext } from './generation-requests';
 import type { NextRequest } from 'next/server';
@@ -66,6 +67,8 @@ async function prepareCase(options: GenerationOptions, request: NextRequest, con
   const { learnedTactics, totalPriorGames } = await retrieveLearnedTactics({ request, setting, difficulty });
   request.signal.throwIfAborted();
   data.playMode = options.playMode;
+  // Canonicalize only new cases. Saved checkpoints retain their portrait and voice-receipt identity.
+  data.suspect_gender = normalizeGenderHint(data.suspect_gender) ?? data.suspect_gender;
   data.portraitId = authored ? AUTHORED_PORTRAIT : selectPortrait({ role: String(data.suspect_role), gender: String(data.suspect_gender) });
   if (authored) Object.assign(data, { mode: 'redteam', requiredClues: 1 });
   return { data, learnedTactics, totalPriorGames, provenance: raw._aiProvenance as AiProvenance[] | undefined };

@@ -1,0 +1,65 @@
+/** Three opt-in adapter calls on an already-public case; no generation or automatic retries. */
+import { createHash } from 'node:crypto';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { interrogate } from '../../../src/lib/game-ai/interrogate';
+import { evaluateAccusation } from '../../../src/lib/game-ai/evaluate';
+import type { ConversationMessage } from '../../../src/lib/ai/types';
+import type { ActorCase } from '../../../src/lib/ai/prompts/suspect';
+import type { JudgeCase } from '../../../src/lib/ai/prompts/judge';
+import type { AiProvenance } from '../../../src/lib/ai/contracts';
+
+async function sourceHashes() {
+  const paths = ['src/lib/ai/prompts/suspect-text.json', 'src/lib/ai/prompts/adaptive-text.json',
+    'src/lib/ai/prompts/judge.ts', 'src/lib/ai/prompts/suspect.ts', 'src/lib/game-ai/interrogate.ts',
+    'src/lib/game-ai/evaluate.ts', 'docs/audit/evidence/dialogue-polish-harness.ts'];
+  return Object.fromEntries(await Promise.all(paths.map(async path =>
+    [path, createHash('sha256').update(await readFile(path)).digest('hex')])));
+}
+async function main() {
+  const saved = JSON.parse(await readFile('docs/audit/evidence/disclosure-live-v4.json', 'utf8'));
+  const start = saved.steps.find((step: { command: { command: string } }) => step.command.command === 'start').response.data;
+  const state = saved.steps.find((step: { command: { command: string } }) => step.command.command === 'state').response.data;
+  const result = saved.steps.find((step: { command: { command: string } }) => step.command.command === 'result').response.data;
+  const accusation = saved.steps.find((step: { command: { command: string } }) => step.command.command === 'accuse').command.accusation;
+  const history: ConversationMessage[] = state.conversationHistory.slice(0, 4);
+  const questions = [state.conversationHistory[4].content, state.conversationHistory[6].content];
+  const actorCase: ActorCase = { ...start, disclosedEvidence: [] };
+  const judgeCase: JudgeCase = { ...start, the_lie: result.reveal_the_lie,
+    the_truth: result.reveal_the_truth, the_contradiction: result.reveal_the_clue };
+  const manifest = { startedAt: new Date().toISOString(), maxCalls: 3, generationCalls: 0,
+    provider: 'codex-local', model: 'gpt-6.1-sol', actorCase, initialHistory: history, questions, judgeCase, accusation,
+    sources: await sourceHashes(), criteria: ['No invented alibi, relationship or other factual detail in actor replies.',
+      'No model/context language or repeated canned refusal; qualitative assessment of two linked replies.',
+      'Judge accepts the specific false location claim without asserting proof of the entire crime or saying authored/generated.'],
+    limits: 'One known case, two actor replies and one positive judgment; no general quality, safety or judge reliability estimate.' };
+  if (!process.argv.includes('--run')) { console.log(JSON.stringify({ ...manifest, calls: 0 }, null, 2)); return; }
+  if (process.env.AI_PROVIDER !== 'codex-local' || process.env.CODEX_MODEL !== 'gpt-6.1-sol') throw new Error('Use the declared provider/model.');
+  const output = 'docs/audit/evidence/dialogue-polish-live.json';
+  await writeFile(output.replace('.json', '.expected.json'), JSON.stringify(manifest, null, 2), { flag: 'wx' });
+  await writeFile(output, '{}', { flag: 'wx' });
+  const directory = await mkdtemp(join(tmpdir(), 'interrogation-dialogue-polish-'));
+  const previous = process.env.INTERROGATION_DATA_DIR; process.env.INTERROGATION_DATA_DIR = directory;
+  const observations: Record<string, unknown>[] = [];
+  try {
+    for (const [index, question] of questions.entries()) {
+      const before = performance.now();
+      const reply = await interrogate(actorCase, history, question, index + 1, 1);
+      observations.push({ kind: 'suspect', question, elapsedMs: Math.round(performance.now() - before), reply });
+      history.push({ role: 'user', kind: 'question', content: question }, { role: 'assistant', content: reply.spoken_response });
+      await writeFile(output, JSON.stringify({ ...manifest, status: 'running', observations }, null, 2));
+      console.log(`Suspect reply ${index + 1}/2 captured.`);
+    }
+    const provenance: AiProvenance[] = []; const before = performance.now();
+    const verdict = await evaluateAccusation(judgeCase, history, accusation, { onProvenance: item => provenance.push(item) });
+    observations.push({ kind: 'judge', elapsedMs: Math.round(performance.now() - before), verdict, provenance });
+    await writeFile(output, JSON.stringify({ ...manifest, status: 'finished', finishedAt: new Date().toISOString(),
+      observations, sourcesAfter: await sourceHashes() }, null, 2));
+    console.log('Judge reply captured; three calls finished.');
+  } finally {
+    if (previous === undefined) delete process.env.INTERROGATION_DATA_DIR; else process.env.INTERROGATION_DATA_DIR = previous;
+    await rm(directory, { recursive: true, force: true });
+  }
+}
+main().catch(error => { console.error(error instanceof Error ? error.message : 'Dialogue check failed'); process.exitCode = 1; });

@@ -1,0 +1,12 @@
+✔ all retained portrait IDs resolve to real PNG artwork with accurate intrinsic metadata (3.957333ms)
+✔ casting uses role wardrobe once and explicit identity survives name changes (0.266958ms)
+✔ outcome motif uses existing clean artwork and semantic title (6.228875ms)
+✔ explicit generated woman/man aliases choose intended portrait and voice pools without recasting saved IDs (0.315292ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 479.493375

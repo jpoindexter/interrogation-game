@@ -1,3 +1,5 @@
+import { normalizeGenderHint } from '../src/lib/character-identity';
+import { pickVoice } from '../src/lib/voice/voices';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -36,4 +38,25 @@ test('outcome motif uses existing clean artwork and semantic title', () => {
   assert.match(markup, /<h1[^>]*>Time expired<\/h1>/);
   assert.match(markup, /alt=""/);
   assert.doesNotMatch(markup, /solved\//);
+});
+
+
+test('explicit generated woman/man aliases choose intended portrait and voice pools without recasting saved IDs', () => {
+  for (const gender of ['woman', 'Woman', ' FEMALE ']) {
+    const canonical = normalizeGenderHint(gender)!;
+    assert.equal(canonical, 'female');
+    assert.equal(selectPortrait({ role: 'Operations analyst', gender }), '06-f');
+    assert.equal(pickVoice('Mira Venn', canonical), pickVoice('Mira Venn', 'female'));
+    assert.notEqual(pickVoice('Mira Venn', canonical), pickVoice('Mira Venn', 'male'));
+  }
+  for (const gender of ['man', 'Man', ' MALE ']) {
+    assert.equal(normalizeGenderHint(gender), 'male');
+    assert.equal(selectPortrait({ role: 'Operations analyst', gender }), '09-m');
+  }
+  assert.equal(normalizeGenderHint('non-binary'), 'nonbinary');
+  assert.equal(normalizeGenderHint('unspecified'), null);
+  assert.equal(normalizeGenderHint('Mira Venn'), null);
+  assert.equal(portraitPath('09-m'), '/suspects/suspect-09-m.png');
+  // Old sessions and their cached speech fingerprints keep the old recorded gender/voice mapping.
+  assert.equal(pickVoice('Mira Venn', 'woman'), pickVoice('Mira Venn', 'male'));
 });

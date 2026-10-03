@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-03T14:54:46.957Z",
+  "capturedAt": "2026-10-03T15:05:33.187Z",
   "board": "https://trello.com/b/Ww5bceNb/interrogation-superhuman-demo-upgrade",
   "count": 70,
   "cards": [
@@ -134,16 +134,6 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf862ae2f3ab20f3857c",
-      "name": "[P2 · UX-21] Select portraits using case identity rather than name hashing",
-      "desc": "UX-21 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/game/SuspectAvatarPixi.tsx:5-21 hashes name into gender-only pool; current portrait art includes distinct doctor/business attire that can contradict generated suspect role.\n\nChange\nAdd stable portraitId to approved case data with role/age-presentation/wardrobe metadata; retain varied existing portrait pool. Candidate new portraits only when a reviewed case needs missing attire: match existing 1:1 amber-background pixel portrait, same bust crop, facial detail scale and light direction. Avoid using stress/appearance as guilt evidence.\n\nAcceptance\nReviewed doctor/office/technician cases use plausible stable portraits in briefing, game, results and transcript. Regeneration is limited to documented gaps and approved contact-sheet comparisons.\n\nDependencies: UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
-      "url": "https://trello.com/c/DAsK5cBn/45-p2-ux-21-select-portraits-using-case-identity-rather-than-name-hashing",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
-        "name": "Backlog — upgrades"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf88298860eb59d56b1c",
       "name": "[P2 · UX-23] Make restrained motion reinforce game events instead of competing for attention",
       "desc": "UX-23 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/page.tsx:63-79 particles, :178-218 scanline/flicker/interference; cases/page.tsx:49/:57-58 indefinite animations; PolaroidCard.tsx:48/:76-79/:117 repeated motion; VoiceWaveform.tsx:19-27 animated ios9 style.\n\nChange\nDefine a motion budget: short event transitions for clue, turn and outcome; pause decorative loops during reading and screen-sharing. Match waveform treatment to noir art; if decorative, do not imply live audio amplitude. Add a presenter skip-reveal control and respect reduced motion across JS and CSS.\n\nAcceptance\nRecord 30 seconds of each major scene: attention stays on dialogue/evidence; no persistent ornamental motion in demo/reduced-motion mode. Audio state is still understandable with animation removed.\n\nDependencies: UX-10, UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
@@ -244,16 +234,6 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf132b0a5165d1faeecb",
-      "name": "[P1 · LOGIC-01] Make clues unique, durable and consistent between client and server",
-      "desc": "Audit ID: LOGIC-01\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/api/interrogate/route.ts:109-151; app/game/page.tsx:193-201; app/game/components/Dock.tsx:43-44; src/lib/mistral/interrogate.ts:299-306,329-335. Mocked two identical clues produced server count 2, client deduplicated count 1. Root separately proved filtered clue increments and raw leak persists.\n\n## Impact\nLocal: P1, can permanently prevent accusation. Hosted: P1, same correctness issue.\n\n## Proposed change\nPersist clue IDs and full accepted clue events. Validate/filter before any state mutation; store exactly the displayed assistant text. Send available/revealed clue IDs to the model and return authoritative clue state to the client. Avoid deriving clue progress from generated text.\n\n## Acceptance\nRepeat a clue, return a blocked secret, and retry a turn: each accepted clue counts once, blocked clues count zero, transcript equals shown response, and all difficulties can reach accusation. Verify filtered and lawyer-up responses can be spoken by TTS.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
-      "url": "https://trello.com/c/99XWEgXr/9-p1-logic-01-make-clues-unique-durable-and-consistent-between-client-and-server",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2058fcb227f6126f00",
       "name": "[P1 · LOGIC-09] Replace keyword secret blocking with tested disclosure rules",
       "desc": "Audit ID: LOGIC-09\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsanitize.ts:89-101 checks overlap with the_lie as well as truth; interrogate/route.ts:143-151. Executed exact cover-story denial \"I never accessed the vault at midnight.\" was flagged as leaked secret. sanitize.ts:24 separately blocks harmless \"What were you told about the security alarm?\" (root executed).\n\n## Impact\nLocal: P1 evasive/broken dialogue and unfair dead ends. Hosted: P1 same.\n\n## Proposed change\nSeparate allowed cover-story facts, earned contradictions and hidden solution facts. Keep deterministic output restrictions for internal metadata; use a evaluated disclosure policy rather than blanket lexical overlap. Narrow injection heuristics using benign/adversarial fixtures.\n\n## Acceptance\nDataset includes cover-story repetition, normal investigation questions, earned clues, direct leaks, paraphrase leaks and injection attempts; report false positives/negatives and preserve legitimate dialogue.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nRemoved keyword stripping that broke ordinary detective questions. Literal disclosure rules preserve public cover story, withhold internal metadata/private direct facts. Actual live dialogue and 10-item judge/disclosure sample executed. Semantic paraphrase leakage remains an open limitation.\n\nCorrection · 3 Oct\nActor context now excludes private solutions. Server releases a labelled case evidence note after distinct accepted questions, independent of stress; model clues cannot mint progress. 33 focused checks plus integrated lint/size/build passed. Actual-provider run pending; guessing/inference/hallucination still possible. Historical semantic leaks retained in RULE-ACCEPTANCE.md; new design/proof in ACTOR-DISCLOSURE.md.",
@@ -344,16 +324,6 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfaa190f57ee0d447119",
-      "name": "[P2 · ARCH-03] Pin a reproducible Node24 and package-manager baseline",
-      "desc": "Audit ID: ARCH-03\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nNo engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.\n\n## Proposed change\nPin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.\n\n## Acceptance\nFresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.",
-      "url": "https://trello.com/c/WdaHGW0K/52-p2-arch-03-pin-a-reproducible-node24-and-package-manager-baseline",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb431fe98442a3f7dd4",
       "name": "[P2 · ARCH-10] Split game orchestration and enforce readable module limits",
       "desc": "ARCH-10 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRaw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.\n\nChange\nThin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150–200 lines; review200/250, hard300 executable; functions30/50 and complexity10.\n\nAcceptance\nLint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
@@ -376,7 +346,7 @@
     {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72bac1c1a8b9544f3d9",
       "name": "[P1 · GAMEPLAY-DIALOGUE] Expand contextual dialogue and meaningful conversation options",
-      "desc": "GAMEPLAY-DIALOGUE\n\nUser-authorized scope addition, 2026-10-03.\n\nAdd richer suspect dialogue and distinct player approaches using the original Git-history mechanics. Preserve free text and voice; optional suggested approaches should depend on revealed evidence and never expose hidden solutions. Acceptance: playable branching examples; repetition/diversity checks; accessible controls; no fabricated clue progress; compare with baseline game.\n\nImplementation checkpoint · 3 Oct 2026\nEditable Clarify/Leave space/Present evidence approaches integrated with actual accepted dialogue and transcript; no automatic evidence reward. Deterministic tests and actual local Codex calls executed. Wider dialogue variety and browser/player review pending.",
+      "desc": "GAMEPLAY-DIALOGUE\n\nUser-authorized scope addition, 2026-10-03.\n\nAdd richer suspect dialogue and distinct player approaches using the original Git-history mechanics. Preserve free text and voice; optional suggested approaches should depend on revealed evidence and never expose hidden solutions. Acceptance: playable branching examples; repetition/diversity checks; accessible controls; no fabricated clue progress; compare with baseline game.\n\nImplementation checkpoint · 3 Oct 2026\nEditable Clarify/Leave space/Present evidence approaches integrated with actual accepted dialogue and transcript; no automatic evidence reward. Deterministic tests and actual local Codex calls executed. Wider dialogue variety and browser/player review pending.\n\nDialogue follow-up · 3 Oct\nRemoved prompt instructions causing repeated 'cannot confirm'/context language and invented irrelevant details. Three live calls on recorded case:2distinct in-character replies without new alibi/relationship facts; correct location-claim judgment without 'authored' wording or unsupported theft admission.13.680/14.317/17.357s. Small known sample, not broad diversity/fun proof. DIALOGUE-POLISH.md.",
       "url": "https://trello.com/c/i1IERgNz/63-p1-gameplay-dialogue-expand-contextual-dialogue-and-meaningful-conversation-options",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
@@ -564,6 +534,16 @@
       }
     },
     {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf862ae2f3ab20f3857c",
+      "name": "[P2 · UX-21] Select portraits using case identity rather than name hashing",
+      "desc": "UX-21 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/game/SuspectAvatarPixi.tsx:5-21 hashes name into gender-only pool; current portrait art includes distinct doctor/business attire that can contradict generated suspect role.\n\nChange\nAdd stable portraitId to approved case data with role/age-presentation/wardrobe metadata; retain varied existing portrait pool. Candidate new portraits only when a reviewed case needs missing attire: match existing 1:1 amber-background pixel portrait, same bust crop, facial detail scale and light direction. Avoid using stress/appearance as guilt evidence.\n\nAcceptance\nReviewed doctor/office/technician cases use plausible stable portraits in briefing, game, results and transcript. Regeneration is limited to documented gaps and approved contact-sheet comparisons.\n\nDependencies: UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nIdentity correction · 3 Oct\nActual generated 'woman' bypassed exact 'female' selection. New-case aliases now canonicalized before portrait/voice identity persistence. Actual controlled generation→storage→GET recovery→replay confirms female/06-f analyst; legacy woman/09-m remains unchanged. Four art/alias checks passed. IDENTITY-CONSISTENCY.md. No pixels-based identity inference, artwork change or voice charge; rendered cross-screen review remains pending.",
+      "url": "https://trello.com/c/DAsK5cBn/45-p2-ux-21-select-portraits-using-case-identity-rather-than-name-hashing",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      }
+    },
+    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8a8ea03c8ef83017d0",
       "name": "[P2 · UX-24] Handle small windows and movable panels without offscreen loss",
       "desc": "Audit ID: UX-24\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nBriefingDialog.tsx:70 fixes 32rem x 36rem; NotesPanel.tsx:29 fixes width 360 and :53-58 allows unconstrained drag; SettingsPanel.tsx:62/:72 same; leaderboard/page.tsx:84/:123 fixed 6-column grid.\n\n## Proposed change\nConstrain panels to viewport and offer Reset position; use pointer events and keyboard alternatives or eliminate drag where unnecessary. Briefing must fit small/shared windows and expose leads. Replace narrow leaderboard grid with semantic responsive table/card layout.\n\n## Acceptance\nAt 390px width, 720px height and 200% zoom, all panel actions are reachable. Drag to every edge and resize window; panel can always be recovered. Keyboard can accomplish all essential actions without dragging.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nShared native-dialog utility panels support bounded pointer/keyboard movement, reset and scrollable content. Geometry/control regressions and strict checks executed. Real dragging, focus and small-window layout await browser permission.",
@@ -644,6 +624,16 @@
       }
     },
     {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf132b0a5165d1faeecb",
+      "name": "[P1 · LOGIC-01] Make clues unique, durable and consistent between client and server",
+      "desc": "Audit ID: LOGIC-01\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/api/interrogate/route.ts:109-151; app/game/page.tsx:193-201; app/game/components/Dock.tsx:43-44; src/lib/mistral/interrogate.ts:299-306,329-335. Mocked two identical clues produced server count 2, client deduplicated count 1. Root separately proved filtered clue increments and raw leak persists.\n\n## Impact\nLocal: P1, can permanently prevent accusation. Hosted: P1, same correctness issue.\n\n## Proposed change\nPersist clue IDs and full accepted clue events. Validate/filter before any state mutation; store exactly the displayed assistant text. Send available/revealed clue IDs to the model and return authoritative clue state to the client. Avoid deriving clue progress from generated text.\n\n## Acceptance\nRepeat a clue, return a blocked secret, and retry a turn: each accepted clue counts once, blocked clues count zero, transcript equals shown response, and all difficulties can reach accusation. Verify filtered and lawyer-up responses can be spoken by TTS.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nAccepted · 3 Oct\nACTOR-DISCLOSURE.md: all4difficulties release one canonical note, repeated/replayed/blocked output cannot add duplicates; stored text matches shown response; accusations remain reachable. RULE-ACCEPTANCE.md executes unchanged TTS route authorization/cache for filtered/lawyer lines. Real v4 path also released one note and won. Actual audible voice/browser remain separate gates.",
+      "url": "https://trello.com/c/99XWEgXr/9-p1-logic-01-make-clues-unique-durable-and-consistent-between-client-and-server",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf16e8f34668b565d0e5",
       "name": "[P1 · LOGIC-03] Give each session an explicit terminal state and authoritative outcome",
       "desc": "Audit ID: LOGIC-03\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\ngame-session.ts:7-26 has no lifecycle state. evaluate/route.ts:31-48 trusts body.type and deletes session. accuse/route.ts:26-35 omits deadline/terminal-state checks. Executed fresh-session win evaluation returned 200 and deleted session; accusation at start+2h returned 200. These are actual route modules with mocked AI.\n\n## Impact\nLocal: P1 recovery/race risk. Hosted: P1 game integrity/cost risk. Mocked evaluation proves missing authorization gate, not live model behavior.\n\n## Proposed change\nModel briefing, active, won, lost and finalized states; persist terminal reason and accepted accusation once. Gate every action; derive result type from state. Make finalization idempotent and use a common per-session transaction/lock.\n\n## Acceptance\nEarly win evaluation, accusation after expiry, interrogation after win/lawyer-up, repeated finalize, and simultaneous question/finalize all preserve one valid terminal result.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nAcceptance executed · 3 Oct 2026\nActual routes executed early win refusal, expired accusation, post-win/lawyer interrogation, repeated finalize and genuinely concurrent question/end/evaluate using controlled provider transport and real temporary persistence. One canonical terminal result retained. docs/audit/BACKEND-ACCEPTANCE.md and evidence/backend-acceptance.json. Original criteria satisfied.",
@@ -698,6 +688,16 @@
       "name": "[P1 · ARCH-01] Fix export CLI auth regression and secret logging",
       "desc": "Audit ID: ARCH-01\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nf8d4c3c changed endpoint to Authorization; scripts/export-data.ts:22–29 still puts secret in URL/log. Synthetic execution with mocked fetch/filesystem confirmed secret in URL/log and no auth header. No real secret/network used.\n\n## Proposed change\nUse Bearer Authorization; remove secret query/log output; preserve filters; lock tsx runner as dev dependency or supported Node runner.\n\n## Acceptance\nExecute CLI against controlled fixture export: success with header; missing/wrong auth returns401; captured logs and URL contain no token; pagination/output valid.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nAcceptance executed · 3 Oct 2026\n12 export tests pass. Real child-process CLI → actual local HTTP route → private durable completion file succeeds with Bearer header. Missing/wrong/scheme-invalid auth rejected401; logs/URL contain no credential; filters, offset/limit and JSONL checked. Failed/invalid responses preserve prior files. Evidence: docs/audit/evidence/export-acceptance.txt. This completes the controlled CLI acceptance only, not live Supabase delivery.",
       "url": "https://trello.com/c/BFL5uEUP/50-p1-arch-01-fix-export-cli-auth-regression-and-secret-logging",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfaa190f57ee0d447119",
+      "name": "[P2 · ARCH-03] Pin a reproducible Node24 and package-manager baseline",
+      "desc": "Audit ID: ARCH-03\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nNo engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.\n\n## Proposed change\nPin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.\n\n## Acceptance\nFresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nAccepted · 3 Oct\nFresh checkout8779a9b installed/built on Node24.21.0/npm11.21.0 and ran authored fixture/restart through real HTTP. Runtime pins/lockfile remain identical at07ff92e. Original local criterion executed; later Vercel runtime/deploy remains separate. FRESH-CHECKOUT.md.",
+      "url": "https://trello.com/c/WdaHGW0K/52-p2-arch-03-pin-a-reproducible-node24-and-package-manager-baseline",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
         "name": "Done"
