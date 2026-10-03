@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -24,4 +25,18 @@ export async function leaderboardFixture(context: TestContext) {
   const storagePath = join(directory, 'records');
   return { directory, session, body: { sessionId, winToken, playerName: 'ABC' }, storagePath,
     store: new LocalLeaderboardStore(storagePath) };
+}
+
+export function redemptionWorker(directory: string, operation: 'fail' | 'redeem' | 'repeat') {
+  return new Promise<{ code: number | null; output: string }>((resolve, reject) => {
+    const child = spawn(process.execPath, ['--import', 'tsx', 'tests/leaderboard-restart-worker.ts', operation], {
+      env: { ...process.env, INTERROGATION_DATA_DIR: directory, AI_WORK_ENABLED: 'false' }, stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    let output = '';
+    const timer = setTimeout(() => child.kill('SIGKILL'), 10_000);
+    child.stdout.on('data', chunk => { output += String(chunk); });
+    child.stderr.on('data', chunk => { output += String(chunk); });
+    child.once('error', error => { clearTimeout(timer); reject(error); });
+    child.once('close', code => { clearTimeout(timer); resolve({ code, output }); });
+  });
 }

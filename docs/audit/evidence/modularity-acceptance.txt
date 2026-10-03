@@ -1,0 +1,1 @@
+Authored start → evidence → wrong/right accusation → terminal result → export → recovery: passed. Four controlled provider calls; zero external calls.

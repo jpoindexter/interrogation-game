@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-03T15:05:33.187Z",
+  "capturedAt": "2026-10-03T15:17:38.091Z",
   "board": "https://trello.com/b/Ww5bceNb/interrogation-superhuman-demo-upgrade",
   "count": 70,
   "cards": [
@@ -154,16 +154,6 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfac293d093f2f460b36",
-      "name": "[P1 · ARCH-04] Separate game AI contracts from Mistral implementation",
-      "desc": "ARCH-04 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nFive Mistral capability groups: generate-case/interrogate/evaluate, Voxtral transcribe, embeddings+seed-rag; UI imports ConversationMessage from mistral. Accuse/evaluate require server credentials even with browser BYOK.\n\nChange\nIntroduce provider-neutral validated case/turn/outcome contracts and small server-only adapters; separate optional embedding capability; move shared types out of provider folder.\n\nAcceptance\nContract fixture suite covers generate/respond/judge/summarize and structured errors; no UI/vendor type coupling; every live capability uses selected provider.\n\nDependencies: ARCH-02.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nProvider namespace checkpoint · 3 Oct 2026\nLive game orchestration moved from src/lib/mistral to src/lib/game-ai with all source/test/evaluation references updated. Unused migration facades removed; shared contracts remain provider-neutral. TypeScript, strict lint and size checks passed. Report: docs/audit/PROVIDER-NAMESPACE.md. This source check does not replace live capability/browser acceptance.",
-      "url": "https://trello.com/c/XFhqC8b1/53-p1-arch-04-separate-game-ai-contracts-from-mistral-implementation",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
-        "name": "Backlog — upgrades"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfafd51b95cc47698430",
       "name": "[P3 · ARCH-06] Add future hosted OpenAI adapter without subscription token reuse",
       "desc": "ARCH-06 · P3 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nUser has no API key yet. Official local subscription and API-key billing differ. globalThis state not suitable for multiple hosted instances.\n\nChange\nFuture server-only Responses API adapter configured by API key and explicit model; shared game contracts; keep hosting work after local demo.\n\nAcceptance\nWhen key exists: Vercel preview completes real text/voice game; secrets absent client assets/logs; spend/error limits tested.\n\nDependencies: ARCH-04, LOGIC-12.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
@@ -244,16 +234,6 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2804583ffd1d9487ca",
-      "name": "[P2 · LOGIC-15] Fix rate-limit keys and add separate per-session spend budgets",
-      "desc": "Audit ID: LOGIC-15\nPriority: P2\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nrate-limit.ts:19-20 generates new identity when headers absent (root executed);24-33 uses same IP bucket for differing endpoint limits; state is process memory. Generate-case, embeddings, judging, STT and TTS lack aggregate session cost cap.\n\n## Impact\nLocal: P2 default request identity ineffective and interactive endpoint budgets interfere; hosted: P1 cost/abuse boundary.\n\n## Proposed change\nSeparate trusted proxy identity parsing from local mode, use route/user/session namespaces, stable fallback, shared hosted counters and request/concurrency/token/audio/cost limits. Add operator stop switch.\n\n## Acceptance\nMissing headers share documented restrictive budget; question requests do not consume leaderboard quota; limits hold across two instances and retries; no provider call begins after cap.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nDurable local endpoint and voice budgets now share an atomic private ledger across processes/restarts. Nine real-process/storage tests pass; HTTP distinguishes 429 allowance exhaustion from 503 unavailable storage before provider work. See docs/audit/SHARED-BUDGETS.md. Hosted shared limits, aggregate token/currency caps and replay-aware voice billing remain open.\n\nCheckpoint · 3 Oct · 297-test gate\nDurable session/operator AI call+character limits now cover provider gateway and optional embeddings. Concurrent/restart, stop switch, exhausted/oversized denial and stable failure receipts tested; voice replay avoids duplicate reservation. See docs/audit/SHARED-BUDGETS.md and ai-budget-integration.test.ts. These are work allowances, not token/currency measurement. Hosted limits/billing remain open.",
-      "url": "https://trello.com/c/CqMZHiuR/23-p2-logic-15-fix-rate-limit-keys-and-add-separate-per-session-spend-budgets",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2ddfde7ba318f65903",
       "name": "[P1 · LOGIC-18] Validate generated cases as playable content rather than string shapes",
       "desc": "Audit ID: LOGIC-18\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsanitize.ts:130-150 accepts empty strings, arbitrary difficulty and nonstring trigger entries converted to empty strings;generate-case/route.ts:33 requires only truthy prevalidation the_lie. Executed validator accepted all blank strings and difficulty=impossible.\n\n## Impact\nLocal: P1 broken random demo case; hosted: P1 same.\n\n## Proposed change\nStrict case schema plus minimum semantic requirements: requested difficulty enforced, nonempty facts/leads/triggers, consistent timeline, discoverable contradiction, bounded hints. Ship one reviewed stable demo case and validate generated cases before activation.\n\n## Acceptance\nReject empty/missing/malformed fields and unsupported difficulty; each approved case passes scripted evidence-to-correct-accusation playthrough; impossible cases never start.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nCurrent checkpoint · 3 Oct\nV4 generation previously reached ready64.069s and one generated CLI win/recovery with zero clue markers. New reviewv3 requires quoted actor/time/action support and rejects surviving ordinary alternatives: all3 known calibration cases matched expected criteria, reviews49.944–79.186s. V2 phone false acceptance remains in history; general fairness/startup latency unproven. ACTOR-DISCLOSURE.md adds public-only actor context and server evidence release; combined live path pending. See GENERATED-REVIEW-V3.md and GENERATED-ACCUSATION-ACCESS.md. Original broad acceptance remains open.\n\nLive follow-up · 3 Oct\nV3 failed77.144s on review citations. V4 source IDs preserved validation; one real generated start70.667s → opening →3questions →canonical evidence →correct accusation →matching recovered win/map/export succeeded. No browser/voice proof or reliability rate. See GENERATED-REVIEW-V4.md.",
@@ -318,16 +298,6 @@
       "name": "[P1 · ARCH-02] Upgrade security baseline with paired Next and ESLint config",
       "desc": "Audit ID: ARCH-02\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nInstalled Next16.1.6; audit18 packages (critical1/high14/moderate2/low1). Registry candidate16.3.8. npm audit proposes inappropriate ESLint-config downgrade14.2.35 for some paths. next.config enables AVIF.\n\n## Proposed change\nUpdate Next+eslint-config-next together; refresh lockfile/transitives; inspect runtime/tooling reachability; do not blindly force audit fixes.\n\n## Acceptance\nnpm ci, lint, typecheck, build, full fixture game, image routes and production audit pass; unresolved advisories documented with reachability and decision.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nImplementation checkpoint · 3 Oct 2026\nCompatible modern baseline installed: Next16.3.8/React19.3/Motion14/Tailwind4.3.3/Node24.21/npm11.21. Clean install succeeds. Production audit0; five high dev-chain braces advisories remain with no patched release found. ESLint10 exceeds plugin peer ranges. No forced downgrade/suppression.\n\nDependency follow-up · 3 Oct 2026\nPinned Node24/npm11 audit still reports five high development findings and zero production findings. No patched braces release exists. An isolated Next-plugin-scoped tinyglobby replacement removed audit findings but failed actual Next root discovery parity, so it was rejected. No incompatible alias/downgrade applied. docs/audit/DEPENDENCY-FOLLOWUP.md and evidence/dependency-replacement-check.json. This criterion remains unresolved.",
       "url": "https://trello.com/c/KrIn92iw/51-p1-arch-02-upgrade-security-baseline-with-paired-next-and-eslint-config",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb431fe98442a3f7dd4",
-      "name": "[P2 · ARCH-10] Split game orchestration and enforce readable module limits",
-      "desc": "ARCH-10 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRaw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.\n\nChange\nThin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150–200 lines; review200/250, hard300 executable; functions30/50 and complexity10.\n\nAcceptance\nLint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
-      "url": "https://trello.com/c/LrN9LMel/59-p2-arch-10-split-game-orchestration-and-enforce-readable-module-limits",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
         "name": "In progress"
@@ -408,16 +378,6 @@
       "name": "[P1 · LOGIC-05] Respect Unlimited mode and define one timer policy",
       "desc": "LOGIC-05 · P1 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/api/interrogate/route.ts:23-26,74-85 ignores session.timerMode; game-session.ts:25,71 stores it. Root executed easy Unlimited session at 601s returning timeExpired:true.\n\nChange\nUse session timer mode and a shared policy. If Unlimited retains an operational cap, label it accurately. Separate active time and provider time; ensure accusation/finalization follows the same deadline.\n\nAcceptance\nAll four difficulties in both modes obey documented elapsed thresholds and remain consistent with the displayed timer.\n\nDependencies: LOGIC-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nExplicit Challenge/Relaxed/Endurance policy now controls deadline, pressure and ranking. All 12 mode/difficulty combinations and server enforcement tested. Real relaxed session/end/recovery executed. Browser timer behavior remains acceptance work.",
       "url": "https://trello.com/c/IS7nUKSj/13-p1-logic-05-respect-unlimited-mode-and-define-one-timer-policy",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
-        "name": "Verify"
-      }
-    },
-    {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf1cf7f198323a3d0162",
-      "name": "[P1 · LOGIC-07] Make win redemption atomic, idempotent and retryable",
-      "desc": "Audit ID: LOGIC-07\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\ngame-session.ts:192-208 consumes token map then allows session fallback; leaderboard/route.ts:41-48 consumes before insert at75-93. Root executed token accepted twice while session alive and 500 then 401 after failed DB write with session deleted.\n\n## Impact\nLocal: P1 lost success record if demo includes leaderboard. Hosted: P1 duplicate/irrecoverable submission.\n\n## Proposed change\nReplace parallel token sources with one durable terminal result and a unique result/session ID on leaderboard. Perform redemption and write atomically, and return the prior success on duplicate request. Preserve retries on known failed writes.\n\n## Acceptance\nConcurrent double submission makes one row; DB failure then retry succeeds; process restart preserves retry; exact repeated submission returns the same result.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nLocal atomic redemption, duplicate/retry and failed-write paths executed (leaderboard-* tests). Hosted Supabase delivery/RLS not executed. Browser save interaction pending.",
-      "url": "https://trello.com/c/Kg6KTqLL/15-p1-logic-07-make-win-redemption-atomic-idempotent-and-retryable",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
         "name": "Verify"
@@ -654,10 +614,30 @@
       }
     },
     {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf1cf7f198323a3d0162",
+      "name": "[P1 · LOGIC-07] Make win redemption atomic, idempotent and retryable",
+      "desc": "Audit ID: LOGIC-07\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\ngame-session.ts:192-208 consumes token map then allows session fallback; leaderboard/route.ts:41-48 consumes before insert at75-93. Root executed token accepted twice while session alive and 500 then 401 after failed DB write with session deleted.\n\n## Impact\nLocal: P1 lost success record if demo includes leaderboard. Hosted: P1 duplicate/irrecoverable submission.\n\n## Proposed change\nReplace parallel token sources with one durable terminal result and a unique result/session ID on leaderboard. Perform redemption and write atomically, and return the prior success on duplicate request. Preserve retries on known failed writes.\n\n## Acceptance\nConcurrent double submission makes one row; DB failure then retry succeeds; process restart preserves retry; exact repeated submission returns the same result.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nLocal atomic redemption, duplicate/retry and failed-write paths executed (leaderboard-* tests). Hosted Supabase delivery/RLS not executed. Browser save interaction pending.\n\nAccepted local criterion · 3 Oct\nReal failed insert left token redeemable; a fresh process saved one row; third process returned identical exact/changed-metadata replay receipts with unchanged row bytes. Five focused redemption checks passed, plus final restart-only check. REDEMPTION-RESTART.md. Hosted Supabase/RLS and browser save remain separate open gates.",
+      "url": "https://trello.com/c/Kg6KTqLL/15-p1-logic-07-make-win-redemption-atomic-idempotent-and-retryable",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2744f6061c5dc95128",
       "name": "[P2 · LOGIC-14] Validate and authorize the entire text sent to ElevenLabs",
       "desc": "LOGIC-14 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ntts/route.ts:68-75 skips validation for detective role and tests only text.slice(0,80) for suspect. Root executed detective arbitrary text; supplementary test executed approved 80-character prefix plus unapproved suffix reaching mocked fetch.\n\nChange\nAccept server-owned utterance ID; load exact approved dialogue/briefing/terminal text from the session, voice and stress included. Cache generated audio and enforce per-session character/cost caps.\n\nAcceptance\nArbitrary detective text and appended suspect suffix get 403; exact approved utterances work once/cached; sanitized fallback and lawyer-up line are valid utterances.\n\nDependencies: LOGIC-01.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nExecuted acceptance · 3 Oct\nActual TTS route + isolated filesystem receipts: arbitrary detective text and appended suspect suffix rejected403 before provider; exact briefing, sanitized fallback and lawyer line each synthesize once and replay cached bytes through controlled transport. Original authorization/cache criterion executed, zero external calls/spend. Live ElevenLabs/device audio remains a separate gate. docs/audit/RULE-ACCEPTANCE.md and evidence/rule-acceptance.txt.",
       "url": "https://trello.com/c/F05X4iaL/22-p2-logic-14-validate-and-authorize-the-entire-text-sent-to-elevenlabs",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2804583ffd1d9487ca",
+      "name": "[P2 · LOGIC-15] Fix rate-limit keys and add separate per-session spend budgets",
+      "desc": "Audit ID: LOGIC-15\nPriority: P2\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nrate-limit.ts:19-20 generates new identity when headers absent (root executed);24-33 uses same IP bucket for differing endpoint limits; state is process memory. Generate-case, embeddings, judging, STT and TTS lack aggregate session cost cap.\n\n## Impact\nLocal: P2 default request identity ineffective and interactive endpoint budgets interfere; hosted: P1 cost/abuse boundary.\n\n## Proposed change\nSeparate trusted proxy identity parsing from local mode, use route/user/session namespaces, stable fallback, shared hosted counters and request/concurrency/token/audio/cost limits. Add operator stop switch.\n\n## Acceptance\nMissing headers share documented restrictive budget; question requests do not consume leaderboard quota; limits hold across two instances and retries; no provider call begins after cap.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nAccepted local criterion · 3 Oct\nHeaderless question/replay traffic exhausts one restrictive bucket; spoofed headers do not bypass it; all20 leaderboard reads remain available; denied requests never enter provider. Retained concurrent-process/restart AI/voice cap evidence completes original local criteria. ENDPOINT-ISOLATION.md and SHARED-BUDGETS.md. Work allowances are not measured currency; shared hosted budgets remain open.",
+      "url": "https://trello.com/c/CqMZHiuR/23-p2-logic-15-fix-rate-limit-keys-and-add-separate-per-session-spend-budgets",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
         "name": "Done"
@@ -698,6 +678,26 @@
       "name": "[P2 · ARCH-03] Pin a reproducible Node24 and package-manager baseline",
       "desc": "Audit ID: ARCH-03\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nNo engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.\n\n## Proposed change\nPin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.\n\n## Acceptance\nFresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nAccepted · 3 Oct\nFresh checkout8779a9b installed/built on Node24.21.0/npm11.21.0 and ran authored fixture/restart through real HTTP. Runtime pins/lockfile remain identical at07ff92e. Original local criterion executed; later Vercel runtime/deploy remains separate. FRESH-CHECKOUT.md.",
       "url": "https://trello.com/c/WdaHGW0K/52-p2-arch-03-pin-a-reproducible-node24-and-package-manager-baseline",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfac293d093f2f460b36",
+      "name": "[P1 · ARCH-04] Separate game AI contracts from Mistral implementation",
+      "desc": "ARCH-04 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nFive Mistral capability groups: generate-case/interrogate/evaluate, Voxtral transcribe, embeddings+seed-rag; UI imports ConversationMessage from mistral. Accuse/evaluate require server credentials even with browser BYOK.\n\nChange\nIntroduce provider-neutral validated case/turn/outcome contracts and small server-only adapters; separate optional embedding capability; move shared types out of provider folder.\n\nAcceptance\nContract fixture suite covers generate/respond/judge/summarize and structured errors; no UI/vendor type coupling; every live capability uses selected provider.\n\nDependencies: ARCH-02.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nProvider namespace checkpoint · 3 Oct 2026\nLive game orchestration moved from src/lib/mistral to src/lib/game-ai with all source/test/evaluation references updated. Unused migration facades removed; shared contracts remain provider-neutral. TypeScript, strict lint and size checks passed. Report: docs/audit/PROVIDER-NAMESPACE.md. This source check does not replace live capability/browser acceptance.\n\nAccepted contract boundary · 3 Oct\n13current contract/error checks pass; actual authored route sequence proves selected dialogue/judge adapters and canonical result without rejudgment. Prior live Codex path covers generation/review/dialogue/judge. UI imports provider-neutral types; unused summary helpers removed. Integrated lint/size/build passed. PROVIDER-CONTRACT-ACCEPTANCE.md. Hosted API/live voice and ARCH02 dev advisories remain separate.",
+      "url": "https://trello.com/c/XFhqC8b1/53-p1-arch-04-separate-game-ai-contracts-from-mistral-implementation",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb431fe98442a3f7dd4",
+      "name": "[P2 · ARCH-10] Split game orchestration and enforce readable module limits",
+      "desc": "ARCH-10 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRaw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.\n\nChange\nThin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150–200 lines; review200/250, hard300 executable; functions30/50 and complexity10.\n\nAcceptance\nLint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nAccepted modularity criterion · 3 Oct\nEnforced300line files/50line functions with blank/comment exclusions and cohesive owners. Actual authored start→evidence→wrong/right accusation→result replay→state/export passed with4controlled provider calls, plus recorded generated path. Final lint/size/build pass; no full-suite repeat. MODULARITY-ACCEPTANCE.md. Browser parity/voice/hosted deployment remain separate criteria.",
+      "url": "https://trello.com/c/LrN9LMel/59-p2-arch-10-split-game-orchestration-and-enforce-readable-module-limits",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
         "name": "Done"

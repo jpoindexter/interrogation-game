@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import test from 'node:test';
 import { redeemWin } from '../src/lib/leaderboard/redemption';
 import { LocalLeaderboardStore } from '../src/lib/leaderboard/local-store';
 import { inspectWinToken, issueWinToken } from '../src/lib/session/tokens';
-import { leaderboardFixture } from './leaderboard-fixtures';
+import { persistSession } from '../src/lib/session/store';
+import { leaderboardFixture, redemptionWorker } from './leaderboard-fixtures';
 
 void test('failed persistence leaves win redeemable and retry returns canonical frozen metadata', async context => {
   const fixture = await leaderboardFixture(context);
@@ -60,4 +61,29 @@ void test('an incorrect token cannot retrieve or replace an existing receipt', a
   await redeemWin(fixture.body, fixture.store);
   await assert.rejects(redeemWin({ ...fixture.body, winToken: '0'.repeat(32) }, fixture.store), /Invalid or expired/);
   assert.equal((await fixture.store.list()).length, 1);
+});
+
+void test('failed save survives process exit and repeated redemption keeps one immutable row', async context => {
+  const fixture = await leaderboardFixture(context);
+  persistSession(fixture.body.sessionId);
+  await writeFile(join(fixture.directory, 'submission.json'), JSON.stringify(fixture.body), { mode: 0o600 });
+  const failed = await redemptionWorker(fixture.directory, 'fail');
+  assert.equal(failed.code, 23, failed.output);
+  const failure = JSON.parse(failed.output);
+  assert.equal(failure.failure, 'EEXIST'); assert.equal(failure.tokenValid, true); assert.equal(failure.rows, 0);
+  const recovered = await redemptionWorker(fixture.directory, 'redeem');
+  assert.equal(recovered.code, 0, recovered.output);
+  const saved = JSON.parse(recovered.output);
+  assert.equal(saved.rows, 1); assert.equal(saved.tokenValid, false);
+  assert.deepEqual(saved.metadata, { suspect: 'Ada', clues: 3, stress: 7, player: 'ABC' });
+  const replayed = await redemptionWorker(fixture.directory, 'repeat');
+  assert.equal(replayed.code, 0, replayed.output);
+  const repeat = JSON.parse(replayed.output);
+  assert.equal(new Set([failure.pid, saved.pid, repeat.pid]).size, 3);
+  assert.deepEqual(repeat.receipt, saved.receipt);
+  assert.deepEqual(repeat.changedSubmissionReceipt, saved.receipt);
+  assert.equal(repeat.rowHash, saved.rowHash); assert.equal(repeat.rows, 1); assert.equal(repeat.tokenValid, false);
+  assert.equal((await readdir(fixture.storagePath)).filter(file => file.endsWith('.json')).length, 1);
+  context.diagnostic(JSON.stringify({ processes: 3, failedSave: failure.failure, retryAfterExit: true,
+    oneImmutableRow: true, sameReceiptAfterSecondRestart: true, originalPlayer: repeat.receipt.playerName }));
 });

@@ -1,0 +1,9 @@
+✔ headerless question retries share one restrictive bucket without consuming leaderboard quota, and denial precedes provider entry (1731.560542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2162.388208

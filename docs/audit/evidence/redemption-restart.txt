@@ -1,0 +1,65 @@
+Original scoped redemption run (five checks)
+Command: node --import tsx --test tests/leaderboard-redemption.test.ts
+
+TAP version 13
+# Subtest: failed persistence leaves win redeemable and retry returns canonical frozen metadata
+ok 1 - failed persistence leaves win redeemable and retry returns canonical frozen metadata
+  ---
+  duration_ms: 62.763709
+  type: 'test'
+  ...
+# Subtest: concurrent duplicate redemptions persist one record and replay the same receipt
+ok 2 - concurrent duplicate redemptions persist one record and replay the same receipt
+  ---
+  duration_ms: 93.512208
+  type: 'test'
+  ...
+# Subtest: a lost confirmation can be retried after the record was committed
+ok 3 - a lost confirmation can be retried after the record was committed
+  ---
+  duration_ms: 34.569792
+  type: 'test'
+  ...
+# Subtest: an incorrect token cannot retrieve or replace an existing receipt
+ok 4 - an incorrect token cannot retrieve or replace an existing receipt
+  ---
+  duration_ms: 53.619834
+  type: 'test'
+  ...
+# Subtest: failed save survives process exit and repeated redemption keeps one immutable row
+ok 5 - failed save survives process exit and repeated redemption keeps one immutable row
+  ---
+  duration_ms: 327.342667
+  type: 'test'
+  ...
+# {"processes":3,"failedSave":"EEXIST","retryAfterExit":true,"oneImmutableRow":true,"sameReceiptAfterSecondRestart":true,"originalPlayer":"ABC"}
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 681.593875
+
+Final restart-only run after adding exact replay plus changed-metadata receipt assertions
+Command: node --import tsx --test --test-name-pattern="failed save survives process exit" tests/leaderboard-redemption.test.ts
+
+TAP version 13
+# Subtest: failed save survives process exit and repeated redemption keeps one immutable row
+ok 1 - failed save survives process exit and repeated redemption keeps one immutable row
+  ---
+  duration_ms: 339.491833
+  type: 'test'
+  ...
+# {"processes":3,"failedSave":"EEXIST","retryAfterExit":true,"oneImmutableRow":true,"sameReceiptAfterSecondRestart":true,"originalPlayer":"ABC"}
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 450.03275

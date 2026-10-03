@@ -1,0 +1,97 @@
+import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { NextRequest } from 'next/server';
+import { POST as generate } from '../../../app/api/generate-case/route';
+import { POST as interrogate } from '../../../app/api/interrogate/route';
+import { POST as gameplay } from '../../../app/api/gameplay/route';
+import { POST as accuse } from '../../../app/api/accuse/route';
+import { POST as evaluate } from '../../../app/api/evaluate/route';
+import { GET as resume } from '../../../app/api/session/route';
+import { GET as exportGet } from '../../../app/api/export/route';
+import { readLocalExports } from '../../../src/lib/session/exports/storage';
+
+async function main() {
+const directory = await mkdtemp(join(tmpdir(), 'interrogation-modularity-'));
+const previous = { ...process.env };
+const originalFetch = globalThis.fetch;
+const override = { AI_PROVIDER: 'openai', OPENAI_API_KEY: 'synthetic-acceptance', AI_RAG_ENABLED: 'false',
+  AI_WORK_ENABLED: 'true', INTERROGATION_DATA_DIR: directory, EXPORT_STORAGE: 'local', EXPORT_SECRET: 'synthetic-export', SESSION_STORAGE: 'local' };
+Object.assign(process.env, override);
+let calls = 0;
+let judgments = 0;
+const statuses: { step: string; status: number }[] = [];
+function request(route: string, body: object) {
+  return new NextRequest(`http://localhost/api/${route}`, { method: 'POST',
+    body: JSON.stringify({ requestId: randomUUID(), ...body }) });
+}
+async function read(step: string, response: Response) {
+  statuses.push({ step, status: response.status });
+  assert.equal(response.status, 200, step);
+  return response.json();
+}
+globalThis.fetch = async (_input, init) => {
+  calls++;
+  const payload = JSON.parse(String(init?.body));
+  const isJudge = payload.text.format.name.includes('judge');
+  if (isJudge) judgments++;
+  const wrong = isJudge && judgments === 1;
+  const answer = isJudge
+    ? { correct: !wrong, confession: wrong ? 'That is not my job.' : 'I returned after six.',
+      explanation: wrong ? 'The job claim has no supporting evidence.' : 'The signed arrival contradicts my denial.' }
+    : { spoken_response: 'I stand by my account of leaving at six.', internal_state: 'Guarded', stress_level: 0, clue_unlocked: null, caught: false };
+  return Response.json({ status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: JSON.stringify(answer) }] }] });
+};
+try {
+  const created = await read('authored start', await generate(request('generate-case', { mode: 'redteam', playMode: 'relaxed' })));
+  const sessionId = created.sessionId;
+  assert.equal(created.the_truth, undefined);
+  assert.equal(calls, 0);
+  const opening = await read('authored opening', await interrogate(request('interrogate', { sessionId, playerQuestion: '*Detective opens the file*' })));
+  const pinned = await read('pin public statement', await gameplay(request('gameplay', { sessionId, kind: 'pin',
+    turnId: opening.gameplay.turns[0].id, quote: opening.spoken_response })));
+  const action = { id: randomUUID(), kind: 'present_evidence', statementId: pinned.statement.id,
+    exhibitId: 'badge-record', question: 'How does this record compare with your account?' };
+  const unsupported = await read('unsupported exhibit', await gameplay(request('gameplay', { sessionId, requestId: action.id, kind: 'action', action })));
+  assert.equal(unsupported.result.status, 'not_established');
+  assert.equal(unsupported.clues.length, 0);
+  const acceptedAction = { ...action, id: randomUUID(), exhibitId: 'visitor-log' };
+  const established = await read('supported contradiction', await gameplay(request('gameplay', { sessionId, requestId: acceptedAction.id, kind: 'action', action: acceptedAction })));
+  assert.equal(established.result.status, 'contradiction_established');
+  assert.equal(established.clues.length, 1);
+  const wrong = await read('wrong accusation', await accuse(request('accuse', { sessionId, accusation: 'UNSUPPORTED-JOB-CLAIM: you were a security guard, not an operations analyst.' })));
+  assert.equal(wrong.correct, false); assert.equal(wrong.accusationsLeft, 2); assert.equal(wrong.status, 'active');
+  const won = await read('correct accusation', await accuse(request('accuse', { sessionId,
+    accusation: 'You denied returning after six, but the signed visitor entry identifies your return at 18:42. That contradicts the denial, not proof of theft.' })));
+  assert.equal(won.correct, true); assert.equal(won.outcome, 'win');
+  const result = await read('canonical result', await evaluate(request('evaluate', { sessionId, type: 'win' })));
+  const repeated = await read('canonical result replay', await evaluate(request('evaluate', { sessionId, type: 'win' })));
+  assert.deepEqual(repeated, result);
+  const state = await read('public state recovery', await resume(new NextRequest(`http://localhost/api/session?sessionId=${sessionId}`)));
+  assert.equal(state.outcome, 'win'); assert.equal(state.status, 'won');
+  assert.equal(state.result.outcome, result.outcome); assert.deepEqual(state.result.stats, result.stats);
+  const exports = readLocalExports(); assert.equal(exports.length, 1); assert.equal(exports[0].outcome, 'win');
+  for (const [key, value] of Object.entries(result.stats)) assert.deepEqual(exports[0].stats[key], value);
+  assert.equal(exports[0].stats.cluesCollected, 1);
+  const downloaded = await exportGet(new NextRequest('http://localhost/api/export', { headers: { Authorization: 'Bearer synthetic-export' } }));
+  assert.equal(downloaded.status, 200);
+  const records = (await downloaded.text()).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(records.length, 1);
+  for (const [key, value] of Object.entries(result.stats)) assert.deepEqual(records[0].stats[key], value);
+  assert.equal(calls, 4, 'Only two evidence turns and two judgments invoke controlled transport');
+  const evidence = { executedAt: new Date().toISOString(), scope: 'Current actual route modules and private filesystem; controlled provider transport, zero external calls',
+    statuses, controlledProviderCalls: calls, exportRows: 1, resultReplayMatches: true, recoveredStatsMatch: true, privateCapabilitiesPublished: false };
+  await writeFile('docs/audit/evidence/modularity-acceptance.json', `${JSON.stringify(evidence, null, 2)}\n`);
+  process.stdout.write('Authored start → evidence → wrong/right accusation → terminal result → export → recovery: passed. Four controlled provider calls; zero external calls.\n');
+} finally {
+  globalThis.fetch = originalFetch;
+  for (const key of Object.keys(override)) {
+    if (previous[key] === undefined) delete process.env[key]; else process.env[key] = previous[key];
+  }
+  await rm(directory, { recursive: true, force: true });
+}
+
+}
+void main().catch(error => { console.error(error); process.exitCode = 1; });

@@ -1,0 +1,66 @@
+{
+  "executedAt": "2026-10-03T15:11:40.100Z",
+  "scope": "Current actual route modules and private filesystem; controlled provider transport, zero external calls",
+  "statuses": [
+    {
+      "step": "authored start",
+      "status": 200
+    },
+    {
+      "step": "authored opening",
+      "status": 200
+    },
+    {
+      "step": "pin public statement",
+      "status": 200
+    },
+    {
+      "step": "unsupported exhibit",
+      "status": 200
+    },
+    {
+      "step": "supported contradiction",
+      "status": 200
+    },
+    {
+      "step": "wrong accusation",
+      "status": 200
+    },
+    {
+      "step": "correct accusation",
+      "status": 200
+    },
+    {
+      "step": "canonical result",
+      "status": 200
+    },
+    {
+      "step": "canonical result replay",
+      "status": 200
+    },
+    {
+      "step": "public state recovery",
+      "status": 200
+    }
+  ],
+  "controlledProviderCalls": 4,
+  "exportRows": 1,
+  "resultReplayMatches": true,
+  "recoveredStatsMatch": true,
+  "privateCapabilitiesPublished": false,
+  "sourceHashes": {
+    "eslint.size.config.mjs": "84aa87307db5f42d59d6d43f3d0c514c567da795da1fc49f8ab9cc4bd70864c4",
+    "app/api/generate-case/route.ts": "497b2e7697b2351f1735c9cc4f58f971b2f0c8b30436027d46ac423411026aee",
+    "app/api/gameplay/route.ts": "208afb103928fe70ca665b1545446fe720741065757771a7d84a91be715bbfdb",
+    "app/api/accuse/route.ts": "07d5c808f9898b3cffa5d5ae1d94dced4f385a94098d1f21510c387a3fc210c3",
+    "app/api/evaluate/route.ts": "b6e3349eba5802d613a11898432d2d5cfe541b40996e757226662b43d17bc84f",
+    "app/api/session/route.ts": "8e9eac6f0e0d7767a249d5f27ad692249d705da38329ee78e1adcd8244280f45",
+    "app/api/export/route.ts": "ad6791c66c989b159ab737f30c84f2ae4716e7743a1f4d1b1ff58885d2c4786d",
+    "src/lib/game-ai/evaluate.ts": "fbdc69a695a9500459e3a40076827dfa6ea5fd5bd7a4b11b1d7c08d26616a812",
+    "src/lib/game-ai/sanitize-response.ts": "22cc1f6355dbabc4d98cb115a73fb7931b047fa7f33e8dfe95dadee3b7aafcb4",
+    "src/lib/session/result.ts": "5627d0afb23de48d2d3d5cace4067f9c32a58835d82e1f1433351822d57dd481",
+    "src/lib/session/turn.ts": "99986a05a23415fcbe7eaaee3ffcffe18ac88860f4f68773175f4658c1fd986f",
+    "src/lib/session/exports/storage.ts": "c8d41537f6045c2b83038bba47156669a5657a838034778c964bbae945898341"
+  },
+  "runtime": "Node 24.21.0"
+}
