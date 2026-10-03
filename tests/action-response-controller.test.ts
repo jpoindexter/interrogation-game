@@ -4,6 +4,8 @@ import { questionAction } from '../app/game/controller/question-action';
 import { accusationAction } from '../app/game/controller/accusation-action';
 import { hintAction } from '../app/game/controller/hint-action';
 import { actionHarness, validTurn, validAccusation } from './action-response-harness';
+import { recordReleaseProgress } from '../src/lib/case-disclosure-policy';
+import type { ConversationMessage } from '../src/lib/ai/types';
 
 const DOMAIN_FIELDS = ['conversationHistory', 'clues', 'stressLevel', 'maxStress', 'gameplay', 'accusationsLeft', 'hintsUsed', 'hintTexts', 'lastResponse'];
 
@@ -37,6 +39,9 @@ test('invalid accusation count retains draft, attempts and history, then recover
   assert.equal(h.sent[0].requestId, h.sent[1].requestId);
   assert.equal(h.state.accusationsLeft, 2);
   assert.equal(h.panels.accuseText, '');
+  const history = h.state.conversationHistory as ConversationMessage[];
+  assert.equal(history[0].kind, 'accusation');
+  assert.equal(recordReleaseProgress(history, 'easy').asked, 0, 'A rejected accusation must not advance case-record progress');
 });
 
 test('invalid hint cannot consume hints or append partial text; retry recovers same receipt', async t => {

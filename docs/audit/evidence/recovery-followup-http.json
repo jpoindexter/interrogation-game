@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-03T16:18:43.882Z",
+  "scope": "Production HTTP smoke only; recovery behavior is established separately by controlled multiprocess route execution.",
+  "results": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/cases",
+      "status": 200
+    },
+    {
+      "path": "/api/session?sessionId=invalid",
+      "status": 401
+    }
+  ]
+}

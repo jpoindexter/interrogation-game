@@ -1,0 +1,35 @@
+Accusation progress follow-up — 2026-10-03
+
+This is a summary of commands and results observed during the implementation
+turn, not a verbatim terminal transcript. No commands were rerun to create it.
+
+Changed behavior:
+app/game/controller/accusation-action.ts now labels the accepted client transcript
+entry with kind: 'accusation'. The existing invalid-accusation recovery test was
+extended to verify that the entry retains this kind and does not advance the
+case-record question counter.
+
+Selected test command, run before and after the source correction:
+node --import tsx --test --test-name-pattern='invalid accusation count' tests/action-response-controller.test.ts
+
+Before correction:
+1 selected test; 0 passed; 1 failed.
+The new history[0].kind assertion observed undefined instead of 'accusation'.
+Reported total duration: 292.361792 ms.
+
+After correction:
+1 selected test; 1 passed; 0 failed.
+The existing invalid-response/recovery assertions, transcript kind assertion and
+recordReleaseProgress(history, 'easy').asked === 0 assertion all passed.
+Reported total duration: 205.43925 ms; process exit code 0.
+
+Additional command:
+./node_modules/.bin/eslint --max-warnings=0 app/game/controller/accusation-action.ts tests/action-response-controller.test.ts && ./node_modules/.bin/eslint --config eslint.size.config.mjs app/game/controller/accusation-action.ts && git diff --check
+
+Observed result: exit code 0, no output.
+
+Scope and limits:
+The selected test executes the actual accusation controller with controlled
+HTTP and speech collaborators and the actual record-release calculation. It is
+not a browser interaction, live provider, voice or complete playthrough check.
+No new test file, paid call, browser action or full-suite run was performed.

@@ -6,6 +6,22 @@ import { getSession, persistSession } from '../src/lib/session/store';
 import { getSessionRepository } from '../src/lib/session/repository';
 import { issueWinToken } from '../src/lib/session/tokens';
 import { persistenceFixture, restartWorker } from './session-persistence-fixtures';
+import { GET as readSession } from '../app/api/session/route';
+import { NextRequest } from 'next/server';
+
+void test('a cached reader recovers newer activity before checking session expiry', async context => {
+  const fixture = await persistenceFixture(context);
+  const originalTime = fixture.session.lastActivity;
+  const writer = await restartWorker(['touch', fixture.sessionId, 'fresh-activity-1', String(originalTime + 30 * 60_000)]);
+  assert.equal(writer.code, 0);
+  assert.equal(JSON.parse(writer.output).status, 200);
+  context.mock.method(Date, 'now', () => originalTime + 60 * 60_000 + 1);
+  const response = await readSession(new NextRequest(`http://localhost/api/session?sessionId=${fixture.sessionId}`));
+  assert.equal(response.status, 200, 'another process kept the session active within its one-hour lifetime');
+  const body = await response.json();
+  assert.equal(body.questionsAsked, 1);
+  assert.equal(getSession(fixture.sessionId), fixture.session, 'refresh preserves existing session references');
+});
 
 void test('a committed request replays after a real process restart without another provider call', async context => {
   const fixture = await persistenceFixture(context);

@@ -33,7 +33,7 @@ async function finishWin(context: GameActionsContext, data: AccusationResponse, 
 function acceptAccusation(context: GameActionsContext, text: string, data: AccusationResponse) {
   const { state, runtime } = context;
   const history: ConversationMessage[] = [...state.conversationHistory,
-    { role: 'user', content: `[ACCUSATION] ${text}`, timestamp: runtime.elapsed },
+    { role: 'user', kind: 'accusation', content: `[ACCUSATION] ${text}`, timestamp: runtime.elapsed },
     { role: 'assistant', content: data.confession, timestamp: runtime.elapsed },
   ];
   state.setAccusationsLeft(data.accusationsLeft);

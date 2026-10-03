@@ -8,6 +8,14 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Recovery follow-up after checkpoint 745f9ea
+
+[Two reproduced defects](RECOVERY-FOLLOWUP.md) were corrected: an accusation transcript entry missing its kind inflated the client question-progress count; and a cached session reader could reject current activity from another process before lock-time refresh. One existing controller test was extended; one new multiprocess/controlled-clock case was added to the existing persistence harness. The selected controller check and eight relevant persistence checks passed. No paid calls, browser automation or full suite ran.
+
+Integrated [strict lint](evidence/integrated-recovery-followup-lint.txt), [size gate](evidence/integrated-recovery-followup-size.txt) and [production build](evidence/integrated-recovery-followup-build.txt) passed. LOGIC-12 and UX-12 retain Verify with the follow-up evidence; the board remains70 cards/15Done. Local recovery evidence does not establish hosted persistence or user-owned browser acceptance.
+
+**Next implementation dependency:** implement the async storage ports and additive transactional schema described in [HOSTED-STORAGE-DESIGN.md](HOSTED-STORAGE-DESIGN.md), preserving the local adapter. Shared sessions, request/generation receipts, budgets, terminal exports and redemption must form a coherent hosted text path before removing the Vercel guard. This is unfinished source work, not blocked solely by missing credentials. Live database/API/deployment and voice acceptance remain separate external gates.
+
 ## Current responsive, export and interview checkpoint
 
 [Responsive source corrections](RESPONSIVE-SOURCE-FOLLOWUP.md) supply narrow-screen briefing leads, apply the existing dark paper contrast rules to expanded case cards and replace remaining fixed CSS-pixel text sizes with equivalent rem values. The existing base sizes and art geometry are preserved; actual legibility/contrast/zoom remain user-owned browser acceptance. One focused rendered briefing check passed; no extra tests were added for the mechanical unit conversion.

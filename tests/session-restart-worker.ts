@@ -4,14 +4,16 @@ import { runSessionRequest } from '../src/lib/session/request-ledger';
 
 async function main() {
   const [operation, sessionId, requestId, token] = process.argv.slice(2);
+  if (operation === 'touch') Date.now = () => Number(token);
   if (operation === 'inspect') {
     const session = getSession(sessionId);
     process.stdout.write(JSON.stringify({ session, tokenValid: token ? !!inspectWinToken(sessionId, token) : false }));
     return;
   }
   const response = await runSessionRequest({ sessionId, requestId, fingerprint: { operation: 'test', question: 'Where?' },
-    run: async () => {
+    run: async session => {
       if (operation === 'crash') { process.stdout.write('provider-started'); process.exit(17); }
+      if (operation === 'touch') { session.questionsAsked++; return { status: 200, body: { refreshed: true } }; }
       throw new Error('A repeated request must not call its provider');
     } });
   process.stdout.write(JSON.stringify(response));

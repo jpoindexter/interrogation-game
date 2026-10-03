@@ -15,10 +15,14 @@ function currentStore(): RuntimeStore {
 }
 export function getSessionRecord(id: string): SessionRecord | null {
   if (typeof id !== 'string' || !/^[a-f0-9]{48}$/.test(id)) return null;
-  const { records } = currentStore();
-  if (!records.has(id)) {
+  const { records, locks } = currentStore();
+  // An unlocked read must observe other processes before checking idle expiry.
+  // While locked, keep this action's working snapshot until its atomic save.
+  if (!locks.has(id)) {
     const record = getSessionRepository().load(id);
-    if (record) records.set(id, record);
+    if (!record) { records.delete(id); return null; }
+    const cached = records.get(id);
+    if (!cached || record.revision > cached.revision) cacheRecord(record);
   }
   return records.get(id) ?? null;
 }

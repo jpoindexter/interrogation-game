@@ -1,0 +1,16 @@
+✔ materializing the same reserved ID retains accepted progress and creation time (57.454125ms)
+✔ reserved ID cannot be rebound to another case or materialized during a session action (72.850334ms)
+✔ a cached reader recovers newer activity before checking session expiry (159.85ms)
+✔ a committed request replays after a real process restart without another provider call (213.528541ms)
+✔ concurrent requests and changed-body reuse cannot call a provider twice (71.966292ms)
+✔ a crashed provider attempt survives restart as interrupted and its stale lock is recovered (125.846292ms)
+✔ failed final persistence returns no success and cannot silently replay the provider (61.087167ms)
+✔ a canonical win token grant survives a real process restart (94.327084ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 965.773083
