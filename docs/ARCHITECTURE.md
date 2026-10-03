@@ -92,3 +92,7 @@ The saved automated gate and current layout gate cover lint, size, types, tests 
 Browser interaction, keyboard/VoiceOver, actual rendered contrast/zoom, audible screen share and three timed rehearsals remain acceptance gaps. The full case study was built in parallel and pushed to the portfolio branch as `596306a`; production build and local HTTP checks passed, but no deployment or visual acceptance is claimed. That case study pins its evidence to game commit `ea703ca`. The separate game website is deferred. The coverage matrix lists individual card boundaries rather than declaring the whole project done.
 
 Skills applied: dec-software-principles, dec-quality-testing, system-architecture-translator, ai-agent-case-study.
+
+## Operational observations
+
+The AI gateway and authorized voice work record only their last completed requested operation in a process-global registry. Health reads do not invoke providers. Configuration remains separate from an observation: status, timestamp, operation and five-minute expiry. Structured upstream statuses support bounded authentication/rate-limit/unavailability labels; generic CLI errors stay unclassified. Local authorization/budget denials, receipt replay and cancellation do not create new provider success. A private configuration fingerprint rejects stale configuration results; no credentials, inputs or provider error prose appear in health. The registry is intentionally not durable or shared between server workers. See [executed status acceptance](audit/HEALTH-ACCEPTANCE.md).

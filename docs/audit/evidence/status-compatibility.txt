@@ -1,0 +1,21 @@
+✔ Codex arguments restrict capabilities and never incorporate player input or shell syntax (0.872708ms)
+✔ Codex JSONL parser rejects tool events, missing output and provider failure (1.784791ms)
+✔ runtime structured gate rejects coerced judgments, invalid stress and unknown authority fields (0.66175ms)
+✔ Responses request uses fixed official endpoint, no tools, no storage and separated task/data (22.168167ms)
+✔ Responses missing key, refusal and incomplete output cannot become a wrong verdict (1.852083ms)
+✔ local process stops on unexpected tool event instead of accepting later output (49.239208ms)
+✔ local process deadline terminates pending work and returns a retryable failure (51.915708ms)
+✔ player input is piped as literal data, never shell-expanded (38.814042ms)
+✔ wrong judgment cannot disclose hidden facts through either explanation or dialogue (0.277834ms)
+✔ actual health handler reports only configuration, reflects runtime storage guards and never exposes supplied secrets (9ms)
+✔ legacy preferences survive while credentials are excluded and old storage is untouched (3.829083ms)
+✔ new preferences take precedence and injected unknown fields are never persisted (0.404ms)
+✔ readiness requires the explicit configuration-only contract (0.310834ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 324.495375

@@ -7,6 +7,7 @@ import { OpenAIProvider } from './openai';
 import { AiError, type AiProvider, type StructuredTask } from './contracts';
 import { validateStructured } from './validate';
 import { reserveAiWork } from '../limits/ai-scope';
+import { observeProvider } from '../config/provider-observations';
 
 export function providerConfiguration() {
   const provider = process.env.AI_PROVIDER ?? 'codex-local';
@@ -30,20 +31,22 @@ export async function requestStructured(task: StructuredTask): Promise<Record<st
   const model = config.provider === 'openai' ? config.openaiModel
     : task.capability === 'case' ? process.env.CODEX_CASE_MODEL ?? 'gpt-6-luna' : config.codexModel;
   const signal = executionSignal(task.signal, config.timeoutMs);
-  try {
-    reserveAiWork(task);
-    const result = await createProvider(config, model).generate({ ...task, signal });
-    ensureNotAborted(signal);
-    try { validateStructured(result, task.schema); }
-    catch (error) {
-      try { task.onInvalidResponse?.(result); } catch { /* Preserve the original validation failure. */ }
+  reserveAiWork(task);
+  return observeProvider('ai', task.capability, async () => {
+    try {
+      const result = await createProvider(config, model).generate({ ...task, signal });
+      ensureNotAborted(signal);
+      try { validateStructured(result, task.schema); }
+      catch (error) {
+        try { task.onInvalidResponse?.(result); } catch { /* Preserve the original validation failure. */ }
+        throw error;
+      }
+      task.onProvenance?.({ provider: config.provider, model, capability: task.capability,
+        promptHash: createHash('sha256').update(task.instructions).digest('hex') });
+      return result;
+    } catch (error) {
+      ensureNotAborted(signal);
       throw error;
     }
-    task.onProvenance?.({ provider: config.provider, model, capability: task.capability,
-      promptHash: createHash('sha256').update(task.instructions).digest('hex') });
-    return result;
-  } catch (error) {
-    ensureNotAborted(signal);
-    throw error;
-  }
+  });
 }

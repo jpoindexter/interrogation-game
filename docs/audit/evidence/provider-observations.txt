@@ -1,0 +1,11 @@
+✔ requested AI gateway work records validated results and structured failures; health only reads with freshness/config isolation (242.698291ms)
+✔ actual voice routes record fully consumed results, keep failed and replayed receipts honest, and do not treat local denial as provider auth (604.722417ms)
+✔ CLI observation uses typed failures, never stderr-like authentication text, and ignores cancelled work (88.144958ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1767.396583

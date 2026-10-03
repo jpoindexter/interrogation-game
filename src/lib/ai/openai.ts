@@ -13,8 +13,11 @@ export class OpenAIProvider implements AiProvider {
       body: JSON.stringify({ model: this.options.model, store: false, tools: [], tool_choice: 'none',
         reasoning: { effort: 'low' }, input: [{ role: 'system', content: task.instructions }, { role: 'user', content: task.input }],
         text: { format: { type: 'json_schema', name: `interrogation_${task.capability}`, strict: true, schema: task.schema } } }),
+    }).catch(() => {
+      ensureNotAborted(signal);
+      throw new AiError('NETWORK_UNAVAILABLE', 'The OpenAI service could not be reached.');
     });
-    if (!response.ok) throw new AiError('API_FAILED', `OpenAI could not complete this request (HTTP ${response.status}).`);
+    if (!response.ok) throw new AiError('API_FAILED', `OpenAI could not complete this request (HTTP ${response.status}).`, response.status);
     const data = await response.json();
     ensureNotAborted(signal);
     return parseResponse(data);

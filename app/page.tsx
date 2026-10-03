@@ -3,6 +3,7 @@
 import HomeNavigation from './components/HomeNavigation';
 import AssetImage from './components/AssetImage';
 import { useProviderReadiness } from './settings/useProviderReadiness';
+import { demoStatusLabel } from './settings/provider-status';
 import Link from 'next/link';
 import {
   motion,
@@ -78,7 +79,7 @@ function ConfigurationBadge({ readiness }: { readiness: ReturnType<typeof usePro
   const { value, error } = readiness;
   let label = 'Checking demo setup…';
   if (error) label = 'Setup status unavailable';
-  if (value) label = value.services.ai.configured ? 'AI settings found' : 'AI setup needed';
+  if (value) label = demoStatusLabel(value);
   return (
     <motion.div className="relative z-10 mt-5 max-w-sm text-center text-xs text-gray-400"
       variants={fadeIn} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.6 }}>

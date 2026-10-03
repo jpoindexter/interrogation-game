@@ -1,16 +1,16 @@
 # Health/configuration acceptance — UX-08
 
-3 October 2026. **Keep UX-08 in Verify.** The configuration endpoint is now consistent with actual session-storage restrictions, but it still does not distinguish invalid authentication from an authenticated or offline provider. Its response explicitly says live service use is unchecked. That honest limitation is not the complete operational-readiness acceptance criterion.
+3 October 2026. **Keep UX-08 in Verify for the remaining browser/live-account acceptance.** The implementation now separates configuration from the timestamped result of the last requested AI or voice operation. Controlled actual gateway and voice-route checks distinguish authentication rejection, unavailable service, upstream throttling, unclassified failure and validated success. A rendered settings check proves the resulting labels and expiry behavior. No new real-account, microphone or browser playthrough was executed in this follow-up.
 
-## Confirmed defects corrected
+## Configuration defects corrected
 
 `/api/health` could report overall `configured` when OpenAI and Supabase leaderboard settings were present on Vercel, even though the actual session repository rejects hosted gameplay. It also ignored unsupported local `SESSION_STORAGE` settings. Storage readiness now follows the session repository's actual guard: hosted or non-local session storage is unavailable regardless of separate leaderboard database settings. The hosted marker uses the same nonempty-environment interpretation as the repository.
 
 AI-provider default handling now matches runtime nullish defaults: an explicitly empty provider is unsupported rather than being reported as the default local provider. An explicitly empty custom CLI setting is missing rather than being confused with the bundled CLI. Unsupported AI/storage selection values are reported using a fixed `unsupported` label rather than echoing arbitrary operator environment strings in the public endpoint. Voice detail now explicitly distinguishes an ElevenLabs plugin/account connection from this application's server API-key configuration.
 
-No frontend component, credential, provider adapter or account was changed. The local CLI remains a configuration/installation observation, **not sign-in, quota, model-access or successful-turn proof**. A custom CLI setting remains explicitly unverified for installation. API-key presence is unverified configuration, not authentication success.
+The first configuration-only correction did not change frontend components or provider adapters. Its installation/key-presence flags remain **configuration, not sign-in, quota, model-access or successful-turn proof**. The subsequent observed-status implementation below adds request outcomes without changing credentials or accounts.
 
-## Executed route matrix
+## Executed configuration route matrix (retained earlier evidence)
 
 One bounded test in [health-readiness.test.ts](../../tests/health-readiness.test.ts) invokes the actual health GET handler and passes every response through the production client parser. External fetch is forbidden. It restores all modified environment settings afterward. The 14 scenarios are:
 
@@ -35,14 +35,36 @@ Every response returned `Cache-Control: no-store`. Synthetic keys, project URL, 
 
 [Route matrix output](evidence/health-readiness-checks.txt): one test passed. [Scoped strict ESLint](evidence/health-readiness-lint.txt), [size checks](evidence/health-readiness-size.txt), and [TypeScript](evidence/health-readiness-typecheck.txt) exited zero. An initial size check required splitting CLI configuration handling from provider selection; the final matrix ran after that refactor. No provider calls, CLI sign-in checks, microphone access, voice calls, browser automation or full test suite were performed.
 
-## Original acceptance, without substituting configuration for readiness
+## Observed status implementation
+
+`service.status` stays `unchecked` or `missing` for configuration. AI and voice now add `observation: null | { status, observedAt, operation, stale }`; storage has no provider observation. The status is one of `succeeded`, `authentication_failed`, `unavailable`, `rate_limited` or `failed`. Operations are a fixed public enum: case, case-review, suspect, judge, debrief, speech and transcription. The shared pure contract defines a five-minute maximum age. This is a **past requested operation**, not a promise that another operation will work, and not evidence of end-to-end gameplay quality.
+
+The server keeps at most one completed observation per service in a process-global registry shared by route modules. It is intentionally neither durable nor shared across server processes. A private SHA-256 configuration fingerprint includes relevant credentials/provider/model/executable/runtime settings; neither fingerprint nor values enter the public response. Reading after a configuration change invalidates the old observation, and a completion from the old configuration cannot record success under the new settings. No error text, upstream body, prompt, input, session identifier, key or private path is published.
+
+Observations start after local usage admission. AI success requires the adapter response to parse and pass its structured schema. Speech success requires the bounded audio body to be fully read and nonempty; transcription success requires a nonempty parsed transcript. Receipt replay does not count as a new provider operation. Local authorization, input limits, budgets and user cancellation do not become provider failures. AI timeouts and typed transport/CLI availability failures are unavailable. Structured upstream HTTP 401 is authentication failure, 429 is rate limiting and 5xx is unavailable. HTTP 403 and generic CLI failures remain unclassified `failed`; arbitrary error prose is never parsed to infer authentication.
+
+Health remains a no-store, read-only endpoint with **zero provider probes**. Root updated the production client parser, settings presentation and home status helper to honor missing configuration first, expire old observations, show timestamp/operation and preserve optional voice. Home says “AI responded recently” only for a fresh successful observation with usable game storage. This wording deliberately does not claim authenticated/ready forever. Health-fetch failure clears previous success from the UI.
+
+## Executed observed-status checks
+
+[provider-observations.test.ts](../../tests/provider-observations.test.ts) runs three bounded checks against controlled transports and an isolated temporary data root:
+
+1. The actual AI gateway, OpenAI adapter, structured validator and health handler execute upstream 401/403/429/503, network rejection, invalid-schema HTTP 200 and valid success. The test checks ISO timestamp/operation, five-minute expiry, zero calls from health, absence of synthetic secrets, unchanged observation after local denial/cancellation, changed-config invalidation and ignored completion from replaced credentials.
+2. The actual TTS/transcription handlers execute session authorization, durable voice receipts, provider adapters and body parsing before health is read. Successful speech and transcription become observations; upstream 401 becomes authentication failure; empty HTTP-200 audio is failed. Cached successful audio cannot erase a newer provider failure. Unauthorized text and exhausted local voice budget do not call the provider or replace its observation.
+3. The actual AI gateway receives controlled typed Codex adapter outcomes. Generic CLI failure text mentioning sign-in stays `failed`; typed CLI unavailability is `unavailable`; timeout is unavailable; cancellation during execution preserves the previous observation. This does not run or authenticate the Codex CLI.
+
+[Execution receipt](evidence/provider-observations.txt): **3 passed**. Scoped strict ESLint and size checks exited zero; [TypeScript](evidence/provider-observations-typecheck.txt) exited zero. The parent separately ran [ui-provider-status.test.tsx](../../tests/ui-provider-status.test.tsx): actual health shape → production parser with controlled observations → rendered production `ConfigurationList`, covering all five labels, request timestamps, expired success, malformed observation rejection, optional voice and game-storage veto. [Rendered UI receipt](evidence/ui-provider-status.txt): **1 passed**.
+
+These executions establish same-process gateway/handler sharing and rendered markup. They do not establish browser interaction, independent Next worker sharing (which is intentionally unsupported), real account validity, device/microphone permissions, intelligible audio playback or next-turn success. The parent owns the integrated build; it is separate evidence.
+
+## Original acceptance and remaining gap
 
 | Acceptance | Current evidence / remaining gap |
 |---|---|
-| No browser keys plus working local backend shows text-ready status | Server settings are independent of browser keys and real local-provider playthroughs exist elsewhere. The current home badge says “AI settings found,” and settings say “live use not checked.” No rendered browser check or explicit operational text-ready state was established here. |
-| Invalid authentication, unavailable voice and offline text backend have distinct truthful states | Missing voice configuration and failure to fetch health are distinct. Present-but-invalid provider credentials and offline provider remain unchecked; they are not distinguished operational states. This is the concrete remaining implementation gap. |
-| Optional voice failure does not block typed play | The matrix proves optional voice does not block text configuration. Existing voice fallback/input checks are separate retained evidence; actual browser typed-play behavior after a live voice failure was not executed in this follow-up. |
+| No browser keys plus working local backend shows text-ready status | The configuration matrix proves browser keys are unnecessary; controlled gateway → health and rendered helper prove fresh successful AI status. Current home uses “AI responded recently” and honors storage configuration. No browser check of this new state against the user's real local provider was executed here. |
+| Invalid authentication, unavailable voice and offline text backend have distinct truthful states | Implemented and executed with structured upstream statuses and controlled network failure. Generic CLI failures remain unknown rather than falsely labeled authentication failure. No live credential rejection was deliberately induced. |
+| Optional voice failure does not block typed play | Configuration and rendered UI checks prove voice does not veto AI status; existing fallback evidence is retained elsewhere. This follow-up did not execute browser typed play after a real voice failure. |
 
-The next implementation decision is how to expose a bounded, timestamped observed status—through a non-inference authentication/status probe or sanitized results of actual requested operations—without silently spending inference/voice credits. Provider error classification must distinguish authentication from unavailable service rather than guessing from a generic failure string. Microphone availability/permission remains a browser concern, not something the server health endpoint can verify.
+The earlier configuration-only operational gap has been implemented; the remaining verification is the live/browser acceptance path, not another requirement to poll providers or spend credits. Microphone availability/permission remains a browser concern, not something the health endpoint can verify.
 
 Skills applied: dec-quality-testing, dec-software-principles, dec-ai-native-patterns.

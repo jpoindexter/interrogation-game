@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-03T15:53:33.160098+00:00",
+  "scope": "Read-only production HTTP after restart; no browser/provider calls",
+  "results": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "observations": "all null after restart",
+      "statusCache": "no-store"
+    },
+    {
+      "path": "/cases",
+      "status": 200,
+      "selectorMarkup": true
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "statusMarkup": true
+    }
+  ]
+}

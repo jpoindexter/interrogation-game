@@ -1,5 +1,5 @@
 export class VoiceError extends Error {
-  constructor(message: string, readonly status: number, readonly code = 'VOICE_FAILED') { super(message); }
+  constructor(message: string, readonly status: number, readonly code = 'VOICE_FAILED', readonly upstreamStatus?: number) { super(message); }
 }
 
 export function voiceKey(): string {

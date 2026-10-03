@@ -14,7 +14,7 @@ const GUIDANCE = [
   },
   {
     title: 'Name the contradiction',
-    text: 'Collect the required clues to unlock Accuse. Explain what the suspect said and what the evidence shows happened. You have three attempts.',
+    text: 'In generated cases, you can accuse once the interview begins; you do not need to wait for the case record. In evidence practice, establish a contradiction first. Explain the false claim and what the evidence supports instead. You have three attempts.',
   },
 ];
 

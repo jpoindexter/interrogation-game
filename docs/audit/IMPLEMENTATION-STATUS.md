@@ -22,7 +22,15 @@ Unused provider-era summary helpers were removed; canonical session results rema
 
 The user's interview framing is captured in [INTERVIEW-BRIEF.md](../INTERVIEW-BRIEF.md) and the existing story, portfolio and gameplay-evaluation cards: adversarial conversational design, bounded adaptation claims, the four-app breadth overview, two 15-minute stories and a real collaboration example. These are preparation tasks, not completed presentation evidence.
 
-## Current configuration and retrieval follow-up
+## Current operational status and selector follow-up
+
+The provider status follow-up records only actual requested operations, with a timestamp and five-minute expiry. It distinguishes structured authentication rejection, rate limits, unavailable services and otherwise unclassified failures. Configuration changes invalidate observations; credentials, prompts and provider diagnostics are not exposed. Health reads never invoke a model or voice provider. The UI keeps configuration separate, clears a prior status if the server cannot be reached, and makes optional voice independent of text. [Health acceptance](HEALTH-ACCEPTANCE.md) records three controlled gateway/voice/CLI-error checks and one rendered-state check; browser and real-account acceptance remain separate. Thirteen existing affected contract/configuration checks and integrated lint, size and [production build](evidence/integrated-status-selector-build.txt) passed. No full suite or live inference/voice calls ran. After restarting the production preview, [HTTP reads](evidence/status-selector-http.json) returned200 for health, cases and settings; observations were empty as expected after restart and updated selector/status markup was present. This is not browser interaction evidence.
+
+[Case selection](CASE-SELECTION-FOLLOWUP.md) now owns arrow keys only on its browsing buttons, announces the active case, exposes disclosure semantics and keeps Play/Back native. Generated cards use the current 3/5/7/9-question case-record policy, and first-play guidance explains actual accusation eligibility. Three handler/rendered-component checks passed; browser focus, navigation and layout remain user-owned.
+
+[Dependency acceptance](DEPENDENCY-ACCEPTANCE.md) maps ARCH-02/14 to their original criteria, bringing the board to fourteen Done cards. The missing actual PNG/WebP/AVIF routes returned200 and decoded valid dimensions. Unchanged pins match the verified fresh checkout. Five high development advisories remain documented under the original acceptance allowance; this is not an advisory-free claim. No replacement package, repeated install or full-suite run was needed.
+
+## Earlier configuration and retrieval checkpoint
 
 [Health acceptance](HEALTH-ACCEPTANCE.md) corrects false configured status for hosted/non-local sessions and empty provider/CLI settings. One bounded actual-handler/client-parser matrix covers 14 configurations without network calls. Credentials and arbitrary operator values are absent from public responses. Configuration remains explicitly unchecked: invalid authentication versus offline providers is still an operational-status gap; browser fallback is user-owned. UX-08 stays open.
 

@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-03T15:38:19.562Z",
+  "capturedAt": "2026-10-03T15:52:52.663Z",
   "board": "https://trello.com/b/Ww5bceNb/interrogation-superhuman-demo-upgrade",
   "count": 70,
   "cards": [
@@ -88,16 +88,6 @@
       "name": "[P1 · UX-05] Create a legible video-demo layout and make text-size settings effective",
       "desc": "Audit ID: UX-05\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/page.tsx:266 changes container font size while SuspectZone.tsx:83-110 hardcodes text-sm; CaseFile.tsx:63 uses 11px vertical tabs; BriefingScreen.tsx:92-105 shrinks long content to 11px; global fixed-height h-screen/overflow-hidden in page:266-280.\n\n## Proposed change\nUse semantic typography tokens with a readable dialogue/document scale and actual user scaling. Add a demo layout preset for 1280x720 and 1440x900 shared windows; prioritize suspect dialogue, evidence and Ask/Accuse. Replace vertical tab labels with horizontal labels when space allows. Let overflow remain reachable.\n\n## Acceptance\nAt 1280x720, 1440x900 and 200% zoom, long dialogue, core controls and case evidence are readable/reachable without clipped content. Small/medium/large visibly alter dialogue and report text; record a screen-share sample and review at recipient size.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
       "url": "https://trello.com/c/gXepcoCL/33-p1-ux-05-create-a-legible-video-demo-layout-and-make-text-size-settings-effective",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
-        "name": "Backlog — upgrades"
-      }
-    },
-    {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7ca9c9ffe764f1b421",
-      "name": "[P2 · UX-11] Replace global case-selector keyboard interception with scoped controls",
-      "desc": "Audit ID: UX-11\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/cases/page.tsx:31-39 global ArrowLeft/ArrowRight/Enter listener routes on Enter regardless of focus; PolaroidCard.tsx:49 wraps content in button while :117-119 nests a click-only Play span.\n\n## Proposed change\nImplement semantic case selection and a separate Play button. Scope keyboard carousel controls to its focus region; never override unrelated focused buttons. Announce active case, difficulty and selected state; keep selected detail stable.\n\n## Acceptance\nTab to Back and press Enter: returns home rather than starting a case. Arrow controls work only within selector. Play is separately discoverable by keyboard and screen reader.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
-      "url": "https://trello.com/c/CwsJEGg8/38-p2-ux-11-replace-global-case-selector-keyboard-interception-with-scoped-controls",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
         "name": "Backlog — upgrades"
@@ -274,40 +264,10 @@
       }
     },
     {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf79aac84b9362ff5b23",
-      "name": "[P1 · UX-08] Make status and connection checks truthful for the local demo",
-      "desc": "UX-08 · P1 · current implementation and acceptance\n\nOriginal problem: UI treated browser/provider key presence as proof that the system was online.\n\nAcceptance: no browser keys plus working local backend shows text-ready status; invalid auth, unavailable voice and offline text backend have distinct truthful states; optional voice failure does not block typed play.\n\nImplemented: configuration-only health, optional voice, actual generation progress/recovery. Hosted or non-local session storage now prevents false configured status even with OpenAI/Supabase settings. Empty AI/custom CLI settings follow runtime behavior; arbitrary supplied values and credentials are not echoed. Plugin OAuth does not configure this application's ElevenLabs server key.\n\nExecuted 3 Oct: actual GET handler + client parser across 14 configurations; one focused check, strict scoped lint, size and TypeScript passed. No provider/browser/voice calls. Evidence: docs/audit/HEALTH-ACCEPTANCE.md and evidence/health-readiness-checks.txt.\n\nOpen: present-invalid authentication and offline providers remain honestly unchecked, without distinct observed operational states. Browser typed fallback and rendered status remain user-owned acceptance. Configuration presence is not authentication or model access proof. Keep open.\n\nEarlier real generated HTTP game succeeded; that separate sample is not a general readiness guarantee. Baseline and history: docs/audit/DESIGN-ASSETS.md and GENERATION-RECOVERY.md.",
-      "url": "https://trello.com/c/0kRxyvpA/36-p1-ux-08-make-status-and-connection-checks-truthful-for-the-local-demo",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8038ebbb183c0a40a2",
       "name": "[P1 · UX-14] Give every end-of-game result a grounded, recoverable explanation",
       "desc": "Audit ID: UX-14\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/lose/page.tsx:164-167 hardcodes Closest moment Almost; :42/:83-94 substitutes fabricated Rookie fallback on evaluator failure; win/page.tsx:84 defaults Sharp; lose/page.tsx:220-235 hides recovery actions until summary and Retry Case creates a new generated case.\n\n## Proposed change\nShow authoritative outcome immediately; distinguish failed coaching from a player rating. Present exact lie, truth and supporting exchange with source links. Retry must either replay the same case or be renamed New case in this setting. Keep retry/home/transcript accessible during evaluator delay.\n\n## Acceptance\nEvaluator offline: result remains usable, no invented rating/Almost appears, transcript opens immediately. Retry behavior matches its label. Every claimed closest moment links to the actual turn or says no decisive contradiction found.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
       "url": "https://trello.com/c/Na4MWjbe/41-p1-ux-14-give-every-end-of-game-result-a-grounded-recoverable-explanation",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfa9dfde7ba318f74f9a",
-      "name": "[P1 · ARCH-02] Upgrade security baseline with paired Next and ESLint config",
-      "desc": "Audit ID: ARCH-02\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nInstalled Next16.1.6; audit18 packages (critical1/high14/moderate2/low1). Registry candidate16.3.8. npm audit proposes inappropriate ESLint-config downgrade14.2.35 for some paths. next.config enables AVIF.\n\n## Proposed change\nUpdate Next+eslint-config-next together; refresh lockfile/transitives; inspect runtime/tooling reachability; do not blindly force audit fixes.\n\n## Acceptance\nnpm ci, lint, typecheck, build, full fixture game, image routes and production audit pass; unresolved advisories documented with reachability and decision.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nImplementation checkpoint · 3 Oct 2026\nCompatible modern baseline installed: Next16.3.8/React19.3/Motion14/Tailwind4.3.3/Node24.21/npm11.21. Clean install succeeds. Production audit0; five high dev-chain braces advisories remain with no patched release found. ESLint10 exceeds plugin peer ranges. No forced downgrade/suppression.\n\nDependency follow-up · 3 Oct 2026\nProduction audit0; five high dev findings remain. Unmodified tinyglobby alias changed actual Next root discovery and was rejected. A compatibility wrapper then failed actual plugin import because npm's scoped local override produced a broken link. Clean candidate audits do not prove working tooling. Neither change adopted; Next rules preserved. docs/audit/DEPENDENCY-FOLLOWUP.md retains both failures. Await compatible upstream fix; no forced downgrade or suppression.",
-      "url": "https://trello.com/c/KrIn92iw/51-p1-arch-02-upgrade-security-baseline-with-paired-next-and-eslint-config",
-      "list": {
-        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
-        "name": "In progress"
-      }
-    },
-    {
-      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb887e57ba79c782401",
-      "name": "[P2 · ARCH-14] Remove stale dependencies and stage low-risk library updates",
-      "desc": "ARCH-14 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nNeon zero source imports after221722f Supabase switch. Same-major registry candidates recorded; latest TS7/ESLint10/Motion14 not validated together.\n\nChange\nRemove Neon; same-major Supabase/font/Tailwind pair/Motion12/ESLint9 updates in bounded groups; remove Mistral only after capability+script migration; evaluate major jumps individually.\n\nAcceptance\nImport scan/install/build/fixture game prove removal; dependency diff reviewed; no forced major or unexplained lockfile churn.\n\nDependencies: ARCH-02, ARCH-03.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nRemoved unused Mistral SDK and updated compatible runtime/tooling. Lockfile retained and clean npm ci executed. Five high dev-chain braces advisories and ESLint deprecation remain explicit; production audit0.",
-      "url": "https://trello.com/c/WmMdtKzr/61-p2-arch-14-remove-stale-dependencies-and-stage-low-risk-library-updates",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
         "name": "In progress"
@@ -464,10 +424,30 @@
       }
     },
     {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf79aac84b9362ff5b23",
+      "name": "[P1 · UX-08] Make status and connection checks truthful for the local demo",
+      "desc": "UX-08 · P1 · truthful configuration and observed status\n\nAcceptance: no browser keys + working local backend shows text-ready status; invalid auth, unavailable voice and offline text backend have distinct truthful states; optional voice failure does not block typed play.\n\nImplemented: hosted/nonlocal storage and invalid settings prevent false configured state. Additive process-local last-operation observation records bounded status/time/operation; expires5min and invalidates on config change. Actual provider work only: health reads never call AI/voice. Structured401,429,5xx/network and otherwise unknown failures distinguished; generic CLI failure is not guessed as authentication. Success requires parse/validation; cancellations/budgetdenials/cache replay do not create new success.\n\nUI: separate settings and past result, timestamp/expiry, distinct failure labels; unavailable health clears prior success. Storage vetoes home status; voice remains optional. Refresh/focus/60s reads only cached server observations.\n\nExecuted:3 controlled actual gateway/voice-route→health checks and1 rendered status check. No paid/live provider or browser calls. Evidence: docs/audit/HEALTH-ACCEPTANCE.md; provider-observations.txt and ui-provider-status.txt.\n\nOpen: real-account/CLI sign-in failure classification and browser typed-play/audio states remain unverified. Process-local is not shared-worker persistence or next-request guarantee. Plugin OAuth does not configure this app's ElevenLabs server key. Keep Verify; generation/playthrough receipts are separate limited samples.",
+      "url": "https://trello.com/c/0kRxyvpA/36-p1-ux-08-make-status-and-connection-checks-truthful-for-the-local-demo",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      }
+    },
+    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7a054ee7dcb9f544a0",
       "name": "[P1 · UX-10] Unify accessibility preferences across the entire application",
       "desc": "Audit ID: UX-10\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/page.tsx:266 applies high-contrast only to active game; globals.css:239-260 overrides gray classes but not text-black/opacity paper labels; app/settings/page.tsx:30-43 differs from game/hooks/useSettings.ts:4-11; globals.css:265-274 only controls CSS durations.\n\n## Proposed change\nOne typed settings source and preferences provider should govern home, cases, briefing, game, overlays and results. Add reduced-motion controls governing Framer, requestAnimationFrame canvas and SiriWave. Replace hardcoded low-emphasis colors with tested semantic text tokens on both paper and dark surfaces.\n\n## Acceptance\nSet preferences once and traverse every screen: choices persist and affect all relevant text/surfaces. Reduced-motion run has no indefinite decorative canvas/waveform movement. Measure actual rendered contrast in both themes and resolve AA failures.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nShared preferences now drive global text size/high contrast and reduced motion in CSS/Motion/canvas/waveform; selected controls expose state. Scoped tests executed. Real whole-app contrast, focus and 200% text acceptance pending.",
       "url": "https://trello.com/c/GNomhWYw/37-p1-ux-10-unify-accessibility-preferences-across-the-entire-application",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7ca9c9ffe764f1b421",
+      "name": "[P2 · UX-11] Replace global case-selector keyboard interception with scoped controls",
+      "desc": "UX-11 · P2 · selector follow-up · 3 Oct2026\n\nOriginal defect: global ArrowLeft/ArrowRight/Enter interception could route despite unrelated focus; nested click-only Play control.\n\nOriginal acceptance: Tab to Back and Enter returns home, arrows operate only in selector, Play discoverable with keyboard/screen reader.\n\nImplemented: named selector region handles unmodified left/right only on marked native browse buttons. Back/Play links, editors, Enter, Space and handled/composition/modifier events retain native behavior. Active case/difficulty/position announced; active photo has expanded/controls semantics, inactive photos leave sequential tab order. Photo-arrow navigation schedules focus on newly active photo. Play is a separately named native link. Dots collapse prior detail.\n\nAlso corrected stale gameplay guidance: case cards derive canonical record thresholds3/5/7/9 from shared policy; generated accusation available after interview begins. Authored practice still requires an established contradiction.\n\nExecuted:3 focused real-handler/server-rendered component checks, strict scoped lint/size and TypeScript passed. No browser/provider/fullsuite. Evidence: docs/audit/CASE-SELECTION-FOLLOWUP.md and evidence/case-selection-focused.txt.\n\nOpen: real Back/Enter, focus handoff/event bubbling, Play discovery, screen-reader announcements and layout are user-owned browser acceptance. Keep Verify; source/markup is not that proof.\n\nBaseline evidence preserved: docs/audit/DESIGN-ASSETS.md and evidence/trello-board.json.",
+      "url": "https://trello.com/c/CwsJEGg8/38-p2-ux-11-replace-global-case-selector-keyboard-interception-with-scoped-controls",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
         "name": "Verify"
@@ -674,6 +654,16 @@
       }
     },
     {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfa9dfde7ba318f74f9a",
+      "name": "[P1 · ARCH-02] Upgrade security baseline with paired Next and ESLint config",
+      "desc": "ARCH-02 · accepted against original upgrade criteria · 3 Oct2026\n\nOriginal acceptance: npm ci, lint, typecheck, build, full fixture game, image routes and production audit pass; unresolved advisories documented with reachability and decision.\n\nExecuted: clean Node24.21/npm11.21 remote checkout installation/build/startup; package, lock and runtime pins remain byte-identical. Latest integrated lint/size/build passed. Actual authored HTTP/route fixture paths include opening, evidence, wrong/right accusation, result/export, replay and restart. Public PNG and Next optimized WebP/AVIF now returned200 and decoded expected dimensions.\n\nPaired Next+eslint-config-next16.3.8, React19.3, Motion14, Tailwind4.3.3. Saved production audit0. Five high DEVELOPMENT findings remain from one braces advisory; no patched release found at check. Current rootDir use narrows observed exposure, not proof of no exploit. Rejected aliases/wrappers and incompatible downgrades were not adopted; lint rules preserved. ESLint deprecation remains explicit.\n\nEvidence: docs/audit/DEPENDENCY-ACCEPTANCE.md maps each criterion and supersedes earlier disposition requiring advisory elimination. DEPENDENCY-FOLLOWUP.md retains original failures and decision. No blanket advisory-free claim; live browser/voice/hosted acceptance remains separate.\n\nBaseline f8d4c3c audit: Next16.1.6;18 findings incl1critical. Original detail retained in docs/audit/ARCHITECTURE.md and evidence/trello-board.json.",
+      "url": "https://trello.com/c/KrIn92iw/51-p1-arch-02-upgrade-security-baseline-with-paired-next-and-eslint-config",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
       "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfaa190f57ee0d447119",
       "name": "[P2 · ARCH-03] Pin a reproducible Node24 and package-manager baseline",
       "desc": "Audit ID: ARCH-03\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nNo engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.\n\n## Proposed change\nPin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.\n\n## Acceptance\nFresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nAccepted · 3 Oct\nFresh checkout8779a9b installed/built on Node24.21.0/npm11.21.0 and ran authored fixture/restart through real HTTP. Runtime pins/lockfile remain identical at07ff92e. Original local criterion executed; later Vercel runtime/deploy remains separate. FRESH-CHECKOUT.md.",
@@ -698,6 +688,16 @@
       "name": "[P2 · ARCH-10] Split game orchestration and enforce readable module limits",
       "desc": "ARCH-10 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRaw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.\n\nChange\nThin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150–200 lines; review200/250, hard300 executable; functions30/50 and complexity10.\n\nAcceptance\nLint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nAccepted modularity criterion · 3 Oct\nEnforced300line files/50line functions with blank/comment exclusions and cohesive owners. Actual authored start→evidence→wrong/right accusation→result replay→state/export passed with4controlled provider calls, plus recorded generated path. Final lint/size/build pass; no full-suite repeat. MODULARITY-ACCEPTANCE.md. Browser parity/voice/hosted deployment remain separate criteria.",
       "url": "https://trello.com/c/LrN9LMel/59-p2-arch-10-split-game-orchestration-and-enforce-readable-module-limits",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      }
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb887e57ba79c782401",
+      "name": "[P2 · ARCH-14] Remove stale dependencies and stage low-risk library updates",
+      "desc": "ARCH-14 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nNeon zero source imports after221722f Supabase switch. Same-major registry candidates recorded; latest TS7/ESLint10/Motion14 not validated together.\n\nChange\nRemove Neon; same-major Supabase/font/Tailwind pair/Motion12/ESLint9 updates in bounded groups; remove Mistral only after capability+script migration; evaluate major jumps individually.\n\nAcceptance\nImport scan/install/build/fixture game prove removal; dependency diff reviewed; no forced major or unexplained lockfile churn.\n\nDependencies: ARCH-02, ARCH-03.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nRemoved unused Mistral SDK and updated compatible runtime/tooling. Lockfile retained and clean npm ci executed. Five high dev-chain braces advisories and ESLint deprecation remain explicit; production audit0.\n\nAcceptance reconciliation ·3 Oct\nOriginal criteria executed: removed-package source/import and lock scan; unchanged pins match clean-checkout install/build/fixture/restart; dependency diff reviewed. Mistral/Neon removed; Motion legitimately retains transitive framer-motion14. Active compiler is TS6, not proof of nativeTS7 adoption. No forced downgrade or unexplained churn. ARCH02 now meets its explicitly documented unresolved-advisory allowance; ARCH03 alreadyaccepted. Five high dev advisories remain visible, production snapshot0. Details/receipts: docs/audit/DEPENDENCY-ACCEPTANCE.md. No new install/fullsuite/browser/provider run.",
+      "url": "https://trello.com/c/WmMdtKzr/61-p2-arch-14-remove-stale-dependencies-and-stage-low-risk-library-updates",
       "list": {
         "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
         "name": "Done"

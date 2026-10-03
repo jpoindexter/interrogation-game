@@ -2,6 +2,8 @@
 
 Checked 2026-10-03. **Five high development dependency findings remain; production audit reports zero.** No package or lockfile changes were applied during this check. This does not claim an advisory-free project.
 
+**Acceptance update:** [DEPENDENCY-ACCEPTANCE.md](DEPENDENCY-ACCEPTANCE.md) maps the original criteria and supplies the missing image-route proof. ARCH-02/14 are accepted with these unresolved findings documented, as their original criteria explicitly allow. The earlier open-card disposition below is historical; the findings remain unresolved.
+
 ## Current releases and dependency path
 
 The installed path is `eslint-config-next@16.3.8 → @next/eslint-plugin-next@16.3.8 → fast-glob@3.3.1 → micromatch@4.0.8 → braces@3.0.3`.

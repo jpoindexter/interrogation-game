@@ -3,6 +3,7 @@
 import AssetImage from '../components/AssetImage';
 import { useState, useCallback } from 'react';
 import { BackButton } from '../components/ui';
+import CaseSelector from './CaseSelector';
 import { CASES } from '../data/cases';
 import { useCaseProgress } from './useCaseProgress';
 import { motion, PageMotion, fadeIn, fadeUp, smooth } from '../components/motion';
@@ -48,18 +49,20 @@ export default function CaseSelectPage() {
             </motion.div>
           )}
 
+          <CaseSelector current={current} onNavigate={go}>
           <CaseFan go={go} getOffset={getOffset} rotations={rotations} expanded={expanded} solvedCases={solvedCases} setExpanded={setExpanded} setCurrent={setCurrent} />
 
           <div className="flex items-center gap-2 mt-14">
             {CASES.map((_, i) => (
-              <motion.button aria-label={`Select ${CASES[i].title}`} aria-pressed={i === current} key={i} onClick={() => { setCurrent(i); }} className={`h-2 rounded-full transition-all ${i === current ? 'bg-accent w-4' : 'bg-white/50 hover:bg-white/80 w-2'}`}
+              <motion.button data-case-navigation="true" aria-keyshortcuts="ArrowLeft ArrowRight" aria-label={`Select ${CASES[i].title}`} aria-pressed={i === current} key={i} onClick={() => { setExpanded(false); setCurrent(i); }} className={`h-2 rounded-full transition-all ${i === current ? 'bg-accent w-4' : 'bg-white/50 hover:bg-white/80 w-2'}`}
                 animate={i === current ? { boxShadow: ['0 0 0px rgba(196,30,30,0)', '0 0 8px rgba(196,30,30,0.6)', '0 0 0px rgba(196,30,30,0)'] } : { boxShadow: '0 0 0px rgba(196,30,30,0)' }}
                 transition={i === current ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}} layout
               />
             ))}
           </div>
 
-          <motion.p className="mt-3 text-[10px] text-white/60 uppercase tracking-wider" variants={fadeIn} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.3 }}>Select a photo to view the case &middot; Use Previous and Next to browse</motion.p>
+          </CaseSelector>
+          <motion.p className="mt-3 text-[10px] text-white/60 uppercase tracking-wider" variants={fadeIn} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.3 }}>Select a photo to view the case &middot; Use Previous and Next, or arrow keys while browsing</motion.p>
           <PracticeModeLink />
         </div>
       </PageMotion>
@@ -72,7 +75,7 @@ function CaseFan({ go, getOffset, rotations, expanded, solvedCases, setExpanded,
   return (
 <div className="relative w-full max-w-lg xl:max-w-2xl h-[380px] sm:h-[420px] xl:h-[500px] flex items-center justify-center -mt-44">
             {[[-1, 'left-0 sm:left-4 xl:left-16', [0, -4, 0], '-scale-x-100'], [1, 'right-0 sm:right-4 xl:right-16', [0, 4, 0], '']].map(([dir, pos, anim, flip]) => (
-              <motion.button aria-label={dir === -1 ? 'Previous case' : 'Next case'} key={String(dir)} onClick={() => go(dir as number)} className={`group/arrow absolute ${pos} top-1/2 translate-y-0 z-30 w-14 h-14 flex items-center justify-center active:scale-90 transition-all drop-shadow-lg`} animate={{ x: anim as number[] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.85 }}>
+              <motion.button data-case-navigation="true" aria-keyshortcuts="ArrowLeft ArrowRight" aria-label={dir === -1 ? 'Previous case' : 'Next case'} key={String(dir)} onClick={() => go(dir as number)} className={`group/arrow absolute ${pos} top-1/2 translate-y-0 z-30 w-14 h-14 flex items-center justify-center active:scale-90 transition-all drop-shadow-lg`} animate={{ x: anim as number[] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.85 }}>
                 <AssetImage src="/ui/arrow_right.png" alt="" className={`w-10 h-10 ${flip} group-active/arrow:brightness-50 group-active/arrow:sepia group-active/arrow:saturate-200 group-active/arrow:hue-rotate-[-20deg] transition-all`} style={{ imageRendering: 'pixelated' }} />
               </motion.button>
             ))}

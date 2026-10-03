@@ -1,6 +1,7 @@
 import { databaseConfigured } from './database';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { readProviderObservation } from './provider-observations';
 
 type Readiness = { provider: string; configured: boolean; status: 'unchecked' | 'missing'; detail: string };
 function service(provider: string, configured: boolean, detail: string): Readiness {
@@ -44,10 +45,10 @@ function storageReadiness(hosted: boolean) {
 export function readReadiness() {
   const hosted = Boolean(process.env.VERCEL);
   const services = {
-    ai: aiReadiness(hosted),
-    voice: service('elevenlabs', Boolean(process.env.ELEVENLABS_API_KEY?.trim()),
-      'Speech and transcription require this server’s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.'),
-    storage: storageReadiness(hosted),
+    ai: { ...aiReadiness(hosted), observation: readProviderObservation('ai') },
+    voice: { ...service('elevenlabs', Boolean(process.env.ELEVENLABS_API_KEY?.trim()),
+      'Speech and transcription require this server’s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.'), observation: readProviderObservation('voice') },
+    storage: { ...storageReadiness(hosted), observation: null },
   };
   return {
     mode: hosted ? 'hosted' : 'local',

@@ -2,7 +2,7 @@
 
 A fictional noir detective game built by Jason Poindexter for a hackathon. Question an AI suspect, compare its account with the case, and make a specific accusation.
 
-The current upgrade targets a **local video demonstration** using a signed-in Codex subscription, with ElevenLabs voice and a separate OpenAI API adapter for future hosting. Integration is active: earlier local HTTP/Codex playthroughs succeeded, but the latest full generated start failed review after 77.144 seconds. The subsequent source-reference correction has focused checks but no live provider proof yet. Browser and voice acceptance remain unverified. See [current implementation status](docs/audit/IMPLEMENTATION-STATUS.md). See [the audit](docs/audit/AUDIT.md), [implementation plan](docs/audit/IMPLEMENTATION-PLAN.md) and [gameplay upgrade](docs/audit/GAMEPLAY-UPGRADE.md) for evidence and remaining acceptance work.
+The current upgrade targets a **local video demonstration** using a signed-in Codex subscription, with ElevenLabs voice and a separate OpenAI API adapter for future hosting. Integration is active: one generated public CLI playthrough completed case preparation, three questions, evidence release, a supported accusation and result recovery. Preparation took 70.667 seconds. The earlier 77.144-second review failure remains recorded; this small sample does not establish broad fairness or reliability. Browser and voice acceptance remain unverified. See [current implementation status](docs/audit/IMPLEMENTATION-STATUS.md). See [the audit](docs/audit/AUDIT.md), [implementation plan](docs/audit/IMPLEMENTATION-PLAN.md) and [gameplay upgrade](docs/audit/GAMEPLAY-UPGRADE.md) for evidence and remaining acceptance work.
 
 ![Historical hackathon title screen](public/screenshots/hero.png)
 
@@ -54,7 +54,7 @@ These are server environment variables, never browser settings. The provider mig
 | `EXPORT_SECRET` | Bearer credential for the private export endpoint |
 | `EXPORT_STORAGE` | Local exports by default; optional `supabase` backend |
 
-`GET /api/health` and Settings report **configuration only**. They do not prove sign-in, quota, provider reachability, valid voices, successful playback or database policies. “Configured” must not be interpreted as “tested.”
+`GET /api/health` and Settings separate **configuration from observed request outcomes**. Reading status never calls a model or voice provider. A recent requested operation can report success, authentication rejection, rate limiting, unavailable service or an unclassified failure, with its timestamp. Observations expire after five minutes and clear on server restart or provider configuration changes. Generic CLI errors remain unclassified. “Configured” is not “tested,” and a successful past request does not guarantee the next request, audible playback, microphone access or database policies. See [status acceptance and limits](docs/audit/HEALTH-ACCEPTANCE.md).
 
 Preferences are stored under `appPreferences`. Only known nonsecret preferences are carried forward from older `appSettings` data. Legacy keys are not sent to providers or copied into new preference writes. They remain in the old storage entry until the user removes it; resetting preferences does not silently delete them.
 

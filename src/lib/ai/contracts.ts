@@ -16,7 +16,7 @@ export interface AiProvider {
   generate(task: StructuredTask): Promise<Record<string, unknown>>;
 }
 export class AiError extends Error {
-  constructor(public readonly code: string, message: string) {
+  constructor(public readonly code: string, message: string, public readonly upstreamStatus?: number) {
     super(message);
     this.name = 'AiError';
   }

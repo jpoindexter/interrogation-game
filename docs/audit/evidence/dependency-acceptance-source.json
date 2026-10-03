@@ -1,0 +1,92 @@
+{
+  "sourceCommit": "8aa3fc28fda55fa8f8ad04b171d6e58bdc3eb999",
+  "pinsIdenticalToFreshCheckout": "8779a9b94567848d63fa7aa177ff386acb507ecc",
+  "files": {
+    "package.json": "24e8f635fd65706406c3701941dc57785039802ec679586a21c792336042fb38",
+    "package-lock.json": "fcf83450b94da9fc6ddb816ef51210593f3f96dff8f9d5d99d63651a218cd77a",
+    ".nvmrc": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f",
+    ".node-version": "73fb1b615e2043a933be1c0895cde4358036acc28d785692509b822aa53c761f"
+  },
+  "importScans": {
+    "@neondatabase/serverless": "zero matches in app/src/scripts/tests/package.json/package-lock.json",
+    "@mistralai/mistralai": "zero matches in app/src/scripts/tests/package.json/package-lock.json"
+  },
+  "dependencyChangesFromBaseline": {
+    "dependencies": {
+      "@fontsource/opendyslexic": {
+        "before": "^5.2.5",
+        "after": "5.3.0"
+      },
+      "@mistralai/mistralai": {
+        "before": "^1.14.1",
+        "after": null
+      },
+      "@neondatabase/serverless": {
+        "before": "^1.0.2",
+        "after": null
+      },
+      "@supabase/supabase-js": {
+        "before": "^2.98.0",
+        "after": "2.117.2"
+      },
+      "framer-motion": {
+        "before": "^12.34.3",
+        "after": null
+      },
+      "motion": {
+        "before": null,
+        "after": "14.0.0"
+      },
+      "next": {
+        "before": "16.1.6",
+        "after": "16.3.8"
+      },
+      "react": {
+        "before": "19.2.3",
+        "after": "19.3.0"
+      },
+      "react-dom": {
+        "before": "19.2.3",
+        "after": "19.3.0"
+      }
+    },
+    "devDependencies": {
+      "@openai/codex": {
+        "before": null,
+        "after": "0.160.0"
+      },
+      "@tailwindcss/postcss": {
+        "before": "^4",
+        "after": "4.3.3"
+      },
+      "@types/node": {
+        "before": "^20",
+        "after": "^24"
+      },
+      "@typescript/native": {
+        "before": null,
+        "after": "npm:typescript@7.0.2"
+      },
+      "eslint": {
+        "before": "^9",
+        "after": "9.39.5"
+      },
+      "eslint-config-next": {
+        "before": "16.1.6",
+        "after": "16.3.8"
+      },
+      "tailwindcss": {
+        "before": "^4",
+        "after": "4.3.3"
+      },
+      "tsx": {
+        "before": null,
+        "after": "4.23.15"
+      },
+      "typescript": {
+        "before": "^5",
+        "after": "npm:@typescript/typescript6@6.0.2"
+      }
+    }
+  }
+}

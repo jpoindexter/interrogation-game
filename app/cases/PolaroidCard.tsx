@@ -1,7 +1,8 @@
 'use client';
 
 import AssetImage from '../components/AssetImage';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { recordReleaseProgress } from '@/lib/case-disclosure-policy';
 import { motion, AnimatePresence } from '../components/motion';
 import { DIFFICULTY_CONFIG } from '../data/cases';
 import { playClick } from '../lib/sfx-utils';
@@ -35,7 +36,6 @@ const STICKY_COLORS = ['#F5E6A3,#EDD98B', '#FFB3B3,#F5A0A0', '#A3D5F5,#8DC8EE', 
 const STICKY_ROTS = [1, -1.5, 2, -1, 1.5, -2, 0.5];
 
 export default function PolaroidCard({ caseData, isActive, expanded, isSolved, index, fanX, fanY, fanRotate, fanScale, zIndex, opacity, onClick }: PolaroidCardProps) {
-  const router = useRouter();
   const caseDiff = DIFFICULTY_CONFIG[caseData.difficulty];
   const raised = isActive && expanded;
   const hovering = isActive && !expanded;
@@ -48,7 +48,8 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
       style={{ zIndex, transformOrigin: 'bottom center' }}
     >
       <motion.div animate={hovering ? { y: [0, -3, 0] } : { y: 0 }} transition={hovering ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 } : { duration: 0.15 }}>
-        <button onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] xl:w-[340px] `}>
+        <button type="button" data-case-navigation="true" data-case-photo="true" data-active-case={isActive}
+          aria-keyshortcuts="ArrowLeft ArrowRight" {...photoAccessibility(caseData, isActive, expanded)} onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] xl:w-[340px] `}>
           <motion.div
             data-surface="paper"
             className="relative p-2 pb-14"
@@ -69,12 +70,21 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
           </motion.div>
 
         </button>
-          <CaseDescription isActive={isActive} expanded={expanded} index={index} caseData={caseData} caseDiff={caseDiff} router={router} />
+          <CaseDescription isActive={isActive} expanded={expanded} index={index} caseData={caseData} caseDiff={caseDiff} />
       </motion.div>
     </motion.div>
   );
 }
 
+
+function photoAccessibility(caseData: CaseData, isActive: boolean, expanded: boolean) {
+  return {
+    tabIndex: isActive ? 0 : -1,
+    'aria-expanded': expanded,
+    'aria-controls': expanded ? `case-description-${caseData.id}` : undefined,
+    'aria-label': `${caseData.title}, ${DIFFICULTY_CONFIG[caseData.difficulty].label}${isActive ? ', selected' : ''}. ${expanded ? 'Hide' : 'View'} case details`,
+  };
+}
 
 function CasePhoto({ isActive, caseData, caseDiff, isSolved }: { isActive: boolean; caseData: CaseData; caseDiff: { label: string; color: string; clues: number; stars: number; }; isSolved: boolean }) {
   return (
@@ -110,11 +120,11 @@ function CasePhoto({ isActive, caseData, caseDiff, isSolved }: { isActive: boole
 }
 
 
-function CaseDescription({ isActive, expanded, index, caseData, caseDiff, router }: { isActive: boolean; expanded: boolean; index: number; caseData: CaseData; caseDiff: { label: string; color: string; clues: number; stars: number; }; router: ReturnType<typeof useRouter> }) {
+function CaseDescription({ isActive, expanded, index, caseData, caseDiff }: { isActive: boolean; expanded: boolean; index: number; caseData: CaseData; caseDiff: { label: string; color: string; clues: number; stars: number; } }) {
   return (
 <AnimatePresence>
             {isActive && expanded && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.12, ease: 'easeOut' }} className="mt-2 overflow-hidden">
+              <motion.div id={`case-description-${caseData.id}`} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.12, ease: 'easeOut' }} className="mt-2 overflow-hidden">
                 <div className="relative p-4 text-left" style={{
                   background: `linear-gradient(180deg, ${STICKY_COLORS[index % 7].split(',').map((c, ci) => `${c} ${ci * 100}%`).join(', ')})`,
                   boxShadow: '2px 3px 12px rgba(0,0,0,0.4), inset 0 0 30px rgba(0,0,0,0.03)',
@@ -125,11 +135,12 @@ function CaseDescription({ isActive, expanded, index, caseData, caseDiff, router
                   <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-12 h-5 pointer-events-none z-10" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 100%)', borderRadius: '1px' }} />
                   <div className="absolute bottom-0 right-0 w-6 h-6 pointer-events-none" style={{ background: 'linear-gradient(315deg, rgba(0,0,0,0.12) 0%, transparent 60%)' }} />
                   <p className="text-[11px] text-gray-800 leading-relaxed mb-3">{caseData.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; {caseDiff.clues} clues to find</span>
-                    <motion.button type="button" className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2" animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
-                      onClick={(e) => { e.stopPropagation(); playClick(); router.push(`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`); }}
-                    >PLAY &rarr;</motion.button>
+                  <p className="mb-3 text-[11px] text-gray-800">Questions need at least 15 letters. You can accuse after beginning the interview, before the record arrives.</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; Case record after {recordReleaseProgress([], caseData.difficulty).required} distinct questions</span>
+                    <Link aria-label={`Play ${caseData.title}`} href={`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`} className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2"
+                      onClick={() => playClick()}
+                    >PLAY &rarr;</Link>
                   </div>
                 </div>
               </motion.div>

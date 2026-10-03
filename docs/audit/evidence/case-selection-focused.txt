@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: case navigation handles plain arrows on marked buttons and leaves other actions native
+ok 1 - case navigation handles plain arrows on marked buttons and leaves other actions native
+  ---
+  duration_ms: 1.015542
+  type: 'test'
+  ...
+# Subtest: rendered case selection exposes current state, disclosure and a separate native Play link
+ok 2 - rendered case selection exposes current state, disclosure and a separate native Play link
+  ---
+  duration_ms: 14.75225
+  type: 'test'
+  ...
+# Subtest: rendered cards and first-play guidance describe current disclosure and accusation rules
+ok 3 - rendered cards and first-play guidance describe current disclosure and accusation rules
+  ---
+  duration_ms: 11.870209
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 392.497

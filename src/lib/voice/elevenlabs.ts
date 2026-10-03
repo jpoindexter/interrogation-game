@@ -4,13 +4,17 @@ import { authorizeSpeech } from './authorize';
 import { pickVoice, DETECTIVE_VOICE } from './voices';
 
 async function requestElevenLabs(path: string, options: RequestInit, signal: AbortSignal) {
+  const deadline = AbortSignal.any([signal, AbortSignal.timeout(30_000)]);
   const response = await fetch(`https://api.elevenlabs.io/v1/${path}`, {
     ...options, headers: { ...options.headers, 'xi-api-key': voiceKey() },
-    signal: AbortSignal.any([signal, AbortSignal.timeout(30_000)]),
+    signal: deadline,
+  }).catch(() => {
+    deadline.throwIfAborted();
+    throw new VoiceError('The voice service could not be reached. Continue with text or retry.', 502, 'NETWORK_UNAVAILABLE');
   });
   if (!response.ok) {
     await response.body?.cancel();
-    throw new VoiceError('The voice provider could not complete this request. Continue with text or retry.', 502);
+    throw new VoiceError('The voice provider could not complete this request. Continue with text or retry.', 502, 'VOICE_FAILED', response.status);
   }
   return response;
 }

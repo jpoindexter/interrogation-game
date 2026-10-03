@@ -1,0 +1,46 @@
+{
+  "executedAt": "2026-10-03T15:40:33.088Z",
+  "origin": "http://127.0.0.1:3187",
+  "scope": "Actual local production HTTP image routes; no browser or provider calls",
+  "results": [
+    {
+      "name": "public PNG",
+      "url": "/suspects/suspect-03-m.png",
+      "accept": "image/png",
+      "expected": "png",
+      "status": 200,
+      "contentType": "image/png",
+      "width": 1024,
+      "height": 1024,
+      "format": "png",
+      "bytes": 199698,
+      "sha256": "08688c2ce52ab0e22bc55cd5e3903f8d0c9368a0c1d795dcc4d9250db454adc3"
+    },
+    {
+      "name": "optimized WebP",
+      "url": "/_next/image?url=%2Fsuspects%2Fsuspect-03-m.png&w=256&q=75",
+      "accept": "image/webp",
+      "expected": "webp",
+      "status": 200,
+      "contentType": "image/webp",
+      "width": 256,
+      "height": 256,
+      "format": "webp",
+      "bytes": 9990,
+      "sha256": "55bc35735da66f76a12cd7b766f2a672433ed3997f80c4a749ce410e19ed7ee2"
+    },
+    {
+      "name": "optimized AVIF",
+      "url": "/_next/image?url=%2Fsuspects%2Fsuspect-03-m.png&w=256&q=75",
+      "accept": "image/avif",
+      "expected": "avif",
+      "status": 200,
+      "contentType": "image/avif",
+      "width": 256,
+      "height": 256,
+      "format": "avif",
+      "bytes": 5971,
+      "sha256": "04109c454869ecb330b00aa122058671e016fe8d9cf0705a5c41f217ac97f2ff"
+    }
+  ]
+}

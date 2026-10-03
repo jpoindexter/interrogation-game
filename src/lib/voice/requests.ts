@@ -6,6 +6,7 @@ import { runVoiceRequest } from './receipt-service';
 import { MAX_AUDIO_BYTES, voiceJson, type VoiceResult } from './receipt-types';
 import { voiceHash } from './receipt-store';
 import { readVoiceBytes } from './bounded-body';
+import { observeProvider } from '../config/provider-observations';
 
 export async function requestSpeech(body: Record<string, unknown>, signal: AbortSignal): Promise<VoiceResult> {
   const authorized = authorizeSpeech(body);
@@ -16,10 +17,12 @@ export async function requestSpeech(body: Record<string, unknown>, signal: Abort
     work: async deadline => {
       voiceKey();
       reserveVoiceUsage(authorized.session.id, 'speechCharacters', authorized.text.length);
-      const response = await synthesizeSpeech(authorized, deadline);
-      const bytes = await readVoiceBytes(response.body, MAX_AUDIO_BYTES, deadline);
-      if (!bytes.length) throw new Error('Empty synthesized audio');
-      return { status: 200, contentType: 'audio/mpeg', body: Buffer.from(bytes).toString('base64') };
+      return observeProvider('voice', 'speech', async () => {
+        const response = await synthesizeSpeech(authorized, deadline);
+        const bytes = await readVoiceBytes(response.body, MAX_AUDIO_BYTES, deadline);
+        if (!bytes.length) throw new Error('Empty synthesized audio');
+        return { status: 200, contentType: 'audio/mpeg', body: Buffer.from(bytes).toString('base64') };
+      });
     },
   });
 }
@@ -32,7 +35,7 @@ export async function requestTranscription(form: FormData, signal: AbortSignal):
     work: async deadline => {
       voiceKey();
       reserveVoiceUsage(session.id, 'recordings', 1);
-      return voiceJson(200, { text: await transcribeAudio(audio, deadline) });
+      return observeProvider('voice', 'transcription', async () => voiceJson(200, { text: await transcribeAudio(audio, deadline) }));
     },
   });
 }
