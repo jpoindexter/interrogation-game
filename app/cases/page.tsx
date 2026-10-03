@@ -43,7 +43,7 @@ export default function CaseSelectPage() {
           </motion.div>
 
           {stats && (
-            <motion.div className="flex items-center gap-4 mb-3 text-[10px] text-gray-400 uppercase tracking-wider" variants={fadeUp} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.1 }}>
+            <motion.div className="flex items-center gap-4 mb-3 text-[0.625rem] text-gray-400 uppercase tracking-wider" variants={fadeUp} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.1 }}>
               <span>{stats.totalPlayed} played</span><span className="text-gray-600">|</span><span>{stats.winRate}% win rate</span>
               {stats.bestScore !== null && (<><span className="text-gray-600">|</span><span>Best: <span className="text-gold">{stats.bestScore.toLocaleString()}</span></span></>)}
             </motion.div>
@@ -62,7 +62,7 @@ export default function CaseSelectPage() {
           </div>
 
           </CaseSelector>
-          <motion.p className="mt-3 text-[10px] text-white/60 uppercase tracking-wider" variants={fadeIn} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.3 }}>Select a photo to view the case &middot; Use Previous and Next, or arrow keys while browsing</motion.p>
+          <motion.p className="mt-3 text-[0.625rem] text-white/60 uppercase tracking-wider" variants={fadeIn} initial="hidden" animate="visible" transition={{ ...smooth, delay: 0.3 }}>Select a photo to view the case &middot; Use Previous and Next, or arrow keys while browsing</motion.p>
           <PracticeModeLink />
         </div>
       </PageMotion>

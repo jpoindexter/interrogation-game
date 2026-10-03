@@ -75,7 +75,7 @@ function SuspectPortrait({ caseData, stressLevel, isSpeaking, onSkipSpeech }: { 
           {isSpeaking && onSkipSpeech && (
             <button
               onClick={() => { playClick(); onSkipSpeech?.(); }}
-              className="absolute -bottom-1 -right-1 z-20 px-2 py-1 text-[10px] uppercase tracking-wider font-bold bg-black/80 text-gray-300 hover:text-white border border-surface-hover rounded-sm transition-colors flex items-center gap-1"
+              className="absolute -bottom-1 -right-1 z-20 px-2 py-1 text-[0.625rem] uppercase tracking-wider font-bold bg-black/80 text-gray-300 hover:text-white border border-surface-hover rounded-sm transition-colors flex items-center gap-1"
               style={{ imageRendering: 'pixelated' }}
             >
               Skip

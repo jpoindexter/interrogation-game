@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-03T16:12:02.098Z",
+  "scope": "Production HTTP smoke after responsive build restart. No browser, provider, voice or gameplay execution.",
+  "correction": "Initial cases assertion searched the wrong capitalization. Observed heading is CHOOSE YOUR CASE; corrected assertion passes.",
+  "results": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "expectedContent": "JSON health response",
+      "validJson": true
+    },
+    {
+      "path": "/about-game",
+      "status": 200,
+      "expectedContent": true
+    },
+    {
+      "path": "/cases",
+      "status": 200,
+      "expectedContent": true
+    }
+  ]
+}

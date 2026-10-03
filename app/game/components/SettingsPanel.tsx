@@ -33,7 +33,7 @@ function Slider({ label, value, fallback, onChange }: { label: string; value: nu
     <motion.div className="space-y-1.5" variants={fadeUp} transition={smooth}>
       <div className="flex items-center justify-between">
         <label htmlFor={id} className="text-sm text-gray-300">{label}</label>
-        <span className="text-[10px] text-gray-500 tabular-nums">{v === 0 ? 'Off' : `${Math.round(v * 100)}%`}</span>
+        <span className="text-[0.625rem] text-gray-500 tabular-nums">{v === 0 ? 'Off' : `${Math.round(v * 100)}%`}</span>
       </div>
       <input id={id} aria-valuetext={v === 0 ? 'Off' : `${Math.round(v * 100)} percent`} type="range" min="0" max="1" step="0.05" value={v} onChange={(e) => onChange(parseFloat(e.target.value))} className="w-full h-1 bg-surface rounded-full appearance-none cursor-pointer accent-accent" />
     </motion.div>

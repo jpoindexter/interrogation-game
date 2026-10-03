@@ -47,7 +47,7 @@ export default function EvidencePage({ clues, hintsUsed, hintTexts, onOpenSource
           <div className={`${SECTION_HEADER} mt-3`} style={EVIDENCE_HEADER_BG}>Investigator Notes</div>
           {hintTexts.map((trigger, i) => (
             <div key={i} className={`py-2 ${i < hintTexts.length - 1 ? 'border-b border-black/10' : ''}`}>
-              <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Hint #{i + 1}</p>
+              <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Hint #{i + 1}</p>
               <p className="text-sm">Try asking about: {trigger}</p>
             </div>
           ))}

@@ -55,7 +55,7 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
 function SocialLinks({ text, url }: { text: string; url: string }) {
   return (
 <div className="px-5 pb-5">
-                <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-3">Share To</p>
+                <p className="text-[0.5625rem] text-gray-600 uppercase tracking-wider mb-3">Share To</p>
                 <div className="flex items-center justify-between">
                   {SOCIALS.map((s) => (
                     <a
@@ -72,7 +72,7 @@ function SocialLinks({ text, url }: { text: string; url: string }) {
                       >
                         {s.icon}
                       </div>
-                      <span className="text-[8px] text-gray-600 uppercase tracking-wider group-hover:text-gray-400 transition-colors">{s.name}</span>
+                      <span className="text-[0.5rem] text-gray-600 uppercase tracking-wider group-hover:text-gray-400 transition-colors">{s.name}</span>
                     </a>
                   ))}
                 </div>
@@ -109,17 +109,17 @@ function ShareContents({ onClose, text, copyLink, url, copied }: { onClose: () =
               </div>
 
               <div className="px-5 pb-4">
-                <p className="text-[11px] text-gray-500 leading-relaxed whitespace-pre-line line-clamp-3">{text}</p>
+                <p className="text-[0.6875rem] text-gray-500 leading-relaxed whitespace-pre-line line-clamp-3">{text}</p>
               </div>
 
               <div className="px-5 pb-4">
-                <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-1.5">Copy Link</p>
+                <p className="text-[0.5625rem] text-gray-600 uppercase tracking-wider mb-1.5">Copy Link</p>
                 <button
                   onClick={copyLink}
                   className="w-full flex items-center gap-2 px-3 py-2 bg-surface border border-surface-dark rounded-sm hover:bg-surface-hover transition-colors group"
                 >
-                  <span className="flex-1 text-[11px] text-gray-400 truncate text-left">{url}</span>
-                  <span className="text-[9px] uppercase tracking-wider font-bold shrink-0 transition-colors" style={{ color: copied ? '#4ade80' : undefined }}>
+                  <span className="flex-1 text-[0.6875rem] text-gray-400 truncate text-left">{url}</span>
+                  <span className="text-[0.5625rem] uppercase tracking-wider font-bold shrink-0 transition-colors" style={{ color: copied ? '#4ade80' : undefined }}>
                     {copied ? 'Copied!' : 'Copy'}
                   </span>
                 </button>

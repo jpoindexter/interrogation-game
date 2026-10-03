@@ -20,7 +20,7 @@ export default function CaseTabs({ page, setPage, clueCount, messageCount, unrea
             aria-pressed={page === key}
             aria-label={`${label}${key === 'evidence' && unread.leads ? `, ${unread.leads} new` : ''}${key === 'log' && unread.replies ? `, ${unread.replies} new replies` : ''}`}
             onClick={() => { if (page !== key) playPaper(); setPage(key); }}
-            className={`min-w-11 px-2 py-5 text-[11px] font-bold transition-colors rounded-l-sm mb-0.5 ${
+            className={`min-w-11 px-2 py-5 text-[0.6875rem] font-bold transition-colors rounded-l-sm mb-0.5 ${
               page === key ? `${activeColor} text-black/85` : `${color} text-black/80 hover:brightness-110`
             }`}
             style={{
@@ -31,7 +31,7 @@ export default function CaseTabs({ page, setPage, clueCount, messageCount, unrea
           >
             {label}
             {badge !== undefined && (
-              <span className="mt-1 text-[9px] bg-black/10 px-0.5 rounded-sm tabular-nums"
+              <span className="mt-1 text-[0.5625rem] bg-black/10 px-0.5 rounded-sm tabular-nums"
                 style={{ fontFamily: 'var(--font-mono)' }}
               >{badge}</span>
             )}

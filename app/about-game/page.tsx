@@ -11,11 +11,11 @@ const SECTIONS = [
   ] },
   { title: 'Evidence has a source', paragraphs: [
     'In an evidence challenge, pin an exact recorded statement, choose a disclosed exhibit and ask how they fit together. Clarify, Present evidence and Leave space prepare editable questions; you decide what to send.',
-    'A reviewed evidence graph determines whether that pair establishes a contradiction. The model supplies the suspect’s reply; it does not create an exhibit or award progress. Other generated cases still use their own clue rules.',
+    'A reviewed evidence graph determines whether that pair establishes a contradiction. The model supplies the suspect’s reply; it does not create an exhibit or award progress. Generated cases release a case-file summary after enough distinct substantive questions. Stress does not control that release.',
   ] },
   { title: 'Voice is optional', paragraphs: [
     'You can type throughout the game. Voice input and spoken replies use ElevenLabs when the server is configured for it. Microphone permission and provider availability can interrupt voice; use text to continue.',
-    'Provider settings stay on the server. The configuration screen checks what is configured, without claiming a successful live model or voice call.',
+    'Provider settings stay on the server. Connection status separates those settings from the result of a recent requested operation. A past success expires and does not guarantee the next request or audible playback. Reading status makes no model or voice calls.',
   ] },
   { title: 'A hackathon project, being rebuilt', paragraphs: [
     'The original repository presented this as an entry for the Mistral Worldwide Hackathon 2026. That version used Mistral for dialogue and Voxtral for transcription.',

@@ -3,7 +3,7 @@ import { motion } from '../../components/motion';
 import { SECTION_HEADER } from './CaseFilePage';
 
 const LOG_HEADER_BG = { background: '#d4a0a0' };
-const LABEL = 'text-[11px] uppercase tracking-wider font-bold text-black/70';
+const LABEL = 'text-[0.6875rem] uppercase tracking-wider font-bold text-black/70';
 const MONO = { fontFamily: 'var(--font-mono)' };
 
 export default function LogPage({ conversationHistory, suspectName, logEndRef }: {
@@ -57,11 +57,11 @@ function ExchangeList({ pairs, fmt }: { pairs: { question: string; answer: strin
                 className={`py-2.5 ${!isLatest ? 'border-b border-black/15' : 'pb-6'}`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-[10px] uppercase tracking-widest text-black/70" style={MONO}>
+                  <p className="text-[0.625rem] uppercase tracking-widest text-black/70" style={MONO}>
                     Exchange {String(i + 1).padStart(2, '0')}
                   </p>
                   {pair.time != null && (
-                    <p className="text-[10px] tabular-nums text-black/70" style={MONO}>{fmt(pair.time)}</p>
+                    <p className="text-[0.625rem] tabular-nums text-black/70" style={MONO}>{fmt(pair.time)}</p>
                   )}
                 </div>
                 {pair.question && (

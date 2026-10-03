@@ -121,7 +121,7 @@ function BriefingSummary({ caseData, diff, difficulty, stickies, sfx, onStart, s
 <motion.div className="max-w-2xl text-center relative z-10" initial="hidden" animate="visible" variants={stagger(0.1)}>
         <motion.div className="flex items-center justify-center gap-3 mb-3" variants={fadeUp} transition={smooth}>
           <p className="text-sm uppercase tracking-[0.3em] text-accent">Case #{caseData.case_number}</p>
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm" style={{
+          <span className="text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm" style={{
             color: diff.color, border: `1px solid color-mix(in srgb, ${diff.color} 25%, transparent)`,
           }}>{difficulty.toUpperCase()}</span>
         </motion.div>

@@ -8,7 +8,24 @@ import NotesPanel from '../app/game/components/NotesPanel';
 import TranscriptViewer from '../app/game/components/TranscriptViewer';
 import { DEFAULT_SETTINGS } from '../app/settings/settings-model';
 import { reducedMotionProperties } from '../app/components/reduced-motion-properties';
+import BriefingDialog from '../app/game/components/BriefingDialog';
 const noop = () => {};
+
+test('briefing retains every revealed lead inside its narrow scrollable document', () => {
+  const props = { show: true, sections: [{ label: 'Briefing', text: 'Read this.' }], fullText: 'Read this.',
+    charIndex: 10, isPlaying: false, leads: ['Ask the named witness.', 'Compare the dated record.'],
+    onClose: noop, onSkip: noop, onStart: noop };
+  const markup = renderToStaticMarkup(<BriefingDialog {...props} />);
+  const narrow = markup.match(/<section aria-label="Detective leads"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(narrow, 'Narrow briefing has its own semantic lead list');
+  assert.match(narrow, /lg:hidden/);
+  assert.match(narrow, /<li>Ask the named witness\.<\/li>/);
+  assert.match(narrow, /<li>Compare the dated record\.<\/li>/);
+  assert.match(markup, /hidden lg:flex/, 'Desktop-only sticky presentation remains complementary');
+  assert.match(markup, /overflow-y-auto[\s\S]*<section aria-label="Detective leads"/);
+  assert.doesNotMatch(renderToStaticMarkup(<BriefingDialog {...props} charIndex={3} />), /Detective leads/);
+  assert.doesNotMatch(renderToStaticMarkup(<BriefingDialog {...props} leads={[]} />), /Detective leads/);
+});
 
 test('panel bounds recover every edge after shrinking a shared window', () => {
   const viewport = { width: 390, height: 720 };

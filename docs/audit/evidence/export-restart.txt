@@ -1,0 +1,9 @@
+✔ remote outage pending export survives SIGKILL, resumes once in a fresh process, and no-DB demo remains local-only (927.701542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1124.254334

@@ -29,7 +29,7 @@ function SectionedText({ sections, charIndex }: { sections: BriefingSection[]; c
         const showCursor = charIndex < end;
         return (
           <div key={i} className={i > 0 ? 'mt-3' : ''}>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-red-800/70 font-bold mb-1">{s.label}</p>
+            <p className="text-[0.625rem] uppercase tracking-[0.2em] text-red-800/70 font-bold mb-1">{s.label}</p>
             <p className="text-sm text-gray-800 leading-relaxed">
               {s.text.slice(0, sliceEnd)}
               {showCursor && <span className="inline-block w-[2px] h-[1em] bg-red-800 align-text-bottom animate-pulse ml-[1px]" />}
@@ -66,7 +66,7 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
         >
           <div className="absolute inset-0 bg-black/70" onClick={onClose} />
           <div className="relative flex w-full items-start justify-center gap-5">
-            <BriefingSheet sfx={sfx} onClose={onClose} isPlaying={isPlaying} sections={sections} charIndex={charIndex} fullText={fullText} onSkip={onSkip} onStart={onStart} />
+            <BriefingSheet leads={leads} sfx={sfx} onClose={onClose} isPlaying={isPlaying} sections={sections} charIndex={charIndex} fullText={fullText} onSkip={onSkip} onStart={onStart} />
 
             {charIndex >= fullText.length && leads && leads.length > 0 && (
               <LeadStickies leads={leads} />
@@ -80,7 +80,7 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
 }
 
 
-function BriefingSheet({ sfx, onClose, isPlaying, sections, charIndex, fullText, onSkip, onStart }: { sfx: ReturnType<typeof useSfx>; onClose: () => void; isPlaying: boolean; sections: BriefingSection[]; charIndex: number; fullText: string; onSkip: () => void; onStart: () => void }) {
+function BriefingSheet({ leads, sfx, onClose, isPlaying, sections, charIndex, fullText, onSkip, onStart }: { leads?: string[]; sfx: ReturnType<typeof useSfx>; onClose: () => void; isPlaying: boolean; sections: BriefingSection[]; charIndex: number; fullText: string; onSkip: () => void; onStart: () => void }) {
   return (
 <motion.div
               data-surface="paper" className="relative rounded-sm p-4 sm:p-6 sm:pl-10 text-left flex flex-col w-full max-w-[32rem] h-[min(36rem,90dvh)]"
@@ -105,9 +105,7 @@ function BriefingSheet({ sfx, onClose, isPlaying, sections, charIndex, fullText,
                 <p className="text-xs uppercase tracking-[0.3em] text-red-800 font-bold">Case Briefing</p>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto mb-4">
-                <SectionedText sections={sections} charIndex={charIndex} />
-              </div>
+              <BriefingBody sections={sections} charIndex={charIndex} fullText={fullText} leads={leads} />
 
               <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-3">
@@ -125,4 +123,16 @@ function BriefingSheet({ sfx, onClose, isPlaying, sections, charIndex, fullText,
               </div>
             </motion.div>
   );
+}
+
+function BriefingBody({ sections, charIndex, fullText, leads }: Pick<BriefingDialogProps, 'sections' | 'charIndex' | 'fullText' | 'leads'>) {
+  return <div className="min-h-0 flex-1 overflow-y-auto mb-4">
+    <SectionedText sections={sections} charIndex={charIndex} />
+    {charIndex >= fullText.length && leads && leads.length > 0 && <section aria-label="Detective leads" className="mt-4 border-t border-black/20 pt-3 lg:hidden">
+      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-red-800">Leads</h3>
+      <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-800">
+        {leads.map((lead, index) => <li key={index}>{lead}</li>)}
+      </ul>
+    </section>}
+  </div>;
 }

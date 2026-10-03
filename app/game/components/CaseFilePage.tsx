@@ -14,18 +14,18 @@ export default function CasePage({ caseData }: { caseData: Case }) {
 
       <div className={SECTION_HEADER} style={CASE_HEADER_BG}>The Crime</div>
       <div className="py-2">
-        <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Nature of Crime</p>
+        <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Nature of Crime</p>
         <p className="text-sm leading-relaxed">{caseData.crime}</p>
       </div>
 
       <div className={SECTION_HEADER} style={CASE_HEADER_BG}>Person Involved</div>
       <div className="py-2 grid grid-cols-[1fr_auto] gap-x-4">
         <div>
-          <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Full Name</p>
+          <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Full Name</p>
           <p className="text-sm">{caseData.suspect_name}</p>
         </div>
         <div className="min-w-[80px]">
-          <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Role</p>
+          <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Role</p>
           <p className="text-sm">{caseData.suspect_role}</p>
         </div>
       </div>
@@ -33,11 +33,11 @@ export default function CasePage({ caseData }: { caseData: Case }) {
       <div className={SECTION_HEADER} style={CASE_HEADER_BG}>The Incident</div>
       <div className="py-2 grid grid-cols-[1fr_auto] gap-x-4">
         <div>
-          <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Location</p>
+          <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Location</p>
           <p className="text-sm">{caseData.setting}</p>
         </div>
         <div className="min-w-[80px]">
-          <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Case No.</p>
+          <p className="text-[0.6875rem] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Case No.</p>
           <p className="text-sm">{caseData.case_number}</p>
         </div>
       </div>

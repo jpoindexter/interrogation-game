@@ -9,7 +9,7 @@
 | Every case is unique; no two repeat | Removed guarantee; distinguish generated cases from a reviewed authored evidence challenge | Sampling temperature cannot prove uniqueness; authored demo intentionally repeats |
 | The suspect will never confess | Removed absolute claim | Prompt/output controls exist, but full live adversarial evaluation remains required |
 | Browser keys are never sent to third parties | Removed browser BYOK and all client credential headers | Providers now use server configuration; legacy storage is untouched, nonsecret preferences are allowlisted |
-| System Online from keys present in browser | Replaced by configured/live use unchecked server report | `/api/health` checks configuration, not model/voice/database operation |
+| System Online from keys present in browser | Configuration remains unchecked; separate timestamped observations report past requested operations | `/api/health` never invokes providers. Five-minute observations distinguish bounded outcomes; no guarantee of the next request, playback or database policies. [Acceptance](HEALTH-ACCEPTANCE.md) |
 | SpeechSynthesis fallback | Removed | Actual speech helper calls the server TTS endpoint; text is the supported recovery path |
 | Winning tactics automatically train or improve the model | Removed | Historical embeddings/retrieval are not model training or causal evidence of effectiveness |
 | Exported sessions are training-ready and every game is in Supabase | Replaced by private session records and explicit storage modes | Local durable storage exists; hosted migration and delivery need their own tests |
@@ -35,8 +35,12 @@ README's Vercel limitation, legacy credential handling and verification boundary
 
 Applied technical-microcopy-editor in accuracy → clarity → brevity order, with dec-software-principles, dec-accessibility and enforcing-code-size. Exact before/after word counts are recorded after the final file validation below.
 
-## Executed copy and preference checks
+## Earlier executed copy and preference checkpoint
 
-README lexical word count (same regex applied to complete Markdown including commands/table text): baseline HEAD 1498; current working copy 1155; reduction 22.9%. The retained setup, hosted boundary and privacy detail are intentional evidence-bearing text.
+At that earlier copy checkpoint, README lexical word count (same regex applied to complete Markdown including commands/table text): baseline HEAD 1498; working copy 1155; reduction 22.9%. These are historical counts, not the current file length. The retained setup, hosted boundary and privacy detail are intentional evidence-bearing text.
 
 Five settings/security tests passed, including allowlisted legacy preference fallback, preservation of the original storage entry, exclusion of credentials from new writes/headers, and strict parsing of configuration-only health responses. Scoped strict ESLint and whole-project TypeScript passed at this handoff. These checks do not establish successful browser provider calls, live voice, rendered accessibility or the final demo.
+
+## Current source alignment — 3 October
+
+README, the local runbook and the public About the Game page now describe the successful v4 public path alongside the preserved failure, canonical case-file release and requested-operation observations. The current status screen does not perform background provider probes. The optional retrieval claim remains a mechanism with association evidence, not training or causal improvement. Biography and chronology verification remains with the user; no omitted claim is reintroduced. Browser/audio/hosted acceptance is still not established by this copy pass.

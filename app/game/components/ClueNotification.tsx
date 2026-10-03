@@ -18,7 +18,7 @@ export default function ClueNotification({ authored, clueNumber, cluesNeeded }: 
         variants={scaleIn}
         transition={{ ...springy, stiffness: 400, damping: 15 }}
       >
-        <span className="text-[10px] uppercase tracking-[0.4em] text-gray-500">{authored ? 'Contradiction established' : 'Investigation clue'}</span>
+        <span className="text-[0.625rem] uppercase tracking-[0.4em] text-gray-500">{authored ? 'Contradiction established' : 'Investigation clue'}</span>
         <ClueMarker number={clueNumber} className="h-20 w-16 text-gold" />
         <span className="text-sm uppercase tracking-[0.3em] text-gold font-bold">
           Clue {clueNumber} of {cluesNeeded}

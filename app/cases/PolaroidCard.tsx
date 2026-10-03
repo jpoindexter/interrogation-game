@@ -94,7 +94,7 @@ function CasePhoto({ isActive, caseData, caseDiff, isSolved }: { isActive: boole
 
               {isActive && (
                 <motion.div className="absolute top-2 left-2" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.3 }}>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm" style={{ backgroundColor: caseDiff.color, color: '#000' }}>{caseDiff.label}</span>
+                  <span className="text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm" style={{ backgroundColor: caseDiff.color, color: '#000' }}>{caseDiff.label}</span>
                 </motion.div>
               )}
 
@@ -125,7 +125,7 @@ function CaseDescription({ isActive, expanded, index, caseData, caseDiff }: { is
 <AnimatePresence>
             {isActive && expanded && (
               <motion.div id={`case-description-${caseData.id}`} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.12, ease: 'easeOut' }} className="mt-2 overflow-hidden">
-                <div className="relative p-4 text-left" style={{
+                <div data-surface="paper" className="relative p-4 text-left" style={{
                   background: `linear-gradient(180deg, ${STICKY_COLORS[index % 7].split(',').map((c, ci) => `${c} ${ci * 100}%`).join(', ')})`,
                   boxShadow: '2px 3px 12px rgba(0,0,0,0.4), inset 0 0 30px rgba(0,0,0,0.03)',
                   transform: `rotate(${STICKY_ROTS[index % 7]}deg)`,
@@ -134,11 +134,11 @@ function CaseDescription({ isActive, expanded, index, caseData, caseDiff }: { is
                   <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(130deg, transparent 35%, rgba(0,0,0,0.06) 35.5%, transparent 36%), linear-gradient(60deg, transparent 50%, rgba(255,255,255,0.1) 50.5%, transparent 51%), linear-gradient(165deg, transparent 65%, rgba(0,0,0,0.04) 65.5%, transparent 66%)' }} />
                   <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-12 h-5 pointer-events-none z-10" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 100%)', borderRadius: '1px' }} />
                   <div className="absolute bottom-0 right-0 w-6 h-6 pointer-events-none" style={{ background: 'linear-gradient(315deg, rgba(0,0,0,0.12) 0%, transparent 60%)' }} />
-                  <p className="text-[11px] text-gray-800 leading-relaxed mb-3">{caseData.description}</p>
-                  <p className="mb-3 text-[11px] text-gray-800">Questions need at least 15 letters. You can accuse after beginning the interview, before the record arrives.</p>
+                  <p className="text-[0.6875rem] text-gray-800 leading-relaxed mb-3">{caseData.description}</p>
+                  <p className="mb-3 text-[0.6875rem] text-gray-800">Questions need at least 15 letters. You can accuse after beginning the interview, before the record arrives.</p>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; Case record after {recordReleaseProgress([], caseData.difficulty).required} distinct questions</span>
-                    <Link aria-label={`Play ${caseData.title}`} href={`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`} className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2"
+                    <span className="text-[0.5625rem] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; Case record after {recordReleaseProgress([], caseData.difficulty).required} distinct questions</span>
+                    <Link aria-label={`Play ${caseData.title}`} href={`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`} className="text-[0.625rem] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2"
                       onClick={() => playClick()}
                     >PLAY &rarr;</Link>
                   </div>
@@ -155,7 +155,7 @@ function CaseCaption({ caseData, isActive, expanded }: Pick<PolaroidCardProps, '
               <div className="text-center">
                 <h2 data-surface="paper" className={`text-sm font-bold tracking-wider ${isActive ? 'text-gray-800 group-hover:text-accent transition-colors' : 'text-gray-700'}`}>{caseData.title}</h2>
                 {isActive && !expanded && (
-                  <motion.p className="text-[9px] text-gray-500 uppercase tracking-wider" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>{caseData.subtitle}</motion.p>
+                  <motion.p className="text-[0.5625rem] text-gray-500 uppercase tracking-wider" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>{caseData.subtitle}</motion.p>
                 )}
               </div>
             </div>
