@@ -43,7 +43,7 @@ export async function runCodexProcess(options: ProcessOptions): Promise<string> 
       stdout += chunk.toString();
       if (stdout.length > 1_000_000) finish(new AiError('OUTPUT_LIMIT', 'The local AI response exceeded its limit.'));
       try { stdout.slice(0, stdout.lastIndexOf('\n')).split('\n').filter(Boolean).forEach(parseCodexEvent); }
-      catch { finish(new AiError('UNEXPECTED_TOOL', 'The local provider attempted an unexpected operation; request stopped.')); }
+      catch (error) { finish(error instanceof AiError ? error : new AiError('INVALID_RESPONSE', 'The local provider returned an unreadable response.')); }
     });
     child.stderr.on('data', () => { /* Do not log provider diagnostics containing task data. */ });
     child.once('error', () => finish(new AiError('CODEX_UNAVAILABLE', 'Codex CLI could not start. Check the local installation and sign-in.')));

@@ -8,11 +8,13 @@ import type { SessionResponse } from './request-ledger';
 
 export const GENERATION_TTL = 24 * 60 * 60 * 1000;
 export const GENERATION_LIMIT = 1000;
+export type GenerationPhase = 'preparing' | 'generating' | 'reviewing' | 'ready';
 export interface GenerationReceipt {
   version: 1;
   fingerprint: string;
   createdAt: number;
   state: 'pending' | 'complete';
+  phase?: GenerationPhase;
   sessionId?: string;
   checkpoint?: Record<string, unknown>;
   response?: SessionResponse;
@@ -20,6 +22,7 @@ export interface GenerationReceipt {
 function validateReceipt(record: GenerationReceipt): void {
   if (record.version !== 1 || !['pending', 'complete'].includes(record.state)
     || typeof record.fingerprint !== 'string' || !Number.isFinite(record.createdAt)) throw new Error('Invalid generation receipt');
+  if (record.phase !== undefined && !['preparing', 'generating', 'reviewing', 'ready'].includes(record.phase)) throw new Error('Invalid generation phase');
   validateCheckpoint(record);
   if (record.state === 'complete') validateResponse(record.response);
 }

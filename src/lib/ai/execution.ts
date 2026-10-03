@@ -1,6 +1,9 @@
 import { AiError } from './contracts';
 
-export interface AiExecution { signal?: AbortSignal }
+export interface AiExecution {
+  signal?: AbortSignal;
+  onProgress?: (phase: 'generating' | 'reviewing') => void;
+}
 /** Legacy credential strings are ignored; credentials are server configured. */
 export function executionOptions(execution?: AiExecution | string): AiExecution {
   return typeof execution === 'object' ? execution : {};

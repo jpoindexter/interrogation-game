@@ -22,9 +22,9 @@ function EvidenceGuide() {
     <h2 className="text-lg font-bold text-gold">Pin, compare, challenge</h2>
     <ol className="list-decimal space-y-3 pl-5">
       <li>Choose a recorded suspect statement and pin its exact words. View source returns to that turn.</li>
-      <li>Choose Clarify, Present evidence or Leave space. Each prepares a question you can edit or cancel.</li>
-      <li>For Present evidence, choose a disclosed exhibit and read it alongside the pinned quote.</li>
-      <li>Review the question and explicitly send it. The result explains whether that pair established a contradiction.</li>
+      <li>Choose Clarify, Present evidence or Leave space. Switching approaches keeps your draft. Open “Need a starting question?” to preview an editable starter.</li>
+      <li>For Present evidence, choose a disclosed exhibit and read it alongside the pinned quote. Selecting an exhibit does not replace or send your question.</li>
+      <li>Review the question and explicitly send it. The result explains whether that pair established a contradiction. The count records established contradictions, not how close the suspect is to confessing.</li>
     </ol>
     <p>These controls apply to the reviewed evidence challenge. Generated cases use the clues and accusation requirement shown in their case file. Decorative clue icons do not prove the existence of a physical object.</p>
   </section>;
@@ -40,13 +40,14 @@ function AccusationGuide() {
 }
 
 function TimerGuide() {
-  const unlimited = usePreferences().timerMode === 'unlimited';
+  const { playMode } = usePreferences();
+  const label = { challenge: 'Timed challenge', relaxed: 'Relaxed', endurance: 'Endurance' }[playMode];
   return <section className="space-y-4 border border-surface bg-surface-darker p-5">
     <h2 className="text-lg font-bold">Time and score</h2>
-    <p>Your preference: <strong>{unlimited ? 'Unlimited' : 'Countdown'}</strong>. Change it before starting a new case.</p>
-    <p>Countdown uses a server deadline. The clock continues during requests and spoken replies. Unlimited removes that deadline; other case rules and provider usage limits remain.</p>
+    <p>Your preference: <strong>{label}</strong>. Change it before starting a new case.</p>
+    <p>Timed challenge uses a server deadline that continues during requests and spoken replies. Relaxed and Endurance remove the deadline; provider usage limits still apply.</p>
     <ul className="flex flex-wrap gap-4">{Object.entries(TIME_LIMITS).map(([difficulty, seconds]) => <li key={difficulty} className="capitalize">{difficulty}: {seconds / 60} minutes</li>)}</ul>
-    <p>The current score uses elapsed time, difficulty, question count, hints and incorrect accusations. Unlimited removes time pressure from losing, but does not turn scoring into an efficiency-only formula.</p>
+    <p>Relaxed keeps your chosen difficulty, removes pressure-triggered lawyer endings and does not reduce your score for elapsed time. Endurance retains time-based scoring and pressure-triggered lawyer endings on Hard and Expert. Both modes are unranked.</p>
     <p>A leaderboard entry is recorded only after storage confirms it. If saving fails, keep the result open and retry.</p>
   </section>;
 }

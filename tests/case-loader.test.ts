@@ -51,9 +51,9 @@ void test('case creation POST contains its stable identity, options and cancella
   await assert.rejects(loadCase({ ...options, mode: 'redteam', timerMode: 'unlimited', signal: controller.signal }));
 });
 
-void test('generation deadline is 120 seconds and known failures require manual new attempt', async context => {
+void test('generation transport deadline is 210 seconds and known failures require manual new attempt', async context => {
   const timeout = AbortSignal.timeout.bind(AbortSignal);
-  context.mock.method(AbortSignal, 'timeout', (duration: number) => { assert.equal(duration, 120_000); return timeout(duration); });
+  context.mock.method(AbortSignal, 'timeout', (duration: number) => { assert.equal(duration, 210_000); return timeout(duration); });
   context.mock.method(globalThis, 'fetch', async () => Response.json(validCase));
   assert.deepEqual(await loadCase({ ...options, signal: new AbortController().signal }), validCase);
   for (const code of ['ACTION_FAILED', 'REQUEST_INTERRUPTED', 'GENERATION_INTERRUPTED', 'GENERATION_EXPIRED', 'REQUEST_CONFLICT']) {

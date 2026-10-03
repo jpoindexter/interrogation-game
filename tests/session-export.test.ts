@@ -64,7 +64,7 @@ void test('remote export failure leaves a durable outbox and confirmed retry sto
     if (previous[index] === undefined) delete process.env[key]; else process.env[key] = previous[index];
   }));
   process.env.EXPORT_STORAGE = 'supabase';
-  process.env.SUPABASE_URL = 'https://export-test.invalid';
+  process.env.SUPABASE_URL = 'https://export-test.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'synthetic-server-key';
   let requests = 0;
   context.mock.method(globalThis, 'fetch', async () => {
@@ -88,7 +88,7 @@ void test('remote success with failed durable confirmation stays pending and ret
     if (previous[index] === undefined) delete process.env[key]; else process.env[key] = previous[index];
   }));
   process.env.EXPORT_STORAGE = 'supabase';
-  process.env.SUPABASE_URL = 'https://confirmation-test.invalid';
+  process.env.SUPABASE_URL = 'https://confirmation-test.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'synthetic-server-key';
   const destination = join(fixture.directory, 'exports', `${fixture.sessionId}.json`);
   const backup = `${destination}.pending-backup`;

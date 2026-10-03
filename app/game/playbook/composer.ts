@@ -10,7 +10,7 @@ export interface DialogueDraft {
 export const EMPTY_DRAFT: DialogueDraft = { kind: 'clarify', question: '', exhibitId: '' };
 
 export function chooseApproach(draft: DialogueDraft, kind: DialogueKind, statement: PublicStatement): DialogueDraft {
-  return { ...draft, kind, question: draftDialogue(kind, statement) };
+  return { ...draft, kind, question: draft.question.trim() ? draft.question : draftDialogue(kind, statement) };
 }
 
 export function validateDraft(draft: DialogueDraft, statement: PublicStatement | null, projection: PublicGameplayProjection) {

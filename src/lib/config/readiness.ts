@@ -1,3 +1,4 @@
+import { databaseConfigured } from './database';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -25,9 +26,7 @@ function aiReadiness(hosted: boolean) {
 function storageReadiness(hosted: boolean) {
   const provider = process.env.LEADERBOARD_STORAGE || 'local';
   if (provider === 'local') return service(provider, !hosted, 'Private files on this machine. Hosted session persistence still requires a shared store.');
-  const configured = provider === 'supabase'
-    && Boolean(process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL)
-    && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const configured = provider === 'supabase' && databaseConfigured();
   return service(provider, configured, 'Server configuration only. Database reachability, migrations and policies have not been checked.');
 }
 

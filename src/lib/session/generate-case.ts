@@ -56,9 +56,9 @@ function restoreCheckpoint(value: Record<string, unknown>): CaseCheckpoint {
   return value as CaseCheckpoint;
 }
 
-async function prepareCase(options: GenerationOptions, request: NextRequest): Promise<CaseCheckpoint> {
+async function prepareCase(options: GenerationOptions, request: NextRequest, context: GenerationContext): Promise<CaseCheckpoint> {
   const { setting, difficulty, authored } = options;
-  const raw = authored ? authoredCaseData() : await generateCase(setting, difficulty, { signal: request.signal });
+  const raw = authored ? authoredCaseData() : await generateCase(setting, difficulty, { signal: request.signal, onProgress: context.reportProgress });
   const data = validateCaseData(raw);
   if (!data || data.difficulty !== difficulty) throw new Error('Generated case failed validation.');
   const { learnedTactics, totalPriorGames } = await retrieveLearnedTactics({ request, setting, difficulty });
@@ -70,7 +70,7 @@ async function prepareCase(options: GenerationOptions, request: NextRequest): Pr
 }
 
 export async function createPlayableCase(options: GenerationOptions, request: NextRequest, context: GenerationContext): Promise<Record<string, unknown>> {
-  const checkpoint = context.checkpoint ? restoreCheckpoint(context.checkpoint) : await prepareCase(options, request);
+  const checkpoint = context.checkpoint ? restoreCheckpoint(context.checkpoint) : await prepareCase(options, request, context);
   if (!context.checkpoint) context.saveCheckpoint(checkpoint);
   request.signal.throwIfAborted();
   const { data, learnedTactics, totalPriorGames } = checkpoint;

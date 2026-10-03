@@ -10,6 +10,8 @@ import DialogueApproaches from './DialogueApproaches';
 import ExhibitPicker from './ExhibitPicker';
 import QuestionComposer from './QuestionComposer';
 import ChallengeFeedback from './ChallengeFeedback';
+import DraftStarter from './DraftStarter';
+import WorkbenchProgress, { nextDraftStep } from './WorkbenchProgress';
 import type { EvidenceWorkbenchProps } from './types';
 export type { EvidenceWorkbenchProps, PublicGameplayProjection } from './types';
 
@@ -41,6 +43,7 @@ function WorkbenchSession(props: EvidenceWorkbenchProps) {
     <aside data-surface="paper" aria-label="Evidence workbench" className="space-y-5 bg-[#efe8d5] p-4 text-stone-950">
       <header><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#772323]">Case file</p><h2 className="text-lg font-bold">Put the account to the test</h2></header>
       <p className="text-sm leading-relaxed">Pin what the suspect actually said. Ask for detail or compare it with a disclosed exhibit. Stress is not evidence.</p>
+      <WorkbenchProgress projection={projection} />
       {projection.status !== 'active' && <p role="status" className="text-sm font-bold">This interrogation has ended. You can still review its sources.</p>}
       <SourcePicker turns={projection.turns} source={pin.source} pinned={pin.pinned} disabled={locked} pending={pin.busy}
         onSelect={pin.setSelection} onPin={() => { void pin.pin(); }} onUnpin={pin.unpin} onSource={openSource} />
@@ -55,12 +58,17 @@ function WorkbenchSession(props: EvidenceWorkbenchProps) {
 
 function DraftControls({ model, projection }: { model: ReturnType<typeof useWorkbench>; projection: EvidenceWorkbenchProps['publicProjection'] }) {
   const { pin, draft, setDraft, action, locked } = model;
+  const requiredStep = nextDraftStep(draft, Boolean(pin.pinned), projection);
   return <>
     <DialogueApproaches selected={draft.kind} disabled={locked || !pin.pinned}
       onChoose={kind => { if (pin.pinned) setDraft(chooseApproach(draft, kind, pin.pinned)); }} />
     {draft.kind === 'present_evidence' && <ExhibitPicker exhibits={projection.exhibits} selectedId={draft.exhibitId}
       disabled={locked} onSelect={exhibitId => setDraft({ ...draft, exhibitId })} />}
-    <QuestionComposer draft={draft} disabled={locked || !pin.pinned} pending={action.pending}
+    <DraftStarter kind={draft.kind} statement={pin.pinned}
+      exhibit={projection.exhibits.find(exhibit => exhibit.id === draft.exhibitId)}
+      disabled={locked} hasDraft={Boolean(draft.question.trim())}
+      onUse={question => setDraft({ ...draft, question })} />
+    <QuestionComposer requiredStep={requiredStep} draft={draft} disabled={locked || !pin.pinned} pending={action.pending}
       onChange={question => setDraft({ ...draft, question })} onSubmit={action.submit} onCancel={() => setDraft(EMPTY_DRAFT)} />
   </>;
 }

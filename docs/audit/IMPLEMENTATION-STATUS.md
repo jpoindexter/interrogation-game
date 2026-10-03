@@ -18,6 +18,14 @@ Local implementation, necessary regression checks, parallel agent work and Trell
 - The conversation path is integrated into win and loss results. It classifies canonical accusation attempts and saved evidence challenges; ordinary dialogue remains neutral. Exact statements and disclosed exhibits are inspectable. A typed fake accusation marker cannot manufacture a verdict.
 - Asset identity is explicit and persisted, outcome decoration uses an existing text-free motif, and CSS was split with equivalent compiled rule trees. The asset manifest records 134 media files and unknown rights rather than inventing provenance. No media was regenerated.
 
+## User playthrough correction
+
+The user observed a failed startup/easy generation after a long spinner. Its saved receipt completed at 90.02 seconds with the old generic 502, matching the original shared deadline. Case preparation now reports durable server stages and elapsed wait through a noir progress panel; failure recovery includes a direct authored-case option. Specific timeout/provider/review errors are preserved. Drafting uses the faster local Luna model; independent review/dialogue/judging retain Sol, with a separate 120-second overall generation deadline.
+
+The first real check after the timing change reached review but was rejected after 84.078 seconds. The next revision constrained generated stories to two true background statements, one denial and directly attributed evidence, preserving the reviewer. One real startup/easy case then reached HTTP 200/ready after 64.069 seconds and recovered the same unstarted briefing. The server-rendered response contains the progress strip. This is one observed success, not a generated-case reliability guarantee or a browser visual pass. See `GENERATION-RECOVERY.md` and `evidence/generation-v4-live.json`.
+
+The accompanying changes add editable evidence-question starters and clearer action consequences, correct outdated Relaxed-mode guidance, restrict optional Supabase traffic to configured managed project origins without redirects, and add an evidence-grounded interview narrative. Targeted checks and the latest production build passed; the full 297-test suite was not repeated. Jason continues the actual visual/audio review.
+
 ## Latest portfolio checkpoint
 
 The local JSON agent-control CLI now supports one action at a time through the canonical HTTP routes. Its actual authored start/state/opening/pin/give-up/result/recovery path ran with AI disabled. One additional real `gpt-6.1-sol` question succeeded through the signed-in Codex adapter in 10.197 seconds including CLI startup; the result retained both turns. See [agent control](../AGENT-CONTROL.md) and `evidence/agent-control-live.json`. The local model default is now `gpt-6.1-sol`; the future API adapter default remains `gpt-6-luna`. Earlier Luna evaluation evidence is not reattributed to Sol.

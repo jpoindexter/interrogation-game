@@ -40,11 +40,11 @@ test('generated objective follows runtime win contract even when provider suppli
 
 test('versioned generation prompt states semantic constraints without changing judge acceptance', () => {
   const prompt = buildCasePrompt('hospital', 'hard');
-  assert.equal(CASE_PROMPT_VERSION, 'one-false-claim-v3');
-  assert.match(prompt, /ONE specific false sentence/);
-  assert.match(prompt, /Every other material statement.*must agree/);
-  assert.match(prompt, /Keep names, identities and job roles consistent/);
-  assert.match(prompt, /later log entry alone does not establish later approval/);
-  assert.match(prompt, /reachable through a public lead/);
+  assert.equal(CASE_PROMPT_VERSION, 'direct-evidence-v4');
+  assert.match(prompt, /exactly those two true facts plus ONE false/);
+  assert.match(prompt, /Do not use device\/account\/badge ownership/);
+  assert.match(prompt, /personally recognized the suspect/);
+  assert.match(prompt, /public lead names this record/);
+  assert.match(prompt, /NEVER evidence completeness/);
   assert.match(prompt, /exactly 4 stress_triggers/);
 });

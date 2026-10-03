@@ -1,0 +1,36 @@
+{
+  "executedAt": "2026-10-03T13:22:26.956Z",
+  "promptVersion": "direct-evidence-v4",
+  "input": {
+    "setting": "startup",
+    "difficulty": "easy"
+  },
+  "models": {
+    "draft": "gpt-6-luna",
+    "review": "gpt-6.1-sol"
+  },
+  "stages": [
+    {
+      "phase": "generating",
+      "milliseconds": 1541
+    },
+    {
+      "phase": "reviewing",
+      "milliseconds": 19848
+    },
+    {
+      "phase": "ready",
+      "milliseconds": 64068
+    }
+  ],
+  "milliseconds": 64069,
+  "status": 200,
+  "code": null,
+  "error": null,
+  "hasPublicCase": true,
+  "scope": "Real local production HTTP generation and observed progress; browser visual review remains user-owned.",
+  "recoveryStatus": 200,
+  "recoveredCaseMatches": true,
+  "interviewNotStarted": true,
+  "progressMarkupPresent": true
+}

@@ -6,8 +6,24 @@ import { createServer } from 'node:http';
 import { generationFixture, generationWorker } from './generation-fixtures';
 import { runGenerationRequest, type GenerationContext } from '../src/lib/session/generation-requests';
 import { getSession } from '../src/lib/session/store';
+import { AiError } from '../src/lib/ai/contracts';
+import { NextRequest } from 'next/server';
+import { GET as generationStatus } from '../app/api/generate-case/status/route';
 
 const fingerprint = { difficulty: 'easy', setting: 'office' };
+
+test('a timed-out case records its actual cause and replay never starts another generation', async context => {
+  await generationFixture(context);
+  let calls = 0;
+  const request = { requestId: 'timed-out-generation', fingerprint,
+    generate: async () => { calls++; throw new AiError('TIMEOUT', 'Private provider diagnostic'); } };
+  const failed = await runGenerationRequest(request);
+  assert.equal(failed.status, 504);
+  assert.equal(failed.body.code, 'TIMEOUT');
+  assert.doesNotMatch(JSON.stringify(failed.body), /Private provider diagnostic/);
+  assert.deepEqual(await runGenerationRequest(request), failed);
+  assert.equal(calls, 1);
+});
 
 test('completed generation survives a process restart without a second provider call or new session', async context => {
   const directory = await generationFixture(context);
@@ -107,3 +123,32 @@ for (const boundary of ['checkpoint-crash', 'session-crash']) {
     assert.ok(!replay.output.includes('Synthetic private truth'));
   });
 }
+
+
+test('generation progress exposes only durable phases while private checkpoints remain hidden', async context => {
+  await generationFixture(context);
+  const requestId = 'progress-only-generation';
+  const readStatus = async () => {
+    const response = generationStatus(new NextRequest(`http://localhost/api/generate-case/status?requestId=${requestId}`));
+    assert.equal(response.headers.get('Cache-Control'), 'no-store');
+    const body = await response.json();
+    assert.deepEqual(Object.keys(body).sort(), ['phase', 'startedAt', 'state']);
+    assert.ok(!JSON.stringify(body).includes('private truth'));
+    return { status: response.status, body };
+  };
+  assert.equal((await readStatus()).status, 404);
+  await runGenerationRequest({ requestId, fingerprint, generate: async generation => {
+    assert.equal((await readStatus()).body.phase, 'preparing');
+    generation.reportProgress('generating');
+    assert.equal((await readStatus()).body.phase, 'generating');
+    generation.saveCheckpoint({ data: { the_truth: 'private truth' } });
+    generation.reportProgress('reviewing');
+    const reviewing = await readStatus();
+    assert.equal(reviewing.body.phase, 'reviewing');
+    assert.equal(reviewing.body.state, 'pending');
+    return { sessionId: generation.sessionId };
+  } });
+  const completed = await readStatus();
+  assert.equal(completed.body.phase, 'ready');
+  assert.equal(completed.body.state, 'complete');
+});

@@ -1,13 +1,13 @@
-import { AiError } from '../ai/contracts';
 import { randomBytes } from 'node:crypto';
-import { GenerationStore, generationDirectory, generationFingerprint, GENERATION_TTL, type GenerationReceipt } from './generation-store';
+import { GenerationStore, generationDirectory, generationFingerprint, GENERATION_TTL, type GenerationReceipt, type GenerationPhase } from './generation-store';
 import type { SessionResponse } from './request-ledger';
 import { withAiWorkScope } from '../limits/ai-scope';
-import { aiWorkFailure } from '../limits/ai-http';
+import { generationFailure } from './generation-failure';
 
 export interface GenerationContext {
   sessionId: string;
   checkpoint?: Record<string, unknown>;
+  reportProgress: (phase: 'generating' | 'reviewing') => void;
   saveCheckpoint: (value: Record<string, unknown>) => void;
 }
 interface GenerationRequest {
@@ -29,6 +29,10 @@ function replay(record: GenerationReceipt, fingerprint: string): SessionResponse
 }
 function generationContext(record: GenerationReceipt, store: GenerationStore): GenerationContext {
   return { sessionId: record.sessionId!, checkpoint: record.checkpoint ? structuredClone(record.checkpoint) : undefined,
+    reportProgress(phase: GenerationPhase) {
+      store.save({ ...record, phase });
+      record.phase = phase;
+    },
     saveCheckpoint(value) {
       try {
         const checkpoint = JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
@@ -37,17 +41,6 @@ function generationContext(record: GenerationReceipt, store: GenerationStore): G
         record.checkpoint = checkpoint;
       } catch { throw new CheckpointWriteError('The generation checkpoint could not be saved'); }
     } };
-}
-function generationFailure(cause: unknown): SessionResponse {
-  const budgetFailure = aiWorkFailure(cause);
-  if (budgetFailure) return budgetFailure;
-  if (cause instanceof AiError && cause.code === 'CASE_REVIEW_REJECTED') {
-    return error(502, cause.code, 'The generated case failed its consistency review. No playable case was created. Start a new attempt.');
-  }
-  if (cause instanceof AiError && cause.code === 'INVALID_CASE_CONTENT') {
-    return error(502, cause.code, 'The generated case contains unfinished text. No playable case was created. Start a new attempt.');
-  }
-  return error(502, 'ACTION_FAILED', 'Case generation could not be completed. Explicitly start a new attempt to try again.');
 }
 async function generateOnce(request: GenerationRequest, record: GenerationReceipt, store: GenerationStore): Promise<SessionResponse> {
   try {
@@ -66,13 +59,13 @@ async function execute(request: GenerationRequest, store: GenerationStore): Prom
     const previous = replay(record, fingerprint);
     if (previous) return previous;
   } else {
-    record = { version: 1, fingerprint, createdAt: Date.now(), state: 'pending', sessionId: randomBytes(24).toString('hex') };
+    record = { version: 1, fingerprint, createdAt: Date.now(), state: 'pending', phase: 'preparing', sessionId: randomBytes(24).toString('hex') };
     const admission = store.admit(record);
     if (admission === 'busy') return error(409, 'ACTION_IN_PROGRESS', 'Another generation request is being recorded. Retry this request ID.');
     if (admission === 'limit') return error(429, 'GENERATION_LIMIT', 'Local generation receipt storage reached its limit. Review and archive local demo data before generating more cases.');
   }
   const response = await generateOnce(request, record, store);
-  store.save({ ...record, state: 'complete', response });
+  store.save({ ...record, state: 'complete', phase: response.status === 200 ? 'ready' : record.phase, response });
   return response;
 }
 

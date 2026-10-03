@@ -8,7 +8,7 @@ export default function DialogueApproaches({ selected, disabled, onChoose }: {
   return (
     <fieldset disabled={disabled} className="space-y-2">
       <legend className="text-sm font-bold">Prepare a question</legend>
-      <p className="text-sm">Choose an approach, then edit the draft. Nothing is sent until you confirm.</p>
+      <p className="text-sm">Choose how to ask. Switching approaches keeps your draft; use a starter below to replace it.</p>
       <div className="grid gap-2">
         {DIALOGUE_OPTIONS.map(option => <button key={option.kind} type="button" aria-pressed={selected === option.kind}
           onClick={() => onChoose(option.kind)} className={`rounded-sm border p-3 text-left disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 ${selected === option.kind ? 'border-stone-800 bg-[#e5d4a7]' : 'border-stone-400 bg-[#f7f2e7]'}`}>

@@ -6,6 +6,7 @@ import SuspectZone from '../components/SuspectZone';
 import CaseFile from '../components/CaseFile';
 import OnboardingOverlay from '../components/OnboardingOverlay';
 import LoadingScreen from '../components/LoadingScreen';
+import CasePreparationError from '../components/CasePreparationError';
 import BriefingScreen from '../components/BriefingScreen';
 import { motion, fadeIn, smooth } from '../../components/motion';
 import { GamePanels } from './GamePanels';
@@ -51,11 +52,9 @@ function ActiveGame(model: GameController) {
 }
 
 export function GameView(model: GameController) {
-  if (model.phase === 'loading' && model.caseLoader.error) return <main className="min-h-screen grid place-content-center bg-black text-foreground p-8 gap-4">
-    <p role="alert">{model.caseLoader.error}</p><button onClick={model.caseLoader.retry}>{model.caseLoader.retryLabel}</button>
-    <button onClick={() => model.router.push('/cases')}>Back to cases</button>
-  </main>;
-  if (model.phase === 'loading') return <LoadingScreen />;
+  if (model.phase === 'loading' && model.caseLoader.error) return <CasePreparationError message={model.caseLoader.error}
+    code={model.caseLoader.errorCode} retry={model.caseLoader.retry} retryLabel={model.caseLoader.retryLabel} />;
+  if (model.phase === 'loading') return <LoadingScreen phase={model.caseLoader.preparationPhase} />;
   if (model.phase === 'briefing' && model.caseData) return <>
     <BriefingScreen caseData={model.caseData} difficulty={model.difficulty}
       onStart={() => { void model.sendQuestion('*Detective sits down and opens the case file*', true); }}

@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { chooseApproach, EMPTY_DRAFT, prepareDraftAction, validateDraft } from '../app/game/playbook/composer';
+import { contextualStarter } from '../app/game/playbook/DraftStarter';
+import { nextDraftStep } from '../app/game/playbook/WorkbenchProgress';
 import SourcePicker from '../app/game/playbook/SourcePicker';
 import ExhibitPicker from '../app/game/playbook/ExhibitPicker';
 import DialogueApproaches from '../app/game/playbook/DialogueApproaches';
@@ -23,6 +25,9 @@ test('approaches create distinct editable drafts while retaining selected eviden
   assert.equal(new Set(drafts.map(draft => draft.question)).size, 3);
   drafts.forEach(draft => { assert.ok(draft.question.includes(statement.quote)); assert.equal(draft.exhibitId, 'log-public'); });
   assert.equal(base.question, '', 'choosing a suggestion must not mutate the prior draft');
+  assert.equal(chooseApproach({ ...base, question: 'My edited question.' }, 'leave_space', statement).question, 'My edited question.');
+  assert.match(contextualStarter('present_evidence', statement, projection.exhibits[0])!, /Visitor log/);
+  assert.equal(contextualStarter('present_evidence', statement), null, 'evidence starters require a public exhibit');
 });
 
 test('submission retains edited prose, reuses an unchanged retry ID and changes ID for new intent', () => {
@@ -39,6 +44,9 @@ test('submission retains edited prose, reuses an unchanged retry ID and changes 
 test('only disclosed exhibits and current transcript sources can be challenged', () => {
   const draft = { kind: 'present_evidence' as const, exhibitId: 'log-public', question: 'Explain this.' };
   assert.equal(validateDraft(draft, statement, projection), null);
+  assert.equal(nextDraftStep(draft, true, projection), null);
+  assert.match(nextDraftStep({ ...draft, exhibitId: '' }, true, projection)!, /Choose an exhibit/);
+  assert.match(nextDraftStep(draft, false, projection)!, /pin a suspect statement/);
   assert.match(validateDraft({ ...draft, exhibitId: 'hidden-exhibit' }, statement, projection)!, /available exhibit/);
   assert.match(validateDraft(draft, { ...statement, turnId: 'foreign-turn' }, projection)!, /no longer available/);
   assert.match(validateDraft(draft, { ...statement, quote: 'Invented words' }, projection)!, /no longer available/);

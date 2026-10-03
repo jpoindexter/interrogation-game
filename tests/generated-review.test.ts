@@ -24,8 +24,8 @@ async function withProvider(fetcher: typeof fetch, run: () => Promise<void>) {
   const directory = await mkdtemp(join(tmpdir(), 'generated-review-test-'));
   const dataDirectory = process.env.INTERROGATION_DATA_DIR;
   process.env.INTERROGATION_DATA_DIR = directory;
-  const prior = { AI_PROVIDER: process.env.AI_PROVIDER, OPENAI_API_KEY: process.env.OPENAI_API_KEY, AI_TIMEOUT_MS: process.env.AI_TIMEOUT_MS };
-  process.env.AI_PROVIDER = 'openai'; process.env.OPENAI_API_KEY = 'fixture-only'; process.env.AI_TIMEOUT_MS = '1000';
+  const prior = { AI_PROVIDER: process.env.AI_PROVIDER, OPENAI_API_KEY: process.env.OPENAI_API_KEY, AI_TIMEOUT_MS: process.env.AI_TIMEOUT_MS, AI_GENERATION_TIMEOUT_MS: process.env.AI_GENERATION_TIMEOUT_MS };
+  process.env.AI_PROVIDER = 'openai'; process.env.OPENAI_API_KEY = 'fixture-only'; process.env.AI_TIMEOUT_MS = '1000'; process.env.AI_GENERATION_TIMEOUT_MS = '1000';
   globalThis.fetch = fetcher;
   try { await run(); } finally {
     globalThis.fetch = original;
@@ -127,7 +127,7 @@ test('rejected review never reaches the playable-case checkpoint or materializes
   await withProvider(async () => response(++calls === 1 ? candidate() : review), async () => {
     await assert.rejects(createPlayableCase({ setting: 'bank', difficulty: 'easy', authored: false,
       playMode: 'relaxed', timerMode: 'unlimited' }, new NextRequest('http://localhost/api/generate-case'), {
-      sessionId: 'must-not-materialize', saveCheckpoint: () => { checkpoints++; },
+      sessionId: 'must-not-materialize', reportProgress: () => {}, saveCheckpoint: () => { checkpoints++; },
     }), { code: 'CASE_REVIEW_REJECTED' });
     assert.equal(calls, 2); assert.equal(checkpoints, 0);
   });

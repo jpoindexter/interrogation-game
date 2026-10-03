@@ -17,9 +17,10 @@ export function providerConfiguration() {
     ragEnabled: process.env.AI_RAG_ENABLED === 'true' };
 }
 
-function createProvider(config: ReturnType<typeof providerConfiguration>): AiProvider {
+function createProvider(config: ReturnType<typeof providerConfiguration>, task: StructuredTask): AiProvider {
+  const localModel = task.capability === 'case' ? process.env.CODEX_CASE_MODEL ?? 'gpt-6-luna' : config.codexModel;
   return config.provider === 'codex-local'
-    ? new CodexProvider({ binary: config.codexBinary, model: config.codexModel, timeoutMs: config.timeoutMs })
+    ? new CodexProvider({ binary: config.codexBinary, model: localModel, timeoutMs: config.timeoutMs })
     : new OpenAIProvider({ apiKey: process.env.OPENAI_API_KEY ?? '', model: config.openaiModel, timeoutMs: config.timeoutMs });
 }
 
@@ -29,7 +30,7 @@ export async function requestStructured(task: StructuredTask): Promise<Record<st
   const signal = executionSignal(task.signal, config.timeoutMs);
   try {
     reserveAiWork(task);
-    const result = await createProvider(config).generate({ ...task, signal });
+    const result = await createProvider(config, task).generate({ ...task, signal });
     ensureNotAborted(signal);
     validateStructured(result, task.schema);
     return result;

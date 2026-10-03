@@ -39,6 +39,8 @@ These are server environment variables, never browser settings. The provider mig
 | `AI_PROVIDER` | `codex-local` for the local subscription adapter; `openai` for the API adapter |
 | `CODEX_BIN` | Optional local Codex executable override; defaults to the project CLI |
 | `CODEX_MODEL` | Local model selection; default is `gpt-6.1-sol`; `gpt-6-luna` remains an explicit lower-usage option |
+| `CODEX_CASE_MODEL` | Case drafting model; defaults to `gpt-6-luna`. Independent review, dialogue and judging use `CODEX_MODEL` |
+| `AI_GENERATION_TIMEOUT_MS` | Overall case drafting/review limit, default 120000 ms; individual calls retain `AI_TIMEOUT_MS` |
 | `OPENAI_API_KEY`, `OPENAI_MODEL` | Separate OpenAI API adapter credentials and model |
 | `ELEVENLABS_API_KEY` | Optional voice input and spoken replies; text remains available without it |
 | `AI_WORK_ENABLED` | Set `false` and restart the local server to stop new structured AI and embedding calls |
@@ -46,7 +48,7 @@ These are server environment variables, never browser settings. The provider mig
 | `ELEVENLABS_TTS_MODEL` | Defaults to `eleven_flash_v2_5` in the voice adapter |
 | `INTERROGATION_DATA_DIR` | Optional private local data directory; defaults to `.local` |
 | `LEADERBOARD_STORAGE` | Local files by default; optional `supabase` server backend |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Trusted server credentials when using Supabase |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Optional managed project origin (`https://<project>.supabase.co`) and server credential; custom domains, self-hosted targets and redirects are unsupported |
 | `EXPORT_SECRET` | Bearer credential for the private export endpoint |
 | `EXPORT_STORAGE` | Local exports by default; optional `supabase` backend |
 
@@ -57,6 +59,8 @@ Preferences are stored under `appPreferences`. Only known nonsecret preferences 
 Voice retries use private local receipts to avoid repeating provider work. The bounded server cache retains synthesized audio and transcription/error responses; a failed microphone clip remains only in the current view's memory for explicit retry/discard. See [voice storage and recovery](docs/audit/VOICE-IDEMPOTENCY.md) and [AI/voice work limits](docs/audit/SHARED-BUDGETS.md). Neither feature establishes real microphone or playback acceptance.
 
 ## Play
+
+New-case preparation shows server-reported drafting/review stages and elapsed wait time. It does not display a fabricated completion percentage. A failed request explains recovery and offers the authored evidence case; it never silently substitutes a different case or starts another model attempt.
 
 1. Choose a case and difficulty; read the briefing before beginning.
 2. Ask questions using text or, when configured, voice. The accepted transcript is the source for the case file.

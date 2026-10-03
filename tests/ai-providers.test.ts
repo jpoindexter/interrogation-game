@@ -71,7 +71,7 @@ test('Responses missing key, refusal and incomplete output cannot become a wrong
 test('local process stops on unexpected tool event instead of accepting later output', async () => {
   const script = 'console.log(JSON.stringify({type:"item.started",item:{type:"command_execution"}}));setInterval(()=>{},10000)';
   const start = Date.now();
-  await assert.rejects(runCodexProcess({ binary: process.execPath, args: ['-e', script], input: '', directory: tmpdir(), timeoutMs: 2000 }), /unexpected operation/);
+  await assert.rejects(runCodexProcess({ binary: process.execPath, args: ['-e', script], input: '', directory: tmpdir(), timeoutMs: 2000 }), { code: 'UNEXPECTED_TOOL' });
   assert.ok(Date.now() - start < 1000);
 });
 

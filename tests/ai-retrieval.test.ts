@@ -104,7 +104,7 @@ test('retrieval excludes wrong versions, dimensions, models and authored fixture
 });
 
 test('actual POST ignores spoofed client outcome and persists canonical terminal facts through mocked adapters', async () => {
-  const overrides = { ...enabled, SUPABASE_URL: 'https://patterns.example.test', SUPABASE_SERVICE_ROLE_KEY: 'mock-server-key' };
+  const overrides = { ...enabled, SUPABASE_URL: 'https://patterns-test.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'mock-server-key' };
   const previous = Object.fromEntries(Object.keys(overrides).map(key => [key, process.env[key]]));
   Object.assign(process.env, overrides);
   const original = globalThis.fetch; const session = sessionFixture();
@@ -112,7 +112,7 @@ test('actual POST ignores spoofed client outcome and persists canonical terminal
   globalThis.fetch = async (input, init) => {
     const url = String(input);
     if (url === 'https://api.openai.com/v1/embeddings') return mockResponse();
-    assert.match(url, /^https:\/\/patterns.example.test\/rest\/v1\/interrogation_patterns_v2\?/);
+    assert.match(url, /^https:\/\/patterns-test.supabase.co\/rest\/v1\/interrogation_patterns_v2\?/);
     persisted = JSON.parse(String(init?.body));
     return new Response(null, { status: 201 });
   };

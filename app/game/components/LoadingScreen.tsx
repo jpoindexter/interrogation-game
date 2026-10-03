@@ -1,84 +1,84 @@
-import { Spinner } from '../../components/ui';
-import { motion, fadeIn, gentle } from '../../components/motion';
+'use client';
 
-export default function LoadingScreen() {
+import { useEffect, useState } from 'react';
+import { useMotionPreference } from '../../components/useMotionPreference';
+import { elapsedLabel, loadingMessage, loadingTitle, LOADING_STEPS, type LoadingPhase } from './loading-presentation';
+
+interface LoadingScreenProps {
+  /** Only pass a stage reported by the server; elapsed time must not advance it. */
+  phase?: LoadingPhase;
+  elapsedSeconds?: number;
+}
+
+function useElapsedSeconds(enabled: boolean) {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    if (!enabled) return;
+    const started = Date.now();
+    const timer = window.setInterval(() => setSeconds(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, [enabled]);
+  return seconds;
+}
+
+export default function LoadingScreen({ phase, elapsedSeconds }: LoadingScreenProps = {}) {
+  const localElapsed = useElapsedSeconds(elapsedSeconds === undefined && phase !== 'ready');
+  const elapsed = elapsedSeconds ?? localElapsed;
   return (
-    <div className="min-h-screen text-foreground font-mono flex items-center justify-center p-8 relative overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: 'url(/detective/desk.png)',
-          backgroundSize: '60%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundColor: '#000',
-          imageRendering: 'pixelated',
-        }}
-      />
-      <div className="absolute inset-0 bg-black/60" />
-      <motion.div
-        className="max-w-lg text-center relative z-10"
-        initial="hidden"
-        animate="visible"
-        variants={fadeIn}
-        transition={gentle}
-      >
-        <motion.div
-          className="mx-auto mb-6 flex justify-center"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <Spinner />
-        </motion.div>
-        <motion.h1
-          className="text-2xl font-bold mb-6"
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          GENERATING CASE...
-        </motion.h1>
-        <LoadingInstructions />
-      </motion.div>
-    </div>
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-black px-5 py-10 font-mono text-foreground">
+      <div aria-hidden="true" className="absolute inset-0 bg-[url('/detective/desk.png')] bg-contain bg-center bg-no-repeat opacity-30 [image-rendering:pixelated]" />
+      <section aria-label="Case preparation" className="relative z-10 w-full max-w-xl border border-stone-700 bg-[#151413]/95 shadow-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-700 px-6 py-3 text-xs uppercase tracking-wider">
+          <span className="text-gold">Detective’s desk</span>
+          <span className="tabular-nums text-gray-300">{elapsedLabel(elapsed)}</span>
+        </div>
+        <div className="space-y-5 p-6 sm:p-8">
+          <div role="status" aria-live="polite" aria-atomic="true" className="space-y-3">
+            <h1 className="text-2xl font-bold text-foreground">{loadingTitle(phase)}</h1>
+            <p className="text-sm leading-relaxed text-gray-300">{loadingMessage(phase, elapsed)}</p>
+          </div>
+          <LoadingActivity ready={phase === 'ready'} />
+          <LoadingStages phase={phase} />
+          {!phase && <p className="text-xs leading-relaxed text-gray-400">Waiting for a stage update. These steps show the process, not measured progress.</p>}
+          <LoadingInstructions />
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function LoadingActivity({ ready }: { ready: boolean }) {
+  const reducedMotion = useMotionPreference();
+  if (ready) return <div aria-hidden="true" className="h-2 w-full rounded-sm bg-gold" />;
+  if (reducedMotion) return <div role="progressbar" aria-label="Waiting for case" className="h-2 rounded-sm border border-gold/60 bg-gold/20" />;
+  return <progress aria-label="Waiting for case" className="block h-2 w-full accent-[#b9a267]" />;
+}
+
+function LoadingStages({ phase }: { phase?: LoadingPhase }) {
+  const active = LOADING_STEPS.findIndex(step => step.phase === phase);
+  return (
+    <ol aria-label="Case preparation stages" className="grid grid-cols-4 gap-2">
+      {LOADING_STEPS.map((step, index) => {
+        const reached = active >= index;
+        return (
+          <li key={step.phase} aria-current={phase === step.phase ? 'step' : undefined}
+            className={`border-t-2 pt-3 text-xs ${reached ? 'border-gold text-gold' : 'border-stone-600 text-gray-400'}`}>
+            <span aria-hidden="true" className="mb-1 block font-bold">{active > index || phase === 'ready' ? '✓' : `0${index + 1}`}</span>
+            <span className="sr-only">{active > index ? 'Completed: ' : phase === step.phase ? 'Current: ' : 'Upcoming: '}</span>
+            {step.label}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
 function LoadingInstructions() {
   return (
-        <div className="relative">
-          <div className="absolute -top-3 left-1/2 z-10 w-20 h-7" style={{
-            background: 'linear-gradient(180deg, rgba(210,195,150,0.7) 0%, rgba(200,185,140,0.6) 100%)',
-            transform: 'translateX(-50%) rotate(-1.5deg)',
-            borderRadius: '1px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-          }} />
-          <div
-            data-surface="paper" className="relative p-6 pl-10 rounded-t-sm text-left"
-            style={{
-              background: 'repeating-linear-gradient(transparent, transparent 19px, rgba(100,140,180,0.2) 19px, rgba(100,140,180,0.2) 20px), linear-gradient(180deg, #F5E6A3 0%, #EDD98B 100%)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
-            }}
-          >
-            <div className="absolute top-0 bottom-0 left-[26px] w-[1px] pointer-events-none" style={{ background: 'rgba(196,60,60,0.35)' }} />
-            <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-3">How to Play</h3>
-            <div className="space-y-2.5 text-sm text-gray-700 leading-relaxed">
-              <p><span className="text-gray-900 font-bold">1. Question.</span> Tap the mic or type. Timed challenge counts down; Relaxed and Endurance do not.</p>
-              <p><span className="text-gray-900 font-bold">2. Collect evidence.</span> Compare statements with the case record. Stress is not evidence of a lie.</p>
-              <p><span className="text-red-800 font-bold">3. Accuse.</span> State <span className="text-gray-900 font-bold">what</span> they lied about. Be specific. You get <span className="text-gray-900 font-bold">3 tries</span>.</p>
-            </div>
-            <div className="mt-3 pt-3" style={{ borderTop: '1px dashed rgba(0,0,0,0.15)' }}>
-              <h3 className="text-xs uppercase tracking-[0.3em] text-gray-700 font-bold mb-2">Scoring</h3>
-              <div className="space-y-1 text-sm text-gray-600">
-                <p><span className="text-green-800">+</span> Solve fast &mdash; time is your base score</p>
-                <p><span className="text-green-800">+</span> Fewer questions &mdash; efficiency bonus up to 1.5&times;</p>
-                <p><span className="text-green-800">+</span> Higher difficulty &mdash; up to 2.5&times; multiplier</p>
-                <p><span className="text-red-800">&minus;</span> Each hint &minus;15% &bull; Each wrong accusation &minus;10%</p>
-              </div>
-            </div>
-          </div>
-          <svg className="w-full block" viewBox="0 0 500 16" preserveAspectRatio="none" style={{ marginTop: -1, filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
-            <path d="M0,0 L500,0 L500,2 C495,5 490,3 485,6 C480,4 477,8 472,5 C468,3 465,7 460,4 C456,6 452,2 448,5 C444,8 440,3 436,6 C432,4 428,7 424,3 C420,5 416,2 412,6 C408,8 405,4 400,5 C396,3 392,7 388,4 C384,6 380,2 376,5 C372,7 368,3 364,6 C360,4 357,8 352,5 C348,3 344,6 340,4 C336,7 332,2 328,5 C324,8 320,4 316,6 C312,3 308,7 304,4 C300,6 296,2 292,5 C288,7 284,3 280,6 C276,4 273,8 268,5 C264,3 260,6 256,4 C252,7 248,2 244,5 C240,8 236,4 232,6 C228,3 224,7 220,5 C216,3 212,6 208,4 C204,7 200,2 196,5 C192,8 188,4 184,6 C180,3 176,7 172,4 C168,6 165,2 160,5 C156,7 152,3 148,6 C144,4 140,8 136,5 C132,3 128,6 124,4 C120,7 116,2 112,5 C108,8 104,4 100,6 C96,3 92,7 88,5 C84,3 80,6 76,4 C72,7 68,2 64,5 C60,8 56,4 52,6 C48,3 44,7 40,4 C36,6 32,2 28,5 C24,7 20,3 16,6 C12,4 8,8 4,5 L0,3 Z" fill="#EDD98B" />
-          </svg>
-        </div>
+    <aside data-surface="paper" aria-label="While you wait" className="border-l-4 border-[#b9a267] bg-[#efe8d5] p-4 text-stone-950">
+      <h2 className="text-xs font-bold uppercase tracking-wider">Your first move</h2>
+      <p className="mt-2 text-sm leading-relaxed">Read the opening account, then ask about one specific time, action or detail. Keep the suspect’s original words available for comparison.</p>
+      <p className="mt-3 text-xs leading-relaxed">New-case preparation does not use your interview time. The timer starts when you begin the interrogation.</p>
+    </aside>
   );
 }

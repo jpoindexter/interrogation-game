@@ -1,0 +1,27 @@
+{
+  "executedAt": "2026-10-03T13:17:18.165Z",
+  "input": {
+    "setting": "startup",
+    "difficulty": "easy"
+  },
+  "models": {
+    "draft": "gpt-6-luna",
+    "review": "gpt-6.1-sol"
+  },
+  "stages": [
+    {
+      "phase": "generating",
+      "milliseconds": 1557
+    },
+    {
+      "phase": "reviewing",
+      "milliseconds": 18384
+    }
+  ],
+  "milliseconds": 84078,
+  "status": 502,
+  "code": "CASE_REVIEW_REJECTED",
+  "error": "The case did not pass its evidence review. It has not been opened for play.",
+  "hasPublicCase": false,
+  "scope": "Real local production HTTP generation and observed progress; browser visual review remains user-owned."
+}

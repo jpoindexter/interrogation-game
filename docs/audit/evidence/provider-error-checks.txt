@@ -1,0 +1,17 @@
+✔ Codex arguments restrict capabilities and never incorporate player input or shell syntax (0.411917ms)
+✔ Codex JSONL parser rejects tool events, missing output and provider failure (0.385459ms)
+✔ runtime structured gate rejects coerced judgments, invalid stress and unknown authority fields (0.178209ms)
+✔ Responses request uses fixed official endpoint, no tools, no storage and separated task/data (8.211291ms)
+✔ Responses missing key, refusal and incomplete output cannot become a wrong verdict (0.349375ms)
+✔ local process stops on unexpected tool event instead of accepting later output (26.2875ms)
+✔ local process deadline terminates pending work and returns a retryable failure (50.531083ms)
+✔ player input is piped as literal data, never shell-expanded (26.194333ms)
+✔ wrong judgment cannot disclose hidden facts through either explanation or dialogue (0.161833ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.266625

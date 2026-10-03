@@ -9,15 +9,19 @@
 | `AI_PROVIDER` | `codex-local`; accepts `codex-local` or `openai` only |
 | `CODEX_BIN` | Project `node_modules/.bin/codex` when installed; otherwise executable `codex` |
 | `CODEX_MODEL` | `gpt-6.1-sol`; explicit `gpt-6-luna` remains available for lower usage |
+| `CODEX_CASE_MODEL` | `gpt-6-luna` for drafting; independent review retains `CODEX_MODEL` |
 | `OPENAI_MODEL` | `gpt-6-luna` |
 | `OPENAI_API_KEY` | Required only for the OpenAI API provider; server-only |
 | `AI_TIMEOUT_MS` | 90000; bounded to 1000–120000 milliseconds |
+| `AI_GENERATION_TIMEOUT_MS` | 120000 for the whole drafting/review sequence; bounded to 1000–180000 milliseconds |
 | `RAG_EMBEDDING_VERSION` | `openai-text-embedding-3-small-1536-v1`; exact compatibility boundary |
 | `AI_RAG_ENABLED` | Off unless exactly `true`; requires the versioned migration, embedding version and server API/database credentials |
 
 Browser-supplied historical model keys are ignored by compatibility facades. The local adapter refuses known Vercel/AWS Lambda environments. The web application's local-origin enforcement remains a separate required integration boundary. A configured provider is not necessarily authenticated, reachable or within its usage limits.
 
 The local default was upgraded to GPT-6.1 Sol for the portfolio demo after the user's request for stronger models. [Current official model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol) supports structured output and the adapter's existing low reasoning setting. Earlier Luna evidence below remains historical evidence for that model; it is not silently reattributed to Sol. The hosted API default remains unchanged, and explicit environment overrides still take precedence. Model choice alone does not establish generated-case fairness.
+
+The user's first full generated-case attempt later reached the 90-second shared deadline. Drafting now has a separate faster model selection, while independent review and live dialogue retain Sol. The overall generation deadline is separate from each provider deadline. The UI observes saved stages through a read-only status route; polling cannot repeat model work. Specific timeout/provider/review errors replace the old generic 502 where the cause is known. Earlier receipts retain their original failure rather than being silently re-executed.
 
 Use the project-pinned Codex CLI 0.160.0. The adapter checks the exact tested version before inference and fails closed on a different binary; later CLI upgrades require rechecking isolation flags. The pre-existing global CLI 0.144.1 was not replaced. It could run a 5.6-Luna probe but rejected 6-Luna with the current ChatGPT account transport and could not decode the newer model catalog. Isolated latest-stable 0.160.0 successfully ran 6-Luna using the existing sign-in. Do not interpret the old-client rejection as an account-wide model restriction.
 

@@ -2,7 +2,7 @@ import text from './case-text.json';
 import { renderText } from './render';
 import { DIFFICULTY_CLUES } from '../../game-state';
 
-export const CASE_PROMPT_VERSION = 'one-false-claim-v3';
+export const CASE_PROMPT_VERSION = 'direct-evidence-v4';
 export const GENERATED_CASE_OBJECTIVE = 'Identify the false claim';
 
 const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
@@ -12,10 +12,10 @@ const DIFFICULTY_INSTRUCTIONS: Record<string, string> = {
   medium: `- MEDIUM difficulty: The lie should be catchable but require some careful questioning.
 - The suspect is reasonably composed but cracks under sustained pressure.
 - Generate exactly 3 stress_triggers.`,
-  hard: `- HARD difficulty: The lie should be well-hidden. The contradiction is subtle and requires connecting multiple pieces.
+  hard: `- HARD difficulty: The suspect answers narrowly and makes the player ask precise follow-up questions.
 - The suspect is very composed and skilled at deflecting. They have a well-rehearsed cover story.
 - Generate exactly 4 stress_triggers.`,
-  expert: `- EXPERT difficulty: The lie is deeply buried. The contradiction requires catching very small inconsistencies across multiple answers.
+  expert: `- EXPERT difficulty: The suspect distinguishes the precise claim from broader accusations and avoids volunteering detail.
 - The suspect is extremely composed, manipulative, and adept at redirecting conversation. They rarely show stress.
 - Generate exactly 5 stress_triggers.`,
 };
