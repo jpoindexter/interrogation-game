@@ -102,6 +102,8 @@ See the [current architecture](docs/ARCHITECTURE.md) and [local rehearsal runboo
 
 Local session snapshots, score receipts and exports are private files under the data directory. They may include full transcripts, case secrets and private redemption data. Keep them out of version control and screen sharing. One-hour session expiry and 24-hour generation/voice receipt expiry limit availability; they do not erase the stored files. Custom data directories are not automatically covered by this repository’s `.gitignore`. Review/archive data only while the demo server is stopped, and do not retry archived request IDs against a fresh store. Database migrations and the distinct local/remote/shared storage modes are documented in [database/README.md](database/README.md).
 
+For an explicitly approved shared database, [hosted payload retention](docs/audit/HOSTED-RETENTION.md) provides a bounded preview/apply operator command. It preserves retry identities and usage; exports, score-backed sessions and audio objects remain deferred. It does not alter local demo files or run automatically.
+
 ### Opt-in shared text mode
 
 The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–017 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
@@ -159,4 +161,4 @@ The audit reviewed 98 reachable commit subjects and selected implementation diff
 
 ## Portfolio delivery
 
-The full Interrogation case study was built in parallel in the existing V8 portfolio and pushed as [portfolio commit 596306a](https://github.com/jpoindexter/portfolio-site/commit/596306a) on `codex/interrogation-case-study`. Its production build, scoped lint and local HTTP route checks passed. It is not deployed; visual review and publication remain separate. Its game evidence is explicitly pinned to `ea703ca`, before the newer actor/evidence-release changes. The separate game website is deferred.
+The full Interrogation case study was built in parallel in the existing V8 portfolio and pushed as [portfolio commit 6f5b52f](https://github.com/jpoindexter/portfolio-site/commit/6f5b52f) on `codex/interrogation-case-study`. Its production build, scoped lint and local HTTP route checks passed. It is not deployed; visual review and publication remain separate. Its game evidence is explicitly pinned to `63e98d4`, including the public actor boundary, source-reference review and current Mira/Tomas path; later hosted delivery and retention work are not claimed in that snapshot. The separate game website is deferred.

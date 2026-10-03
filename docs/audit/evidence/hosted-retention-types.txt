@@ -1,0 +1,9 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- npm run typecheck
+Exit code: 0
+Metadata header added after execution.
+
+> interrogation@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully

@@ -1,0 +1,12 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx tests/hosted-retention-postgres.ts
+Exit code: 0
+Metadata header added after execution.
+
+Runtime: v24.21.0; PostgreSQL: 14.18 (Homebrew)
+PASS preview/apply: exact dry-run snapshot; session/action/generation/STT payloads erased; repeated apply mutates zero; TTS metadata, exports, scores and paid budgets retained
+PASS retry authority: expired session/generation/voice IDs cannot claim fresh work; paid reservation replays; late STT finish cannot restore payload; stored score still replays
+PASS bounds: limit1 applies at most one row per payload entity; subsequent batch drains remainder; invalid/null arguments rejected
+PASS concurrency: actual locked expired row skipped; same row erased after lock release; unexpired and active-lease rows remain
+PASS private contract: anonymous/authenticated execution denied; PUBLIC grant absent; response contains only aggregate counts
+Scope: actual disposable PostgreSQL + production retention adapter; synthetic data only. Network/provider/storage calls: 0. No live cleanup, TTS object erasure, export erasure or scheduler claimed.
+CLEANUP isolated cluster stopped and temporary directory removed

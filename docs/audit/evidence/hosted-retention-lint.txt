@@ -1,0 +1,7 @@
+Runtime: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- npx eslint --max-warnings=0 scripts/retention-data.ts scripts/retention/options.ts src/lib/storage/hosted/retention.ts tests/hosted-retention-command.test.ts
+Exit code: 0
+Scope: changed retention command/adapter only; no live project or provider calls.
+Metadata header added after execution.
+
+
+Additional command: npx eslint --max-warnings=0 tests/hosted-retention-postgres.ts (same pinned runtime). Exit code: 0; no output.
