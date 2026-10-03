@@ -1,0 +1,24 @@
+✔ malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement (16.2665ms)
+✔ invalid accusation count retains draft, attempts and history, then recovers one valid judgment (0.531167ms)
+✔ invalid hint cannot consume hints or append partial text; retry recovers same receipt (0.351708ms)
+✔ validated expired turn ends once without adding the unaccepted question (0.162667ms)
+✔ final wrong accusation ends exactly once without an active-phase flicker (0.213541ms)
+✔ cancelled confession cannot trigger late handcuffs or win navigation (0.308875ms)
+✔ cancelled final rejection does not start a delayed ending after exit (0.16425ms)
+✔ an already terminal win response recovers the result without a fabricated conversation turn (0.179958ms)
+✔ malformed expiry response cannot change timing or trigger an ending (0.208709ms)
+✔ cancellation while reading the response body preserves the draft without a stale error notice (0.356ms)
+✔ five case failures retain the preparation intent and render recovery before a valid briefing (29.808583ms)
+ℹ HTTP 500: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ HTTP 429: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ invalid JSON: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ missing fields: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ refusal envelope: no accepted case on failure; explicit new attempt; one valid briefing.
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.733417

@@ -12,6 +12,16 @@ function envelope(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
+async function readResponse(response: Response): Promise<Record<string, unknown>> {
+  let value: unknown;
+  try { value = await response.json(); }
+  catch (cause) {
+    if (cause instanceof DOMException && cause.name === 'AbortError') throw cause;
+    throw new Error('The server response could not be read. Your input is preserved; retry to recover the same action.');
+  }
+  return envelope(value);
+}
+
 /** A success is acknowledged only after its entire public response is validated. */
 export async function requestGameAction<T>(options: ActionRequest<T>): Promise<T> {
   const { path, body, attempt, signal, parse } = options;
@@ -20,7 +30,7 @@ export async function requestGameAction<T>(options: ActionRequest<T>): Promise<T
     body: JSON.stringify({ ...body, requestId: attempt.id }),
     signal: AbortSignal.any([signal, AbortSignal.timeout(60_000)]),
   });
-  const data = envelope(await response.json());
+  const data = await readResponse(response);
   signal.throwIfAborted();
   if (!response.ok || data.error !== undefined) {
     if (typeof data.error !== 'string' || !data.error.trim()) throw new Error('The server returned an invalid error. Retry the same action.');

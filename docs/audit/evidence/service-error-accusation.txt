@@ -1,0 +1,18 @@
+✔ accusation HTTP 500: preserve state, render recovery, manually retry once (22.474166ms)
+ℹ HTTP 500: state/draft/dialog recovery and one valid retry executed; known failed attempt gets a new ID
+✔ accusation HTTP 429: preserve state, render recovery, manually retry once (1.541916ms)
+ℹ HTTP 429: state/draft/dialog recovery and one valid retry executed; unchanged uncertain ID retained
+✔ accusation invalid JSON: preserve state, render recovery, manually retry once (1.933292ms)
+ℹ invalid JSON: state/draft/dialog recovery and one valid retry executed; unchanged uncertain ID retained
+✔ accusation missing judgment fields: preserve state, render recovery, manually retry once (1.317166ms)
+ℹ missing judgment fields: state/draft/dialog recovery and one valid retry executed; unchanged uncertain ID retained
+✔ accusation provider refusal envelope: preserve state, render recovery, manually retry once (1.443708ms)
+ℹ provider refusal envelope: state/draft/dialog recovery and one valid retry executed; known failed attempt gets a new ID
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 307.853625

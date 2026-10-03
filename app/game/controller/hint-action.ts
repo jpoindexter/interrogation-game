@@ -8,6 +8,7 @@ export function hintAction(context: GameActionsContext) {
     runtime.sfx('click');
     try {
       const data = await context.request('/api/hint', { sessionId: state.caseData.sessionId }, value => parseHintResponse(value, state.hintsUsed));
+      runtime.dismissToast();
       state.setHintsUsed(data.hintsUsed);
       state.setHintTexts(previous => [...previous, data.hint]);
       runtime.sfx('chime');

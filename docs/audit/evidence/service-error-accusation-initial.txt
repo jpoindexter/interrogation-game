@@ -1,0 +1,19 @@
+Initial executed failure receipt — captured from the first focused tool result, before the production fix.
+Command: npm exec --offline --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx --test tests/service-error-accusation.test.tsx
+Exit code: 1
+Tests: 5; passed: 0; failed: 5.
+
+Each scenario completed its preservation, actual dialog error markup, manual retry, request-ID, one-attempt decrement and accepted-history assertions. Each then failed the same final assertion at tests/service-error-accusation.test.tsx:91:
+  a validated retry must dismiss the old error rather than leave it persistent
+Expected: null
+Actual: the prior { message, tone: 'error', recovery: undefined } notice remained.
+
+Observed remaining message per scenario:
+HTTP 500: The accusation service failed. Review and retry.
+HTTP 429: Too many requests. Wait and retry.
+Invalid JSON: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+Missing judgment fields: The server response was incomplete or invalid. Your draft is preserved; retry to recover the response.
+Provider refusal envelope: This action could not be completed. Review the session and try a new attempt.
+
+This was a production feedback-lifecycle defect, not a fixture assertion mismatch: accusationAction accepted the retry but never called dismissToast. The invalid-JSON scenario also exposed raw parser text to the dialog.
+Scope: actual client accusation controller, response parser, request transport/ledger and feedback/dialog rendering; controlled HTTP boundary and state harness. No server route, live provider or browser execution.

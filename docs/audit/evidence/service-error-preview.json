@@ -1,0 +1,22 @@
+{
+  "executedAt": "2026-10-03T19:37:10.650Z",
+  "buildId": "Lj7AS1WFEHXbB2RZczI6l",
+  "scope": "Production HTTP availability only; no hydrated browser or provider action",
+  "pages": [
+    {
+      "path": "/cases",
+      "status": 200
+    },
+    {
+      "path": "/game",
+      "status": 200
+    },
+    {
+      "path": "/help",
+      "status": 200
+    }
+  ],
+  "healthStatus": 200,
+  "voiceConfigured": false,
+  "aiStatus": "unchecked"
+}

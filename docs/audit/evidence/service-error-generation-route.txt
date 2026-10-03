@@ -1,0 +1,20 @@
+▶ real generation route failures render recovery and permit authored practice without a partial session
+  ✔ upstream HTTP 500 (229.655792ms)
+  ✔ upstream HTTP 429 (206.332416ms)
+  ✔ upstream invalid JSON (198.779792ms)
+  ✔ upstream missing fields (195.088375ms)
+  ✔ upstream refusal (189.595542ms)
+✔ real generation route failures render recovery and permit authored practice without a partial session (1020.93025ms)
+ℹ upstream HTTP 500: upstream 500; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream HTTP 429: upstream 429; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream invalid JSON: upstream 200; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream missing fields: upstream 200; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream refusal: upstream 200; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1490.477208

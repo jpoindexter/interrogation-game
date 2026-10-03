@@ -1,0 +1,20 @@
+▶ actual accusation route: five upstream faults preserve gameplay, then one explicit retry commits once
+  ✔ upstream HTTP 500 (193.7195ms)
+  ℹ upstream HTTP 500: upstream 500 -> route 502 ACTION_FAILED; disk/client attempts, history and score preserved; explicit retry 200 consumes one attempt, appends one exchange, clears error. Score 1842 -> 1658.
+  ✔ upstream HTTP 429 (182.639125ms)
+  ℹ upstream HTTP 429: upstream 429 -> route 502 ACTION_FAILED; disk/client attempts, history and score preserved; explicit retry 200 consumes one attempt, appends one exchange, clears error. Score 1842 -> 1658.
+  ✔ upstream invalid JSON (179.86125ms)
+  ℹ upstream invalid JSON: upstream 200 -> route 502 ACTION_FAILED; disk/client attempts, history and score preserved; explicit retry 200 consumes one attempt, appends one exchange, clears error. Score 1842 -> 1658.
+  ✔ upstream missing judgment fields (158.777292ms)
+  ℹ upstream missing judgment fields: upstream 200 -> route 502 ACTION_FAILED; disk/client attempts, history and score preserved; explicit retry 200 consumes one attempt, appends one exchange, clears error. Score 1842 -> 1658.
+  ✔ upstream refusal (160.588292ms)
+  ℹ upstream refusal: upstream 200 -> route 502 ACTION_FAILED; disk/client attempts, history and score preserved; explicit retry 200 consumes one attempt, appends one exchange, clears error. Score 1842 -> 1658.
+✔ actual accusation route: five upstream faults preserve gameplay, then one explicit retry commits once (877.415583ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 998.826417

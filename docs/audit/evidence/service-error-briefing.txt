@@ -1,0 +1,14 @@
+✔ five case failures retain the preparation intent and render recovery before a valid briefing (26.875708ms)
+ℹ HTTP 500: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ HTTP 429: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ invalid JSON: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ missing fields: no accepted case on failure; explicit same-ID retry; one valid briefing.
+ℹ refusal envelope: no accepted case on failure; explicit new attempt; one valid briefing.
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 501.355667

@@ -63,6 +63,7 @@ export function accusationAction(context: GameActionsContext) {
       const data = await context.request<AccusationResponse>('/api/accuse', {
         sessionId: state.caseData.sessionId, accusation: text,
       }, value => parseAccusationResponse(value, state.accusationsLeft));
+      runtime.dismissToast();
       runtime.synchronize(data.startedAt);
       const history = acceptAccusation(context, text, data);
       if (data.correct) await finishWin(context, data, history);

@@ -46,12 +46,17 @@ test('invalid accusation count retains draft, attempts and history, then recover
 
 test('invalid hint cannot consume hints or append partial text; retry recovers same receipt', async t => {
   const h = actionHarness(t, { hint: 'Check the visitor log.', hintsUsed: 9, maxHints: 2 });
+  let notice: string | null = null;
+  h.context.runtime.showToast = message => { notice = message; };
+  h.context.runtime.dismissToast = () => { notice = null; };
   const hint = hintAction(h.context);
   assert.equal(await hint(), false);
+  assert.ok(notice, 'The failed hint has recoverable feedback');
   assert.equal(h.state.hintsUsed, 0);
   assert.deepEqual(h.state.hintTexts, []);
   h.replies.body = { hint: 'Check the visitor log.', hintsUsed: 1, maxHints: 2 };
   assert.equal(await hint(), true);
+  assert.equal(notice, null, 'The accepted hint clears the obsolete failure');
   assert.equal(h.sent[0].requestId, h.sent[1].requestId);
   assert.equal(h.state.hintsUsed, 1);
   assert.deepEqual(h.state.hintTexts, ['Check the visitor log.']);
@@ -117,4 +122,16 @@ test('malformed expiry response cannot change timing or trigger an ending', asyn
   assert.equal(h.events.some(event => event === 'time' || event.startsWith('timing:')), false);
   assert.deepEqual(h.state.conversationHistory, []);
   assert.equal(h.state.lastTranscript, 'Preserve this question');
+});
+
+test('cancellation while reading the response body preserves the draft without a stale error notice', async t => {
+  const h = actionHarness(t, {});
+  t.mock.method(globalThis, 'fetch', async () => new Response(new ReadableStream({
+    start(controller) { controller.error(new DOMException('Cancelled while receiving', 'AbortError')); },
+  })));
+  assert.equal(await accusationAction(h.context)('Preserve my accusation'), false);
+  assert.equal(h.panels.accuseText, 'Preserve my accusation');
+  assert.equal(h.state.accusationsLeft, 3);
+  assert.equal(h.events.some(event => event.startsWith('error:') || event.startsWith('timing:')), false);
+  assert.deepEqual(h.state.conversationHistory, []);
 });

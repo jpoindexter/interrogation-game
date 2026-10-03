@@ -1,0 +1,43 @@
+✖ real generation route failures render recovery and permit authored practice without a partial session (710.8655ms)
+ℹ upstream HTTP 500: upstream 500; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream HTTP 429: upstream 429; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ upstream invalid JSON: upstream 200; route 502; durable failure replay; no partial session; authored practice renders with three attempts and clock not started.
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1356.859
+
+✖ failing tests:
+
+test at tests/service-error-generation-acceptance.tsx:2:3422
+✖ real generation route failures render recovery and permit authored practice without a partial session (710.8655ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Comparison {
+  +   message: 'Too many requests. Try again shortly. (HTTP 429). Retry the same request to recover its outcome.'
+  -   message: 'The AI returned an incomplete case response. It has not been opened for play. (HTTP 502). Review this error, then start a new attempt.'
+    }
+  
+      at async TestContext.<anonymous> (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/service-error-generation-acceptance.tsx:92:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Too many requests. Try again shortly. (HTTP 429). Retry the same request to recover its outcome.
+        at generationError (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/app/game/state/case-loader.ts:28:10)
+        at loadCase (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/app/game/state/case-loader.ts:36:29)
+        at async loadCaseIntent (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/app/game/state/load-case-intent.ts:12:16)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/service-error-generation-acceptance.tsx:92:5)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: { message: 'The AI returned an incomplete case response. It has not been opened for play. (HTTP 502). Review this error, then start a new attempt.' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
