@@ -23,3 +23,7 @@ Completion exports default to durable private local records. Optional remote del
 No live Supabase project was contacted or migrated during this change. Local store and route regression tests execute without credentials; they do not prove live RLS or migration compatibility. Before hosted use, apply migrations in a disposable project and verify: anonymous read/write denied; service-role insert succeeds; concurrent same-session saves return one row; retry after an interrupted response returns its original receipt.
 
 References: [Supabase upsert](https://supabase.com/docs/reference/javascript/upsert), [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+## Staged shared gameplay storage
+
+Migrations006 and007 introduce private session/action transactions and atomic work reservations. Their PostgreSQL behavior and async adapters have bounded local evidence in [HOSTED-STORAGE-FOUNDATION.md](../docs/audit/HOSTED-STORAGE-FOUNDATION.md). They are not selected by the current application: shared generation, orchestration, terminal export/redemption and voice stores still need integration. Applying these migrations alone does not enable Vercel gameplay. Keep the existing local session configuration until that complete path is accepted. No remote migration has been applied.

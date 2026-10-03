@@ -8,6 +8,14 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Staged hosted storage foundation
+
+[Shared session/action transactions and work reservations](HOSTED-STORAGE-FOUNDATION.md) are now implemented in additive migrations006/007 with four small asynchronous TypeScript modules. An isolated PostgreSQL14.18 fixture executed concurrency, exact replay, fencing, real lease expiry, immutable facts/outcomes, transaction rollback, quotas and role restrictions. Two bounded adapter checks covered the actual SDK with controlled transport and receipt validation; automatic SDK retries are explicitly disabled. The isolated cluster was stopped and removed. No live credentials, remote migration, model/voice call or browser action ran.
+
+Integrated [lint](evidence/hosted-foundation-lint.txt), [size](evidence/hosted-foundation-size.txt) and [production build](evidence/hosted-foundation-build.txt) passed. ARCH-06 is In progress; LOGIC-12 remains Verify; LOGIC-15's previously accepted local criteria remain Done. No card was closed from the foundation alone;70cards/15Done remain.
+
+**Re-entry:** integrate request-scoped async orchestration with domain validation, shared generation checkpoints, claimed-action work reservations and atomic terminal export/redemption. Existing synchronous local rules/callers have not been migrated. The app still selects its local store and refuses hosted mode; never remove that guard merely because migrations006/007 pass. Full hosted text and voice acceptance still requires the remaining implementation and actual target/credentials.
+
 ## Recovery follow-up after checkpoint 745f9ea
 
 [Two reproduced defects](RECOVERY-FOLLOWUP.md) were corrected: an accusation transcript entry missing its kind inflated the client question-progress count; and a cached session reader could reject current activity from another process before lock-time refresh. One existing controller test was extended; one new multiprocess/controlled-clock case was added to the existing persistence harness. The selected controller check and eight relevant persistence checks passed. No paid calls, browser automation or full suite ran.

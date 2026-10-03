@@ -1,6 +1,6 @@
 # Minimum hosted storage design
 
-3 October 2026. Source review at `8eadbab`; **proposal, not implemented or deployed**. Preserve the working local/Codex demo. The smallest coherent hosted path uses the existing Supabase dependency for transactional Postgres state; private object storage is needed only when hosted voice is enabled. A Redis layer, background generation worker and account system are not prerequisites for a protected portfolio preview.
+3 October 2026. Source review at `8eadbab`; **target design; staged implementation now has [local PostgreSQL/adapter evidence](HOSTED-STORAGE-FOUNDATION.md), but remains unintegrated and undeployed**. Preserve the working local/Codex demo. The smallest coherent hosted path uses the existing Supabase dependency for transactional Postgres state; private object storage is needed only when hosted voice is enabled. A Redis layer, background generation worker and account system are not prerequisites for a protected portfolio preview.
 
 ## Current boundaries and specific gaps
 
@@ -94,6 +94,6 @@ Reuse existing critical-route fixtures with injected provider transport; add onl
 - **Voice stage only:** one controlled TTS object survives worker loss and refresh without another provider call; one STT receipt replays; unauthorized text rejected; hosted upload boundary and private URL authorization enforced; orphan cleanup cannot remove completed audio still within retention.
 - **Hosted acceptance after credentials:** one protected preview playthrough using the actual OpenAI adapter, restart/cross-instance recovery and one narrowly authorized voice round trip if enabled. Verify function timeout and payload behavior at the deployed boundary, not solely in local fixtures. Migration rollback keeps local demo available; it does not delete canonical hosted records to make tests pass.
 
-This report is source/official-documentation review only. No migration, infrastructure creation, credential read, provider call, deployment or hosted acceptance was performed.
+This design report originally recorded source/official-documentation review only. The subsequent [foundation checkpoint](HOSTED-STORAGE-FOUNDATION.md) implements and tests additive migrations006/007 in an isolated local PostgreSQL fixture. No remote migration, live credential read, provider call, deployment or hosted acceptance is established.
 
 Skills applied: use, dec-software-principles, agent-reliability-and-guardrails, dec-quality-testing.
