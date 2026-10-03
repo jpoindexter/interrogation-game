@@ -6,7 +6,7 @@ This is the current implementation ledger. The original audit documents preserve
 
 Build a reliable local interview demo and portfolio project, with a modern modular stack, Codex subscription dialogue, ElevenLabs voice, richer evidence-led play and truthful documentation. The private Trello board now contains 70 cards: 62 original tasks and eight accepted expansions. The latest expansion is the win/loss conversation map. Website and case study integration into https://jason.theft.studio follow game acceptance.
 
-Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user now directs Git commits/pushes as work is completed; root owns the next commit/push checkpoint. A push has not yet been confirmed in this ledger. Deployment remains unperformed. Browser automation was declined during the audit; renewed authorization has been requested and remains pending. Do not bypass that restriction through a different browser interface.
+Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. Root pushed [96ad39d](https://github.com/jpoindexter/interrogation-game/commit/96ad39d08d035241895942ff83b1776e887ab81f) to `origin/codex/portfolio-upgrade`; `git ls-remote` independently matched the full commit hash and the working tree was clean before this documentation sync. These subsequent documentation edits await their own root commit/push. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
 ## Executed evidence
 
@@ -20,15 +20,15 @@ Local implementation, necessary regression checks, parallel agent work and Trell
 
 ## Latest portfolio checkpoint
 
-The local JSON agent-control CLI now supports one action at a time through the canonical HTTP routes. Its actual authored start/state/opening/pin/give-up/result/recovery path ran with AI disabled. One additional real `gpt-6.1-sol` question succeeded through the signed-in Codex adapter in 10.197 seconds including CLI startup; the result retained both turns. See [agent control](../AGENT-CONTROL.md) and `evidence/agent-control-live.json`. The local model default is now Sol; earlier Luna evaluation evidence is not reattributed to it.
+The local JSON agent-control CLI now supports one action at a time through the canonical HTTP routes. Its actual authored start/state/opening/pin/give-up/result/recovery path ran with AI disabled. One additional real `gpt-6.1-sol` question succeeded through the signed-in Codex adapter in 10.197 seconds including CLI startup; the result retained both turns. See [agent control](../AGENT-CONTROL.md) and `evidence/agent-control-live.json`. The local model default is now `gpt-6.1-sol`; the future API adapter default remains `gpt-6-luna`. Earlier Luna evaluation evidence is not reattributed to Sol.
 
-The bounded design pass improves home entry/setup wording, multiline question and accusation review, visible input limits, larger controls, authored-case replay and expert-case labels. Scoped lint/size and type checks passed; the combined production build passed (`evidence/demo-checkpoint-build.txt`). No new test suite was added and the earlier 297-test suite was not rerun for these changes. Actual visual/browser acceptance remains pending.
+The bounded design pass improves home entry/setup wording, multiline question and accusation review, visible input limits, larger controls, authored-case replay and expert-case labels. Scoped lint/size and type checks passed; the combined production build passed (`evidence/demo-checkpoint-build.txt`). No new test suite was added and the earlier 297-test suite was not rerun for these changes. Actual visual/browser acceptance remains a user-owned live check for later.
 
 Exactly one live ElevenLabs plugin sample completed at a reported 12.5 credits. The game server still has no configured ElevenLabs API key. See [connector check](ELEVENLABS-LIVE-CHECK.md). Plugin generation does not prove in-game voice.
 
 ## Current work
 
-Latest user scope adds AI-agent control of the local app and a design-polish pass. The agent-control and UI agents own those increments. Acceptance is a local start/read/action/result path through canonical routes with explicit failure handling and preserved server authority, plus inspection of the polished demo. Neither path is claimed executed yet.
+The latest agent-control scope has executed its bounded local start/read/action/result path: authored start, state, opening, pin, give-up, result and recovery ran with AI disabled; one additional Sol question ran live. The scoped UI checks and combined build passed, while actual visual/browser inspection and a complete video demo remain pending. See the latest portfolio checkpoint above; the earlier 297-test gate was not rerun for this increment.
 
 The latest integration adds durable local endpoint, voice and aggregate AI work budgets, an operator stop switch, replay-safe voice receipts, an independent structured preflight for generated cases, and response validation before gameplay state changes. `SHARED-BUDGETS.md` records real concurrent-process and restart evidence. Every rate-limited API now distinguishes exhausted allowance (429) from unavailable budget storage (503) before work starts. Independent test files use private roots; explicit cross-process fixtures continue sharing their chosen root.
 
@@ -57,7 +57,7 @@ The literal disclosure guard now preserves public cover-story dialogue and exact
 
 ## Remaining acceptance gaps
 
-- Actual browser: start/resume, keyboard/dialog focus, small windows, text sizing, reduced motion, results/map, failure recovery and screen-share rehearsal. Renewed authorization pending.
+- Actual browser: start/resume, keyboard/dialog focus, small windows, text sizing, reduced motion, results/map, failure recovery and screen-share rehearsal. User-owned live check deferred by the user; continue independent implementation.
 - ElevenLabs: one plugin Flash v2.5 sample completed (1.6254 seconds, reported 12.5 credits), without a paid retry; see `ELEVENLABS-LIVE-CHECK.md`. The 10,000-credit starting balance remains user-reported. The local game has no configured ELEVENLABS_API_KEY. Game TTS/STT, microphone capture, audible playback and screen-share routing remain unverified; use further credits sparingly.
 - Hosted path: server OpenAI adapter exists, but no API key/live API proof. Shared durable session backend and live database migrations/RLS/delivery are incomplete. Vercel session requests fail explicitly until that dependency is implemented.
 - Dependencies: production audit reports 0 advisories. Five high development-chain findings remain from braces 3.0.3 through the current Next ESLint configuration. Registry reports no newer braces release. ESLint 10 is outside the current React/import/accessibility plugin peer ranges. Do not hide these findings or force a framework downgrade.
@@ -70,11 +70,11 @@ The literal disclosure guard now preserves public cover-story dialogue and exact
 - **Target:** this repository and the existing 70-card Trello board; root coordinates Git checkpoints and pushes.
 - **Must:** use parallel work where useful; keep the portfolio/interview outcome central; run only tests needed to verify meaningful behavior or a changed risk. The recorded 297-test full gate is existing evidence, not a reason to repeat it for documentation edits.
 - **Must not:** claim browser, audio, hosted, billing or semantic reliability from fixtures; consume ElevenLabs credits with broad or redundant testing; claim a push before root confirms its commit and remote result.
-- **Authority:** implementation, Trello updates, Git pushes and necessary sparing voice checks are user-authorized. Existing browser restriction remains pending explicit renewal.
+- **Authority:** implementation, Trello updates, Git pushes and necessary sparing voice checks are user-authorized. The user owns the later live check; browser automation remains restricted unless explicitly reauthorized.
 - **Done evidence:** actual required game paths and demo rehearsal, truthful residual limits, followed by the authorized portfolio/site deliverable. The overall goal remains active.
 
 ## Re-entry
 
-Inspect Git status and active agent ownership; read this ledger and the plan; refresh Trello; read the latest integrated evidence, then continue pending browser/voice acceptance when authorized/configured. Capture actual check output under `evidence/` without replacing audit-baseline files. Continue the earliest unverified acceptance path. Never mark the entire goal complete from a build or mock test.
+Inspect Git status and active agent ownership; read this ledger and the plan; refresh Trello; read the latest integrated evidence, then continue independent implementation while the user retains the later live check. Local production preview is running at `http://127.0.0.1:3187`; starting it did not invoke a provider. Capture actual check output under `evidence/` without replacing audit-baseline files. Continue the earliest unverified acceptance path. Never mark the entire goal complete from a build or mock test.
 
 Skills applied: agent-fanout, enforcing-code-size, dec-software-principles, dec-quality-testing, dec-ai-native-patterns; specialist skills are listed in the corresponding reports.
