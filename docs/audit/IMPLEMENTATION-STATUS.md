@@ -22,6 +22,16 @@ Unused provider-era summary helpers were removed; canonical session results rema
 
 The user's interview framing is captured in [INTERVIEW-BRIEF.md](../INTERVIEW-BRIEF.md) and the existing story, portfolio and gameplay-evaluation cards: adversarial conversational design, bounded adaptation claims, the four-app breadth overview, two 15-minute stories and a real collaboration example. These are preparation tasks, not completed presentation evidence.
 
+## Current configuration and retrieval follow-up
+
+[Health acceptance](HEALTH-ACCEPTANCE.md) corrects false configured status for hosted/non-local sessions and empty provider/CLI settings. One bounded actual-handler/client-parser matrix covers 14 configurations without network calls. Credentials and arbitrary operator values are absent from public responses. Configuration remains explicitly unchecked: invalid authentication versus offline providers is still an operational-status gap; browser fallback is user-owned. UX-08 stays open.
+
+[Pattern acceptance](PATTERN-ACCEPTANCE.md) executes the current accepted-turn/disclosure path, rejects unfinished spoofed wins, selects only winning evidence-associated questions and preserves one byte-identical local export. One focused check ran without model, embedding or remote database calls. The third-question release demonstrates association, not causal effectiveness. Remote pattern uniqueness/RLS and retrieval quality remain unverified; LOGIC-10 stays in Verify.
+
+[Hosted storage design](HOSTED-STORAGE-DESIGN.md) specifies the complete shared persistence boundary and bounded delivery steps. It is a proposal, not an implemented or deployed backend. Local gameplay remains the interview target; the separate game website is deferred.
+
+A second isolated development dependency experiment tried a tinyglobby compatibility module. The local file override installed a broken transitive link, and the actual Next plugin import failed. Its clean audit is invalid as acceptance; no package/lockfile change was adopted. See [dependency follow-up](DEPENDENCY-FOLLOWUP.md). Integrated lint, size and production build passed for this increment; receipts are retained under `evidence/integrated-readiness-*`. No full suite or live model/voice call ran.
+
 ## Current actor policy, live failure and parallel portfolio delivery
 
 The actor now receives public case fields and already disclosed evidence; it does not receive the private answer at the start. Model-authored clue text cannot award progress. Generated cases release the canonical case-file evidence summary after 3 / 5 / 7 / 9 distinct substantive accepted questions on Easy / Medium / Hard / Expert. Substantive means at least 15 letters; openings, accusations and normalized repeats do not count. Zero stress does not prevent release. The note has `origin: case-record`; its accompanying exchange records when it became public, not a claim that the suspect supplied a witness record. Legacy dialogue clues remain distinct. Generated accusations stay available from the beginning of the active interview while attempts remain; the note is not a new gate. Authored evidence rules are unchanged. [ACTOR-DISCLOSURE.md](ACTOR-DISCLOSURE.md) records the implemented boundary and controlled-route proof.

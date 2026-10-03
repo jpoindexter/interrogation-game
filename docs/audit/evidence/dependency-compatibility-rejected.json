@@ -1,0 +1,42 @@
+{
+  "result": "failed_module_resolution_before_behavior_comparison",
+  "node": "v22.23.2",
+  "npm": "10.9.8",
+  "recipe": {
+    "name": "interrogation-glob-proof",
+    "private": true,
+    "dependencies": {
+      "@next/eslint-plugin-next": "16.3.8",
+      "@interrogation/next-root-glob": "file:./tools/next-root-glob"
+    },
+    "overrides": {
+      "@next/eslint-plugin-next@16.3.8": {
+        "fast-glob": "$@interrogation/next-root-glob"
+      }
+    }
+  },
+  "lockEntries": {
+    "node_modules/@interrogation/next-root-glob": {
+      "resolved": "tools/next-root-glob",
+      "link": true
+    },
+    "node_modules/@next/eslint-plugin-next/tools/next-root-glob": {},
+    "node_modules/fast-glob": {
+      "resolved": "node_modules/@next/eslint-plugin-next/tools/next-root-glob",
+      "link": true
+    },
+    "tools/next-root-glob": {
+      "name": "@interrogation/next-root-glob",
+      "version": "1.0.0",
+      "dependencies": {
+        "tinyglobby": "0.2.17"
+      }
+    }
+  },
+  "auditReportedVulnerabilities": 0,
+  "rootCasesExecuted": 0,
+  "lintDiagnosticComparisonsExecuted": 0,
+  "reproducedInFreshDirectory": true,
+  "repositoryModified": false,
+  "source": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/#overrides"
+}

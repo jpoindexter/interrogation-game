@@ -31,3 +31,9 @@ The inspected Next plugin uses this glob function only for `settings.next.rootDi
 - [Replacement check](evidence/dependency-replacement-check.json): registry versions, candidate scope, exact failed Next root-discovery result, and rejection.
 
 ARCH-02 and ARCH-14 remain open for this dependency criterion. Existing build/browser/provider evidence is separate; none was rerun or implied by this package investigation.
+
+## Compatibility module experiment — not adopted
+
+A temporary private wrapper added `expandDirectories: false` around tinyglobby. With pinned Node24.21/npm11.21, the scoped local `file:` override installed a link relative to the Next plugin directory instead of the repository root. The actual plugin import failed with `MODULE_NOT_FOUND` before behavioral comparison. A root dependency plus npm `$` override reference was also tried in existing and fresh isolated directories; that follow-up used the machine's Node22.23.2/npm10.9.8 and reproduced the broken link. It is not a pinned-runtime acceptance result.
+
+[Retained follow-up result](evidence/dependency-compatibility-rejected.json) records the exact recipe, versions and lock entries. Both candidate install audits reported zero, but neither provides working-plugin acceptance. Zero of the planned root-discovery/rule comparisons executed. No wrapper, dependency override or lockfile modification was adopted. The prior five development findings remain visible; no additional package experiments are needed for the local interview path.
