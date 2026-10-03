@@ -1,0 +1,847 @@
+{
+  "capturedAt": "2026-10-03T12:52:55.386Z",
+  "board": "https://trello.com/b/Ww5bceNb/interrogation-superhuman-demo-upgrade",
+  "count": 70,
+  "cards": [
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced29284a064dc756505",
+      "name": "[P1] Read first — scope, evidence, priorities and audit baseline",
+      "desc": "START · P1 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nBaseline f8d4c3c. Audit 2026-10-03. Build passed; lint: 21 errors, 49 warnings. Root mocked server checks reproduce 8 issues. 98 Git commits reviewed by subject, key diffs examined. Live browser permission declined; real OpenAI/Mistral/ElevenLabs/Supabase gameplay unverified.\n\nChange\nUse this board as the implementation backlog. Read docs/audit/AUDIT.md and specialist reports. Prioritize local video demo; retain future Vercel requirements separately. Keep product changes out of the audit baseline. Every implementation card needs its named acceptance path executed before Done.\n\nAcceptance\nBoard cards have evidence, proposed change and acceptance tests; local audit artifact mirrors the board and preserves test outputs. Do not mark defects fixed because the audit is written.\n\nDependencies: none specified.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/n3PEAdvA/1-p1-read-first-scope-evidence-priorities-and-audit-baseline",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd73c7f1ff9490819d34",
+        "name": "Start here"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced9727438d1d4fa25bb",
+      "name": "[P1] Correct setup, learning, privacy and fallback claims throughout the project",
+      "desc": "CLAIMS · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nREADME keyless setup contradicts server-only judge keys; SpeechSynthesis fallback absent from useTTS; settings claims keys never sent to third parties; about-game promises per-turn stress/clue exports absent from role/content history; retrieval is not fine-tuning. Historical Mistral credits should remain truthful.\n\nChange\nMaintain a claims ledger mapping each README/help/about/settings assertion to behavior. Update current provider metadata and setup only when implemented. Label learned tactics as retrieved prior examples, seed scores as sample data, transcript export as raw records unless transformed/evaluated.\n\nAcceptance\nFollow setup from a fresh clone; every advertised capability has executed evidence or an explicit experimental/unverified label. Historical hackathon attribution remains separate from current OpenAI revision.\n\nMerged LOGIC-22, UX-17 and UX-18: correct absolute security statements and real-interrogation/lie-detection implications. Preserve original hackathon credits; current runtime identity changes only with implementation. Explain actual audio/text/credential data flows and persistence; remove provider/admin setup from screen sharing. See settings/page.tsx:223 and getUserApiHeaders.\n\nDependencies: EVAL.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/kDnAM1tN/6-p1-correct-setup-learning-privacy-and-fallback-claims-throughout-the-project",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd74f8aa538c32d9ff86",
+        "name": "Next — demo essentials"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced5edb753491eb0f15e",
+      "name": "[P2] Build the interview story from real Git decisions and visible behavior",
+      "desc": "PROOF · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\n98 commits:36 Feb28,60 Mar1,2 May8 2026. Key diffs:db74626 formal accusation;43934f0 server-hidden secrets;0570cac retrieval;52e50ad→a4bcc5b configuration tradeoff. No GitHub issues/PRs/releases/Actions surfaced.\n\nChange\nCreate concise before/after evidence for three decisions: win condition, voice/error recovery, trustworthy game state. Separate hackathon version from current upgrade. Explain candidate contribution and AI assistance without invented metrics, research, wins or security claims.\n\nAcceptance\nEvery interview claim links to a commit, source or observed behavior. A first-time viewer can identify changed behavior and tradeoff. User confirms role-specific framing before final interview materials.\n\nDependencies: DEMO.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/IiflEceO/3-p2-build-the-interview-story-from-real-git-decisions-and-visible-behavior",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cedbcf026e75311d3911",
+      "name": "[P2] Record asset provenance and style rules before targeted regeneration",
+      "desc": "ASSET-RIGHTS · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\n134 public files, about 31.9 MiB. Existing portraits/backgrounds are distinctive. Credits mention PixelLab,Sora,Suno,FFmpeg; image scripts contain warm noir pixel-art prompts. Source license does not by itself document every media asset's origin.\n\nChange\nCreate an asset manifest: original path, source/generator, known creation/license notes, role, size and keep/rerender decision. Preserve source artwork. Generate only targeted variants with the old image as visual reference; track prompt and provenance. No invented rights clearance.\n\nAcceptance\nEvery retained/replaced presentation asset has known provenance or explicit unknown status. Variants match palette, lighting, pixel scale, framing and character identity; no illegible generated text or inconsistent outcome scenes.\n\nMerged UX-22: include dimensions, usage and variants in manifest; audit unused assets; compare lossless formats at actual pixel-art display scale; preserve originals, explicit dimensions, load only selected scene/music. Optimize measured page payload, not the whole repository number.\n\nDependencies: UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/G4foSNG3/7-p2-record-asset-provenance-and-style-rules-before-targeted-regeneration",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cedc8fcd3a5a773a1d66",
+      "name": "[P2] Measure interaction quality and latency before adding new features",
+      "desc": "DEMO-MEASURE · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nNo recorded usability or provider-latency measurements found. Current pipeline waits for whole model JSON and whole TTS audio; UI uses long reveals and many effects.\n\nChange\nUse First-Principles: observer understands the case, sees a specific discrepancy, makes an accusation, understands the verdict. Instrument stage timings and run a small fresh-player comprehension test with permission. Track first-question time, clue comprehension, successful recovery and verdict clarity.\n\nAcceptance\nCapture real observations and baseline/revision comparisons; distinguish participant evidence from developer impressions. Select streaming, animation changes and onboarding cuts based on measured bottlenecks.\n\nDependencies: DEMO.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/4wLcaqYI/8-p2-measure-interaction-quality-and-latency-before-adding-new-features",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf157f32875abb0c3bbd",
+      "name": "[P1 · LOGIC-02] Repair countdown callback capturing the initial empty game",
+      "desc": "Audit ID: LOGIC-02\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/page.tsx:151 registers onExpire(() => handleTimeUp()) with [onExpire]; app/game/hooks/useGameTimer.ts:68 memoizes onExpire forever; useEndGame.ts:28-60 captures caseData/history; lose/page.tsx:101 reads result.caseData.setting.\n\n## Impact\nLocal: P1 demo-ending risk. Hosted: P1. Runtime browser path not executed.\n\n## Proposed change\nKeep the expiry callback current via a ref or correct dependencies. Make the loss transition use the authoritative current session and validate persisted result shape before rendering.\n\n## Acceptance\nWith fake timers and a rendered game, generate a case, ask two questions, then expire countdown: final result retains case/session/transcript and loss screen renders without crash.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
+      "url": "https://trello.com/c/oZ8eCfpC/10-p1-logic-02-repair-countdown-callback-capturing-the-initial-empty-game",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2744f6061c5dc95128",
+      "name": "[P2 · LOGIC-14] Validate and authorize the entire text sent to ElevenLabs",
+      "desc": "LOGIC-14 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ntts/route.ts:68-75 skips validation for detective role and tests only text.slice(0,80) for suspect. Root executed detective arbitrary text; supplementary test executed approved 80-character prefix plus unapproved suffix reaching mocked fetch.\n\nChange\nAccept server-owned utterance ID; load exact approved dialogue/briefing/terminal text from the session, voice and stress included. Cache generated audio and enforce per-session character/cost caps.\n\nAcceptance\nArbitrary detective text and appended suspect suffix get 403; exact approved utterances work once/cached; sanitized fallback and lawyer-up line are valid utterances.\n\nDependencies: LOGIC-01.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/F05X4iaL/22-p2-logic-14-validate-and-authorize-the-entire-text-sent-to-elevenlabs",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2ae6b316f81a617de4",
+      "name": "[P1 · LOGIC-16] Close public database write bypasses and version the schema",
+      "desc": "LOGIC-16 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nREADME.md:208-210 grants unrestricted public leaderboard insert;253-255 grants anonymous pattern insert/read;src/lib/db.ts:4-10 uses anonymous client;exportSession:251-268 upserts with only INSERT export policy documented at README:230-232.\n\nChange\nCreate checked-in migrations with constraints and unique session/result keys; public read only where intentional, authenticated server-only writes. Test insert/upsert permissions using anon and privileged roles. Verify vector extension/RPC setup too.\n\nAcceptance\nAnonymous direct insertion of forged leaderboard/pattern rows is denied, app trusted write succeeds, duplicate/session constraints hold, exports remain private; fresh DB setup applies from migrations.\n\nDependencies: LOGIC-07, LOGIC-10.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/1FiOCMVY/24-p1-logic-16-close-public-database-write-bypasses-and-version-the-schema",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2bbc73fe91fe47fc29",
+      "name": "[P2 · LOGIC-17] Remove request-controlled database destinations from hosted routes",
+      "desc": "Audit ID: LOGIC-17\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsrc/lib/db.ts:15-19 accepts x-supabase-url/key and creates a server client to that URL;used by leaderboard,patterns,generate-case. URL target is neither allowlisted nor restricted to operator config.\n\n## Impact\nLocal: P2 unnecessary BYO complexity; hosted: P1 request-directed server egress/SSRF risk. No SSRF exploit/network request executed; platform egress restrictions unknown.\n\n## Proposed change\nUse operator-owned server configuration. If BYO remains a product requirement, validate allowed HTTPS hosts and prohibit private/internal addresses with enforced egress controls; do not mix user DB and trusted leaderboard authority.\n\n## Acceptance\nHeaders cannot change server DB destination; localhost, private IP, unexpected protocol and redirect targets are rejected without outbound call.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
+      "url": "https://trello.com/c/IjTzBIHW/25-p2-logic-17-remove-request-controlled-database-destinations-from-hosted-routes",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf749f04b7688e140115",
+      "name": "[P1 · UX-04] Label controls and expose settings selection to assistive technology",
+      "desc": "Audit ID: UX-04\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/page.tsx:108-175 icon-only buttons use data-tooltip; app/game/components/Dock.tsx:61-138 same; SettingsPanel.tsx:20-48 switches/sliders/group buttons lack names/checked state; TextInputPanel.tsx:63-70 input has placeholder only; app/settings/page.tsx:233-245 label lacks association.\n\n## Proposed change\nAdd accessible names to every icon control, explicit input labels, real switch/radio/slider semantics and visible focus. Add aria-live status for errors, transcript completion and new clues without announcing every timer tick. Preserve labels on focus as well as hover.\n\n## Acceptance\nAccessibility-tree check finds names for every control. Keyboard and VoiceOver identify selected settings and recording state; changing a setting announces its value; new clue is announced once.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/dOvvRcDK/32-p1-ux-04-label-controls-and-expose-settings-selection-to-assistive-technology",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf75b3dc1a409f6701c9",
+      "name": "[P1 · UX-05] Create a legible video-demo layout and make text-size settings effective",
+      "desc": "Audit ID: UX-05\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/page.tsx:266 changes container font size while SuspectZone.tsx:83-110 hardcodes text-sm; CaseFile.tsx:63 uses 11px vertical tabs; BriefingScreen.tsx:92-105 shrinks long content to 11px; global fixed-height h-screen/overflow-hidden in page:266-280.\n\n## Proposed change\nUse semantic typography tokens with a readable dialogue/document scale and actual user scaling. Add a demo layout preset for 1280x720 and 1440x900 shared windows; prioritize suspect dialogue, evidence and Ask/Accuse. Replace vertical tab labels with horizontal labels when space allows. Let overflow remain reachable.\n\n## Acceptance\nAt 1280x720, 1440x900 and 200% zoom, long dialogue, core controls and case evidence are readable/reachable without clipped content. Small/medium/large visibly alter dialogue and report text; record a screen-share sample and review at recipient size.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/gXepcoCL/33-p1-ux-05-create-a-legible-video-demo-layout-and-make-text-size-settings-effective",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf766a9cd333e92c09d2",
+      "name": "[P1 · UX-06] Keep historic statements readable and link evidence to conversation",
+      "desc": "Audit ID: UX-06\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/LogPage.tsx:56 adds opacity-50 to old exchanges and :69/:75 adds text-black/60; CaseFile.tsx:32-43 auto-scrolls and forces Evidence on new clues; EvidencePage.tsx:31-40 renders plain clues with no source turn.\n\n## Proposed change\nRemove faded evidence text; use a subtle latest-turn marker. Give each clue a source-turn link and pin/reference action. Respect the player reading older material: do not force navigation or scroll when away from latest; offer a new-items indicator.\n\n## Acceptance\nRevisit an early contradictory answer after ten turns; it remains fully readable and stable while new answers arrive. A clue opens the correct originating exchange and can be referenced in a composed question.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/nGqHNV7u/34-p1-ux-06-keep-historic-statements-readable-and-link-evidence-to-conversation",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7ca9c9ffe764f1b421",
+      "name": "[P2 · UX-11] Replace global case-selector keyboard interception with scoped controls",
+      "desc": "Audit ID: UX-11\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/cases/page.tsx:31-39 global ArrowLeft/ArrowRight/Enter listener routes on Enter regardless of focus; PolaroidCard.tsx:49 wraps content in button while :117-119 nests a click-only Play span.\n\n## Proposed change\nImplement semantic case selection and a separate Play button. Scope keyboard carousel controls to its focus region; never override unrelated focused buttons. Announce active case, difficulty and selected state; keep selected detail stable.\n\n## Acceptance\nTab to Back and press Enter: returns home rather than starting a case. Arrow controls work only within selector. Play is separately discoverable by keyboard and screen reader.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/CwsJEGg8/38-p2-ux-11-replace-global-case-selector-keyboard-interception-with-scoped-controls",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7d3fba8fcbedf5f1cc",
+      "name": "[P2 · UX-12] Remove false evidence-object semantics and explain stress as game state",
+      "desc": "Audit ID: UX-12\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/utils.ts:1-12 randomly assigns icon assets; EvidencePage.tsx:17 labels them Physical Evidence; help/page.tsx:17-23 presents broad lie-detection maxims; OnboardingOverlay.tsx:18 says higher stress means getting close.\n\n## Proposed change\nAssociate clue type with a stable meaningful icon, or call these discovered clues rather than physical evidence. Clearly frame stress as a fictional game mechanic. Replace broad assertions about human lying with tactics verified against the game rules. Make progress gates understandable beside Accuse.\n\n## Acceptance\nA digital-log clue never appears as coffee or handcuffs unless those are part of the clue. Help examples map to executable rules. Player can explain what unlocks Accuse without assuming stress proves real-world guilt.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/cjMeTtbx/39-p2-ux-12-remove-false-evidence-object-semantics-and-explain-stress-as-game-state",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf81df60b3042af00eef",
+      "name": "[P1 · UX-16] Audit all biography and hackathon claims before interview use",
+      "desc": "Audit ID: UX-16\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/about/page.tsx:65-73 career summary; :97-101 named historical titles and dollar/user metrics; :131-141 AI Systems Launched; app/page.tsx:285 and about/page.tsx:41 say Hackathon 2026 despite user remembering about a year ago.\n\n## Proposed change\nCreate a claim ledger tied to source evidence. Confirm historical titles, client relationships, dates, adoption and financial metrics; remove or soften unsupported statements. Separate original hackathon contribution from modernization work. Do not silently substitute claims based on memory.\n\n## Acceptance\nEvery interview-visible title/date/metric has an identified user-approved evidence source or is omitted. Original project and new work are distinguished, and the user confirms disputed chronology.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/fhzV3Yps/42-p1-ux-16-audit-all-biography-and-hackathon-claims-before-interview-use",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf83cc8c320b96f789b7",
+      "name": "[P2 · UX-19] Define and preserve the existing art direction before regeneration",
+      "desc": "Audit ID: UX-19\nPriority: P2\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nExecuted contact-sheet inspection of public/bg/*.png, public/suspects/*.png, public/logo/main3.png, public/detective/desk.png, public/ui/tape_player.png; docs/audit/evidence/design-contact-sheet.jpg.\n\n## Proposed change\nKeep the noir pixel-art identity: deep blue/green shadow, warm amber practical lights, black surrounds, square portrait crops, ochre portrait backgrounds, tactile paper/cassette props. Record palette, pixel density, framing, lighting and safe areas in an art bible. Separate decorative raster art from semantic UI text.\n\n## Acceptance\nApprove side-by-side art bible/contact sheet before any new renders. New assets match palette, crop and pixel scale at actual usage size. Reuse current backgrounds/portraits unless a specific defect or mismatch is demonstrated.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/QWEbsUY0/43-p2-ux-19-define-and-preserve-the-existing-art-direction-before-regeneration",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf84c2adb55eed78914e",
+      "name": "[P2 · UX-20] Normalize outcome artwork with one style and separate text",
+      "desc": "UX-20 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nExecuted image inspection: public/solved/caught.png and escaped.png are handcuff/title compositions; accusations.png, timesup.png, lawyered_up.png are full scenes; case_closed.png/fail-stamp-3.png are flat stamps. lose/page.tsx:120-123 stretches same slot while imageRendering auto.\n\nChange\nTargeted candidate regeneration: public/solved/accusations.png, timesup.png, lawyered_up.png, caught.png, escaped.png. Brief: one noir pixel-art object or vignette per outcome, common canvas/crop/pixel scale, warm amber key light against transparent or consistently dark background, no generated lettering, restrained palette matched to existing rooms. Render outcome titles as accessible live text. Keep case_closed stamp for case cards if approved.\n\nAcceptance\nCompare all five outcomes together at their final display size; silhouette, contrast and visual weight are consistent. Titles remain crisp at 200% zoom and accessible in DOM. No outcome depends on image-only text. User approves set before replacing originals.\n\nDependencies: UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/mrD7FpK0/44-p2-ux-20-normalize-outcome-artwork-with-one-style-and-separate-text",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf862ae2f3ab20f3857c",
+      "name": "[P2 · UX-21] Select portraits using case identity rather than name hashing",
+      "desc": "UX-21 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/game/SuspectAvatarPixi.tsx:5-21 hashes name into gender-only pool; current portrait art includes distinct doctor/business attire that can contradict generated suspect role.\n\nChange\nAdd stable portraitId to approved case data with role/age-presentation/wardrobe metadata; retain varied existing portrait pool. Candidate new portraits only when a reviewed case needs missing attire: match existing 1:1 amber-background pixel portrait, same bust crop, facial detail scale and light direction. Avoid using stress/appearance as guilt evidence.\n\nAcceptance\nReviewed doctor/office/technician cases use plausible stable portraits in briefing, game, results and transcript. Regeneration is limited to documented gaps and approved contact-sheet comparisons.\n\nDependencies: UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/DAsK5cBn/45-p2-ux-21-select-portraits-using-case-identity-rather-than-name-hashing",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf88298860eb59d56b1c",
+      "name": "[P2 · UX-23] Make restrained motion reinforce game events instead of competing for attention",
+      "desc": "UX-23 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/page.tsx:63-79 particles, :178-218 scanline/flicker/interference; cases/page.tsx:49/:57-58 indefinite animations; PolaroidCard.tsx:48/:76-79/:117 repeated motion; VoiceWaveform.tsx:19-27 animated ios9 style.\n\nChange\nDefine a motion budget: short event transitions for clue, turn and outcome; pause decorative loops during reading and screen-sharing. Match waveform treatment to noir art; if decorative, do not imply live audio amplitude. Add a presenter skip-reveal control and respect reduced motion across JS and CSS.\n\nAcceptance\nRecord 30 seconds of each major scene: attention stays on dialogue/evidence; no persistent ornamental motion in demo/reduced-motion mode. Audio state is still understandable with animation removed.\n\nDependencies: UX-10, UX-19.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/lnNqbmOi/46-p2-ux-23-make-restrained-motion-reinforce-game-events-instead-of-competing-for-attention",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8c6079b9c92e9f10ae",
+      "name": "[P2 · UX-27] Turn the reveal into a clear, evidence-based interview moment",
+      "desc": "UX-27 · P2 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/game/win/page.tsx:138-171 spends 4.2s before final score and auto-triggers initials; win/CaseDetails.tsx:39-49 presents generated Lie/Truth/How You Caught It without turn links.\n\nChange\nLead the ending with accusation, conflicting statement, verified truth and judge rationale; put score celebration after reasoning. Provide one-click transcript evidence and an optional presenter explanation of model/game-rule separation. Keep the playful stamp as a brief flourish.\n\nAcceptance\nA viewer can identify the contradiction from one ending screen without reading the full transcript. Evidence links show real turn text, score animations can be skipped, and no modal interrupts the explanation.\n\nDependencies: UX-14, DEMO.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/8ujdaAa5/49-p2-ux-27-turn-the-reveal-into-a-clear-evidence-based-interview-moment",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfac293d093f2f460b36",
+      "name": "[P1 · ARCH-04] Separate game AI contracts from Mistral implementation",
+      "desc": "ARCH-04 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nFive Mistral capability groups: generate-case/interrogate/evaluate, Voxtral transcribe, embeddings+seed-rag; UI imports ConversationMessage from mistral. Accuse/evaluate require server credentials even with browser BYOK.\n\nChange\nIntroduce provider-neutral validated case/turn/outcome contracts and small server-only adapters; separate optional embedding capability; move shared types out of provider folder.\n\nAcceptance\nContract fixture suite covers generate/respond/judge/summarize and structured errors; no UI/vendor type coupling; every live capability uses selected provider.\n\nDependencies: ARCH-02.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/XFhqC8b1/53-p1-arch-04-separate-game-ai-contracts-from-mistral-implementation",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfafd51b95cc47698430",
+      "name": "[P3 · ARCH-06] Add future hosted OpenAI adapter without subscription token reuse",
+      "desc": "ARCH-06 · P3 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nUser has no API key yet. Official local subscription and API-key billing differ. globalThis state not suitable for multiple hosted instances.\n\nChange\nFuture server-only Responses API adapter configured by API key and explicit model; shared game contracts; keep hosting work after local demo.\n\nAcceptance\nWhen key exists: Vercel preview completes real text/voice game; secrets absent client assets/logs; spend/error limits tested.\n\nDependencies: ARCH-04, LOGIC-12.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/hlurjUhZ/55-p3-arch-06-add-future-hosted-openai-adapter-without-subscription-token-reuse",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb6002c092f42c29d8d",
+      "name": "[P1 · ARCH-11] Return validated service errors instead of corrupt game state",
+      "desc": "ARCH-11 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngame/page117–125 parses HTTP error JSON into briefing case; evaluateAccusation85–89 parses failure into incorrect result, spending an accusation.\n\nChange\nValidated result union for case/turn/judge; HTTP failures never become case data; malformed judge result is retryable provider failure with all counters preserved.\n\nAcceptance\nInject500/429/invalidJSON/missingfields/refusal: visible recoverable error, no broken briefing or lost accusation/stats.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/0NmI2h1k/60-p1-arch-11-return-validated-service-errors-instead-of-corrupt-game-state",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfba25de225aa8270d51",
+      "name": "[P2 · ARCH-18] Restore concise versioned architecture and rehearsal docs",
+      "desc": "Audit ID: ARCH-18\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\n54b264a removed CLAUDE.md; README describes old provider/key paths; package dev kills arbitrary processes on ports3000–3002.\n\n## Proposed change\nSmall contributor/architecture decisions doc, local setup/preflight/reset/runbook, provider modes and evidence ledger; replace port-killing dev script with owned process/explicit port.\n\n## Acceptance\nFresh checkout starts without killing unrelated apps; newcomer can run fixture and live demo, distinguish modes, reset/recover, and trace documented claims to evidence.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.",
+      "url": "https://trello.com/c/LsD5s6Rd/62-p2-arch-18-restore-concise-versioned-architecture-and-rehearsal-docs",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72c5098ce2006e02009",
+      "name": "[P1 · GAMEPLAY-TACTICS] Make red-team tactics interactive and consequential",
+      "desc": "GAMEPLAY-TACTICS\n\nUser-authorized scope addition, 2026-10-03.\n\nDesign and implement a small fictional-case tactical loop: probe assumptions, challenge claims, test contradictions and recover from failed tactics. Explain risk/reward, distinguish persuasive bluff from evidence and avoid arbitrary hidden penalties. Acceptance: seeded cases show different tactical outcomes, fair feedback and solvability; no real-target intrusion tooling.",
+      "url": "https://trello.com/c/kFen7kQK/64-p1-gameplay-tactics-make-red-team-tactics-interactive-and-consequential",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d73302a53f1b1f233420",
+      "name": "[P2 · SITE] Build the project website after the game acceptance pass",
+      "desc": "SITE\n\nUser-authorized scope addition, 2026-10-03.\n\nCreate a polished public-facing project website consistent with the completed noir game. Explain gameplay and the red-team concept, show final media, supported demo access and verified capabilities. Dependency: game acceptance complete. Acceptance: responsive/keyboard/contrast/performance checks; links/media work; clear live/demo/replay status. Build locally before publishing; confirm actual hosting target at that stage.",
+      "url": "https://trello.com/c/if7g5f21/68-p2-site-build-the-project-website-after-the-game-acceptance-pass",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d735b266d7a5a245a004",
+      "name": "[P2 · PORTFOLIO] Build and add the jason.theft.studio case study",
+      "desc": "PORTFOLIO\n\nUser-authorized scope addition, 2026-10-03. Correct portfolio: https://jason.theft.studio\n\nAfter the game is verified, inspect jason.theft.studio and its source to match existing case-study structure, typography, navigation and visual style. Tell the evidence-backed hackathon-to-upgrade story: role, problem, gameplay/design decisions, AI/voice architecture, constraints, before/after, actual results and reflection. Integrate into portfolio with correct project links and media. Acceptance: design match and responsive/keyboard checks; all claims trace to evidence; user reviews final narrative; no invented metrics or achievements.",
+      "url": "https://trello.com/c/ouCqk3zR/69-p2-portfolio-build-and-add-the-jasontheftstudio-case-study",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+        "name": "Backlog — upgrades"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced422fa51973c8055f6",
+      "name": "[P1] Define and rehearse one excellent local interview demo",
+      "desc": "DEMO · P1 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nUser: personal local demo over video for Superhuman; OpenAI/Codex subscription preferred; ElevenLabs to reconnect. Existing entry path requires random case generation and lengthy setup. Role/date/interview format not yet supplied.\n\nChange\nCreate a curated case with live suspect responses, a clear short narrative, and an explicitly labeled recorded fallback. Keep original procedural mode separately. Show briefing, question, evidence and reasoned accusation. Preserve noir identity; use visible readable dialogue/evidence. Do not silently present replay as live.\n\nAcceptance\nRun and record the actual intended short flow on the real video-sharing setup with audible output, readable evidence, one wrong and one correct accusation, and recovery demonstration. Measure duration and latency; no provider/config screens during presentation.\n\nMerged UX-15: fixed reviewed case, repeatable reset/checkpoint, clearly labelled live vs replay mode. Rehearse at least three times in 3–5 minutes (adjust to actual interview slot). Eliminate forced score-entry and long reveal detours.\n\nDependencies: ARCH-05, LOGIC-03, UX-01, UX-02, UX-07, UX-08, UX-13, UX-14.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nRecorded fallback /rehearsal implemented with six exact saved stages, persistent Recorded/not live AI label and no provider calls/score submission. HTTP200 and9 fallback/onboarding tests executed. docs/LOCAL-DEMO.md names live rehearsal and browser/audio gaps. Three actual video rehearsals still pending.\n\nScope addition · 3 Oct\nUser requests AI-agent app control and design polish. Acceptance: local agent can start/read/act/recover a result through canonical routes, retaining game authority and explicit failures; inspect the polished demo flow. Agent-control and UI agents own implementation. No acceptance claim yet.",
+      "url": "https://trello.com/c/fgMNuLGO/2-p1-define-and-rehearse-one-excellent-local-interview-demo",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced70494848dd497a097",
+      "name": "[P1] Add a case-solvability and judge-fairness evaluation set",
+      "desc": "EVAL · P1 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nCurrent model output is JSON-sanitized but no checked-in eval suite was found. Provider migration changes gameplay distribution. Regex defenses demonstrably reject ordinary detective wording.\n\nChange\nVersion curated cases and labeled transcripts: correct paraphrases, vague accusations, wrong targets, false evidence, unrelated questions, prompt extraction, duplicate clues, unavailable provider, malformed JSON. Keep deterministic game-rule tests separate from model-quality evaluations. Record model and prompt versions.\n\nAcceptance\nAll deterministic invariants pass. Score model judge false accepts/rejects and case solvability against labeled examples before choosing a model. Log failures and repeated-run variability; human review of borderline decisions. No 100% reliability claim from a small sample.\n\nMerged LOGIC-21 and ARCH-17: include offline state-machine/adapter contract fixtures and one-command mechanics tests, explicit opt-in bounded provider eval, false accepts/rejects, answer leakage, duplicate clues, winability, voice fallback, schema fidelity and browser recovery. Capture prompt/model versions, variability, latency and cost.\n\nDependencies: ARCH-05, LOGIC-01, LOGIC-03, LOGIC-06, ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nSeparate generated-case preflight now gates playable creation. Six predeclared live reviews rejected 4/4 flawed cases, but only 3/6 full diagnostic criteria matched and one authored control was falsely rejected. Evidence and limitations: docs/audit/GENERATED-REVIEW.md. No semantic fairness claim; prior v1/v2/v3 evidence preserved.\n\nCheckpoint · 3 Oct\nReview v2:8 calls,6/8 criteria; phone-attribution false acceptance persists. See docs/audit/GENERATED-REVIEW-V2.md. Integrated gate297 passed; evidence/current-verify.txt. Only necessary tests now; no human fairness/reliability claim.",
+      "url": "https://trello.com/c/2rwo9eCT/4-p1-add-a-case-solvability-and-judge-fairness-evaluation-set",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf132b0a5165d1faeecb",
+      "name": "[P1 · LOGIC-01] Make clues unique, durable and consistent between client and server",
+      "desc": "Audit ID: LOGIC-01\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/api/interrogate/route.ts:109-151; app/game/page.tsx:193-201; app/game/components/Dock.tsx:43-44; src/lib/mistral/interrogate.ts:299-306,329-335. Mocked two identical clues produced server count 2, client deduplicated count 1. Root separately proved filtered clue increments and raw leak persists.\n\n## Impact\nLocal: P1, can permanently prevent accusation. Hosted: P1, same correctness issue.\n\n## Proposed change\nPersist clue IDs and full accepted clue events. Validate/filter before any state mutation; store exactly the displayed assistant text. Send available/revealed clue IDs to the model and return authoritative clue state to the client. Avoid deriving clue progress from generated text.\n\n## Acceptance\nRepeat a clue, return a blocked secret, and retry a turn: each accepted clue counts once, blocked clues count zero, transcript equals shown response, and all difficulties can reach accusation. Verify filtered and lawyer-up responses can be spoken by TTS.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
+      "url": "https://trello.com/c/99XWEgXr/9-p1-logic-01-make-clues-unique-durable-and-consistent-between-client-and-server",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf16e8f34668b565d0e5",
+      "name": "[P1 · LOGIC-03] Give each session an explicit terminal state and authoritative outcome",
+      "desc": "Audit ID: LOGIC-03\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\ngame-session.ts:7-26 has no lifecycle state. evaluate/route.ts:31-48 trusts body.type and deletes session. accuse/route.ts:26-35 omits deadline/terminal-state checks. Executed fresh-session win evaluation returned 200 and deleted session; accusation at start+2h returned 200. These are actual route modules with mocked AI.\n\n## Impact\nLocal: P1 recovery/race risk. Hosted: P1 game integrity/cost risk. Mocked evaluation proves missing authorization gate, not live model behavior.\n\n## Proposed change\nModel briefing, active, won, lost and finalized states; persist terminal reason and accepted accusation once. Gate every action; derive result type from state. Make finalization idempotent and use a common per-session transaction/lock.\n\n## Acceptance\nEarly win evaluation, accusation after expiry, interrogation after win/lawyer-up, repeated finalize, and simultaneous question/finalize all preserve one valid terminal result.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
+      "url": "https://trello.com/c/U2IeZiKD/11-p1-logic-03-give-each-session-an-explicit-terminal-state-and-authoritative-outcome",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf1b1ce00261a6ad3299",
+      "name": "[P1 · LOGIC-06] Treat malformed AI judgments and provider failure as retryable errors",
+      "desc": "Audit ID: LOGIC-06\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsrc/lib/mistral/evaluate.ts:83-89 converts malformed JSON to correct:false; sanitize-response.ts:10-15 coerces missing correct to false; accuse/route.ts:51-52,75-78 increments used and refunds only remaining count. Executed malformed response returned 200 wrong and left 2 attempts; root provider error retained accusationsUsed=1.\n\n## Impact\nLocal: P1 unfair loss/score penalty. Hosted: P1.\n\n## Proposed change\nUse strict discriminated output schemas, separate invalid output from a valid wrong verdict, and commit accusation/stat changes only after valid accepted judgment. Use bounded retry with stable action ID.\n\n## Acceptance\nMalformed JSON, empty object, null, timeout and provider error leave attempts and score unchanged; a valid incorrect judgment consumes exactly one attempt.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.",
+      "url": "https://trello.com/c/lkT3NkCr/14-p1-logic-06-treat-malformed-ai-judgments-and-provider-failure-as-retryable-errors",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2058fcb227f6126f00",
+      "name": "[P1 · LOGIC-09] Replace keyword secret blocking with tested disclosure rules",
+      "desc": "Audit ID: LOGIC-09\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsanitize.ts:89-101 checks overlap with the_lie as well as truth; interrogate/route.ts:143-151. Executed exact cover-story denial \"I never accessed the vault at midnight.\" was flagged as leaked secret. sanitize.ts:24 separately blocks harmless \"What were you told about the security alarm?\" (root executed).\n\n## Impact\nLocal: P1 evasive/broken dialogue and unfair dead ends. Hosted: P1 same.\n\n## Proposed change\nSeparate allowed cover-story facts, earned contradictions and hidden solution facts. Keep deterministic output restrictions for internal metadata; use a evaluated disclosure policy rather than blanket lexical overlap. Narrow injection heuristics using benign/adversarial fixtures.\n\n## Acceptance\nDataset includes cover-story repetition, normal investigation questions, earned clues, direct leaks, paraphrase leaks and injection attempts; report false positives/negatives and preserve legitimate dialogue.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nRemoved keyword stripping that broke ordinary detective questions. Literal disclosure rules preserve public cover story, withhold internal metadata/private direct facts. Actual live dialogue and 10-item judge/disclosure sample executed. Semantic paraphrase leakage remains an open limitation.",
+      "url": "https://trello.com/c/Ib1LFWHk/17-p1-logic-09-replace-keyword-secret-blocking-with-tested-disclosure-rules",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2804583ffd1d9487ca",
+      "name": "[P2 · LOGIC-15] Fix rate-limit keys and add separate per-session spend budgets",
+      "desc": "Audit ID: LOGIC-15\nPriority: P2\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nrate-limit.ts:19-20 generates new identity when headers absent (root executed);24-33 uses same IP bucket for differing endpoint limits; state is process memory. Generate-case, embeddings, judging, STT and TTS lack aggregate session cost cap.\n\n## Impact\nLocal: P2 default request identity ineffective and interactive endpoint budgets interfere; hosted: P1 cost/abuse boundary.\n\n## Proposed change\nSeparate trusted proxy identity parsing from local mode, use route/user/session namespaces, stable fallback, shared hosted counters and request/concurrency/token/audio/cost limits. Add operator stop switch.\n\n## Acceptance\nMissing headers share documented restrictive budget; question requests do not consume leaderboard quota; limits hold across two instances and retries; no provider call begins after cap.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nDurable local endpoint and voice budgets now share an atomic private ledger across processes/restarts. Nine real-process/storage tests pass; HTTP distinguishes 429 allowance exhaustion from 503 unavailable storage before provider work. See docs/audit/SHARED-BUDGETS.md. Hosted shared limits, aggregate token/currency caps and replay-aware voice billing remain open.\n\nCheckpoint · 3 Oct · 297-test gate\nDurable session/operator AI call+character limits now cover provider gateway and optional embeddings. Concurrent/restart, stop switch, exhausted/oversized denial and stable failure receipts tested; voice replay avoids duplicate reservation. See docs/audit/SHARED-BUDGETS.md and ai-budget-integration.test.ts. These are work allowances, not token/currency measurement. Hosted limits/billing remain open.",
+      "url": "https://trello.com/c/CqMZHiuR/23-p2-logic-15-fix-rate-limit-keys-and-add-separate-per-session-spend-budgets",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2ddfde7ba318f65903",
+      "name": "[P1 · LOGIC-18] Validate generated cases as playable content rather than string shapes",
+      "desc": "Audit ID: LOGIC-18\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nsanitize.ts:130-150 accepts empty strings, arbitrary difficulty and nonstring trigger entries converted to empty strings;generate-case/route.ts:33 requires only truthy prevalidation the_lie. Executed validator accepted all blank strings and difficulty=impossible.\n\n## Impact\nLocal: P1 broken random demo case; hosted: P1 same.\n\n## Proposed change\nStrict case schema plus minimum semantic requirements: requested difficulty enforced, nonempty facts/leads/triggers, consistent timeline, discoverable contradiction, bounded hints. Ship one reviewed stable demo case and validate generated cases before activation.\n\n## Acceptance\nReject empty/missing/malformed fields and unsupported difficulty; each approved case passes scripted evidence-to-correct-accusation playthrough; impossible cases never start.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nRuntime objective now Identify the false claim; prompt consistency strengthened. V2 revealed500-character unfinished contradictions; narrow production rejection plus fixtures added, v3 single sample complete340chars. Extra false cover claims persist: semantic acceptance remains open. Full details/generated samples: docs/audit/GENERATED-CASE-EVAL.md.\n\nCheckpoint · 3 Oct · 297-test gate\nV2 quoted-comparison review:8 live calls,6/8 full criteria,7/8 labels; material phone-to-person false acceptance. Exact saved case separately hits content guard. Three authored controls accepted. Post-run deterministic fix versioned v2.1-guard; labels frozen. Public case/evidence parsers reject malformed or forged progress before updates. See docs/audit/GENERATED-REVIEW-V2.md. Semantic fairness/solvability remain open.",
+      "url": "https://trello.com/c/YjxXqMBm/26-p1-logic-18-validate-generated-cases-as-playable-content-rather-than-string-shapes",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2f33a7c7fb238f6eef",
+      "name": "[P2 · LOGIC-19] Stop rejudging a won case and ground the debrief in immutable evidence",
+      "desc": "LOGIC-19 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nmistral/evaluate.ts:93-143 asks second model to judge win again;win/page.tsx:117-120 ignores returned correct field;case secrets and reveal clue are generated rather than canonical. No judge output schema enforces cited evidence IDs.\n\nChange\nFreeze verdict at accepted accusation. Reveal canonical facts without generation; generate optional narrative from immutable evidence IDs and validate citations. Separate entertainment prose from authoritative result.\n\nAcceptance\nSecond model cannot reverse verdict or change truth; every quoted closest moment matches actual transcript; debrief still renders canonical facts if model is unavailable.\n\nDependencies: LOGIC-03.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/ilH2JQLQ/27-p2-logic-19-stop-rejudging-a-won-case-and-ground-the-debrief-in-immutable-evidence",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf70cf026e75311ebfa6",
+      "name": "[P1 · UX-01] Make every AI turn show its current state and recover in place",
+      "desc": "Audit ID: UX-01\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/SuspectZone.tsx:102-108 prioritizes lastResponse over processing; app/game/page.tsx:117-128 retries generation then navigates home; LoadingScreen.tsx:26-39 has only a spinner.\n\n## Proposed change\nModel idle, recording, transcribing, generating, synthesizing, speaking, failed and cancelled separately. Retain prior dialogue but show the new operation next to its question. Offer bounded retry/cancel and preserved case selection on generation failure. Do not display invented percent progress.\n\n## Acceptance\nAsk a second question with a delayed response: visible generating state appears immediately. Exercise generation timeout, transcription error, text-generation error and TTS error; each has a usable action and retains relevant input.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/JGqfP6hO/29-p1-ux-01-make-every-ai-turn-show-its-current-state-and-recover-in-place",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf715375dcc8aebfd012",
+      "name": "[P1 · UX-02] Preserve drafts and let players correct speech before accusations",
+      "desc": "Audit ID: UX-02\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/TextInputPanel.tsx:18 clears on close and :59 clears before request completion; app/game/page.tsx:248-257 submits transcripts directly; :289 clears accusation immediately.\n\n## Proposed change\nKeep question and accusation drafts until accepted, retain failed input, and show editable transcription with Send/Cancel before committing an accusation. Offer optional auto-send for ordinary questions after proven accuracy. Support longer multiline accusations.\n\n## Acceptance\nType a draft, close/reopen, simulate timeout, retry: exact draft survives. Deliberately misrecognize a name in a voice accusation, correct it, and verify only corrected text consumes one attempt.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/0ShKQHgk/30-p1-ux-02-preserve-drafts-and-let-players-correct-speech-before-accusations",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf72026c9dcf9b2c1a70",
+      "name": "[P1 · UX-03] Repair dialog focus and the initials keyboard trap",
+      "desc": "Audit ID: UX-03\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/win/InitialsEntry.tsx:30-42 preventDefault on every key; :47 focuses generic div; app/game/components/AccuseConfirmDialog.tsx:32-98 and BriefingDialog.tsx:60-115 omit dialog semantics/focus contracts.\n\n## Proposed change\nUse one accessible dialog primitive with initial focus, labelled title, contained Tab traversal, Escape and focus restoration. Handle only explicit shortcut keys in InitialsEntry; allow leaving or skipping initials. Audit exit, give-up, settings, notes, help, briefing, transcript, share and onboarding consistently.\n\n## Acceptance\nKeyboard-only run through every overlay: Tab/Shift-Tab remain within modal, Escape closes safe overlays, focus returns to trigger. Initials screen can be submitted, skipped and exited without a mouse; VoiceOver announces title and controls.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/wjTJmpHx/31-p1-ux-03-repair-dialog-focus-and-the-initials-keyboard-trap",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf79aac84b9362ff5b23",
+      "name": "[P1 · UX-08] Make status and connection checks truthful for the local demo",
+      "desc": "Audit ID: UX-08\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/page.tsx:25-38 treats key presence as status; :56 requires Mistral and ElevenLabs for System Online; :89-98 can say Keys Required despite server configuration.\n\n## Proposed change\nReplace key-presence claims with local demo readiness checks: game engine, text generation, microphone, optional voice, and selected fixture/live mode. Keep technical provider details in presenter diagnostics; describe degraded text-only mode honestly. Align with the chosen Codex/local architecture.\n\n## Acceptance\nWith no browser keys and a working local backend, text-ready status appears. Invalid auth, unavailable voice and offline text backend have distinct truthful states; optional voice failure does not block typed play.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/0kRxyvpA/36-p1-ux-08-make-status-and-connection-checks-truthful-for-the-local-demo",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8038ebbb183c0a40a2",
+      "name": "[P1 · UX-14] Give every end-of-game result a grounded, recoverable explanation",
+      "desc": "Audit ID: UX-14\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/lose/page.tsx:164-167 hardcodes Closest moment Almost; :42/:83-94 substitutes fabricated Rookie fallback on evaluator failure; win/page.tsx:84 defaults Sharp; lose/page.tsx:220-235 hides recovery actions until summary and Retry Case creates a new generated case.\n\n## Proposed change\nShow authoritative outcome immediately; distinguish failed coaching from a player rating. Present exact lie, truth and supporting exchange with source links. Retry must either replay the same case or be renamed New case in this setting. Keep retry/home/transcript accessible during evaluator delay.\n\n## Acceptance\nEvaluator offline: result remains usable, no invented rating/Almost appears, transcript opens immediately. Retry behavior matches its label. Every claimed closest moment links to the actual turn or says no decisive contradiction found.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.",
+      "url": "https://trello.com/c/Na4MWjbe/41-p1-ux-14-give-every-end-of-game-result-a-grounded-recoverable-explanation",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfa9dfde7ba318f74f9a",
+      "name": "[P1 · ARCH-02] Upgrade security baseline with paired Next and ESLint config",
+      "desc": "Audit ID: ARCH-02\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nInstalled Next16.1.6; audit18 packages (critical1/high14/moderate2/low1). Registry candidate16.3.8. npm audit proposes inappropriate ESLint-config downgrade14.2.35 for some paths. next.config enables AVIF.\n\n## Proposed change\nUpdate Next+eslint-config-next together; refresh lockfile/transitives; inspect runtime/tooling reachability; do not blindly force audit fixes.\n\n## Acceptance\nnpm ci, lint, typecheck, build, full fixture game, image routes and production audit pass; unresolved advisories documented with reachability and decision.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nImplementation checkpoint · 3 Oct 2026\nCompatible modern baseline installed: Next16.3.8/React19.3/Motion14/Tailwind4.3.3/Node24.21/npm11.21. Clean install succeeds. Production audit0; five high dev-chain braces advisories remain with no patched release found. ESLint10 exceeds plugin peer ranges. No forced downgrade/suppression.",
+      "url": "https://trello.com/c/KrIn92iw/51-p1-arch-02-upgrade-security-baseline-with-paired-next-and-eslint-config",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfaa190f57ee0d447119",
+      "name": "[P2 · ARCH-03] Pin a reproducible Node24 and package-manager baseline",
+      "desc": "Audit ID: ARCH-03\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nNo engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.\n\n## Proposed change\nPin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.\n\n## Acceptance\nFresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.",
+      "url": "https://trello.com/c/WdaHGW0K/52-p2-arch-03-pin-a-reproducible-node24-and-package-manager-baseline",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb431fe98442a3f7dd4",
+      "name": "[P2 · ARCH-10] Split game orchestration and enforce readable module limits",
+      "desc": "ARCH-10 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRaw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.\n\nChange\nThin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150–200 lines; review200/250, hard300 executable; functions30/50 and complexity10.\n\nAcceptance\nLint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/LrN9LMel/59-p2-arch-10-split-game-orchestration-and-enforce-readable-module-limits",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb887e57ba79c782401",
+      "name": "[P2 · ARCH-14] Remove stale dependencies and stage low-risk library updates",
+      "desc": "ARCH-14 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nNeon zero source imports after221722f Supabase switch. Same-major registry candidates recorded; latest TS7/ESLint10/Motion14 not validated together.\n\nChange\nRemove Neon; same-major Supabase/font/Tailwind pair/Motion12/ESLint9 updates in bounded groups; remove Mistral only after capability+script migration; evaluate major jumps individually.\n\nAcceptance\nImport scan/install/build/fixture game prove removal; dependency diff reviewed; no forced major or unexplained lockfile churn.\n\nDependencies: ARCH-02, ARCH-03.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nRemoved unused Mistral SDK and updated compatible runtime/tooling. Lockfile retained and clean npm ci executed. Five high dev-chain braces advisories and ESLint deprecation remain explicit; production audit0.",
+      "url": "https://trello.com/c/WmMdtKzr/61-p2-arch-14-remove-stale-dependencies-and-stage-low-risk-library-updates",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72bac1c1a8b9544f3d9",
+      "name": "[P1 · GAMEPLAY-DIALOGUE] Expand contextual dialogue and meaningful conversation options",
+      "desc": "GAMEPLAY-DIALOGUE\n\nUser-authorized scope addition, 2026-10-03.\n\nAdd richer suspect dialogue and distinct player approaches using the original Git-history mechanics. Preserve free text and voice; optional suggested approaches should depend on revealed evidence and never expose hidden solutions. Acceptance: playable branching examples; repetition/diversity checks; accessible controls; no fabricated clue progress; compare with baseline game.\n\nImplementation checkpoint · 3 Oct 2026\nEditable Clarify/Leave space/Present evidence approaches integrated with actual accepted dialogue and transcript; no automatic evidence reward. Deterministic tests and actual local Codex calls executed. Wider dialogue variety and browser/player review pending.",
+      "url": "https://trello.com/c/i1IERgNz/63-p1-gameplay-dialogue-expand-contextual-dialogue-and-meaningful-conversation-options",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72fb749e8b0d087beb6",
+      "name": "[P1 · GAMEPLAY-EVIDENCE] Connect evidence, statements and contradiction challenges",
+      "desc": "GAMEPLAY-EVIDENCE\n\nUser-authorized scope addition, 2026-10-03.\n\nLet players inspect known evidence, connect it to suspect statements and issue a focused challenge. Preserve noir presentation and existing accusation goal. Acceptance: evidence traceability, keyboard path, no future-secret leaks, validated contradiction progression and coherent reveals across replay/live providers.\n\nImplementation checkpoint · 3 Oct 2026\nAuthored reviewed case integrated: exact-source pinning, exhibit challenges, wrong/right branches, canonical progress, replay, accusation and recovery. Real Codex HTTP playthrough executed. Unbound live paraphrases are unreviewed, not falsely wrong. Browser usability and broader claim binding pending.",
+      "url": "https://trello.com/c/66zMydF6/65-p1-gameplay-evidence-connect-evidence-statements-and-contradiction-challenges",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d730a9486f511d77b376",
+      "name": "[P1 · GAMEPLAY-EVAL] Red-team the game and test whether the new loop is fun and fair",
+      "desc": "GAMEPLAY-EVAL\n\nUser-authorized scope addition, 2026-10-03.\n\nUse full Git-history intent plus gameplay research to build an evaluation set for direct/indirect probes, false premises, repeated questions, off-topic pressure, prompt injection, malformed AI responses and alternate valid accusations. Acceptance: measured outcomes, fair judgments, diverse dialogue, difficulty/accessibility comparison and real playtest/rehearsal evidence. Do not equate automated scores with proven fun.\n\nImplementation checkpoint · 3 Oct 2026\nSeparate consistency review tested with 6 predeclared live Codex calls: 4 flawed cases rejected, known defects sometimes missed, one valid control falsely rejected. Full criteria matched 3/6. Preserve this failure evidence in docs/audit/GENERATED-REVIEW.md; actual player fun/fairness and broader solvability remain unverified.\n\nImplementation checkpoint · 3 Oct 2026 · integrated 297-test gate\nV2 calibration preserves six frozen v1 cases and adds two authored controls. Eight live reviews matched6/8 full criteria (7/8 binary labels), but falsely accepted a registered-phone-to-person inference. Extra-lie/role-conflict detection and authored-control acceptance improved; the tradeoff stays explicit. No real-player fun/fairness, broader generated discovery or browser proof. No new generation or post-sample prompt tuning. See docs/audit/GENERATED-REVIEW-V2.md and frozen evidence/generated-review-v2.json.",
+      "url": "https://trello.com/c/FBRyT59O/66-p1-gameplay-eval-red-team-the-game-and-test-whether-the-new-loop-is-fun-and-fair",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d73293a3bacc626461b1",
+      "name": "[P1 · DOCS] Update all project documentation to the implemented product",
+      "desc": "DOCS\n\nUser-authorized scope addition, 2026-10-03.\n\nRefresh README, setup, env examples, architecture, module ownership, providers, local Codex vs hosted API, voice, migrations, test commands, troubleshooting, privacy/data retention and demo rehearsal. Preserve historical audit as baseline. Acceptance: commands executed on fresh setup; every claim/config reference matches code and proof; no credentials committed. Update incrementally, final review after implementation.\n\nImplementation checkpoint · 3 Oct 2026\nAdded docs/ARCHITECTURE.md, LOCAL-DEMO.md and audit/ACCEPTANCE-COVERAGE.md mapping all70 cards. Links resolve. README, fallback, generation and implementation ledgers updated against228-test integrated gate. Final setup/browser/voice/publication claims remain gated.",
+      "url": "https://trello.com/c/06YDD6k8/67-p1-docs-update-all-project-documentation-to-the-implemented-product",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd772e7f0ff16106de8d",
+        "name": "In progress"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0ced84fc1263093bc246f",
+      "name": "[P1] Run the real desktop, keyboard, audio and screen-share acceptance pass",
+      "desc": "VERIFY · P1 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nBrowser tool reported permission declined for http://localhost:3187. Existing screenshot is historical. No live UI/audio/screen-reader/viewport QA was executed in this audit.\n\nChange\nOnce browser access is available, test target desktop at16:9 and narrower viewport, keyboard-only flow, focus management, high contrast and reduced motion. Execute mic denial, silent/text path, provider timeout, retry, timeout/loss, give up, refresh and navigation teardown. Check system audio through the actual call software.\n\nAcceptance\nSaved screenshots/recording and a dated checklist from the true user flow. No hidden setup blocker; no stuck phase; identical authoritative score; microphone/audio released on exit. Log untested devices rather than implying broad compatibility.\n\nMerged UX-25: test long content, 200% zoom, keyboard dialogs/inputs, reduced motion, lost audio, provider outage and small viewport. Save dated screenshots and real flow recordings; baseline screenshot does not prove current UI.\n\nDependencies: DEMO, EVAL.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/jMMDT4OO/5-p1-run-the-real-desktop-keyboard-audio-and-screen-share-acceptance-pass",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf18ea2d1256e2d0d0e6",
+      "name": "[P1 · LOGIC-04] Return the same score and time semantics everywhere",
+      "desc": "LOGIC-04 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngame-session.ts:63-65,148-151,167-172 measures wall time since generation and includes accusation user messages; useGameTimer.ts:38-70 ticks only active/non-speaking time; game/page.tsx:230 excludes accusations from questions; win/page.tsx:43-54 computes local score while leaderboard/route.ts:41-71 recomputes server score.\n\nChange\nChoose active gameplay time versus wall time explicitly. Start clock on accepted Begin; track pause semantics centrally. Freeze a single score breakdown on win and render/store it without client recomputation. Count question event types, not string prefixes.\n\nAcceptance\nSpend time on briefing, slow AI, TTS, and wrong accusation; win screen, saved history, export and leaderboard show identical time/count/score under the chosen rules.\n\nMerged ARCH-13: freeze selected mode per session; drive display from authoritative state/timestamps. Use shared start/pause/cap definitions and immutable terminal result.\n\nDependencies: none specified.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nCanonical stats include playMode/ranked; elapsed retained but untimed score excludes time penalty. Only challenge wins issue ranking tokens; forged ranked bodies and unknown legacy rows rejected. Mode/scoring tests executed; hosted migration004 and UI acceptance pending.",
+      "url": "https://trello.com/c/yXJRliEu/12-p1-logic-04-return-the-same-score-and-time-semantics-everywhere",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf19938e24a5263fd470",
+      "name": "[P1 · LOGIC-05] Respect Unlimited mode and define one timer policy",
+      "desc": "LOGIC-05 · P1 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/api/interrogate/route.ts:23-26,74-85 ignores session.timerMode; game-session.ts:25,71 stores it. Root executed easy Unlimited session at 601s returning timeExpired:true.\n\nChange\nUse session timer mode and a shared policy. If Unlimited retains an operational cap, label it accurately. Separate active time and provider time; ensure accusation/finalization follows the same deadline.\n\nAcceptance\nAll four difficulties in both modes obey documented elapsed thresholds and remain consistent with the displayed timer.\n\nDependencies: LOGIC-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nExplicit Challenge/Relaxed/Endurance policy now controls deadline, pressure and ranking. All 12 mode/difficulty combinations and server enforcement tested. Real relaxed session/end/recovery executed. Browser timer behavior remains acceptance work.",
+      "url": "https://trello.com/c/IS7nUKSj/13-p1-logic-05-respect-unlimited-mode-and-define-one-timer-policy",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf1cf7f198323a3d0162",
+      "name": "[P1 · LOGIC-07] Make win redemption atomic, idempotent and retryable",
+      "desc": "Audit ID: LOGIC-07\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\ngame-session.ts:192-208 consumes token map then allows session fallback; leaderboard/route.ts:41-48 consumes before insert at75-93. Root executed token accepted twice while session alive and 500 then 401 after failed DB write with session deleted.\n\n## Impact\nLocal: P1 lost success record if demo includes leaderboard. Hosted: P1 duplicate/irrecoverable submission.\n\n## Proposed change\nReplace parallel token sources with one durable terminal result and a unique result/session ID on leaderboard. Perform redemption and write atomically, and return the prior success on duplicate request. Preserve retries on known failed writes.\n\n## Acceptance\nConcurrent double submission makes one row; DB failure then retry succeeds; process restart preserves retry; exact repeated submission returns the same result.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/LOGIC-SECURITY.md. Audit finding; implementation not completed.\n\nImplementation checkpoint · 3 Oct 2026\nLocal atomic redemption, duplicate/retry and failed-write paths executed (leaderboard-* tests). Hosted Supabase delivery/RLS not executed. Browser save interaction pending.",
+      "url": "https://trello.com/c/Kg6KTqLL/15-p1-logic-07-make-win-redemption-atomic-idempotent-and-retryable",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf1e1272d5ace9d2906c",
+      "name": "[P1 · LOGIC-08] Make leaderboard submission status and retry visible",
+      "desc": "LOGIC-08 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/game/win/page.tsx:173-180 sets leaderboardSubmitted before response, ignores HTTP status and returned canonical score, omits cluesFound and user DB headers.\n\nChange\nUse idle/saving/saved/error states. Check response status/schema; show retry without losing initials; use the canonical score/result. Do not require public leaderboard for the local demo.\n\nAcceptance\nMock 401, 500, offline and delayed responses: show truthful state and successful retry, no false saved indicator, and exact clue count.\n\nMerged UX-09: InitialsEntry reports Recorded before persistence succeeds. Do not open initials automatically over reveal. Label/remove seeded entries; identify saved row by record ID rather than initials. Verify pending/saved/failed/retry and continue-without-saving.\n\nDependencies: LOGIC-07.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nConfirmed receipt-based save/retry UI implemented; route/client tests executed. Actual browser save and keyboard review pending.",
+      "url": "https://trello.com/c/z9vdpT72/16-p1-logic-08-make-leaderboard-submission-status-and-retry-visible",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf21068f7ee2820ebf13",
+      "name": "[P1 · LOGIC-10] Keep learned patterns authoritative and versioned",
+      "desc": "LOGIC-10 · P1 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\npatterns/route.ts:20-63 trusts client difficulty/outcome/questions instead of stored events; usePatterns.ts:18-22 labels latter half of questions effective from final stress. Executed brand-new easy session saved an expert win with fabricated effective question.\n\nChange\nDerive patterns from finalized server events only. Record causal per-turn stress/clue changes, accepted outcome, case/model/prompt version and evidence. Do not call second-half questions proven effective. Disable cross-session adaptation until evaluated.\n\nAcceptance\nFresh/unfinished session cannot submit win; wrong difficulty/outcome ignored; repeated export remains one record; effective questions trace to actual accepted clue/stress events.\n\nDependencies: LOGIC-03, LOGIC-01.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nTerminal server facts replace client-supplied outcomes/statistics. Six retrieval boundary tests executed, including forged payload rejection. Live DB migration and retrieval quality pending.",
+      "url": "https://trello.com/c/eAVVr6Dz/18-p1-logic-10-keep-learned-patterns-authoritative-and-versioned",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf22e79bf90ff6902947",
+      "name": "[P2 · LOGIC-11] Persist correct loss reasons and stop labeling all losses as timeout",
+      "desc": "LOGIC-11 · P2 · executed\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nevaluate/route.ts:41-45 inspects last assistant text instead of explicit event; useEndGame.ts:64-77 inserts user marker followed by assistant reply; patterns/route.ts:8 excludes lose_lawyer; mistral/evaluate.ts:162 always says ran out of time. Executed timeout exported lose_accusations.\n\nChange\nPersist reason at terminal transition and pass it to debrief and learning/export. Include lawyer-up consistently in type/schema. Use actual difficulty on loss (lose/page.tsx:74 uses missing query default medium).\n\nAcceptance\nWin, three wrong attempts, expiry, give-up and lawyer-up persist and render distinct correct outcomes/difficulty.\n\nDependencies: LOGIC-03.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nExplicit loss outcomes survive end/evaluate/recovery. Terminal speech is recorded once and excluded from closest-moment selection. Integration regressions and real give-up HTTP loss/recovery executed. Browser result display pending.",
+      "url": "https://trello.com/c/DDvju61o/19-p2-logic-11-persist-correct-loss-reasons-and-stop-labeling-all-losses-as-timeout",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf2421411ee1331170ce",
+      "name": "[P1 · LOGIC-12] Add session checkpoint and result recovery suitable for local demo and Vercel",
+      "desc": "LOGIC-12 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngame-session.ts:34-46 stores state/tokens/locks only in process global maps; game/page.tsx:107-132 always generates a case on mount; evaluate/route.ts:48 deletes session; win/page.tsx:117 and lose/page.tsx:83 reevaluate on each mount.\n\nChange\nUse a storage adapter: local SQLite or durable file DB for demo and durable hosted store later. Persist current session and terminal result; resume by session ID. Reopening result should read cached result, not pay for reevaluation or erase evidence.\n\nAcceptance\nRefresh active game, restart local server, revisit result page and route requests through two server instances: same case/progress/result recovers and no duplicate provider evaluation.\n\nMerged ARCH-16: do not require hosted infrastructure for local rehearsal. A resettable single-process store is acceptable for the first controlled demo if restart limits are explicit. Add local checkpoints only for the agreed recovery requirement. Shared atomic sessions/tokens/limits are required for later Vercel.\n\nDependencies: ARCH-10, LOGIC-13, LOGIC-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nTerminal /game?session recovery now works when browser result-cache writes fail, using canonical result URLs. Whole recovery response validated before state updates. Eight focused tests and actual localhost give-up→snapshot parser passed; browser refresh and hosted store remain pending. evidence/recovery-parser-http.json.",
+      "url": "https://trello.com/c/3I4l9RsV/20-p1-logic-12-add-session-checkpoint-and-result-recovery-suitable-for-local-demo-and-vercel",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf258557a383da8641c4",
+      "name": "[P1 · LOGIC-13] Give every expensive action a deadline, cancellation and idempotency key",
+      "desc": "LOGIC-13 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngame/components/utils.ts:32-40 only aborts client fetch; game/page.tsx:172 retries identical POST without action ID. mistral/client.ts:3-9, interrogate.ts:338-342 and tts/route.ts:107-123 show no application-level deadline/cancellation. Locks release only when awaited call settles.\n\nChange\nPropagate cancellation where provider supports it; set bounded per-operation deadline and output budget; persist idempotency keys/result replay; handle ambiguous timeout by querying action status. Retry only retryable errors.\n\nAcceptance\nDelay response beyond 15s, disconnect after server acceptance, retry and cancel: one accepted turn and one chargeable operation where provider semantics permit, with visible recoverable status.\n\nMerged ARCH-12: finalize the visible assistant response and clue event atomically after validation; replay committed result for request ID. A client timeout must never advance a turn twice.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nGeneration POST now reserves one session ID and checkpoints validated private case facts. Same-ID replay, actual child-process crashes before/after session materialization and cancellation covered. Client retains generation intent for retry. Browser remount acceptance pending.\n\nCheckpoint · 3 Oct · 297-test gate\nDurable voice receipts now bind text/audio, replay after dropped responses/restarts and avoid repeat provider work or budget reservation. Interrupted/expired attempts need explicit new intent. HTTP/client/storage tests executed. See docs/audit/VOICE-IDEMPOTENCY.md. Browser, real microphone/playback and billing remain unverified; no universal one-charge guarantee.",
+      "url": "https://trello.com/c/EG7qbDYi/21-p1-logic-13-give-every-expensive-action-a-deadline-cancellation-and-idempotency-key",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf309e89aea522364082",
+      "name": "[P2 · LOGIC-20] Make completion exports reliable and observable",
+      "desc": "LOGIC-20 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngame-session.ts:242-270 launches unawaited Supabase upsert and only logs returned error;evaluate route deletes session immediately afterward. db.ts:10 placeholder client still performs network when used;README:170 says completed games are persisted.\n\nChange\nPersist terminal event and outbox locally before returning; use await or durable background processing with retry/error visibility. Make unconfigured DB an explicit disabled adapter, not a placeholder host. Document retention and avoid raw secrets/transcripts in routine errors.\n\nAcceptance\nDB outage and process shutdown retain pending export; resume produces one complete export; demo without DB performs no placeholder network call and reports local-only persistence.\n\nMerged ARCH-15: one explicit persistence destination, with local-only or disabled mode supported. State retention intent and redact logs; no placeholder host traffic when storage is unconfigured.\n\nDependencies: LOGIC-12.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nFixed saved-before-durable-confirmation defect. Actual temporary-filesystem rename failure after injected remote201 returns pending, retains durable outbox and retries same record safely;12export acceptance tests pass. Live Supabase delivery remains unverified. evidence/export-acceptance.txt.",
+      "url": "https://trello.com/c/ig7RCDyv/28-p2-logic-20-make-completion-exports-reliable-and-observable",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7752f131ee73d77a60",
+      "name": "[P1 · UX-07] Show the actual case briefing before the timer starts",
+      "desc": "Audit ID: UX-07\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/BriefingScreen.tsx:111-123 places Begin Interrogation above Play Briefing; BriefingDialog.tsx:19-38 hides unspoken text; LeadStickies.tsx:9 hides leads below lg; app/game/page.tsx:152 launches onboarding only in active phase.\n\n## Proposed change\nPresent crime, cover story and initial leads as readable briefing content first. Make narration optional and transcript immediately available; preserve tape art as an enhancement. Complete onboarding before active play and provide a named start action. Reuse authoritative timer pause rules.\n\n## Acceptance\nFresh profile can read all leads without audio or desktop-width requirement. Timer remains unchanged through briefing/onboarding. Starting play begins one session with known goal and visible input.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nOnboarding now centered named native modal during briefing, accurate stress/evidence guidance, and dismissal survives blocked storage. No arrows target absent gameplay. Three focused tests passed; actual fresh-profile keyboard/timer/browser checks still pending.",
+      "url": "https://trello.com/c/FUoAUiIM/35-p1-ux-07-show-the-actual-case-briefing-before-the-timer-starts",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7a054ee7dcb9f544a0",
+      "name": "[P1 · UX-10] Unify accessibility preferences across the entire application",
+      "desc": "Audit ID: UX-10\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/page.tsx:266 applies high-contrast only to active game; globals.css:239-260 overrides gray classes but not text-black/opacity paper labels; app/settings/page.tsx:30-43 differs from game/hooks/useSettings.ts:4-11; globals.css:265-274 only controls CSS durations.\n\n## Proposed change\nOne typed settings source and preferences provider should govern home, cases, briefing, game, overlays and results. Add reduced-motion controls governing Framer, requestAnimationFrame canvas and SiriWave. Replace hardcoded low-emphasis colors with tested semantic text tokens on both paper and dark surfaces.\n\n## Acceptance\nSet preferences once and traverse every screen: choices persist and affect all relevant text/surfaces. Reduced-motion run has no indefinite decorative canvas/waveform movement. Measure actual rendered contrast in both themes and resolve AA failures.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nShared preferences now drive global text size/high contrast and reduced motion in CSS/Motion/canvas/waveform; selected controls expose state. Scoped tests executed. Real whole-app contrast, focus and 200% text acceptance pending.",
+      "url": "https://trello.com/c/GNomhWYw/37-p1-ux-10-unify-accessibility-preferences-across-the-entire-application",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf7e00b55f1a64795ca8",
+      "name": "[P1 · UX-13] Make audio controls explicit and tune a screen-share preset",
+      "desc": "Audit ID: UX-13\nPriority: P1\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/game/components/TopBar.tsx:16/:52 uses music-only state/label while app/game/page.tsx:269-277 mutes music, SFX and voice; useVoiceRecorder.ts:42 stops after two seconds silence; settings defaults differ by NODE_ENV.\n\n## Proposed change\nSeparate master mute from music and voice. Provide reliable text fallback, microphone/device test and voice sample before demo. Use an optional screen-share preset with intelligible speech, low music, subdued foley; make auto-stop behavior visible and allow manual finish.\n\n## Acceptance\nMusic muted with voice on shows correct state. Master mute silences all channels and restores intended volumes. Record a complete spoken turn over the intended call setup; transcript and speech remain intelligible and pause in thought does not accidentally spend an accusation.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nTopBar labels master audio truthfully and computes all channels; unmute preserves previously zero channels. Unit regression executed. Real audible screen-share preset, microphone and ElevenLabs playback remain unverified.",
+      "url": "https://trello.com/c/k6PXk9s9/40-p1-ux-13-make-audio-controls-explicit-and-tune-a-screen-share-preset",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8a8ea03c8ef83017d0",
+      "name": "[P2 · UX-24] Handle small windows and movable panels without offscreen loss",
+      "desc": "Audit ID: UX-24\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nBriefingDialog.tsx:70 fixes 32rem x 36rem; NotesPanel.tsx:29 fixes width 360 and :53-58 allows unconstrained drag; SettingsPanel.tsx:62/:72 same; leaderboard/page.tsx:84/:123 fixed 6-column grid.\n\n## Proposed change\nConstrain panels to viewport and offer Reset position; use pointer events and keyboard alternatives or eliminate drag where unnecessary. Briefing must fit small/shared windows and expose leads. Replace narrow leaderboard grid with semantic responsive table/card layout.\n\n## Acceptance\nAt 390px width, 720px height and 200% zoom, all panel actions are reachable. Drag to every edge and resize window; panel can always be recovered. Keyboard can accomplish all essential actions without dragging.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nShared native-dialog utility panels support bounded pointer/keyboard movement, reset and scrollable content. Geometry/control regressions and strict checks executed. Real dragging, focus and small-window layout await browser permission.",
+      "url": "https://trello.com/c/H7LpaHdX/47-p2-ux-24-handle-small-windows-and-movable-panels-without-offscreen-loss",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cf8bd5a28597c9520c53",
+      "name": "[P2 · UX-26] Separate challenge mode from a genuinely relaxed accessibility mode",
+      "desc": "Audit ID: UX-26\nPriority: P2\nEvidence status: code-path\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\napp/settings/page.tsx:198 says Unlimited removes pressure but :217 warns AI is tougher; help/page.tsx:230-235 confirms harder/cryptic suspect and lawyer-up condition.\n\n## Proposed change\nMake time pressure and AI difficulty independent. Offer relaxed play with timer off and unchanged chosen difficulty; reserve tougher unlimited rules for an explicitly named challenge option. Explain score/leaderboard differences at selection.\n\n## Acceptance\nTurning off timer leaves chosen difficulty, clues and suspect behavior unchanged in relaxed mode. A separate challenge option explains additional rules before start; result records the actual mode.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/DESIGN-ASSETS.md. Source/asset review only; live browser interaction remains unverified. No product fix is claimed.\n\nImplementation checkpoint · 3 Oct 2026\nChallenge, Relaxed and Endurance rules implemented and shown before Begin. Both untimed modes are unranked with no time penalty; only Endurance Hard/Expert permits lawyer pressure. Regression covers all 12 mode/difficulty combinations and forged ranking claims. Real relaxed give-up/recovery executed. Browser inspection and SQL migration004 remain pending.",
+      "url": "https://trello.com/c/UMy6DlzN/48-p2-ux-26-separate-challenge-mode-from-a-genuinely-relaxed-accessibility-mode",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfadc9d8e4e28e6a6fbf",
+      "name": "[P1 · ARCH-05] Prove local Codex subscription adapter for interview",
+      "desc": "ARCH-05 · P1 · proposal\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nRoot verified CLI0.144.1 and ChatGPT login; official exec supports saved auth/schema. No inference, latency or end-to-end game integration tested.\n\nChange\nLocal-only adapter with isolated input/cwd, no unrelated tools or source access, bounded queue/deadline, cancellation/schema validation; never expose generic exec or copy auth to Vercel. Verify installed CLI controls first.\n\nAcceptance\nTen real browser turns and correct/incorrect accusation via signed-in Codex; measure latency; demonstrate quota/timeout/malformed/cancel handling; no command/file tool use or credentials visible.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nReal Codex subscription adapter and local HTTP authored case → evidence challenge → wrong/right accusation → debrief/recovery executed. Evidence: docs/audit/evidence/local-http-gameplay.json. Browser/voice and wider fairness review pending.",
+      "url": "https://trello.com/c/DyvVTbeR/54-p1-arch-05-prove-local-codex-subscription-adapter-for-interview",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb0e15e8b4883c3fdee",
+      "name": "[P1 · ARCH-07] Migrate STT to ElevenLabs and update deprecated speech model",
+      "desc": "ARCH-07 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\napp/api/transcribe uses Voxtral; tts uses eleven_turbo_v2_5, officially deprecated in favor of Flash2.5; dev default disables TTS.\n\nChange\nElevenLabs STT+TTS adapters/server credentials; audition Flash2.5; explicit local demo voice configuration, valid media MIME/file names and provider health.\n\nAcceptance\nReal mic→transcript→question→suspect speech, stable voices, readable date/currency pronunciation, text fallback on unavailable voice; actual video-call audio-share verified.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nElevenLabs scribe_v2 / eleven_flash_v2_5 server adapters and authorization/lifecycle tests implemented. Real credentials, microphone transcription and playback not executed.\n\nLive plugin checkpoint · 3 Oct\nOne Flash2.5 sample completed:1.6254s, reported12.5credits; no paid retry. See docs/audit/ELEVENLABS-LIVE-CHECK.md. Reported10,000 balance not independently read. Local game has no ELEVENLABS_API_KEY; plugin success does not prove game TTS/STT, microphone, playback or screen-share audio.",
+      "url": "https://trello.com/c/twOu11ZB/56-p1-arch-07-migrate-stt-to-elevenlabs-and-update-deprecated-speech-model",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb1eb9f762137819c2e",
+      "name": "[P1 · ARCH-08] Unify cancellable voice and microphone lifecycle",
+      "desc": "ARCH-08 · P1 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\nuseVoiceRecorder lacks unmount cleanup/AudioContext ownership; useTTS pending fetch not aborted and URL not revoked on skip/unmount. Routes buffer complete audio.\n\nChange\nShared lifecycle player/recorder with AbortController, generation ID, exact-once callback and resource cleanup; measure latency before adding documented streaming path.\n\nAcceptance\nStop, skip, navigate, switch case during pending/playing speech; no stale playback, open tracks, leaked blob URL or duplicate completion; provider failure preserves active text game.\n\nDependencies: ARCH-07.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.",
+      "url": "https://trello.com/c/qqq7lx4W/57-p1-arch-08-unify-cancellable-voice-and-microphone-lifecycle",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfb3d5a64d149880b3a7",
+      "name": "[P2 · ARCH-09] Make retrieval optional and version embedding migration",
+      "desc": "ARCH-09 · P2 · code-path\nBaseline f8d4c3c; audit 3 Oct 2026.\n\nEvidence\ngenerate-case performs Mistral embedding+Supabase RPC; README schema vector1024; no Codex embedding interface; spaces not compatible across providers.\n\nChange\nDisable RAG or use explicitly curated local tactic set for rehearsal; future hosted embeddings get versioned column/index and complete re-embedding.\n\nAcceptance\nLocal case works without database/embedding credentials; later retrieval evaluation compares known query/results; never mix old/new embeddings.\n\nDependencies: ARCH-04.\nFull evidence: docs/audit/AUDIT.md and specialist reports. Audit only; no fix claimed.\n\nImplementation checkpoint · 3 Oct 2026\nRetrieval defaults off with explicit status and no network calls. Separate versioned OpenAI embedding table/migration prevents legacy mixing; mocked adapter tests pass. Live embeddings/SQL unverified.",
+      "url": "https://trello.com/c/OwPtLddx/58-p2-arch-09-make-retrieval-optional-and-version-embedding-migration",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0e0e76f96bf7c9e22e77d",
+      "name": "[P1 · GAMEPLAY-MAP] Show a simple conversation path after win or loss",
+      "desc": "User scope addition, 3 Oct 2026.\n\nAdd a compact conversation flowchart to both outcome screens, matching the existing noir/case-file style. Show the path actually taken and which evidence challenges/accusations were supported or wrong. Keep ordinary questions neutral unless authoritative evidence supports a judgment; do not invent alternative branches or label dialogue from stress/tone.\n\nAcceptance: win and loss both show a readable responsive path; exact source text is inspectable; wrong-then-right accusations retain their own verdict; evidence links connect the challenged statement and exhibit; keyboard and reduced-motion support; no color-only meaning. Long conversations remain manageable. Verify result reload/recovery and truthful canonical outcome data, then inspect in the browser when authorized.\n\nImplementation checkpoint · 3 Oct 2026\nWin/loss path implemented with canonical evidence and accusation verdicts, source details and explicit unverified live wording. Real localhost Codex win and give-up loss both executed; result reload retains the path. Evidence: docs/audit/evidence/local-http-gameplay-map.json and result-conversation-path tests. Browser layout/keyboard/reduced-motion inspection pending.",
+      "url": "https://trello.com/c/LHeOgx1c/70-p1-gameplay-map-show-a-simple-conversation-path-after-win-or-loss",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+        "name": "Verify"
+      },
+      "complete": false,
+      "closed": false
+    },
+    {
+      "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0cfa788a928491277df56",
+      "name": "[P1 · ARCH-01] Fix export CLI auth regression and secret logging",
+      "desc": "Audit ID: ARCH-01\nPriority: P1\nEvidence status: executed\nBaseline: f8d4c3c; audit 2026-10-03.\n\n## Evidence\nf8d4c3c changed endpoint to Authorization; scripts/export-data.ts:22–29 still puts secret in URL/log. Synthetic execution with mocked fetch/filesystem confirmed secret in URL/log and no auth header. No real secret/network used.\n\n## Proposed change\nUse Bearer Authorization; remove secret query/log output; preserve filters; lock tsx runner as dev dependency or supported Node runner.\n\n## Acceptance\nExecute CLI against controlled fixture export: success with header; missing/wrong auth returns401; captured logs and URL contain no token; pagination/output valid.\n\n## Dependencies\nNone specified.\n\nSource: docs/audit/ARCHITECTURE.md. Upgrade plan only; no dependency/provider migration is completed.\n\nAcceptance executed · 3 Oct 2026\n12 export tests pass. Real child-process CLI → actual local HTTP route → private durable completion file succeeds with Bearer header. Missing/wrong/scheme-invalid auth rejected401; logs/URL contain no credential; filters, offset/limit and JSONL checked. Failed/invalid responses preserve prior files. Evidence: docs/audit/evidence/export-acceptance.txt. This completes the controlled CLI acceptance only, not live Supabase delivery.",
+      "url": "https://trello.com/c/BFL5uEUP/50-p1-arch-01-fix-export-cli-auth-regression-and-secret-logging",
+      "list": {
+        "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7ad0738ad29de38e1c",
+        "name": "Done"
+      },
+      "complete": true,
+      "closed": false
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-03",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "fixture": "Authored fictional office alibi; no real person or user data",
+  "scope": "Three provider capability checks, not a full game/browser/voice playthrough",
+  "checks": [
+    {
+      "name": "suspect",
+      "elapsedMs": 11009,
+      "result": {
+        "spoken_response": "I left at six. The office was all squared away, so I headed home.",
+        "stress_level": 0,
+        "clue_unlocked": null,
+        "caught": false
+      }
+    },
+    {
+      "name": "correct-judge",
+      "elapsedMs": 8149,
+      "result": {
+        "correct": true,
+        "confession": "Yes—I lied about not coming back. I left at six, but returned to the building at 18:42 to retrieve my coat. The signed visitor record is right, and I shouldn’t have denied it. I was afraid the return would look suspicious.",
+        "explanation": "Casey returned at 18:42, and the signed visitor record contradicts Casey’s claim that they did not return after six."
+      }
+    },
+    {
+      "name": "incorrect-judge",
+      "elapsedMs": 7862,
+      "result": {
+        "correct": false,
+        "confession": "That’s an unfair accusation, and I won’t accept being called guilty without evidence. I left at six and did not return that evening.",
+        "explanation": "The specific lie was Casey’s claim that they did not return after six, contradicted by the visitor record showing a return at 18:42."
+      }
+    }
+  ]
+}

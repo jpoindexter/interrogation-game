@@ -1,0 +1,16 @@
+✔ terminal win recovery preserves canonical result, transcript and score token without activating timer (1.012583ms)
+✔ all loss causes recover their canonical flags and route without a new timeout (0.251292ms)
+✔ blocked browser storage still opens the canonical result recovery link (0.161291ms)
+✔ session route response passes the same recovery parser for briefing, active and terminal states (101.532041ms)
+✔ malformed successful recovery payloads fail before client state can be restored (20.976291ms)
+✔ terminal recovery rejects mismatched result cause and retains accepted message metadata (20.830958ms)
+✔ a confirmed win still navigates to server recovery when browser storage is full (0.814542ms)
+✔ URL result recovery derives the canonical outcome without reading browser storage (0.212542ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 505.116375

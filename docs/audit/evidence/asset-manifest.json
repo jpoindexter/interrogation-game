@@ -1,0 +1,2035 @@
+{
+  "date": "2026-10-03",
+  "scope": "All current public files; byte inventory is not network-transfer measurement. Dimensions read from PNG headers or macOS sips. No artwork modified.",
+  "files": 134,
+  "totalBytes": 33413148,
+  "assets": [
+    {
+      "path": "/bg/ai_lab.png",
+      "bytes": 430199,
+      "sha256": "30c0fbd01fe69938d6e5319fdcc3a581212ed959efa7f3edd1f2dc0e4ceacab4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/ceos_office.png",
+      "bytes": 574355,
+      "sha256": "b3beb4d8dee46ee1637d528b541a64ed6b4b03e976c51c8de5936a39d937c91f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/lawfirm.png",
+      "bytes": 370634,
+      "sha256": "33dd5043d46fe0f4b5de35a84023b3ca6f93e99c97b5b5f0ee103589c2c74d6c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/medical.png",
+      "bytes": 459456,
+      "sha256": "a50bb9fa004d30beabb7f3420b461060fc8a0205b8e35a23b02afc5a8a3c7694",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/office.png",
+      "bytes": 523591,
+      "sha256": "3fb720d5c55aab15425aa46df92e42f79296c7401ce116702033bd83597312f5",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/police.png",
+      "bytes": 423323,
+      "sha256": "4f7fea58402244f84e2a6c76d9b9204dad2cc1474a3c35a7601e8d6e63dde127",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/server.png",
+      "bytes": 492051,
+      "sha256": "cfa04b8204b43212b45779d7c1734bc565467f9f54b7333c8098cbd768ecbb15",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/startup.png",
+      "bytes": 489628,
+      "sha256": "00835806a90c3d631c0074fc0c3002f6109728df8ade7b46352d16f2c0e3335c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/bg/trade.png",
+      "bytes": 479756,
+      "sha256": "9641c40b101404189e7a112c1bc4cb9de6f2e4e17c3291ec62d5b242abf6db69",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "bg",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/clue1.png",
+      "bytes": 5833,
+      "sha256": "dbb7719c0db388d1c4f07fb6d38fbfcb31c311e3b0b541018faff0d3de0e48a7",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/clue2.png",
+      "bytes": 6207,
+      "sha256": "349cda1486343870c61031c0d4f9f486b923efa5d89393067919924e5f093453",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/clue3.png",
+      "bytes": 6243,
+      "sha256": "8cb77be01119299e0150d78076e60d2dbc675cef8e29a6768d5a83c8633fe5e7",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/coffee.png",
+      "bytes": 5231,
+      "sha256": "a8eeb26185d40d918d6030728bc9bb09f9267bf1461483c9d1fbff7954759611",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/flashlight.png",
+      "bytes": 2962,
+      "sha256": "ad4d609581c496fa3ffecdb0bb2334e821cba9b1ad625dfa5fa0c57c47922742",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/folder.png",
+      "bytes": 5893,
+      "sha256": "fb7bef9c2881e79ae6d1fce44c1f895fa57dd6e96ea56c01c780e6fc74960aef",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/result/loss-presentation.ts",
+        "app/game/win/page.tsx",
+        "app/game/components/utils.ts",
+        "app/help/guide-content.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/handcuffs.png",
+      "bytes": 5576,
+      "sha256": "fa6f941e0e95a73d5f3feed73077cb86e0a7b90ffab4240f11bea0a5f54f6bae",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/key.png",
+      "bytes": 3617,
+      "sha256": "cda0a0df57184841f07d3d0040044abffae9892dfc4110e55e881f142af3f32d",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/magnifying_glass.png",
+      "bytes": 5560,
+      "sha256": "6b70645f45f5351e995be30974d80a8a0261371af303cb080c2fa4420e7cc76b",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/notepad_pl.png",
+      "bytes": 4399,
+      "sha256": "f2ea520f39e73f24b1c82dccc2ab23989dbb638e207c740425fbbe6dd189a991",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/recorder.png",
+      "bytes": 5353,
+      "sha256": "b89aed2c17f02938cb14eb509712bd91dd7c4a61a48a63c1fed5dac36c3ada4d",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/recorder2.png",
+      "bytes": 5670,
+      "sha256": "dfad40ead65dfab7838e11484044acff7f5422a406a9c530a2541ec3f64a6dab",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/clues/walkie_talkie.png",
+      "bytes": 2110,
+      "sha256": "9d5fbe98b72dfde545c1216bdfeba29c7ee10b2f96588b55eaf0404303925fa2",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "clues",
+      "referencedBy": [
+        "app/game/components/utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/detective/desk.png",
+      "bytes": 387886,
+      "sha256": "859732c7fc05fbb757c88473fc08d90791fd672d1308114faa698f4316c9c4c3",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "detective",
+      "referencedBy": [
+        "app/cases/page.tsx",
+        "app/game/components/LoadingScreen.tsx",
+        "app/game/components/BriefingScreen.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/detective/detective-01-m.png",
+      "bytes": 240320,
+      "sha256": "b5d78b052dd0e7f4f966a4ae07de45b79e08a88d6a9087ebd6176a8b082e23a3",
+      "dimensions": [
+        1017,
+        971
+      ],
+      "group": "detective",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/detective/detective_bg.png",
+      "bytes": 588924,
+      "sha256": "267803927f9a7fe2df38b1b4b7b020ea5ea6cc05bad8575075027b68b05d082f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "detective",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/alarm_sound_time_up.mp3",
+      "bytes": 15586,
+      "sha256": "955d0674629693c79f814765f7c0b4184b1d2819e457ad58c182cb86ddb29328",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/book_close.mp3",
+      "bytes": 5555,
+      "sha256": "f5f9bf059a81bd1e5279cd970d8e6305e41e97e95221bc2186165c5e4e6964bc",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/chair_slide.mp3",
+      "bytes": 6652,
+      "sha256": "3996a98122eb8b945dbe1318f99da9d1d7a91bad4446282a81b7261742ec95dd",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/chime.mp3",
+      "bytes": 7279,
+      "sha256": "eb08dd5e1ea456082224dff0106bcb0f0d192aca8d51dea178e7a7ed3e6f6b11",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/click.mp3",
+      "bytes": 2122,
+      "sha256": "6ebe3fa9aeeec7d110562f4ee8038cd97b06c97290bdc0475b69e317d0aa19df",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts",
+        "app/lib/sfx-utils.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/clock_ticking.mp3",
+      "bytes": 6025,
+      "sha256": "dc142c950694a5fd0f863292de8c9367aaf494d9b8dc04777b0d1072e1cd9111",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/close.mp3",
+      "bytes": 2263,
+      "sha256": "d0a800382eb5ff2e354e85d78dc72fb0476e84fd58ea4ad93e1ac8ef1b0b86d4",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/clothes_russle.mp3",
+      "bytes": 6025,
+      "sha256": "3319b0f189a07c54aa1cc90852998dd3bae1eb52b1d16d0107e5b61fd8fdf37b",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/door_open_close.mp3",
+      "bytes": 9630,
+      "sha256": "e3c9329d35be3a5fce00a18b6ab137b7ca917d1503779dd6e46b0aec810ef77c",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/error.mp3",
+      "bytes": 4771,
+      "sha256": "df1158b8398c34a1783dabb68786c193e4b8b560482a58549c83c35aa9fc4bf2",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/error_not_correct.mp3",
+      "bytes": 6652,
+      "sha256": "5e5bb058a99f4a6fa790e9c25316ebbe8106d12a6b87a6b649071c4b77200a24",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/female_sigh.mp3",
+      "bytes": 6652,
+      "sha256": "7ab1478cc8217521eee3099be08cdd288a08e18f801fb245839910c33e1ae869",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/folderopen.mp3",
+      "bytes": 6025,
+      "sha256": "ed898cae8b68fba3b692c2b88e6e4629cce984c800286d149392f0da438ce5c1",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/gameover.mp3",
+      "bytes": 15586,
+      "sha256": "5e911606fe70c89cf461188af419f2a697fde550eb0dcdb902ee103d44dfd0dc",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/handcuff.mp3",
+      "bytes": 15586,
+      "sha256": "dd92a53ef4ae3e01b0d903225e27add93ef0cb8c546fe5db199d4b697d80137a",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/mic_off.mp3",
+      "bytes": 4473,
+      "sha256": "e713116cadea02d23319d2f4ae6db7b022e26dd42caf16b83ea70342a385f3ac",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/mic_on.mp3",
+      "bytes": 2107,
+      "sha256": "6fda51cb5ee6f664b12729efce16978e467b999b03a64899e2f58454ac1c5ed4",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_1.mp3",
+      "bytes": 6025,
+      "sha256": "680f35931d406844c02a77215691f86f77118b45da1fd1856b57ceff4e3fcdb5",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_ac.mp3",
+      "bytes": 12608,
+      "sha256": "1f1168426144e0f30f495c289f84e2495cc5249e8277b054ce2d303e2fc5d009",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_cough_man.mp3",
+      "bytes": 12608,
+      "sha256": "8ff4a2bd51ee79017b5d13f177c8ad5a451c09583aa1f30e5c5db716e466cac5",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_cough_woman.mp3",
+      "bytes": 12608,
+      "sha256": "d8525bfe79f94d13fac26d472cf14a4b2ab97d2a7f09b194798c7e95303b86a0",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_foottapping.mp3",
+      "bytes": 12608,
+      "sha256": "e93b982141d78c3c6f89e390ceddeaeb5e8b5543f5d063fc5e53954c222d228e",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_heel_tapping.mp3",
+      "bytes": 12608,
+      "sha256": "266b626f08a4cdcfff6fe7ab65596c22684a91c94a69f02953b03be56f59347a",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_knocking.mp3",
+      "bytes": 6025,
+      "sha256": "142bca4ded4bff3f74935fefbc629dad03bd15d0847594f4905192f87b354c35",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_scratching.mp3",
+      "bytes": 12608,
+      "sha256": "385becaff6bd4d0966f4dd4295f51a604ff9b7f6749f3de78b87e0a781d9555d",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/nervous_tapping.mp3",
+      "bytes": 12608,
+      "sha256": "1e5e5d4776f2408eba2acfa55560cf839cec6d0f009416b7df95319c7a73e95a",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/paper.mp3",
+      "bytes": 3689,
+      "sha256": "fe94fe3568aced85e01f6e15db5b4c736a65f63269be6c3451ea0de1701b387b",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/components/CaseFile.tsx",
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/paper_ruffle.mp3",
+      "bytes": 5398,
+      "sha256": "f31539d132a589162c88e766c71eeae382b9ef6bbd83c5c34b025f6b3d5f3c26",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/cases/page.tsx",
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/paper_russle.mp3",
+      "bytes": 9630,
+      "sha256": "c696e73d6670a9eadec859ab19563a2f931f87906de556ccca88f5ecf74d7ba9",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/papershuffle.mp3",
+      "bytes": 5727,
+      "sha256": "7bd0f52eaf2e273239f51dae574ac63d31549b4da445d4bb737d766e59248702",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/paperslide.mp3",
+      "bytes": 5398,
+      "sha256": "c4dc9e051c5e5effce40b1338f3085b5e0d03add4d6184eb4abce401770e5ffe",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/cases/page.tsx",
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/sigh.mp3",
+      "bytes": 7279,
+      "sha256": "9ab807e43e5f14e32798638b37b69c8498331b5335e0944343ed49af596e2ef1",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/slam.mp3",
+      "bytes": 6025,
+      "sha256": "421eb4fbbf94ed12fc841f343b547f272c35235737830cd5ff79c93749194f67",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/stampthud.mp3",
+      "bytes": 6652,
+      "sha256": "178121e7498974f25fa6c3f85142f0bcf11b62803d0ec9e949980f605e647ca1",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/standing_up.mp3",
+      "bytes": 15586,
+      "sha256": "f3e36f518c83aa198babbc8c4fa0183b3566baf766e35501ac622936486efe75",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/tape_start.mp3",
+      "bytes": 7749,
+      "sha256": "463c6e8167240870228afd81efe9828a5d088bce14eae7f1f75766e33fe8f1aa",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/tension.mp3",
+      "bytes": 10884,
+      "sha256": "9f567c69e3d49682b39f30e715861d41daca6d8b31f9fbde61fdcc99c42e2c3b",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/typewriter.mp3",
+      "bytes": 2604,
+      "sha256": "b9b89521998d2b18f107acce504ce2798ba1a1bdd007be90d85f4ff29b4754fd",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/walking.mp3",
+      "bytes": 12608,
+      "sha256": "e7513ae069ab01e7d53ae7eb01e17cb67f3be38feaf394c57c4cdeb2135ebed2",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/efx/win_sound.mp3",
+      "bytes": 8533,
+      "sha256": "bfb4bea80b826a67cb29651d4f24b3d74c633b2a8c429beff295b2271a78a226",
+      "dimensions": null,
+      "group": "efx",
+      "referencedBy": [
+        "app/game/hooks/sfx-registry.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/logo/logo-3.jpg",
+      "bytes": 148762,
+      "sha256": "bcde50b08e1b857e9114cae5f12658b025d79c688d7636bdbe9e45eaef2e68ff",
+      "dimensions": [
+        1024,
+        559
+      ],
+      "group": "logo",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/logo/logo_2.jpg",
+      "bytes": 134885,
+      "sha256": "aa7e66302fc1432ef298223b7fa0aa408d346678b88578dda27cebbf2ebb2383",
+      "dimensions": [
+        1024,
+        559
+      ],
+      "group": "logo",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/logo/main.jpg",
+      "bytes": 134885,
+      "sha256": "aa7e66302fc1432ef298223b7fa0aa408d346678b88578dda27cebbf2ebb2383",
+      "dimensions": [
+        1024,
+        559
+      ],
+      "group": "logo",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/logo/main2.png",
+      "bytes": 192224,
+      "sha256": "8fd96bca5562634248c1644e5ca486bf32f3bfd46550acd684fb023883584594",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "logo",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/logo/main3.png",
+      "bytes": 227960,
+      "sha256": "05688814c826d097fdac62f1780555f33a76623a1ea5125321f259de3ccd9a90",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "logo",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint.mp3",
+      "bytes": 1703848,
+      "sha256": "c2435a754abb874f633dfbe97e19c8edbf785e1ad0f333387dc8d987a3af8039",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint2.mp3",
+      "bytes": 1553669,
+      "sha256": "148089ad0ee35bbabff5d4bba471d715a19ff2f90fbbf47674fffd07a92e8e25",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint3.mp3",
+      "bytes": 963927,
+      "sha256": "fe06595be85df411747c77ba3f44048ce6060d93d83c408fd0c91b45c75c3c00",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint4.mp3",
+      "bytes": 1399266,
+      "sha256": "bffbb4a50739d5442aa6d2ce863e10c97f93fc3704362302060fd6c48214a2c6",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint6.mp3",
+      "bytes": 1684119,
+      "sha256": "60466b40816b6962fe536e7b3d8f4d47f5ffc7e323388242df0de110ad355216",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MidnightSavePoint7.mp3",
+      "bytes": 1681918,
+      "sha256": "ada18428754611f1977f7fdb6c7bc99b0bfe33e74086bf20b1fe09660dbe48f2",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MoonlitSavePoint4.mp3",
+      "bytes": 1717670,
+      "sha256": "9aca9987196cada4aa358e4bd714c871a563d826f4bdcc80fd7c93ea7496ed4e",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/MoonlitSavePoint5.mp3",
+      "bytes": 1366156,
+      "sha256": "3eb3b8f46cf6ad9338f14b7343ffd2d0959e418e1b43df0f3e824bf9310444c9",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/SmokeInTheSavePoint.mp3",
+      "bytes": 1213333,
+      "sha256": "4bfae07da2d631eb98781563d903ba5363923aad5a968e12a7ba895dfe37d236",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/SmokeInTheSavePoint2.mp3",
+      "bytes": 1514075,
+      "sha256": "f068e6a5499c03dad9a28bf1bd21f118e0c4e1d147fb4400c820e6cfa4f48396",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/VelvetAlleyLoop.mp3",
+      "bytes": 1890476,
+      "sha256": "7f447690400208bc66a2b85d541300ba0939e18045c22ba7223655989bc80feb",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/music/VelvetAlleyLoop2.mp3",
+      "bytes": 2308378,
+      "sha256": "5557df7b3351f33155828a1edcca618be503ba86d8e8a9296d304541252c6900",
+      "dimensions": null,
+      "group": "music",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/notes/notepad_1.png",
+      "bytes": 189761,
+      "sha256": "afd549944f23487ecd2217c48b11ceecb8bd173238e295656cf1bca579831e02",
+      "dimensions": [
+        590,
+        782
+      ],
+      "group": "notes",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/notes/notes.png",
+      "bytes": 381728,
+      "sha256": "4739063d3e57fac3c5288d79e1aba96d541c3898070906238c28a42f06ac42f0",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "group": "notes",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/notes/notes_2.png",
+      "bytes": 599714,
+      "sha256": "56c6c50cb6cbc789a15913bcdc79881aa638098e08b9b31df65aa87bddf4cd13",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "notes",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/screenshots/hero.png",
+      "bytes": 416391,
+      "sha256": "d1702de53b4eb210ff992c70e2087e9cfc442a05c57e479d193c7482f680991a",
+      "dimensions": [
+        1400,
+        910
+      ],
+      "group": "screenshots",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/solved/accusations.png",
+      "bytes": 791460,
+      "sha256": "6721d283ce24a30fd87bb930bfffe11564094e755a6a4d1b35e136465cf30cc5",
+      "dimensions": [
+        900,
+        600
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain as historical source; removed from result/help presentation because lettering is embedded."
+    },
+    {
+      "path": "/solved/case_closed.png",
+      "bytes": 84751,
+      "sha256": "0bc83a606a97304584bc9a1518d8518ce66caf292cfb337dde726b98a6317cb0",
+      "dimensions": [
+        645,
+        400
+      ],
+      "group": "solved",
+      "referencedBy": [
+        "app/cases/PolaroidCard.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/solved/caught.png",
+      "bytes": 120121,
+      "sha256": "61b09f6dd3587d63eba3c79420642b8e074bb5aea6aa272605bce289afca0ed4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain as historical source; removed from result/help presentation because lettering is embedded."
+    },
+    {
+      "path": "/solved/escaped.png",
+      "bytes": 139363,
+      "sha256": "1028a0f47734b27eb68f5475f3c6fb697f83e2d39b17649e64177beade6530c4",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain as historical source; removed from result/help presentation because lettering is embedded."
+    },
+    {
+      "path": "/solved/fail-stamp-3.png",
+      "bytes": 41119,
+      "sha256": "6b7bfdfeb74ccafedaeb1fd6be0eb54ab2ad407284e7a27d75b598f9add8e329",
+      "dimensions": [
+        1820,
+        1462
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/solved/lawyered_up.png",
+      "bytes": 177433,
+      "sha256": "95d8f3ea747bfd9f6e4c25f51e906a3b63b947771636137ad4100c91504d397b",
+      "dimensions": [
+        900,
+        600
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain as historical source; removed from result/help presentation because lettering is embedded."
+    },
+    {
+      "path": "/solved/timesup.png",
+      "bytes": 865598,
+      "sha256": "463ece5853411c8498cdeac18b2ab12b176d4928c4e62f38ad5efe8bc6f10fac",
+      "dimensions": [
+        900,
+        600
+      ],
+      "group": "solved",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain as historical source; removed from result/help presentation because lettering is embedded."
+    },
+    {
+      "path": "/sponsors/11labs.webp",
+      "bytes": 10694,
+      "sha256": "4d8d34b0dc1227c54c20b17d351d05d3e571a4fbfc0b9e6c38717968f1376327",
+      "dimensions": [
+        696,
+        91
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/aws.webp",
+      "bytes": 19038,
+      "sha256": "491e6b3fb85c0d3eb7d3a12e066f5157702ce464a025fb6fa5528d18b32d743e",
+      "dimensions": [
+        800,
+        478
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/codeweavers.webp",
+      "bytes": 22976,
+      "sha256": "1f70daf84a9668966138c1755f5b8b8578cc7448cd55b81f7fe0a80512b0da34",
+      "dimensions": [
+        1440,
+        789
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/giant.webp",
+      "bytes": 4706,
+      "sha256": "33623c495c0c9a29679efb1e79ecb4e2e9bb7a91ae34e4e6bdf433763aa2da33",
+      "dimensions": [
+        502,
+        126
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/huggingface.webp",
+      "bytes": 14728,
+      "sha256": "ddda91e8bdb21e713f91af2f14e2cf48d5cc2e374bc89f38a027c402a52c4b50",
+      "dimensions": [
+        824,
+        186
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/jumptrading.webp",
+      "bytes": 17516,
+      "sha256": "e5a44286d574c81eb5ef182f8d3a57566f227c02d4ed54f936a73e2d14f38a9b",
+      "dimensions": [
+        450,
+        203
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/mistral.webp",
+      "bytes": 5038,
+      "sha256": "7399926baec9013fbdd1193fedae78d13ab62cd1d5c8895c776929ff32c097d7",
+      "dimensions": [
+        1280,
+        903
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/nvidia.webp",
+      "bytes": 13308,
+      "sha256": "a0432a9d8f515f22d418e58285cba8824446ec0d6ef14c1e674f6d0a01a716f6",
+      "dimensions": [
+        1280,
+        235
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/raise.webp",
+      "bytes": 10944,
+      "sha256": "2b57d80c47d2dcb0d363a25e9d2cf7d8628ba6d7a5dd751d66e0a180359f27f0",
+      "dimensions": [
+        301,
+        301
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/tilde.webp",
+      "bytes": 21836,
+      "sha256": "815df628869d02c9e63569ee076ebcbcf682ddfe8968df23e3b5436c7cf3bf95",
+      "dimensions": [
+        924,
+        116
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/sponsors/white.webp",
+      "bytes": 26090,
+      "sha256": "6ffdf0ea31afcce38c825f60ca6f66064fa15b4138ea100ea21e7032b3b07199",
+      "dimensions": [
+        837,
+        234
+      ],
+      "group": "sponsors",
+      "referencedBy": [
+        "app/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-02-f.png",
+      "bytes": 204201,
+      "sha256": "07b049f62f0658a6fc8775e2531ce14480c5b0633ed2241d092f960a9375d255",
+      "dimensions": [
+        1028,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-03-m.png",
+      "bytes": 199698,
+      "sha256": "08688c2ce52ab0e22bc55cd5e3903f8d0c9368a0c1d795dcc4d9250db454adc3",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-04-f.png",
+      "bytes": 226780,
+      "sha256": "112398816ae275a19b91a95b98584205967d7b77ead9f57f696ff0b9c5a346e8",
+      "dimensions": [
+        1025,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-05-m.png",
+      "bytes": 246211,
+      "sha256": "12937fc6e98af6d79398e0f5616598e05c8468b85f9e28db99692b0201e40471",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-06-f.png",
+      "bytes": 260585,
+      "sha256": "457448960633044c5a6d1afa0e9338d76f74e8f4721cd87209c8bba73a0feb48",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-07-m.png",
+      "bytes": 222903,
+      "sha256": "ae5123a2c47d380018eebae527d13815de4551d2d833c2916fc9bff6d3186e5b",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-08-f.png",
+      "bytes": 216532,
+      "sha256": "cf40ed0c7d7c39f238bde830f6acc47a4311dffeb5c9667125ef8bb864a4f6b3",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-09-m.png",
+      "bytes": 244945,
+      "sha256": "ad3875f861cf3a4b0baa25502fd1c418963836ef6baae4b52d66d953a61309f1",
+      "dimensions": [
+        982,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-10-f.png",
+      "bytes": 201511,
+      "sha256": "0774171747d7c9c3dbd5bf3c16b8664ae320ca3c520f4b4b3eb5ed904fbb47bf",
+      "dimensions": [
+        1024,
+        1023
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-11-m.png",
+      "bytes": 225365,
+      "sha256": "eef45be772f052b4b6fa85d24321d2d961d84d1338e05beb60b11e1841010234",
+      "dimensions": [
+        1025,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/suspects/suspect-12-m.png",
+      "bytes": 261590,
+      "sha256": "054d12d185342c3df15afdb11dfe14817b654a4ffdd2b4c2b51a1188541601be",
+      "dimensions": [
+        1025,
+        1024
+      ],
+      "group": "suspects",
+      "referencedBy": [],
+      "usageEvidence": "dynamic family; individual runtime selection unverified",
+      "provenance": "Repository commit cb936fa states these eleven replacement portraits were generated with Sora. Per-file generation receipts, prompts and rights remain unverified; PixelLab script describes superseded portrait generation.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/arrow_left.png",
+      "bytes": 883,
+      "sha256": "0491bfded96ad2c9222c5f2c181b00c63ef81253d31a313b4956505d52c7230a",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/arrow_right.png",
+      "bytes": 661,
+      "sha256": "83948c7663854abe201a129022b60c8676e878e435e34bd84a44e47b2a1f3970",
+      "dimensions": [
+        64,
+        64
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/cases/page.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folder.png",
+      "bytes": 161523,
+      "sha256": "92a29b92ccb7eadb6399345ae9888fa8bd8b659fd90be1f75aad615635e6f85c",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/ai_lab.png",
+      "bytes": 23307,
+      "sha256": "986e56e9a769bdf70077b926ecbc7dff70ac2eb1b42cf9a50d6e1083065116a4",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/ceos_office.png",
+      "bytes": 12626,
+      "sha256": "377c14f04c9fb1bfcc472e60a43ed96e34ba13780036d38ed234a77537eac2ec",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/lawfirm.png",
+      "bytes": 15786,
+      "sha256": "98f4fcb725330a60f6f9464c94ced3f09394e5c6bc7dddc5819bdbf0e8a8cb94",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/medical.png",
+      "bytes": 12159,
+      "sha256": "733b222e0c937c2ea9394d5c7c9114315a201c70d7a82b04950c3faf394e9caa",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/office.png",
+      "bytes": 16795,
+      "sha256": "cbb164c258dcf6287a080852f9eeb84f661b52a15636249f21eade4613c91f9a",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/police.png",
+      "bytes": 21932,
+      "sha256": "6c0413725ffeb7f736932d9bf518bbccaf549a6be44942c911feeb815765d281",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/server.png",
+      "bytes": 20806,
+      "sha256": "3708d37766d7a4be79640af57e7ad8fc01461f4135e65318aaf1bd7d81fb6705",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/startup.png",
+      "bytes": 15593,
+      "sha256": "85a81101e8d89b73eb03d4166b081e14f28afc24159e95f1c0edee42a41298ef",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/folders/trade.png",
+      "bytes": 17169,
+      "sha256": "b7478f93110dffe50029d9c1f0092fd45767988ebdf7e4324db2430877e56737",
+      "dimensions": [
+        400,
+        300
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/data/cases.ts"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/infinity.webp",
+      "bytes": 13590,
+      "sha256": "13ceee72e39ccfdf0e159aaf6a1996079c1462b64de061e52b6324ff948f8195",
+      "dimensions": [
+        500,
+        211
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/mistral-logo.png",
+      "bytes": 36372,
+      "sha256": "540a65a2e0a36092a1f73ab0aa2ca30c6cf07eb2e84ac01a79841b68c5f26f90",
+      "dimensions": [
+        3426,
+        540
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/notepad.png",
+      "bytes": 628466,
+      "sha256": "c45a2ea0c99d8fe60859e51466413fc6736ccd93230ed4f324385314cddb3d21",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/recorder.png",
+      "bytes": 103180,
+      "sha256": "fd9affa08f0acdbcddacf322917417609b60767ef923003f7073487ee73af730",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "group": "ui",
+      "referencedBy": [],
+      "usageEvidence": "no direct source reference found; not proof unused",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/star_empty.png",
+      "bytes": 235,
+      "sha256": "21be3ecf49afb28aa3b5b0e606d8fa22fa7e21bcaa099cf0e9627ac392124da7",
+      "dimensions": [
+        32,
+        32
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/cases/PolaroidCard.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/star_filled.png",
+      "bytes": 890,
+      "sha256": "f0f0979b1207bb482db8418fb9f5c55aef656fad6ef9e31362cdb96d949b7dfa",
+      "dimensions": [
+        32,
+        32
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/cases/PolaroidCard.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    },
+    {
+      "path": "/ui/tape_player.png",
+      "bytes": 135156,
+      "sha256": "05ed2968b260f673593427923e6d66d49975a2ae69d9979f20443d30a636c292",
+      "dimensions": [
+        712,
+        539
+      ],
+      "group": "ui",
+      "referencedBy": [
+        "app/game/components/TapePlayer.tsx"
+      ],
+      "usageEvidence": "direct source reference",
+      "provenance": "Unknown per-file origin; no generation receipt or media license verified.",
+      "rightsStatus": "unverified",
+      "decision": "Retain original; evaluate only when a specific visible defect is demonstrated."
+    }
+  ]
+}

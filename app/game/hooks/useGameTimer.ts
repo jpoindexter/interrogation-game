@@ -1,73 +1,37 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { TIME_LIMITS } from '@/lib/game-state';
+import { createGameClock } from '../state/game-clock';
+export { TIME_LIMITS } from '@/lib/game-state';
+interface SessionClock { startedAt?: number; sessionId?: string }
 
-// Time limits in seconds per difficulty (countdown mode)
-export const TIME_LIMITS: Record<string, number> = {
-  easy: 300,    // 5 min
-  medium: 420,  // 7 min
-  hard: 540,    // 9 min
-  expert: 600,  // 10 min
-};
-
-/** Read timer mode from localStorage (settings page writes it) */
-function getTimerMode(): 'countdown' | 'unlimited' {
-  if (typeof window === 'undefined') return 'countdown';
-  try {
-    const s = localStorage.getItem('appSettings');
-    if (s) {
-      const parsed = JSON.parse(s);
-      if (parsed.timerMode === 'unlimited') return 'unlimited';
-    }
-  } catch { /* ignore */ }
-  return 'countdown';
-}
-
-export function useGameTimer(phase: string, isSpeaking: boolean, difficulty: string) {
-  const timerMode = getTimerMode();
+export function useGameTimer(phase: string, difficulty: string, timerMode = 'countdown', session: SessionClock = {}) {
   const isUnlimited = timerMode === 'unlimited';
-  const timeLimit = isUnlimited ? 0 : (TIME_LIMITS[difficulty] || 420);
-  const [remaining, setRemaining] = useState(isUnlimited ? 0 : timeLimit);
-  const [elapsedUp, setElapsedUp] = useState(0); // count-up for unlimited mode
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const onExpireRef = useRef<(() => void) | null>(null);
-
+  const timeLimit = isUnlimited ? 0 : (TIME_LIMITS[difficulty] || TIME_LIMITS.medium);
+  const { startedAt = 0, sessionId } = session;
+  const clock = useMemo(() => {
+    void sessionId; // A different case gets an independent elapsed/expiry lifecycle.
+    return createGameClock({ limit: timeLimit, unlimited: isUnlimited, active: false });
+  }, [timeLimit, isUnlimited, sessionId]);
+  const elapsed = useSyncExternalStore(clock.subscribe, clock.getSnapshot, () => 0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => { clock.synchronize(startedAt); }, [clock, startedAt]);
   useEffect(() => {
-    if (isUnlimited) { setElapsedUp(0); } else { setRemaining(timeLimit); }
-  }, [timeLimit, isUnlimited]);
-
-  useEffect(() => {
-    if (phase !== 'active' && phase !== 'processing') return;
-
-    const shouldTick = phase === 'active' && !isSpeaking;
-    if (!shouldTick) {
-      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-      return;
-    }
-
-    if (isUnlimited) {
-      timerRef.current = setInterval(() => {
-        setElapsedUp((prev) => prev + 1);
-      }, 1000);
-    } else {
-      timerRef.current = setInterval(() => {
-        setRemaining((prev) => {
-          if (prev <= 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            onExpireRef.current?.();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
+    const active = phase === 'active' || phase === 'processing';
+    clock.setActive(active);
+    if (!active) return;
+    clock.start();
+    const interval = setInterval(clock.tick, 250);
+    timerRef.current = interval;
+    window.addEventListener('focus', clock.tick);
+    document.addEventListener('visibilitychange', clock.tick);
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      clock.setActive(false);
+      clearInterval(interval);
+      if (timerRef.current === interval) timerRef.current = null;
+      window.removeEventListener('focus', clock.tick);
+      document.removeEventListener('visibilitychange', clock.tick);
     };
-  }, [phase, isSpeaking, isUnlimited]);
-
-  const onExpire = useCallback((cb: () => void) => { onExpireRef.current = cb; }, []);
-
-  const elapsed = isUnlimited ? elapsedUp : (timeLimit - remaining);
-
-  return { remaining, elapsed, timeLimit, timerRef, onExpire, isUnlimited };
+  }, [phase, clock]);
+  return { remaining: clock.remaining(elapsed), elapsed, timeLimit, timerRef,
+    onExpire: clock.onExpire, synchronize: clock.synchronize, isUnlimited };
 }

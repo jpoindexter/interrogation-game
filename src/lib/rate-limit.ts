@@ -1,46 +1,23 @@
-// Lightweight in-memory rate limiter (token bucket per IP)
 import type { NextRequest } from 'next/server';
+import { consumeEndpoint } from './limits/consume';
 
-const buckets = new Map<string, { tokens: number; last: number }>();
-
-/** Extract the most reliable client IP from request headers.
- *  On Vercel: x-real-ip is set by the edge and cannot be spoofed.
- *  Falls back to x-forwarded-for first entry, then a restrictive fallback. */
+/** Endpoint-scoped buckets. Missing IP must share a bucket, never bypass the limit. */
 export function getClientIp(request: NextRequest): string {
-  // x-real-ip is set by Vercel edge and is reliable
-  const realIp = request.headers.get('x-real-ip');
-  if (realIp) return realIp.trim();
-  // x-forwarded-for: take only the first (client) IP
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) {
-    const first = forwarded.split(',')[0]?.trim();
-    if (first) return first;
-  }
-  // Fallback: assign a unique bucket per request to avoid sharing
-  return `anon-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const address = process.env.VERCEL === '1'
+    ? request.headers.get('x-real-ip')?.trim() || 'unknown'
+    : 'local';
+  return `${request.nextUrl.pathname}:${address}`;
 }
 
-/** Returns true if the request is allowed, false if rate-limited. */
+export type RateLimitDecision = 'allowed' | 'exhausted' | 'unavailable';
+
+/** Durable local decision: unavailable storage is distinct from an exhausted allowance. */
+export function rateLimitDecision(ip: string, maxPerMinute: number = 30): RateLimitDecision {
+  try { return consumeEndpoint(ip, maxPerMinute) ? 'allowed' : 'exhausted'; }
+  catch { return 'unavailable'; }
+}
+
+/** Compatibility for callers that only need a conservative allow/deny decision. */
 export function rateLimit(ip: string, maxPerMinute: number = 30): boolean {
-  const now = Date.now();
-  const entry = buckets.get(ip);
-  if (!entry) {
-    buckets.set(ip, { tokens: maxPerMinute - 1, last: now });
-    return true;
-  }
-  // Refill tokens based on elapsed time
-  const elapsed = now - entry.last;
-  entry.tokens = Math.min(maxPerMinute, entry.tokens + (elapsed / 60000) * maxPerMinute);
-  entry.last = now;
-  if (entry.tokens < 1) return false;
-  entry.tokens -= 1;
-  return true;
+  return rateLimitDecision(ip, maxPerMinute) === 'allowed';
 }
-
-// Prune stale entries every 5 minutes to prevent memory leak
-setInterval(() => {
-  const cutoff = Date.now() - 300000;
-  for (const [key, val] of buckets) {
-    if (val.last < cutoff) buckets.delete(key);
-  }
-}, 300000);

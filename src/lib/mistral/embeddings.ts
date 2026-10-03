@@ -1,15 +1,11 @@
-import { getClient } from './client';
+import { embedTexts } from '../ai/retrieval/embeddings';
 
-export async function embed(texts: string[], apiKey?: string): Promise<number[][]> {
-  if (texts.length === 0) return [];
-  const res = await getClient(apiKey).embeddings.create({
-    model: 'mistral-embed',
-    inputs: texts,
-  });
-  return res.data.map((d) => d.embedding as number[]);
+/** Transitional import facade. Credentials and embedding space are server configured. */
+export async function embed(texts: string[], legacyApiKey?: string): Promise<number[][]> {
+  void legacyApiKey;
+  return embedTexts(texts);
 }
-
-export async function embedOne(text: string, apiKey?: string): Promise<number[]> {
-  const [vec] = await embed([text], apiKey);
-  return vec;
+export async function embedOne(text: string, legacyApiKey?: string): Promise<number[]> {
+  const [vector] = await embed([text], legacyApiKey);
+  return vector;
 }

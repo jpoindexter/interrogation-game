@@ -1,74 +1,49 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { SFX, FADE_CONFIG } from './sfx-registry';
 import type { SfxName } from './sfx-registry';
+import { AudioResource } from '../../hooks/audio-resource';
+import { readPreferences } from '../../settings/preferences-store';
 export type { SfxName };
 
-function getSfxVolume(): number {
-  try {
-    const s = localStorage.getItem('appSettings');
-    if (s) return JSON.parse(s).sfxVolume ?? 0.5;
-  } catch {}
-  return 0.5;
+function applyEnvelope(resource: AudioResource, name: SfxName, volume: number) {
+  if (name === 'tension') {
+    resource.audio.volume = 0;
+    resource.fade(0.12 * volume, 400, () => {
+      resource.schedule(() => resource.fade(0, 500, () => resource.dispose()), 600);
+    });
+    return;
+  }
+  const fade = FADE_CONFIG[name];
+  if (fade) resource.schedule(() => resource.fade(0, fade.duration, () => resource.dispose()), fade.delay);
 }
 
 export function useSfx() {
-  const cache = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const resources = useRef(new Map<SfxName, AudioResource>());
   const volumeRef = useRef(0.5);
-
   useEffect(() => {
-    const sync = () => { volumeRef.current = getSfxVolume(); };
+    const active = resources.current;
+    const sync = () => {
+      try { volumeRef.current = readPreferences().sfxVolume; } catch { volumeRef.current = 0.5; }
+      if (!volumeRef.current) { active.forEach(resource => resource.dispose()); active.clear(); }
+    };
     sync();
     window.addEventListener('settingsChanged', sync);
-    return () => window.removeEventListener('settingsChanged', sync);
+    return () => {
+      window.removeEventListener('settingsChanged', sync);
+      active.forEach(resource => resource.dispose());
+      active.clear();
+    };
   }, []);
-
-  const play = useCallback((name: SfxName) => {
-    const masterVol = volumeRef.current;
-    if (masterVol === 0) return;
+  return useCallback((name: SfxName) => {
     const entry = SFX[name];
-    if (!entry) return;
-    let audio = cache.current.get(name);
-    if (!audio) { audio = new Audio(entry.src); cache.current.set(name, audio); }
-    audio.currentTime = 0;
-    audio.volume = entry.vol * masterVol;
-    audio.play().catch(() => {});
-
-    if (name === 'tension') {
-      const peakVol = 0.12 * masterVol;
-      const steps = 10;
-      let inStep = 0;
-      const fadeInTimer = setInterval(() => {
-        inStep++;
-        audio!.volume = peakVol * (inStep / steps);
-        if (inStep >= steps) {
-          clearInterval(fadeInTimer);
-          setTimeout(() => {
-            let outStep = 0;
-            const fadeOutTimer = setInterval(() => {
-              outStep++;
-              audio!.volume = Math.max(0, peakVol * (1 - outStep / steps));
-              if (outStep >= steps) { clearInterval(fadeOutTimer); audio!.pause(); audio!.currentTime = 0; }
-            }, 500 / steps);
-          }, 600);
-        }
-      }, 400 / steps);
-      return;
-    }
-
-    const fade = FADE_CONFIG[name];
-    if (fade) {
-      const targetVol = entry.vol * masterVol;
-      setTimeout(() => {
-        const steps = 15;
-        let step = 0;
-        const t = setInterval(() => {
-          step++;
-          audio!.volume = Math.max(0, targetVol * (1 - step / steps));
-          if (step >= steps) { clearInterval(t); audio!.pause(); audio!.currentTime = 0; }
-        }, fade.duration / steps);
-      }, fade.delay);
-    }
+    const volume = volumeRef.current;
+    if (!entry || !volume) return;
+    resources.current.get(name)?.dispose();
+    const resource = new AudioResource(new Audio(entry.src));
+    resources.current.set(name, resource);
+    resource.audio.volume = entry.vol * volume;
+    void resource.play();
+    resource.listen('ended', () => resource.dispose());
+    applyEnvelope(resource, name, volume);
   }, []);
-
-  return play;
 }

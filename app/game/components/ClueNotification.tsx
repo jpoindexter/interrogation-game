@@ -1,3 +1,4 @@
+import AssetImage from '../../components/AssetImage';
 import { motion, scaleIn, springy } from '../../components/motion';
 
 interface ClueNotificationProps {
@@ -18,7 +19,7 @@ export default function ClueNotification({ clueNumber, clueIcons, cluesNeeded }:
         transition={{ ...springy, stiffness: 400, damping: 15 }}
       >
         <span className="text-[10px] uppercase tracking-[0.4em] text-gray-500">Evidence Found</span>
-        <img
+        <AssetImage
           src={clueIcons[clueNumber - 1] || clueIcons[0]}
           alt={`Evidence ${clueNumber}`}
           className="w-28 h-28 object-contain drop-shadow-2xl"

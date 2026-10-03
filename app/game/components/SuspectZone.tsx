@@ -28,7 +28,7 @@ export default function SuspectZone({
 }: SuspectZoneProps) {
   return (
     <motion.div
-      className="lg:col-span-2 flex flex-col items-center justify-center p-4 border-r border-surface-darker relative overflow-hidden"
+      className="shrink-0 lg:col-span-2 lg:min-h-0 flex flex-col items-center [justify-content:safe_center] p-4 border-r border-surface-darker relative overflow-x-hidden lg:overflow-y-auto"
       initial="hidden"
       animate="visible"
       variants={fadeIn}
@@ -43,7 +43,22 @@ export default function SuspectZone({
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative z-10 flex flex-col items-center w-full">
-        <motion.div
+        <SuspectPortrait caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} onSkipSpeech={onSkipSpeech} />
+
+        <div className="w-full max-w-xl mb-2">
+          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
+        </div>
+
+        <SuspectResponse isListening={isListening} lastTranscript={lastTranscript} caseData={caseData} lastResponse={lastResponse} phase={phase} />
+      </div>
+    </motion.div>
+  );
+}
+
+
+function SuspectPortrait({ caseData, stressLevel, isSpeaking, onSkipSpeech }: { caseData: Case; stressLevel: number; isSpeaking: boolean; onSkipSpeech: (() => void) | undefined }) {
+  return (
+<motion.div
           className="mb-2 relative"
           initial="hidden"
           animate="visible"
@@ -52,7 +67,7 @@ export default function SuspectZone({
         >
           <SuspectAvatar
             name={caseData.suspect_name}
-            gender={caseData.suspect_gender}
+            portraitId={caseData.portraitId}
             stressLevel={stressLevel}
             size="md"
             speaking={isSpeaking}
@@ -70,12 +85,13 @@ export default function SuspectZone({
             </button>
           )}
         </motion.div>
+  );
+}
 
-        <div className="w-full max-w-xl mb-2">
-          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
-        </div>
 
-        <div
+function SuspectResponse({ isListening, lastTranscript, caseData, lastResponse, phase }: { isListening: boolean; lastTranscript: string; caseData: Case; lastResponse: string; phase: string }) {
+  return (
+<div
           className="w-full max-w-xl border border-surface-darker rounded-sm p-4 space-y-3"
           style={{ background: 'rgba(0, 0, 0, 0.85)', minHeight: '120px' }}
         >
@@ -111,7 +127,5 @@ export default function SuspectZone({
             )}
           </div>
         </div>
-      </div>
-    </motion.div>
   );
 }

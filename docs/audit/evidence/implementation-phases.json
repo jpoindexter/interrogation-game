@@ -1,0 +1,316 @@
+{
+  "baseline": "f8d4c3c00e229bf0dfc8427e1c5593cc98edb7fc",
+  "cardCount": 62,
+  "assignments": [
+    {
+      "auditId": "START",
+      "phase": "01",
+      "cardUrl": "https://trello.com/c/n3PEAdvA/1-p1-read-first-scope-evidence-priorities-and-audit-baseline"
+    },
+    {
+      "auditId": "ARCH-01",
+      "phase": "01",
+      "cardUrl": "https://trello.com/c/BFL5uEUP/50-p1-arch-01-fix-export-cli-auth-regression-and-secret-logging"
+    },
+    {
+      "auditId": "ARCH-02",
+      "phase": "01",
+      "cardUrl": "https://trello.com/c/KrIn92iw/51-p1-arch-02-upgrade-security-baseline-with-paired-next-and-eslint-config"
+    },
+    {
+      "auditId": "ARCH-03",
+      "phase": "01",
+      "cardUrl": "https://trello.com/c/WdaHGW0K/52-p2-arch-03-pin-a-reproducible-node24-and-package-manager-baseline"
+    },
+    {
+      "auditId": "ARCH-14",
+      "phase": "01",
+      "cardUrl": "https://trello.com/c/WmMdtKzr/61-p2-arch-14-remove-stale-dependencies-and-stage-low-risk-library-updates"
+    },
+    {
+      "auditId": "ARCH-10",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/LrN9LMel/59-p2-arch-10-split-game-orchestration-and-enforce-readable-module-limits"
+    },
+    {
+      "auditId": "ARCH-11",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/0NmI2h1k/60-p1-arch-11-return-validated-service-errors-instead-of-corrupt-game-state"
+    },
+    {
+      "auditId": "LOGIC-01",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/99XWEgXr/9-p1-logic-01-make-clues-unique-durable-and-consistent-between-client-and-server"
+    },
+    {
+      "auditId": "LOGIC-02",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/oZ8eCfpC/10-p1-logic-02-repair-countdown-callback-capturing-the-initial-empty-game"
+    },
+    {
+      "auditId": "LOGIC-03",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/U2IeZiKD/11-p1-logic-03-give-each-session-an-explicit-terminal-state-and-authoritative-outcome"
+    },
+    {
+      "auditId": "LOGIC-04",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/yXJRliEu/12-p1-logic-04-return-the-same-score-and-time-semantics-everywhere"
+    },
+    {
+      "auditId": "LOGIC-05",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/IS7nUKSj/13-p1-logic-05-respect-unlimited-mode-and-define-one-timer-policy"
+    },
+    {
+      "auditId": "LOGIC-06",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/lkT3NkCr/14-p1-logic-06-treat-malformed-ai-judgments-and-provider-failure-as-retryable-errors"
+    },
+    {
+      "auditId": "LOGIC-09",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/Ib1LFWHk/17-p1-logic-09-replace-keyword-secret-blocking-with-tested-disclosure-rules"
+    },
+    {
+      "auditId": "LOGIC-11",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/DDvju61o/19-p2-logic-11-persist-correct-loss-reasons-and-stop-labeling-all-losses-as-timeout"
+    },
+    {
+      "auditId": "LOGIC-18",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/YjxXqMBm/26-p1-logic-18-validate-generated-cases-as-playable-content-rather-than-string-shapes"
+    },
+    {
+      "auditId": "LOGIC-19",
+      "phase": "02",
+      "cardUrl": "https://trello.com/c/ilH2JQLQ/27-p2-logic-19-stop-rejudging-a-won-case-and-ground-the-debrief-in-immutable-evidence"
+    },
+    {
+      "auditId": "ARCH-04",
+      "phase": "03",
+      "cardUrl": "https://trello.com/c/XFhqC8b1/53-p1-arch-04-separate-game-ai-contracts-from-mistral-implementation"
+    },
+    {
+      "auditId": "ARCH-05",
+      "phase": "03",
+      "cardUrl": "https://trello.com/c/DyvVTbeR/54-p1-arch-05-prove-local-codex-subscription-adapter-for-interview"
+    },
+    {
+      "auditId": "ARCH-06",
+      "phase": "03",
+      "cardUrl": "https://trello.com/c/hlurjUhZ/55-p3-arch-06-add-future-hosted-openai-adapter-without-subscription-token-reuse"
+    },
+    {
+      "auditId": "ARCH-09",
+      "phase": "03",
+      "cardUrl": "https://trello.com/c/OwPtLddx/58-p2-arch-09-make-retrieval-optional-and-version-embedding-migration"
+    },
+    {
+      "auditId": "EVAL",
+      "phase": "03",
+      "cardUrl": "https://trello.com/c/2rwo9eCT/4-p1-add-a-case-solvability-and-judge-fairness-evaluation-set"
+    },
+    {
+      "auditId": "LOGIC-07",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/Kg6KTqLL/15-p1-logic-07-make-win-redemption-atomic-idempotent-and-retryable"
+    },
+    {
+      "auditId": "LOGIC-08",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/z9vdpT72/16-p1-logic-08-make-leaderboard-submission-status-and-retry-visible"
+    },
+    {
+      "auditId": "LOGIC-10",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/eAVVr6Dz/18-p1-logic-10-keep-learned-patterns-authoritative-and-versioned"
+    },
+    {
+      "auditId": "LOGIC-12",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/3I4l9RsV/20-p1-logic-12-add-session-checkpoint-and-result-recovery-suitable-for-local-demo-and-vercel"
+    },
+    {
+      "auditId": "LOGIC-13",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/EG7qbDYi/21-p1-logic-13-give-every-expensive-action-a-deadline-cancellation-and-idempotency-key"
+    },
+    {
+      "auditId": "LOGIC-15",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/CqMZHiuR/23-p2-logic-15-fix-rate-limit-keys-and-add-separate-per-session-spend-budgets"
+    },
+    {
+      "auditId": "LOGIC-16",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/1FiOCMVY/24-p1-logic-16-close-public-database-write-bypasses-and-version-the-schema"
+    },
+    {
+      "auditId": "LOGIC-17",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/IjTzBIHW/25-p2-logic-17-remove-request-controlled-database-destinations-from-hosted-routes"
+    },
+    {
+      "auditId": "LOGIC-20",
+      "phase": "04",
+      "cardUrl": "https://trello.com/c/ig7RCDyv/28-p2-logic-20-make-completion-exports-reliable-and-observable"
+    },
+    {
+      "auditId": "ARCH-07",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/twOu11ZB/56-p1-arch-07-migrate-stt-to-elevenlabs-and-update-deprecated-speech-model"
+    },
+    {
+      "auditId": "ARCH-08",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/qqq7lx4W/57-p1-arch-08-unify-cancellable-voice-and-microphone-lifecycle"
+    },
+    {
+      "auditId": "LOGIC-14",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/F05X4iaL/22-p2-logic-14-validate-and-authorize-the-entire-text-sent-to-elevenlabs"
+    },
+    {
+      "auditId": "UX-01",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/JGqfP6hO/29-p1-ux-01-make-every-ai-turn-show-its-current-state-and-recover-in-place"
+    },
+    {
+      "auditId": "UX-02",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/0ShKQHgk/30-p1-ux-02-preserve-drafts-and-let-players-correct-speech-before-accusations"
+    },
+    {
+      "auditId": "UX-07",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/FUoAUiIM/35-p1-ux-07-show-the-actual-case-briefing-before-the-timer-starts"
+    },
+    {
+      "auditId": "UX-08",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/0kRxyvpA/36-p1-ux-08-make-status-and-connection-checks-truthful-for-the-local-demo"
+    },
+    {
+      "auditId": "UX-13",
+      "phase": "05",
+      "cardUrl": "https://trello.com/c/k6PXk9s9/40-p1-ux-13-make-audio-controls-explicit-and-tune-a-screen-share-preset"
+    },
+    {
+      "auditId": "UX-03",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/wjTJmpHx/31-p1-ux-03-repair-dialog-focus-and-the-initials-keyboard-trap"
+    },
+    {
+      "auditId": "UX-04",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/dOvvRcDK/32-p1-ux-04-label-controls-and-expose-settings-selection-to-assistive-technology"
+    },
+    {
+      "auditId": "UX-05",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/gXepcoCL/33-p1-ux-05-create-a-legible-video-demo-layout-and-make-text-size-settings-effective"
+    },
+    {
+      "auditId": "UX-06",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/nGqHNV7u/34-p1-ux-06-keep-historic-statements-readable-and-link-evidence-to-conversation"
+    },
+    {
+      "auditId": "UX-10",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/GNomhWYw/37-p1-ux-10-unify-accessibility-preferences-across-the-entire-application"
+    },
+    {
+      "auditId": "UX-11",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/CwsJEGg8/38-p2-ux-11-replace-global-case-selector-keyboard-interception-with-scoped-controls"
+    },
+    {
+      "auditId": "UX-12",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/cjMeTtbx/39-p2-ux-12-remove-false-evidence-object-semantics-and-explain-stress-as-game-state"
+    },
+    {
+      "auditId": "UX-14",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/Na4MWjbe/41-p1-ux-14-give-every-end-of-game-result-a-grounded-recoverable-explanation"
+    },
+    {
+      "auditId": "UX-19",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/QWEbsUY0/43-p2-ux-19-define-and-preserve-the-existing-art-direction-before-regeneration"
+    },
+    {
+      "auditId": "UX-20",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/mrD7FpK0/44-p2-ux-20-normalize-outcome-artwork-with-one-style-and-separate-text"
+    },
+    {
+      "auditId": "UX-21",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/DAsK5cBn/45-p2-ux-21-select-portraits-using-case-identity-rather-than-name-hashing"
+    },
+    {
+      "auditId": "UX-23",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/lnNqbmOi/46-p2-ux-23-make-restrained-motion-reinforce-game-events-instead-of-competing-for-attention"
+    },
+    {
+      "auditId": "UX-24",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/H7LpaHdX/47-p2-ux-24-handle-small-windows-and-movable-panels-without-offscreen-loss"
+    },
+    {
+      "auditId": "UX-26",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/UMy6DlzN/48-p2-ux-26-separate-challenge-mode-from-a-genuinely-relaxed-accessibility-mode"
+    },
+    {
+      "auditId": "UX-27",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/8ujdaAa5/49-p2-ux-27-turn-the-reveal-into-a-clear-evidence-based-interview-moment"
+    },
+    {
+      "auditId": "ASSET-RIGHTS",
+      "phase": "06",
+      "cardUrl": "https://trello.com/c/G4foSNG3/7-p2-record-asset-provenance-and-style-rules-before-targeted-regeneration"
+    },
+    {
+      "auditId": "DEMO",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/fgMNuLGO/2-p1-define-and-rehearse-one-excellent-local-interview-demo"
+    },
+    {
+      "auditId": "PROOF",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/IiflEceO/3-p2-build-the-interview-story-from-real-git-decisions-and-visible-behavior"
+    },
+    {
+      "auditId": "VERIFY",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/jMMDT4OO/5-p1-run-the-real-desktop-keyboard-audio-and-screen-share-acceptance-pass"
+    },
+    {
+      "auditId": "CLAIMS",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/kDnAM1tN/6-p1-correct-setup-learning-privacy-and-fallback-claims-throughout-the-project"
+    },
+    {
+      "auditId": "DEMO-MEASURE",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/4wLcaqYI/8-p2-measure-interaction-quality-and-latency-before-adding-new-features"
+    },
+    {
+      "auditId": "UX-16",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/fhzV3Yps/42-p1-ux-16-audit-all-biography-and-hackathon-claims-before-interview-use"
+    },
+    {
+      "auditId": "ARCH-18",
+      "phase": "07",
+      "cardUrl": "https://trello.com/c/LsD5s6Rd/62-p2-arch-18-restore-concise-versioned-architecture-and-rehearsal-docs"
+    }
+  ]
+}

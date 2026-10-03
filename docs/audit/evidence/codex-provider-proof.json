@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-03",
+  "cli": "0.160.0",
+  "model": "gpt-6-luna",
+  "auth": "Existing Codex ChatGPT sign-in; tokens not read or copied",
+  "elapsedMs": 6105,
+  "result": {
+    "ok": true,
+    "available_tool_names": []
+  },
+  "permissionProfile": {
+    "filesystem": {
+      ":minimal": "read"
+    },
+    "network": {
+      "enabled": false
+    }
+  },
+  "scope": "Non-sensitive structured output only; no game playthrough, voice or browser verification"
+}

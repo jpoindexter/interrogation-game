@@ -7,9 +7,13 @@ export function sanitizeInterrogationResponse(raw: Record<string, unknown>): Rec
   };
 }
 
-export function sanitizeAccusationResponse(raw: Record<string, unknown>): Record<string, unknown> {
+export function sanitizeAccusationResponse(raw: Record<string, unknown>) {
+  if (!raw || typeof raw.correct !== 'boolean' || typeof raw.confession !== 'string' || !raw.confession.trim()
+    || typeof raw.explanation !== 'string' || !raw.explanation.trim()) {
+    throw new Error('Invalid accusation judgment');
+  }
   return {
-    correct: raw.correct === true,
+    correct: raw.correct,
     confession: typeof raw.confession === 'string' ? raw.confession.slice(0, 2000) : '',
     explanation: typeof raw.explanation === 'string' ? raw.explanation.slice(0, 1000) : '',
   };

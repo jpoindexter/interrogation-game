@@ -1,0 +1,114 @@
+{
+  "@fontsource/opendyslexic": {
+    "current": "5.2.5",
+    "wanted": "5.3.0",
+    "latest": "5.3.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@fontsource/opendyslexic"
+  },
+  "@mistralai/mistralai": {
+    "current": "1.14.1",
+    "wanted": "1.15.1",
+    "latest": "2.7.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@mistralai/mistralai"
+  },
+  "@neondatabase/serverless": {
+    "current": "1.0.2",
+    "wanted": "1.2.0",
+    "latest": "1.2.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@neondatabase/serverless"
+  },
+  "@supabase/supabase-js": {
+    "current": "2.98.0",
+    "wanted": "2.117.2",
+    "latest": "2.117.2",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@supabase/supabase-js"
+  },
+  "@tailwindcss/postcss": {
+    "current": "4.2.1",
+    "wanted": "4.3.3",
+    "latest": "4.3.3",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@tailwindcss/postcss"
+  },
+  "@types/node": {
+    "current": "20.19.35",
+    "wanted": "20.19.43",
+    "latest": "26.6.4",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@types/node"
+  },
+  "@types/react": {
+    "current": "19.2.14",
+    "wanted": "19.3.0",
+    "latest": "19.3.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@types/react"
+  },
+  "@types/react-dom": {
+    "current": "19.2.3",
+    "wanted": "19.3.0",
+    "latest": "19.3.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/@types/react-dom"
+  },
+  "eslint": {
+    "current": "9.39.3",
+    "wanted": "9.39.5",
+    "latest": "10.12.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/eslint"
+  },
+  "eslint-config-next": {
+    "current": "16.1.6",
+    "wanted": "16.1.6",
+    "latest": "16.3.8",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/eslint-config-next"
+  },
+  "framer-motion": {
+    "current": "12.34.3",
+    "wanted": "12.43.0",
+    "latest": "14.0.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/framer-motion"
+  },
+  "next": {
+    "current": "16.1.6",
+    "wanted": "16.1.6",
+    "latest": "16.3.8",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/next"
+  },
+  "react": {
+    "current": "19.2.3",
+    "wanted": "19.2.3",
+    "latest": "19.3.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/react"
+  },
+  "react-dom": {
+    "current": "19.2.3",
+    "wanted": "19.2.3",
+    "latest": "19.3.0",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/react-dom"
+  },
+  "tailwindcss": {
+    "current": "4.2.1",
+    "wanted": "4.3.3",
+    "latest": "4.3.3",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/tailwindcss"
+  },
+  "typescript": {
+    "current": "5.9.3",
+    "wanted": "5.9.3",
+    "latest": "7.0.2",
+    "dependent": "INTERIGATION",
+    "location": "/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/node_modules/typescript"
+  }
+}

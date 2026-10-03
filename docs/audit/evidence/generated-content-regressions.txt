@@ -1,0 +1,12 @@
+✔ generated objective follows runtime win contract even when provider supplies a stronger crime claim (9.171333ms)
+✔ versioned generation prompt states semantic constraints without changing judge acceptance (0.116167ms)
+✔ the actual v2 schema-ceiling fragments cannot enter a newly playable generated case (0.63325ms)
+✔ a complete sentence at the size boundary and shorter prose are not rejected by the narrow check (0.083125ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 223.749375

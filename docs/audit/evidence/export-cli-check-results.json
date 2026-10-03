@@ -1,0 +1,15 @@
+{
+  "source": "scripts/export-data.ts",
+  "execution": "Actual CLI body transpiled with mocked network, process environment and writes",
+  "syntheticCredentialsOnly": true,
+  "realNetworkRequests": 0,
+  "applicationDataWrites": 0,
+  "mockRequestCount": 1,
+  "urlContainsSecret": true,
+  "logsContainSecret": true,
+  "sendsExpectedAuthorization": false,
+  "mockWriteCount": 1,
+  "mockDirectoryCreationCount": 1,
+  "limits": "Proves outbound request and log construction; does not call the real export endpoint or verify persistence.",
+  "regressionReproduced": true
+}

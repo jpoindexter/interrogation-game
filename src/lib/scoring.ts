@@ -17,31 +17,30 @@ const DIFFICULTY_CONFIG = {
  * Wrong accusations: 10% flat penalty each
  * Difficulty: multiplier on final score
  */
-export function calculateScore(
-  elapsedSeconds: number,
-  difficulty: Difficulty,
-  hintsUsed: number,
-  wrongAccusations: number,
-  questionsAsked?: number,
-): number {
+export function calculateScore(options: {
+  elapsedSeconds: number; difficulty: Difficulty; hintsUsed: number;
+  wrongAccusations: number; questionsAsked?: number;
+}): number {
+  const { elapsedSeconds, difficulty, hintsUsed, wrongAccusations, questionsAsked } = options;
   const { parTime, multiplier } = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium;
 
   // Time score: 0–1000 base. Zero at 2x par, 707 at par, 1000 at instant.
-  const timeRatio = Math.max(0, 1 - elapsedSeconds / (parTime * 2));
+  const elapsed = Number.isFinite(elapsedSeconds) ? Math.max(0, elapsedSeconds) : parTime * 2;
+  const timeRatio = Math.max(0, 1 - elapsed / (parTime * 2));
   const timeScore = 1000 * Math.sqrt(timeRatio);
 
   // Efficiency bonus: fewer questions = higher bonus (1.0× to 1.5×)
   // Par questions scale with difficulty: easy 6, medium 10, hard 14, expert 18
   // At or above par: 1.0×. At 1 question: 1.5×. Linear interpolation.
   const parQuestions = PAR_QUESTIONS[difficulty] ?? 10;
-  const q = questionsAsked ?? parQuestions;
+  const q = Math.max(1, questionsAsked ?? parQuestions);
   const efficiencyMultiplier = q >= parQuestions ? 1.0 : 1.0 + 0.5 * ((parQuestions - q) / (parQuestions - 1));
 
   // Hint penalty: 15% multiplicative per hint
-  const hintMultiplier = Math.pow(0.85, hintsUsed);
+  const hintMultiplier = Math.pow(0.85, Math.max(0, hintsUsed));
 
   // Accusation penalty: 10% flat per wrong accusation
-  const accusationMultiplier = Math.max(0, 1 - wrongAccusations * 0.1);
+  const accusationMultiplier = Math.max(0, 1 - Math.max(0, wrongAccusations) * 0.1);
 
   return Math.round(Math.max(0, timeScore * multiplier * efficiencyMultiplier * hintMultiplier * accusationMultiplier));
 }

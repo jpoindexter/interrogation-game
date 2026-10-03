@@ -1,0 +1,8 @@
+{
+  "executedAt": "2026-10-03T11:54:38.414Z",
+  "scope": "Actual local HTTP generation, authored opening, give-up and server recovery through the client snapshot parser. No live inference, browser or voice.",
+  "outcome": "lose_giveup",
+  "messages": 3,
+  "mode": "relaxed",
+  "passed": true
+}

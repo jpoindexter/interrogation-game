@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-03",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "elapsedMs": 17122,
+  "valid": true,
+  "caseData": {
+    "case_number": "6381",
+    "setting": "Meridian Bank",
+    "crime": "A loan operations analyst diverted a vendor reimbursement by altering its beneficiary account.",
+    "objective": "Prove the reimbursement was diverted",
+    "briefing": "You are investigating a suspicious vendor reimbursement at Meridian Bank. The payment left the bank through a beneficiary account that does not match the vendor's records. The loan operations analyst who processed it says the change was authorized; determine whether her account fits the evidence.",
+    "detective_leads": [
+      "Vendor's invoice had a minor typo",
+      "Analyst says manager approved the change",
+      "Payment log shows no second approval"
+    ],
+    "suspect_name": "Nadia Flores",
+    "suspect_gender": "female",
+    "suspect_role": "Loan Operations Analyst",
+    "suspect_true_story": "Nadia changed the reimbursement beneficiary to an account she controlled and submitted the payment herself. She knew the vendor had not authorized the change. She claims her manager approved it, but the payment system's log shows she never requested or received a second approval.",
+    "suspect_cover_story": "Nadia says the vendor sent new account details, and she updated the beneficiary before submitting the reimbursement. She says her manager approved the change in the system before she released the payment.",
+    "the_lie": "She claims her manager approved the beneficiary change in the system before she released the payment.",
+    "the_truth": "Her manager did not approve the change; Nadia submitted the payment without a second approval.",
+    "the_contradiction": "Ask who approved the change and when, then ask what the system showed before release. Nadia says the approval appeared before payment, but the payment log records no second approval at any time.",
+    "stress_triggers": [
+      "Ask her to name the manager who approved it",
+      "Ask what approval status she saw before release"
+    ],
+    "deflection_tactics": [
+      "Blames a confusing interface",
+      "Points out the vendor typo",
+      "Says the payment deadline was urgent",
+      "Asks whether anyone else is being questioned"
+    ],
+    "verbal_tics": "Clears her throat when nervous; repeats the question back before answering.",
+    "difficulty": "easy"
+  },
+  "scope": "One live generated fictional case with structural validation; playability is not established"
+}

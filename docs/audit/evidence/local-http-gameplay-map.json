@@ -1,0 +1,385 @@
+{
+  "executedAt": "2026-10-03T11:43:22.387Z",
+  "provider": "codex-local",
+  "scope": "Real local HTTP and Codex subscription; authored practice case. Browser, microphone and ElevenLabs not exercised.",
+  "timings": [
+    {
+      "route": "health",
+      "milliseconds": 20,
+      "status": 200
+    },
+    {
+      "route": "generate-case",
+      "milliseconds": 85,
+      "status": 200
+    },
+    {
+      "route": "interrogate",
+      "milliseconds": 34,
+      "status": 200
+    },
+    {
+      "route": "gameplay",
+      "milliseconds": 34,
+      "status": 200
+    },
+    {
+      "route": "gameplay",
+      "milliseconds": 9787,
+      "status": 200
+    },
+    {
+      "route": "gameplay",
+      "milliseconds": 8660,
+      "status": 200
+    },
+    {
+      "route": "accuse",
+      "milliseconds": 9367,
+      "status": 200
+    },
+    {
+      "route": "accuse",
+      "milliseconds": 8574,
+      "status": 200
+    },
+    {
+      "route": "evaluate",
+      "milliseconds": 32,
+      "status": 200
+    },
+    {
+      "route": "session",
+      "milliseconds": 31,
+      "status": 200
+    },
+    {
+      "route": "generate-case",
+      "milliseconds": 83,
+      "status": 200
+    },
+    {
+      "route": "interrogate",
+      "milliseconds": 35,
+      "status": 200
+    },
+    {
+      "route": "session/end",
+      "milliseconds": 100,
+      "status": 200
+    },
+    {
+      "route": "evaluate",
+      "milliseconds": 23,
+      "status": 200
+    },
+    {
+      "route": "session",
+      "milliseconds": 22,
+      "status": 200
+    }
+  ],
+  "result": {
+    "win": {
+      "opening": "I left at six and did not return to the building that evening.",
+      "wrongEvidence": {
+        "answer": "The Morgan Reed badge record doesn't name me, and it doesn't change what I said. I left at six; I don't see how that stairwell entry fits my account.",
+        "exhibitId": "badge-record",
+        "status": "not_established",
+        "explanation": "This exhibit does not establish a contradiction with that recorded statement.",
+        "progressAdded": false,
+        "establishedCount": 0
+      },
+      "rightEvidence": {
+        "answer": "That entry says I was there, but it doesn't say why. I left at six; maybe the time on that record's off. The badge log is a separate thing.",
+        "exhibitId": "visitor-log",
+        "status": "contradiction_established",
+        "explanation": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building.",
+        "progressAdded": true,
+        "establishedCount": 1
+      },
+      "wrongAccusation": {
+        "correct": false,
+        "confession": "That's not what happened. I stand by the account I gave you.",
+        "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it.",
+        "accusationsLeft": 2,
+        "gameplay": {
+          "caseId": "ledger-after-hours",
+          "title": "The after-hours ledger",
+          "briefing": "A ledger disappeared from a fictional trading office. Ask Casey Vale about the evening, compare the available records, and identify the specific false claim.",
+          "status": "active",
+          "turns": [
+            {
+              "id": "[session]:turn:1",
+              "question": "*Detective sits down and opens the file*",
+              "answer": "I left at six and did not return to the building that evening.",
+              "timestamp": 1791027765598,
+              "reviewed": true
+            },
+            {
+              "id": "[session]:turn:2",
+              "question": "Please explain how your account fits this record.",
+              "answer": "The Morgan Reed badge record doesn't name me, and it doesn't change what I said. I left at six; I don't see how that stairwell entry fits my account.",
+              "timestamp": 1791027775423,
+              "reviewed": false
+            },
+            {
+              "id": "[session]:turn:3",
+              "question": "Please explain how your account fits this record.",
+              "answer": "That entry says I was there, but it doesn't say why. I left at six; maybe the time on that record's off. The badge log is a separate thing.",
+              "timestamp": 1791027784098,
+              "reviewed": false
+            }
+          ],
+          "statements": [
+            {
+              "id": "[session]:statement:1",
+              "quote": "I left at six and did not return to the building that evening.",
+              "reviewed": true
+            }
+          ],
+          "exhibits": [
+            {
+              "id": "visitor-log",
+              "title": "Visitor record · 18:42",
+              "kind": "document",
+              "text": "The desk visitor record has a signed entry: Casey Vale, arrival 18:42, that same evening."
+            },
+            {
+              "id": "badge-record",
+              "title": "Badge record · 19:10",
+              "kind": "timeline",
+              "text": "A badge assigned to Morgan Reed opened the stairwell at 19:10. This record does not name Casey Vale."
+            }
+          ],
+          "establishedCount": 1
+        },
+        "clues": [
+          {
+            "id": "clue-1",
+            "text": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building."
+          }
+        ],
+        "cluesCollected": 1,
+        "status": "active",
+        "outcome": null,
+        "startedAt": 1791027765598,
+        "endedAt": null,
+        "timerMode": "countdown",
+        "timeLimit": 300,
+        "timeElapsed": 27.873,
+        "stats": {
+          "timeElapsed": 27.873,
+          "difficulty": "easy",
+          "playMode": "challenge",
+          "ranked": true,
+          "hintsUsed": 0,
+          "accusationsUsed": 1,
+          "questionsAsked": 2,
+          "score": 1223,
+          "detectiveRating": "Veteran"
+        }
+      },
+      "win": {
+        "correct": true,
+        "confession": "You’re right. I said I left at six and never returned, but I came back to the building at 18:42. I tried to cast doubt on the time instead of admitting that. The visitor record proves I was there, not that I took the ledger.",
+        "explanation": "Casey’s claim that they did not return after leaving at six conflicts with the visitor record naming them arriving at 18:42.",
+        "accusationsLeft": 1,
+        "gameplay": {
+          "caseId": "ledger-after-hours",
+          "title": "The after-hours ledger",
+          "briefing": "A ledger disappeared from a fictional trading office. Ask Casey Vale about the evening, compare the available records, and identify the specific false claim.",
+          "status": "ended",
+          "turns": [
+            {
+              "id": "[session]:turn:1",
+              "question": "*Detective sits down and opens the file*",
+              "answer": "I left at six and did not return to the building that evening.",
+              "timestamp": 1791027765598,
+              "reviewed": true
+            },
+            {
+              "id": "[session]:turn:2",
+              "question": "Please explain how your account fits this record.",
+              "answer": "The Morgan Reed badge record doesn't name me, and it doesn't change what I said. I left at six; I don't see how that stairwell entry fits my account.",
+              "timestamp": 1791027775423,
+              "reviewed": false
+            },
+            {
+              "id": "[session]:turn:3",
+              "question": "Please explain how your account fits this record.",
+              "answer": "That entry says I was there, but it doesn't say why. I left at six; maybe the time on that record's off. The badge log is a separate thing.",
+              "timestamp": 1791027784098,
+              "reviewed": false
+            }
+          ],
+          "statements": [
+            {
+              "id": "[session]:statement:1",
+              "quote": "I left at six and did not return to the building that evening.",
+              "reviewed": true
+            }
+          ],
+          "exhibits": [
+            {
+              "id": "visitor-log",
+              "title": "Visitor record · 18:42",
+              "kind": "document",
+              "text": "The desk visitor record has a signed entry: Casey Vale, arrival 18:42, that same evening."
+            },
+            {
+              "id": "badge-record",
+              "title": "Badge record · 19:10",
+              "kind": "timeline",
+              "text": "A badge assigned to Morgan Reed opened the stairwell at 19:10. This record does not name Casey Vale."
+            }
+          ],
+          "establishedCount": 1
+        },
+        "clues": [
+          {
+            "id": "clue-1",
+            "text": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building."
+          }
+        ],
+        "cluesCollected": 1,
+        "status": "won",
+        "outcome": "win",
+        "startedAt": 1791027765598,
+        "endedAt": 1791027802036,
+        "timerMode": "countdown",
+        "timeLimit": 300,
+        "timeElapsed": 36.438,
+        "stats": {
+          "timeElapsed": 36.438,
+          "difficulty": "easy",
+          "playMode": "challenge",
+          "ranked": true,
+          "hintsUsed": 0,
+          "accusationsUsed": 2,
+          "questionsAsked": 2,
+          "score": 1211,
+          "detectiveRating": "Veteran"
+        },
+        "export": {
+          "state": "saved",
+          "destination": "local",
+          "attempts": 1
+        }
+      },
+      "result": {
+        "outcome": "win",
+        "stats": {
+          "timeElapsed": 36.438,
+          "difficulty": "easy",
+          "playMode": "challenge",
+          "ranked": true,
+          "hintsUsed": 0,
+          "accusationsUsed": 2,
+          "questionsAsked": 2,
+          "score": 1211,
+          "detectiveRating": "Veteran"
+        },
+        "detective_rating": "Veteran",
+        "correct": true,
+        "explanation": "Casey’s claim that they did not return after leaving at six conflicts with the visitor record naming them arriving at 18:42.",
+        "reveal_the_lie": "I left at six and did not return to the building that evening.",
+        "reveal_the_truth": "Casey returned to the building at 18:42. The visitor record establishes presence, not who took the ledger.",
+        "reveal_the_clue": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building.",
+        "conversationPath": [
+          {
+            "id": "conversation-0",
+            "kind": "dialogue",
+            "question": "*Detective sits down and opens the file*",
+            "answer": "I left at six and did not return to the building that evening.",
+            "status": "neutral"
+          },
+          {
+            "id": "conversation-2",
+            "kind": "challenge",
+            "question": "Please explain how your account fits this record.",
+            "answer": "The Morgan Reed badge record doesn't name me, and it doesn't change what I said. I left at six; I don't see how that stairwell entry fits my account.",
+            "status": "unsupported",
+            "explanation": "This exhibit does not establish a contradiction with that recorded statement.",
+            "evidence": {
+              "statement": "I left at six and did not return to the building that evening.",
+              "exhibitTitle": "Badge record · 19:10",
+              "exhibitText": "A badge assigned to Morgan Reed opened the stairwell at 19:10. This record does not name Casey Vale."
+            }
+          },
+          {
+            "id": "conversation-4",
+            "kind": "challenge",
+            "question": "Please explain how your account fits this record.",
+            "answer": "That entry says I was there, but it doesn't say why. I left at six; maybe the time on that record's off. The badge log is a separate thing.",
+            "status": "supported",
+            "explanation": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building.",
+            "evidence": {
+              "statement": "I left at six and did not return to the building that evening.",
+              "exhibitTitle": "Visitor record · 18:42",
+              "exhibitText": "The desk visitor record has a signed entry: Casey Vale, arrival 18:42, that same evening."
+            }
+          },
+          {
+            "id": "conversation-6",
+            "kind": "accusation",
+            "question": "You lied about being an operations analyst. You actually work as a security guard.",
+            "answer": "That's not what happened. I stand by the account I gave you.",
+            "status": "unsupported",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          {
+            "id": "conversation-8",
+            "kind": "accusation",
+            "question": "You claimed you left at six and never returned, but the signed visitor record names you arriving at 18:42. Your claim of no return was false; the record proves presence, not theft.",
+            "answer": "You’re right. I said I left at six and never returned, but I came back to the building at 18:42. I tried to cast doubt on the time instead of admitting that. The visitor record proves I was there, not that I took the ledger.",
+            "status": "supported",
+            "explanation": "Casey’s claim that they did not return after leaving at six conflicts with the visitor record naming them arriving at 18:42."
+          }
+        ],
+        "export": {
+          "state": "saved",
+          "destination": "local",
+          "attempts": 1
+        }
+      },
+      "recoveredOutcome": "win"
+    },
+    "loss": {
+      "result": {
+        "outcome": "lose_giveup",
+        "stats": {
+          "timeElapsed": 0.09,
+          "difficulty": "easy",
+          "playMode": "relaxed",
+          "ranked": false,
+          "hintsUsed": 0,
+          "accusationsUsed": 0,
+          "questionsAsked": 0,
+          "score": 1500,
+          "detectiveRating": "Veteran"
+        },
+        "detective_rating": "Veteran",
+        "closest_moment": "I left at six and did not return to the building that evening.",
+        "what_they_missed": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building.",
+        "the_lie_revealed": "I left at six and did not return to the building that evening.",
+        "the_truth_revealed": "Casey returned to the building at 18:42. The visitor record establishes presence, not who took the ledger.",
+        "conversationPath": [
+          {
+            "id": "conversation-0",
+            "kind": "dialogue",
+            "question": "*Detective opens the file*",
+            "answer": "I left at six and did not return to the building that evening.",
+            "status": "neutral"
+          }
+        ],
+        "export": {
+          "state": "saved",
+          "destination": "local",
+          "attempts": 1
+        }
+      },
+      "recoveredOutcome": "lose_giveup"
+    }
+  }
+}

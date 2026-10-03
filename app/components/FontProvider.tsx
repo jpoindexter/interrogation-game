@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { readPreferences } from '../settings/preferences-store';
 
 const FONT_MAP: Record<string, string> = {
   dyslexia: '"OpenDyslexic", sans-serif',
@@ -11,9 +12,10 @@ export default function FontProvider() {
   useEffect(() => {
     const apply = () => {
       try {
-        const raw = localStorage.getItem('appSettings');
-        if (!raw) return;
-        const { fontFamily } = JSON.parse(raw);
+        const { fontFamily, fontSize, highContrast, reducedMotion } = readPreferences();
+        document.documentElement.style.fontSize = { small: '87.5%', medium: '100%', large: '125%' }[fontSize];
+        document.body.classList.toggle('high-contrast', highContrast);
+        document.body.classList.toggle('reduced-motion', reducedMotion);
         const font = FONT_MAP[fontFamily];
         if (font) {
           document.body.setAttribute('data-font', fontFamily);

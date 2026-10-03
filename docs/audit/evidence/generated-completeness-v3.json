@@ -1,0 +1,56 @@
+{
+  "declaredAt": "2026-10-03T12:05:06.517Z",
+  "calls": 1,
+  "setting": "hospital",
+  "difficulty": "hard",
+  "promptVersion": "one-false-claim-v3",
+  "sources": {
+    "src/lib/ai/prompts/case-text.json": "1d6a37da5e29cfa2c49b676d9bffb2af57c14bac23a4e5a17d73b83c75e537b3",
+    "src/lib/ai/prompts/case.ts": "ac23354ceeb575e62fca9c303d56a66ec5a0e591f30a8313d95e30bea0a77b12",
+    "src/lib/ai/generated-content.ts": "dff33043f62325071f41170a97c214071d5af9f26ed47bf14a5bcf5fe59e72e4",
+    "src/lib/mistral/generate-case.ts": "ff81ed15dda747d1b60bb836ba42eaf7f20b2b393002abad15f9e5d739525164"
+  },
+  "checks": {
+    "runtimeCase": true,
+    "objective": true,
+    "complete": true,
+    "belowCeiling": true
+  },
+  "scope": "Single real Codex generation through the production capability. Does not establish semantic coherence, discoverability, judge fairness or browser behavior.",
+  "finishedAt": "2026-10-03T12:05:22.535Z",
+  "elapsedMs": 16018,
+  "caseData": {
+    "case_number": "6381",
+    "setting": "Meridian Hospital",
+    "crime": "A scheduled $84,600 supplier payment was diverted to a different bank account before it was released.",
+    "objective": "Identify the false claim",
+    "briefing": "You are investigating a diverted supplier payment at Meridian Hospital. Interview procurement analyst Ivo Serrano, who says he followed the standard approval process. Identify the false claim in his account; you do not need to prove every element of the crime.",
+    "detective_leads": [
+      "Vendor complained about duplicate forms",
+      "Payment audit shows a quiet revision",
+      "Night-shift badge reader malfunctioned"
+    ],
+    "suspect_name": "Ivo Serrano",
+    "suspect_gender": "male",
+    "suspect_role": "Procurement Analyst",
+    "suspect_true_story": "Ivo changed the supplier's bank account using a stolen vendor credential, then released the $84,600 payment. He did not have the required second approver's authorization. The payment system records each account revision and approval as separate events, and an approval must be explicitly entered by a second authorized user before release. He left the hospital before the release, but used remote access afterward.",
+    "suspect_cover_story": "I changed the supplier's bank account after receiving a vendor update request. The second approver entered his authorization before I released the payment. I left the hospital before the payment was released, and I did not access the system remotely afterward.",
+    "the_lie": "The second approver entered his authorization before I released the payment.",
+    "the_truth": "Ivo released the payment without a second approver's authorization; the later approval entry was added after release using Ivo's own credentials.",
+    "the_contradiction": "The public payment audit shows release at 16:42 and an approval entry at 16:49; system procedure confirms that only an explicit second-user approval entered before release authorizes payment. Follow-up audit records show the 16:49 entry used Ivo's credentials, not the approver's, so the later timestamp is not evidence of earlier approval.",
+    "stress_triggers": [
+      "Who supplied the vendor's new bank details?",
+      "Why was the approval entered seven minutes later?",
+      "Why does the later entry use his credentials?",
+      "How did he access the system after leaving?"
+    ],
+    "deflection_tactics": [
+      "Recasts the account change as routine paperwork.",
+      "Emphasizes that the payment amount matched the invoice.",
+      "Insists the audit timestamps are easy to misread.",
+      "Asks whether the vendor complaint has been resolved."
+    ],
+    "verbal_tics": "Uses exact times and says “for the record” before redirecting.",
+    "difficulty": "hard"
+  }
+}

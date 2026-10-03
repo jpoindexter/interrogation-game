@@ -16,6 +16,8 @@ export default function MusicToggle() {
       onClick={() => { playClick(); toggle(); }}
       className="fixed bottom-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-surface-darker/80 hover:bg-surface-dark border border-surface rounded-full transition-colors backdrop-blur-sm"
       title={muted ? 'Play music' : 'Mute music'}
+      aria-label={muted ? 'Play music' : 'Mute music'}
+      aria-pressed={!muted}
     >
       {muted ? (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-500">

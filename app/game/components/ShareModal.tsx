@@ -45,7 +45,45 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
   return (
     <AnimatePresence>
       {show && (
-        <>
+        <ShareContents onClose={onClose} text={text} copyLink={copyLink} url={url} copied={copied} />
+      )}
+    </AnimatePresence>
+  );
+}
+
+
+function SocialLinks({ text, url }: { text: string; url: string }) {
+  return (
+<div className="px-5 pb-5">
+                <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-3">Share To</p>
+                <div className="flex items-center justify-between">
+                  {SOCIALS.map((s) => (
+                    <a
+                      key={s.name}
+                      href={s.getUrl(text, url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => playClick()}
+                      className="flex flex-col items-center gap-1.5 group"
+                    >
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95"
+                        style={{ backgroundColor: s.color }}
+                      >
+                        {s.icon}
+                      </div>
+                      <span className="text-[8px] text-gray-600 uppercase tracking-wider group-hover:text-gray-400 transition-colors">{s.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+  );
+}
+
+
+function ShareContents({ onClose, text, copyLink, url, copied }: { onClose: () => void; text: string; copyLink: () => Promise<void>; url: string; copied: boolean }) {
+  return (
+<>
           <motion.div
             key="share-backdrop"
             className="fixed inset-0 z-50 bg-black/70"
@@ -87,33 +125,9 @@ export default function ShareModal({ show, text, url, onClose }: ShareModalProps
                 </button>
               </div>
 
-              <div className="px-5 pb-5">
-                <p className="text-[9px] text-gray-600 uppercase tracking-wider mb-3">Share To</p>
-                <div className="flex items-center justify-between">
-                  {SOCIALS.map((s) => (
-                    <a
-                      key={s.name}
-                      href={s.getUrl(text, url)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => playClick()}
-                      className="flex flex-col items-center gap-1.5 group"
-                    >
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95"
-                        style={{ backgroundColor: s.color }}
-                      >
-                        {s.icon}
-                      </div>
-                      <span className="text-[8px] text-gray-600 uppercase tracking-wider group-hover:text-gray-400 transition-colors">{s.name}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
+              <SocialLinks text={text} url={url} />
             </div>
           </motion.div>
         </>
-      )}
-    </AnimatePresence>
   );
 }

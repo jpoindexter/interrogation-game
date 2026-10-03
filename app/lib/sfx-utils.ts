@@ -1,7 +1,8 @@
+import { readPreferences } from '../settings/preferences-store';
 /** Shared SFX utilities for pages outside the game (which uses the useSfx hook). */
 
 export function getSfxVolume(): number {
-  try { const s = localStorage.getItem('appSettings'); if (s) return JSON.parse(s).sfxVolume ?? 0.5; } catch {}
+  try { return readPreferences().sfxVolume; } catch {}
   return 0.5;
 }
 

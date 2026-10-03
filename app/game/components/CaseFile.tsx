@@ -26,60 +26,27 @@ export default function CaseFile({
 }: CaseFileProps) {
   const [page, setPage] = useState<Page>('case');
   const logEndRef = useRef<HTMLDivElement | null>(null);
-  const prevHintCount = useRef(hintTexts.length);
-  const prevClueCount = useRef(clues.length);
+  const [seenEvidence, setSeenEvidence] = useState({ hints: hintTexts.length, clues: clues.length });
+  if (seenEvidence.hints !== hintTexts.length || seenEvidence.clues !== clues.length) {
+    if (hintTexts.length > seenEvidence.hints || clues.length > seenEvidence.clues) setPage('evidence');
+    setSeenEvidence({ hints: hintTexts.length, clues: clues.length });
+  }
 
   useEffect(() => {
     if (page === 'log') logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversationHistory, page]);
 
-  useEffect(() => {
-    if (hintTexts.length > prevHintCount.current) setPage('evidence');
-    prevHintCount.current = hintTexts.length;
-  }, [hintTexts.length]);
-
-  useEffect(() => {
-    if (clues.length > prevClueCount.current) setPage('evidence');
-    prevClueCount.current = clues.length;
-  }, [clues.length]);
-
   const filtered = conversationHistory.filter(m => m.content && !m.content.startsWith('*'));
-  const tabs: { key: Page; label: string; badge?: number; color: string; activeColor: string }[] = [
-    { key: 'case', label: 'Case', color: 'bg-[#b8a88a]', activeColor: 'bg-[#d4c4a0]' },
-    { key: 'evidence', label: 'Evidence', badge: clues.length > 0 ? clues.length : undefined, color: 'bg-[#8aabb8]', activeColor: 'bg-[#a0c4d4]' },
-    { key: 'log', label: 'Log', badge: filtered.length > 0 ? filtered.length : undefined, color: 'bg-[#b88a8a]', activeColor: 'bg-[#d4a0a0]' },
-  ];
+
 
   return (
     <motion.div
       className="relative h-full min-h-0"
       initial="hidden" animate="visible" variants={slideRight} transition={smooth}
     >
-      <div className="absolute top-3 right-full flex flex-col z-20">
-        {tabs.map(({ key, label, badge, color, activeColor }) => (
-          <button
-            key={key}
-            onClick={() => { if (page !== key) playPaper(); setPage(key); }}
-            className={`px-2 py-5 text-[11px] font-bold transition-colors rounded-l-sm mb-0.5 ${
-              page === key ? `${activeColor} text-black/80` : `${color} text-black/30 opacity-70 hover:opacity-90`
-            }`}
-            style={{
-              writingMode: 'vertical-lr',
-              textOrientation: 'mixed',
-              fontFamily: 'var(--font-handwriting)',
-            }}
-          >
-            {label}
-            {badge !== undefined && (
-              <span className="mt-1 text-[9px] bg-black/10 px-0.5 rounded-sm tabular-nums"
-                style={{ fontFamily: 'var(--font-mono)' }}
-              >{badge}</span>
-            )}
-          </button>
-        ))}
-      </div>
+      <CaseTabs page={page} setPage={setPage} clueCount={clues.length} messageCount={filtered.length} />
 
-      <div className="flex flex-col h-full border-l border-surface-darker relative overflow-hidden"
+      <div data-surface="paper" className="flex flex-col h-full border-l border-surface-darker relative overflow-hidden"
         style={{ background: '#F0EDE6' }}
       >
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" preserveAspectRatio="none">
@@ -104,5 +71,39 @@ export default function CaseFile({
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function CaseTabs({ page, setPage, clueCount, messageCount }: { page: Page; setPage: (page: Page) => void; clueCount: number; messageCount: number }) {
+  const tabs: { key: Page; label: string; badge?: number; color: string; activeColor: string }[] = [
+    { key: 'case', label: 'Case', color: 'bg-[#b8a88a]', activeColor: 'bg-[#d4c4a0]' },
+    { key: 'evidence', label: 'Evidence', badge: clueCount > 0 ? clueCount : undefined, color: 'bg-[#8aabb8]', activeColor: 'bg-[#a0c4d4]' },
+    { key: 'log', label: 'Log', badge: messageCount > 0 ? messageCount : undefined, color: 'bg-[#b88a8a]', activeColor: 'bg-[#d4a0a0]' },
+  ];
+  return (
+      <div className="absolute top-3 right-full flex flex-col z-20">
+        {tabs.map(({ key, label, badge, color, activeColor }) => (
+          <button
+            key={key}
+            aria-pressed={page === key}
+            onClick={() => { if (page !== key) playPaper(); setPage(key); }}
+            className={`px-2 py-5 text-[11px] font-bold transition-colors rounded-l-sm mb-0.5 ${
+              page === key ? `${activeColor} text-black/80` : `${color} text-black/30 opacity-70 hover:opacity-90`
+            }`}
+            style={{
+              writingMode: 'vertical-lr',
+              textOrientation: 'mixed',
+              fontFamily: 'var(--font-handwriting)',
+            }}
+          >
+            {label}
+            {badge !== undefined && (
+              <span className="mt-1 text-[9px] bg-black/10 px-0.5 rounded-sm tabular-nums"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >{badge}</span>
+            )}
+          </button>
+        ))}
+      </div>
   );
 }

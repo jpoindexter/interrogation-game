@@ -1,58 +1,31 @@
+import { requestBudgetFailure } from '@/lib/limits/http';
 import { NextRequest, NextResponse } from 'next/server';
-import { evaluateWin, generateLossSummary } from '../../../src/lib/mistral';
-import { validateNumber, sanitizeInput } from '../../../src/lib/sanitize';
-import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, deleteSession, exportSession } from '../../../src/lib/game-session';
+import { getClientIp } from '../../../src/lib/rate-limit';
+import { getSession, acquireSessionLock, releaseSessionLock, exportSession } from '../../../src/lib/game-session';
+import { expireSession } from '../../../src/lib/session/transitions';
+import { projectResult } from '../../../src/lib/session/result';
 
 export async function POST(request: NextRequest) {
+  const budgetFailure = requestBudgetFailure(getClientIp(request), 30);
+  if (budgetFailure) return budgetFailure;
   try {
-    const ip = getClientIp(request);
-    if (!rateLimit(ip, 30)) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-    }
-
     const body = await request.json();
-
-    if (!body.type || !['win', 'lose'].includes(body.type)) {
-      return NextResponse.json({ error: 'Invalid evaluation type' }, { status: 400 });
-    }
-
+    if (!['win', 'lose'].includes(body.type)) return NextResponse.json({ error: 'Invalid evaluation type' }, { status: 400 });
     const session = getSession(body.sessionId);
-    if (!session) {
-      return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
+    if (!session) return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
+    if (!acquireSessionLock(session.id)) return NextResponse.json({ error: 'Another action is in progress' }, { status: 409 });
+    try {
+      expireSession(session);
+      if (!session.outcome || (body.type === 'win') !== (session.outcome === 'win')) {
+        return NextResponse.json({ error: 'Requested result does not match the recorded outcome' }, { status: 409 });
+      }
+      const result = projectResult(session);
+      const delivery = await exportSession(session.id, session.outcome);
+      return NextResponse.json({ ...result, export: delivery });
+    } finally {
+      releaseSessionLock(session.id);
     }
-
-    const caseData = session.caseData as Parameters<typeof evaluateWin>[0] & Parameters<typeof generateLossSummary>[0];
-    const history = session.conversationHistory;
-
-    // SECURITY: Judge/evaluation calls NEVER use user-provided API key.
-    // A malicious user could proxy their key to manipulate results.
-    let result;
-    if (body.type === 'win') {
-      const accusation = typeof body.playerAccusation === 'string'
-        ? sanitizeInput(body.playerAccusation.slice(0, 1000)) : '';
-      result = await evaluateWin(caseData, history, accusation);
-    } else {
-      const maxStress = validateNumber(body.maxStress, 0, 10) ?? 0;
-      result = await generateLossSummary(caseData, history, maxStress);
-    }
-
-    if (body.type === 'lose') {
-      const lastMsg = session.conversationHistory.at(-1)?.content ?? '';
-      const outcome = lastMsg.includes('[Time') ? 'lose_time'
-        : lastMsg.includes('[The detective') ? 'lose_giveup'
-        : 'lose_accusations' as const;
-      exportSession(session.id, outcome);
-    }
-
-    deleteSession(session.id);
-
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error('Error during evaluation:', error);
-    return NextResponse.json(
-      { error: 'Failed to evaluate' },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: 'Unable to retrieve result. Please retry.' }, { status: 500 });
   }
 }

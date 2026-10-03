@@ -1,0 +1,269 @@
+[
+  {
+    "auditId": "GAMEPLAY-DIALOGUE",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72bac1c1a8b9544f3d9",
+    "name": "[P1 \u00b7 GAMEPLAY-DIALOGUE] Expand contextual dialogue and meaningful conversation options",
+    "description": "GAMEPLAY-DIALOGUE\n\nUser-authorized scope addition, 2026-10-03.\n\nAdd richer suspect dialogue and distinct player approaches using the original Git-history mechanics. Preserve free text and voice; optional suggested approaches should depend on revealed evidence and never expose hidden solutions. Acceptance: playable branching examples; repetition/diversity checks; accessible controls; no fabricated clue progress; compare with baseline game.",
+    "url": "https://trello.com/c/i1IERgNz/63-p1-gameplay-dialogue-expand-contextual-dialogue-and-meaningful-conversation-options",
+    "shortUrl": "https://trello.com/c/i1IERgNz",
+    "closed": false,
+    "complete": false,
+    "position": 140737489289216,
+    "lastActivityAt": "2026-10-03T10:21:31.580Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "GAMEPLAY-TACTICS",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72c5098ce2006e02009",
+    "name": "[P1 \u00b7 GAMEPLAY-TACTICS] Make red-team tactics interactive and consequential",
+    "description": "GAMEPLAY-TACTICS\n\nUser-authorized scope addition, 2026-10-03.\n\nDesign and implement a small fictional-case tactical loop: probe assumptions, challenge claims, test contradictions and recover from failed tactics. Explain risk/reward, distinguish persuasive bluff from evidence and avoid arbitrary hidden penalties. Acceptance: seeded cases show different tactical outcomes, fair feedback and solvability; no real-target intrusion tooling.",
+    "url": "https://trello.com/c/kFen7kQK/64-p1-gameplay-tactics-make-red-team-tactics-interactive-and-consequential",
+    "shortUrl": "https://trello.com/c/kFen7kQK",
+    "closed": false,
+    "complete": false,
+    "position": 140737489305600,
+    "lastActivityAt": "2026-10-03T10:21:33.011Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "GAMEPLAY-EVIDENCE",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d72fb749e8b0d087beb6",
+    "name": "[P1 \u00b7 GAMEPLAY-EVIDENCE] Connect evidence, statements and contradiction challenges",
+    "description": "GAMEPLAY-EVIDENCE\n\nUser-authorized scope addition, 2026-10-03.\n\nLet players inspect known evidence, connect it to suspect statements and issue a focused challenge. Preserve noir presentation and existing accusation goal. Acceptance: evidence traceability, keyboard path, no future-secret leaks, validated contradiction progression and coherent reveals across replay/live providers.",
+    "url": "https://trello.com/c/66zMydF6/65-p1-gameplay-evidence-connect-evidence-statements-and-contradiction-challenges",
+    "shortUrl": "https://trello.com/c/66zMydF6",
+    "closed": false,
+    "complete": false,
+    "position": 140737489321984,
+    "lastActivityAt": "2026-10-03T10:21:35.606Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "GAMEPLAY-EVAL",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d730a9486f511d77b376",
+    "name": "[P1 \u00b7 GAMEPLAY-EVAL] Red-team the game and test whether the new loop is fun and fair",
+    "description": "GAMEPLAY-EVAL\n\nUser-authorized scope addition, 2026-10-03.\n\nUse full Git-history intent plus gameplay research to build an evaluation set for direct/indirect probes, false premises, repeated questions, off-topic pressure, prompt injection, malformed AI responses and alternate valid accusations. Acceptance: measured outcomes, fair judgments, diverse dialogue, difficulty/accessibility comparison and real playtest/rehearsal evidence. Do not equate automated scores with proven fun.",
+    "url": "https://trello.com/c/FBRyT59O/66-p1-gameplay-eval-red-team-the-game-and-test-whether-the-new-loop-is-fun-and-fair",
+    "shortUrl": "https://trello.com/c/FBRyT59O",
+    "closed": false,
+    "complete": false,
+    "position": 140737489338368,
+    "lastActivityAt": "2026-10-03T10:21:36.893Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "DOCS",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d73293a3bacc626461b1",
+    "name": "[P1 \u00b7 DOCS] Update all project documentation to the implemented product",
+    "description": "DOCS\n\nUser-authorized scope addition, 2026-10-03.\n\nRefresh README, setup, env examples, architecture, module ownership, providers, local Codex vs hosted API, voice, migrations, test commands, troubleshooting, privacy/data retention and demo rehearsal. Preserve historical audit as baseline. Acceptance: commands executed on fresh setup; every claim/config reference matches code and proof; no credentials committed. Update incrementally, final review after implementation.",
+    "url": "https://trello.com/c/06YDD6k8/67-p1-docs-update-all-project-documentation-to-the-implemented-product",
+    "shortUrl": "https://trello.com/c/06YDD6k8",
+    "closed": false,
+    "complete": false,
+    "position": 140737489354752,
+    "lastActivityAt": "2026-10-03T10:21:38.156Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "SITE",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d73302a53f1b1f233420",
+    "name": "[P2 \u00b7 SITE] Build the project website after the game acceptance pass",
+    "description": "SITE\n\nUser-authorized scope addition, 2026-10-03.\n\nCreate a polished public-facing project website consistent with the completed noir game. Explain gameplay and the red-team concept, show final media, supported demo access and verified capabilities. Dependency: game acceptance complete. Acceptance: responsive/keyboard/contrast/performance checks; links/media work; clear live/demo/replay status. Build locally before publishing; confirm actual hosting target at that stage.",
+    "url": "https://trello.com/c/if7g5f21/68-p2-site-build-the-project-website-after-the-game-acceptance-pass",
+    "shortUrl": "https://trello.com/c/if7g5f21",
+    "closed": false,
+    "complete": false,
+    "position": 140737489371136,
+    "lastActivityAt": "2026-10-03T10:21:39.558Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "PORTFOLIO",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0d735b266d7a5a245a004",
+    "name": "[P2 \u00b7 PORTFOLIO] Build and add the jason.theft.studio case study",
+    "description": "PORTFOLIO\n\nUser-authorized scope addition, 2026-10-03. Correct portfolio: https://jason.theft.studio\n\nAfter the game is verified, inspect jason.theft.studio and its source to match existing case-study structure, typography, navigation and visual style. Tell the evidence-backed hackathon-to-upgrade story: role, problem, gameplay/design decisions, AI/voice architecture, constraints, before/after, actual results and reflection. Integrate into portfolio with correct project links and media. Acceptance: design match and responsive/keyboard checks; all claims trace to evidence; user reviews final narrative; no invented metrics or achievements.",
+    "url": "https://trello.com/c/ouCqk3zR/69-p2-portfolio-build-and-add-the-jasontheftstudio-case-study",
+    "shortUrl": "https://trello.com/c/ouCqk3zR",
+    "closed": false,
+    "complete": false,
+    "position": 140737489387520,
+    "lastActivityAt": "2026-10-03T10:22:04.261Z",
+    "startedAt": null,
+    "due": {
+      "date": null,
+      "complete": false
+    },
+    "listId": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+    "boardId": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+    "labels": [],
+    "labelsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd76424f0d9e064609b1",
+      "name": "Backlog \u2014 upgrades"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    }
+  },
+  {
+    "auditId": "GAMEPLAY-MAP",
+    "id": "ari:cloud:trello::card/workspace/6a8f03e71844a6c1103692dc/6ac0e0e76f96bf7c9e22e77d",
+    "name": "[P1 \u00b7 GAMEPLAY-MAP] Show a simple conversation path after win or loss",
+    "desc": "User scope addition, 3 Oct 2026.\n\nAdd a compact conversation flowchart to both outcome screens, matching the existing noir/case-file style. Show the path actually taken and which evidence challenges/accusations were supported or wrong. Keep ordinary questions neutral unless authoritative evidence supports a judgment; do not invent alternative branches or label dialogue from stress/tone.\n\nAcceptance: win and loss both show a readable responsive path; exact source text is inspectable; wrong-then-right accusations retain their own verdict; evidence links connect the challenged statement and exhibit; keyboard and reduced-motion support; no color-only meaning. Long conversations remain manageable. Verify result reload/recovery and truthful canonical outcome data, then inspect in the browser when authorized.\n\nImplementation checkpoint \u00b7 3 Oct 2026\nWin/loss path implemented with canonical evidence and accusation verdicts, source details and explicit unverified live wording. Real localhost Codex win and give-up loss both executed; result reload retains the path. Evidence: docs/audit/evidence/local-http-gameplay-map.json and result-conversation-path tests. Browser layout/keyboard/reduced-motion inspection pending.",
+    "webUrl": "https://trello.com/c/LHeOgx1c/70-p1-gameplay-map-show-a-simple-conversation-path-after-win-or-loss",
+    "url": "https://trello.com/c/LHeOgx1c/70-p1-gameplay-map-show-a-simple-conversation-path-after-win-or-loss",
+    "list": {
+      "id": "ari:cloud:trello::list/workspace/6a8f03e71844a6c1103692dc/6ac0cd7892040386807ca013",
+      "name": "Verify"
+    },
+    "board": {
+      "id": "ari:cloud:trello::board/workspace/6a8f03e71844a6c1103692dc/6ac0cd62e0d764819ded56de",
+      "name": "Interrogation \u2014 Superhuman Demo & Upgrade"
+    },
+    "labels": [],
+    "labelsHasMore": false,
+    "due": null,
+    "dueComplete": false,
+    "lastActivityAt": "2026-10-03T11:44:35.549Z",
+    "startedAt": null,
+    "closed": false,
+    "complete": false,
+    "members": [],
+    "comments": [],
+    "commentsHasMore": false,
+    "checklists": [],
+    "checklistsHasMore": false
+  }
+]

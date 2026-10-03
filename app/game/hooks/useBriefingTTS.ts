@@ -1,91 +1,32 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { getVoiceVolume } from './useTTS';
-import { getUserApiHeaders } from '../../lib/api-keys';
+import { useState, useEffect, useCallback } from 'react';
+import { getVoiceVolume, voiceEnabled } from '../audio/browser-speech';
+import { followSpeech } from '../audio/briefing-progress';
+import { useSpeechPlayer } from '../audio/use-speech-player';
 
-export function useBriefingTTS(
-  active: boolean,
-  fullText: string,
-  caseData: { suspect_name: string; suspect_gender: string; sessionId?: string },
-) {
+export function useBriefingTTS(active: boolean, fullText: string,
+  caseData: { suspect_name: string; suspect_gender: string; sessionId?: string }) {
   const [charIndex, setCharIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const rafRef = useRef<number | null>(null);
-
+  const { play, stop, cancel, isSpeaking } = useSpeechPlayer(caseData.sessionId);
+  const { suspect_name: suspectName, suspect_gender: suspectGender, sessionId } = caseData;
   useEffect(() => {
     if (!active) return;
-    setCharIndex(0);
-    setIsPlaying(true);
-
-    let cancelled = false;
-    const play = async () => {
-      try {
-        const res = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() },
-          body: JSON.stringify({ text: fullText, stress: 0, suspectName: caseData.suspect_name, suspectGender: caseData.suspect_gender, sessionId: caseData.sessionId, role: 'detective' }),
-        });
-        if (cancelled) return;
-        if (!res.ok) throw new Error('TTS failed');
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.volume = getVoiceVolume();
-        audioRef.current = audio;
-
-        let smoothIndex = 0;
-        let duration = 0;
-        const tick = () => {
-          if (!audioRef.current || cancelled) return;
-          // Wait for valid duration — avoids NaN/Infinity jumps
-          if (!duration && audio.duration && isFinite(audio.duration)) duration = audio.duration;
-          if (duration > 0) {
-            const progress = audio.currentTime / duration;
-            const target = progress * fullText.length;
-            // Smooth toward target — catch up quickly so text matches speech
-            const delta = target - smoothIndex;
-            if (delta > 0) smoothIndex += Math.min(delta, Math.max(delta * 0.3, 1));
-            setCharIndex(Math.floor(smoothIndex));
-          }
-          rafRef.current = requestAnimationFrame(tick);
-        };
-
-        const cleanup = () => {
-          if (rafRef.current) cancelAnimationFrame(rafRef.current);
-          URL.revokeObjectURL(url);
-          audioRef.current = null;
-          setIsPlaying(false);
-          setCharIndex(fullText.length);
-        };
-        audio.onended = cleanup;
-        audio.onerror = cleanup;
-        await audio.play();
-        rafRef.current = requestAnimationFrame(tick);
-      } catch {
-        if (!cancelled) { setIsPlaying(false); setCharIndex(fullText.length); }
-      }
-    };
-    play();
-
-    return () => {
-      cancelled = true;
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    };
-  }, [active]);
-
-  const skip = useCallback(() => {
-    setCharIndex(fullText.length);
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    setIsPlaying(false);
-  }, [fullText.length]);
-
-  const stop = useCallback(() => {
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    setIsPlaying(false);
-  }, []);
-
-  return { charIndex, isPlaying, skip, stop };
+    let disposed = false;
+    let stopProgress = () => {};
+    void Promise.resolve().then(() => {
+      if (disposed) return;
+      setCharIndex(0);
+      return play({
+        body: { text: fullText, stress: 0, suspectName, suspectGender, sessionId, role: 'detective' },
+        volume: getVoiceVolume(), enabled: voiceEnabled(),
+        onAudio: audio => {
+          stopProgress();
+          if (audio) stopProgress = followSpeech(audio, fullText.length, setCharIndex);
+        },
+        onDone: () => { if (!disposed) setCharIndex(fullText.length); },
+      });
+    });
+    return () => { disposed = true; stopProgress(); cancel(); };
+  }, [active, fullText, suspectName, suspectGender, sessionId, play, cancel]);
+  const skip = useCallback(() => { stop(); setCharIndex(fullText.length); }, [stop, fullText.length]);
+  return { charIndex, isPlaying: active && isSpeaking, skip, stop };
 }

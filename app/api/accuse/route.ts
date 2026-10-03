@@ -1,90 +1,34 @@
+import { requestBudgetFailure } from '@/lib/limits/http';
+import { ensureNotAborted } from '../../../src/lib/ai/execution';
 import { NextRequest, NextResponse } from 'next/server';
 import { evaluateAccusation } from '../../../src/lib/mistral';
-import { sanitizeInput, validateString, isInjectionAttempt } from '../../../src/lib/sanitize';
-import { rateLimit, getClientIp } from '../../../src/lib/rate-limit';
-import { getSession, addMessage, useAccusation, restoreAccusation, issueWinToken, incrementAccusation, acquireSessionLock, releaseSessionLock, exportSession, DIFFICULTY_CLUES } from '../../../src/lib/game-session';
+import { sanitizeInput, validateString } from '../../../src/lib/sanitize';
+import { getClientIp } from '../../../src/lib/rate-limit';
+import { exportSession } from '../../../src/lib/session/export';
+import { accusationError, judgeAccusation } from '../../../src/lib/session/accusation';
+import { runSessionRequest, type SessionResponse } from '../../../src/lib/session/request-ledger';
+import type { GameSession } from '../../../src/lib/session/types';
 
-export async function POST(req: NextRequest) {
+async function runAccusation(session: GameSession, accusation: string, signal: AbortSignal): Promise<SessionResponse> {
+  ensureNotAborted(signal);
+  const invalid = accusationError(session);
+  if (invalid) return { status: 409, body: { error: invalid, outcome: session.outcome } };
+  const text = sanitizeInput(accusation);
+  const result = await judgeAccusation(session, text, () => evaluateAccusation(
+    session.caseData as Parameters<typeof evaluateAccusation>[0], session.conversationHistory, text, { signal }));
+  const delivery = session.outcome ? await exportSession(session.id, session.outcome) : undefined;
+  return { status: 200, body: { ...result, ...(delivery ? { export: delivery } : {}) } };
+}
+export async function POST(request: NextRequest) {
+  const budgetFailure = requestBudgetFailure(`accuse:${getClientIp(request)}`, 30);
+  if (budgetFailure) return budgetFailure;
+  let body: Record<string, unknown>;
+  try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }
+  const accusation = validateString(body?.accusation, 1000);
+  if (!accusation) return NextResponse.json({ error: 'Accusation is required (max 1000 chars)' }, { status: 400 });
   try {
-    const ip = getClientIp(req);
-    if (!rateLimit(ip, 30)) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-    }
-
-    const body = await req.json();
-
-    const session = getSession(body.sessionId);
-    if (!session) {
-      return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
-    }
-
-    const accusation = validateString(body.accusation, 1000);
-    if (!accusation) {
-      return NextResponse.json({ error: 'Accusation is required (max 1000 chars)' }, { status: 400 });
-    }
-
-    if (session.accusationsLeft <= 0) {
-      return NextResponse.json({ error: 'No accusations remaining' }, { status: 403 });
-    }
-
-    const requiredClues = DIFFICULTY_CLUES[(session.caseData.difficulty as string) || 'medium'] || 3;
-    if (session.cluesCollected < requiredClues) {
-      return NextResponse.json(
-        { error: `Not enough clues collected. Need ${requiredClues}, have ${session.cluesCollected}.` },
-        { status: 403 },
-      );
-    }
-
-    if (isInjectionAttempt(accusation)) {
-      return NextResponse.json({
-        correct: false,
-        confession: "That's not even a real accusation. Try harder, detective.",
-        explanation: "Invalid accusation format.",
-      });
-    }
-
-    if (!acquireSessionLock(session.id)) {
-      return NextResponse.json({ error: 'Accusation already in progress' }, { status: 409 });
-    }
-
-    try {
-      useAccusation(session.id);
-      incrementAccusation(session.id);
-      const sanitized = sanitizeInput(accusation);
-
-      try {
-        // SECURITY: Judge calls NEVER use user-provided API key.
-        // A malicious user could proxy their key to always return correct:true.
-        const result = await evaluateAccusation(
-          session.caseData as Parameters<typeof evaluateAccusation>[0],
-          session.conversationHistory,
-          sanitized,
-        );
-
-        addMessage(session.id, 'user', `[ACCUSATION] ${sanitized}`);
-        addMessage(session.id, 'assistant', (result.confession as string) || '');
-        result.accusationsLeft = session.accusationsLeft;
-
-        if (result.correct) {
-          const winToken = issueWinToken(session.id);
-          if (winToken) result.winToken = winToken;
-          exportSession(session.id, 'win', sanitized, true);
-        }
-
-        return NextResponse.json(result);
-      } catch (error) {
-        // Restore accusation on API failure
-        restoreAccusation(session.id);
-        throw error;
-      }
-    } finally {
-      releaseSessionLock(session.id);
-    }
-  } catch (error) {
-    console.error('Error evaluating accusation:', error);
-    return NextResponse.json(
-      { error: 'Failed to evaluate accusation' },
-      { status: 500 }
-    );
-  }
+    const response = await runSessionRequest({ sessionId: String(body.sessionId || ''), requestId: body.requestId,
+      fingerprint: { operation: 'accuse', accusation }, run: session => runAccusation(session, accusation, request.signal) });
+    return NextResponse.json(response.body, { status: response.status });
+  } catch { return NextResponse.json({ error: 'Session save could not be confirmed. Retry the same request ID.', code: 'STORAGE_UNAVAILABLE' }, { status: 503 }); }
 }

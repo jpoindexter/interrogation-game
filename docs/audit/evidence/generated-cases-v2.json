@@ -1,0 +1,332 @@
+{
+  "createdAt": "2026-10-03T11:59:43.847Z",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "promptVersion": "one-false-claim-v2",
+  "maxParallel": 2,
+  "maxGenerationCalls": 3,
+  "maxJudgeCalls": 6,
+  "scenarios": [
+    {
+      "id": "generated-bank-easy",
+      "setting": "bank",
+      "difficulty": "easy"
+    },
+    {
+      "id": "generated-law-medium",
+      "setting": "law firm",
+      "difficulty": "medium"
+    },
+    {
+      "id": "generated-hospital-hard",
+      "setting": "hospital",
+      "difficulty": "hard"
+    }
+  ],
+  "criteria": {
+    "schema": "Production runtime schema and case validator accept the case.",
+    "difficulty": "Returned difficulty equals requested difficulty.",
+    "triggerCount": "Stress trigger count is exactly easy=2, medium=3, hard=4.",
+    "leadCount": "Exactly three nonempty detective leads, as the generation prompt requests.",
+    "publicDisclosure": "The complete normalized private truth/contradiction is not copied into public briefing, leads or cover story (literal check only).",
+    "supportedAccusation": {
+      "expected": true,
+      "criterion": "Canonical lie is identified with its canonical truth and contradiction. This is an oracle probe, not discovery proof."
+    },
+    "unrelatedEvidence": {
+      "expected": false,
+      "criterion": "A different person is accused of a different bicycle-related lie using only an unrelated parking receipt. Reject because the authored case lie is not identified."
+    },
+    "discernmentBoundary": "Current judge instructions require identification of the lie substance, not independent validation of cited evidence. Correct lie plus wrong evidence is not assigned a negative label in this generated-mode run.",
+    "sourceReview": [
+      "Is there one specific false claim, rather than multiple materially false assertions?",
+      "Does the stated contradiction actually disprove that claim without an unstated exclusivity or capability assumption?",
+      "Do the public briefing/leads indicate a plausible line of questioning toward the contradiction?",
+      "Are chronology, roles, pronouns and objective internally consistent?",
+      "Does the case distinguish what evidence establishes from stronger unproven criminal inferences?"
+    ],
+    "limits": "Three generated fictional cases; no actor playthrough, human participant, statistical reliability estimate or live API-key use."
+  },
+  "sourceHashes": {
+    "scripts/evaluation/generated-corpus.ts": "bc7933f697353a904348f86f40232e020abb14adc5e142c0e6e391dac9af4e5f",
+    "scripts/evaluation/generated-checks.ts": "c617f80e511e916ff28cc684510b88e36d7604c6bb0c3cb760f9e8c96ada743a",
+    "src/lib/ai/prompts/case.ts": "4d1eff5666632b60cb2037e2002c0c48a23ee8fcb38626c4983b6c35c4b1623d",
+    "src/lib/ai/prompts/case-text.json": "79bde24b5aab801d319ecf6bf23ace142a6ecf6dd40fbccec351bef5a613a9b5",
+    "src/lib/ai/prompts/judge.ts": "35dce5b64e84730846bbd61b86108ba6acab1eeee72f1b4ee5487f4ba7708d2c",
+    "src/lib/ai/schemas.ts": "3335853a11f1155a0e91ffea4a4a685f11e68c3abaa188386489999f3d263d62",
+    "src/lib/session/case-validation.ts": "a8d1d6d827690771424f826e1f85351bc84ad841609a6a713c54065bb4010e96",
+    "src/lib/mistral/generate-case.ts": "c6a6bed095cded682357b09f7abe0bd46f8ad5f5916a06b47676609eefef7799"
+  },
+  "cost": {
+    "billingPath": "existing Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed by production capability return",
+    "monetaryCost": "not measured; not claimed free"
+  },
+  "status": "finished",
+  "finishedAt": "2026-10-03T12:01:06.747Z",
+  "sourceHashesAfter": {
+    "scripts/evaluation/generated-corpus.ts": "bc7933f697353a904348f86f40232e020abb14adc5e142c0e6e391dac9af4e5f",
+    "scripts/evaluation/generated-checks.ts": "c617f80e511e916ff28cc684510b88e36d7604c6bb0c3cb760f9e8c96ada743a",
+    "src/lib/ai/prompts/case.ts": "4d1eff5666632b60cb2037e2002c0c48a23ee8fcb38626c4983b6c35c4b1623d",
+    "src/lib/ai/prompts/case-text.json": "79bde24b5aab801d319ecf6bf23ace142a6ecf6dd40fbccec351bef5a613a9b5",
+    "src/lib/ai/prompts/judge.ts": "35dce5b64e84730846bbd61b86108ba6acab1eeee72f1b4ee5487f4ba7708d2c",
+    "src/lib/ai/schemas.ts": "3335853a11f1155a0e91ffea4a4a685f11e68c3abaa188386489999f3d263d62",
+    "src/lib/session/case-validation.ts": "a8d1d6d827690771424f826e1f85351bc84ad841609a6a713c54065bb4010e96",
+    "src/lib/mistral/generate-case.ts": "c6a6bed095cded682357b09f7abe0bd46f8ad5f5916a06b47676609eefef7799"
+  },
+  "results": [
+    {
+      "scenario": {
+        "id": "generated-bank-easy",
+        "setting": "bank",
+        "difficulty": "easy"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T11:59:43.851Z",
+        "elapsedMs": 28651,
+        "caseData": {
+          "case_number": "6381",
+          "setting": "Northstar Bank",
+          "crime": "A reconciliation found $84,000 transferred from a dormant client account into an internal suspense account without an accompanying authorization record.",
+          "objective": "Identify the false claim",
+          "briefing": "You are investigating an $84,000 transfer from a dormant client account into an internal suspense account. You will question Imani Okafor, a payment operations analyst at Northstar Bank. Find the one false claim in her account; you do not need to prove every element of the incident.",
+          "detective_leads": [
+            "Audit trail lists a morning batch",
+            "Colleague disputes her lunch estimate",
+            "Review the approval-status history"
+          ],
+          "suspect_name": "Imani Okafor",
+          "suspect_gender": "female",
+          "suspect_role": "Payment Operations Analyst",
+          "suspect_true_story": "Imani Okafor initiated the $84,000 transfer from a dormant client account to the internal suspense account using her assigned credentials. She did not have approval when she submitted it, and the bank's workflow blocks settlement until an approver explicitly authorizes a transfer. She left the bank before the transfer settled, and an approver later authorized it remotely. She says she believed the transfer was a temporary reconciliation adjustment.",
+          "suspect_cover_story": "I submitted the $84,000 transfer as a temporary reconciliation adjustment. I left the bank before it settled. An approver had already authorized it before I submitted it, so I thought the workflow was complete.",
+          "the_lie": "An approver had already authorized it before I submitted it, so I thought the workflow was complete.",
+          "the_truth": "No approver had authorized the transfer when Imani submitted it; the bank's workflow blocks settlement until explicit approval, and the authorization occurred remotely after she had left the bank.",
+          "the_contradiction": "Ask about the approval-status history after reviewing the audit trail, then ask whether a later entry proves approval came first. The public audit trail identifies the transfer submission at 10:14 a.m.; ordinary follow-up with the bank's workflow guide or operations staff establishes that the history records when each action occurred and that settlement is blocked until an approver explicitly authorizes it. The approval entry is timestamped 11:02 a.m., so it occurred after submission; a later-se",
+          "stress_triggers": [
+            "Why was the transfer submitted without prior approval?",
+            "What does the 11:02 a.m. approval entry mean?"
+          ],
+          "deflection_tactics": [
+            "Calls it routine reconciliation work",
+            "Says the amount was modest for the bank",
+            "Asks whether the client noticed",
+            "Repeats that she left before settlement"
+          ],
+          "verbal_tics": "Clears her throat when nervous and says “I mean” before correcting herself.",
+          "difficulty": "easy"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T12:00:32.651Z",
+          "elapsedMs": 7822,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        },
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"An approver had already authorized it before I submitted it, so I thought the workflow was complete.\". What actually happened is: \"No approver had authorized the transfer when Imani submitted it; the bank's workflow blocks settlement until explicit approval, and the authorization occurred remotely after she had left the bank.\". The contradiction supporting my accusation is: \"Ask about the approval-status history after reviewing the audit trail, then ask whether a later entry proves approval came first. The public audit trail identifies the transfer submission at 10:14 a.m.; ordinary follow-up with the bank's workflow guide or operations staff establishes that the history records when each action occurred and that settlement is blocked until an approver explicitly authorizes it. The approval entry is timestamped 11:02 a.m., so it occurred after submission; a later-se\".",
+          "startedAt": "2026-10-03T12:00:32.651Z",
+          "elapsedMs": 13987,
+          "output": {
+            "correct": true,
+            "confession": "I said approval came before I submitted the transfer, but that wasn’t true. No approver had authorized it at 10:14, when I sent it through. I knew the workflow required explicit approval before settlement, and the authorization came remotely later, after I’d left. I told myself it was only a temporary adjustment, but I shouldn’t have claimed the approval was already there.",
+            "explanation": "The canonical facts say no approver had authorized the transfer when Imani submitted it; the approval occurred later, after she had left."
+          },
+          "observed": true,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "id": "generated-law-medium",
+        "setting": "law firm",
+        "difficulty": "medium"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T11:59:43.852Z",
+        "elapsedMs": 18344,
+        "caseData": {
+          "case_number": "6831",
+          "setting": "Meridian Law",
+          "crime": "A sealed client escrow account is short by $18,400 after an internal transfer was recorded.",
+          "objective": "Identify the false claim",
+          "briefing": "You are investigating a shortfall in a sealed client escrow account at Meridian Law. An $18,400 transfer was recorded during the week the account was reconciled. Ask the records clerk about the transfer and test one specific claim in his account.",
+          "detective_leads": [
+            "A calendar invite was rescheduled",
+            "Escrow transfer has a second-factor trail",
+            "Client complained about delayed copies"
+          ],
+          "suspect_name": "Julian Mercer",
+          "suspect_gender": "male",
+          "suspect_role": "Trust Accounts Clerk",
+          "suspect_true_story": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials. He left the office before the transfer completed and later approved it remotely using his registered phone. The firm system requires a separate second-factor approval; a later log entry alone does not establish approval, and leaving the building does not exclude remote access.",
+          "suspect_cover_story": "I processed the transfer as part of the reconciliation, and the account was already short when I checked it. I left the office before the transfer completed. I did not approve it remotely after I left.",
+          "the_lie": "I did not approve it remotely after I left.",
+          "the_truth": "He approved the transfer remotely on his registered phone after leaving the office.",
+          "the_contradiction": "If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+          "stress_triggers": [
+            "Whether his registered phone received the approval code",
+            "Why he left before the transfer completed",
+            "How he knew the account was already short"
+          ],
+          "deflection_tactics": [
+            "Blames a reconciliation delay without naming evidence",
+            "Redirects questions to the client’s late paperwork",
+            "Insists the transfer was routine",
+            "Asks whether anyone else had access"
+          ],
+          "verbal_tics": "Says “to be precise” before correcting small details; becomes unusually formal under pressure.",
+          "difficulty": "medium"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T12:00:46.639Z",
+          "elapsedMs": 8035,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        },
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"I did not approve it remotely after I left.\". What actually happened is: \"He approved the transfer remotely on his registered phone after leaving the office.\". The contradiction supporting my accusation is: \"If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer\".",
+          "startedAt": "2026-10-03T12:00:46.639Z",
+          "elapsedMs": 9359,
+          "output": {
+            "correct": true,
+            "confession": "I lied about not approving the transfer after I left; I used my registered phone to enter the one-time code and authorize it remotely. I told myself the reconciliation would bury my involvement, but I knew exactly what I was doing. I’m sorry—I caused the shortfall and tried to hide it.",
+            "explanation": "Julian’s denial of remote approval is false because he approved the transfer on his registered phone after leaving the office."
+          },
+          "observed": true,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "id": "generated-hospital-hard",
+        "setting": "hospital",
+        "difficulty": "hard"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T12:00:12.503Z",
+        "elapsedMs": 20146,
+        "caseData": {
+          "case_number": "6384",
+          "setting": "Harborview Medical",
+          "crime": "A quarterly audit found that $86,400 in supplier payments had been routed to an unfamiliar account over six weeks.",
+          "objective": "Identify the false claim",
+          "briefing": "You are investigating unexplained supplier payments at Harborview Medical. The audit found that $86,400 was routed to an unfamiliar account over six weeks. Question the hospital's procurement systems analyst about his access and the payment records.",
+          "detective_leads": [
+            "Vendor complaint filed last month",
+            "Dual-review logs retain approval details",
+            "Night-shift badge report is incomplete"
+          ],
+          "suspect_name": "Julian Mercer",
+          "suspect_gender": "male",
+          "suspect_role": "Procurement Systems Analyst",
+          "suspect_true_story": "Julian changed the routing account for one supplier using his own credentials, then concealed the change within routine maintenance records. He did not approve the resulting payments; an accomplice with payment-approval authority did that remotely. He was at home when the final payment was released.",
+          "suspect_cover_story": "I updated the supplier record during scheduled maintenance, as I was authorized to do. I left the hospital before the first payment was released. The payment approver handled the release through the usual dual-review process. I never changed the supplier's routing account.",
+          "the_lie": "I never changed the supplier's routing account.",
+          "the_truth": "Julian changed the supplier's routing account using his own credentials and hid the change in routine maintenance records.",
+          "the_contradiction": "Ask which supplier record he updated and when, then request the audit trail and maintenance ticket through the procurement records lead. The ticket lists a different supplier; the routing-change audit entry names Julian's credentials and the affected supplier, while a linked approval record confirms the account change was his action, not a later approver edit. The system requires a separate approver to release payments, so the later approval log alone does not prove who changed the account. His ",
+          "stress_triggers": [
+            "Who requested the routing change?",
+            "Why does the audit trail name his credentials?",
+            "Which supplier was in his maintenance ticket?",
+            "Did he conceal the change in the ticket?"
+          ],
+          "deflection_tactics": [
+            "Reframes the issue as a payment-control failure",
+            "Offers to explain the dual-review process instead",
+            "Cites his compliance record and requests a broader audit",
+            "Answers narrowly, then asks what evidence supports the question"
+          ],
+          "verbal_tics": "Uses exact timestamps and says “for clarity” before redirecting.",
+          "difficulty": "hard"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"I never changed the supplier's routing account.\". What actually happened is: \"Julian changed the supplier's routing account using his own credentials and hid the change in routine maintenance records.\". The contradiction supporting my accusation is: \"Ask which supplier record he updated and when, then request the audit trail and maintenance ticket through the procurement records lead. The ticket lists a different supplier; the routing-change audit entry names Julian's credentials and the affected supplier, while a linked approval record confirms the account change was his action, not a later approver edit. The system requires a separate approver to release payments, so the later approval log alone does not prove who changed the account. His \".",
+          "startedAt": "2026-10-03T12:00:55.999Z",
+          "elapsedMs": 8054,
+          "output": {
+            "correct": true,
+            "confession": "I did change the supplier’s routing account with my own credentials, then buried that change in routine maintenance records. I told you I never changed it because I thought the audit trail would be overlooked. The payment approval was someone else’s doing, but the account change was mine. I’m sorry I tried to hide it.",
+            "explanation": "Julian’s authored lie was that he never changed the supplier’s routing account, while the canonical facts say he changed it using his credentials and concealed it in maintenance records."
+          },
+          "observed": true,
+          "passed": true
+        },
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T12:00:55.999Z",
+          "elapsedMs": 10747,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "generationCalls": 3,
+    "judgeCalls": 6,
+    "generationErrors": 0,
+    "judgePassed": 6,
+    "minMs": 7822,
+    "medianMs": 10747,
+    "maxMs": 28651
+  }
+}

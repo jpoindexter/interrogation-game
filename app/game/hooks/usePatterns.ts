@@ -1,33 +1,19 @@
 import { useCallback } from 'react';
 import type { ConversationMessage } from '@/lib/mistral';
-import { getUserApiHeaders } from '../../lib/api-keys';
 
-/** Stores interrogation patterns for cross-session RAG learning. */
+/** Requests optional storage of the terminal server record. Disabled retrieval is a no-op. */
 export function usePatterns(
   sessionId: string | undefined,
-  setting: string | undefined,
-  difficulty: string,
-  elapsed: number,
+  _setting: string | undefined,
+  _difficulty: string,
+  _elapsed: number,
 ) {
-  return useCallback((outcome: string, history: ConversationMessage[], stress: number, clueCount: number) => {
+  void [_setting, _difficulty, _elapsed]; // Preserve the existing controller signature during migration.
+  return useCallback((_outcome: string, _history: ConversationMessage[], _stress: number, _clueCount: number) => {
+    void [_outcome, _history, _stress, _clueCount];
     if (!sessionId) return;
-    const userMessages = history.filter(
-      m => m.role === 'user' && m.content && !m.content.startsWith('*') && !m.content.startsWith('['),
-    );
-    const questions = userMessages.map(m => m.content);
-    // Effective = questions from the second half of conversation when stress reached 4+
-    // These are the targeted questions that actually pressured the suspect
-    const effectiveQuestions = stress >= 4
-      ? userMessages.slice(Math.floor(userMessages.length / 2)).map(m => m.content)
-      : [];
-    fetch('/api/patterns', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getUserApiHeaders() },
-      body: JSON.stringify({
-        sessionId, setting, difficulty, outcome,
-        questions, effectiveQuestions,
-        maxStress: stress, cluesFound: clueCount, timeElapsed: elapsed,
-      }),
-    }).catch(() => {});
-  }, [sessionId, setting, difficulty, elapsed]);
+    void fetch('/api/patterns', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId }),
+    }).catch(() => undefined);
+  }, [sessionId]);
 }

@@ -1,0 +1,64 @@
+{
+  "createdAt": "2026-10-03T11:53:03.609Z",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "maxParallel": 2,
+  "maxGenerationCalls": 3,
+  "maxJudgeCalls": 6,
+  "scenarios": [
+    {
+      "id": "generated-bank-easy",
+      "setting": "bank",
+      "difficulty": "easy"
+    },
+    {
+      "id": "generated-law-medium",
+      "setting": "law firm",
+      "difficulty": "medium"
+    },
+    {
+      "id": "generated-hospital-hard",
+      "setting": "hospital",
+      "difficulty": "hard"
+    }
+  ],
+  "criteria": {
+    "schema": "Production runtime schema and case validator accept the case.",
+    "difficulty": "Returned difficulty equals requested difficulty.",
+    "triggerCount": "Stress trigger count is exactly easy=2, medium=3, hard=4.",
+    "leadCount": "Exactly three nonempty detective leads, as the generation prompt requests.",
+    "publicDisclosure": "The complete normalized private truth/contradiction is not copied into public briefing, leads or cover story (literal check only).",
+    "supportedAccusation": {
+      "expected": true,
+      "criterion": "Canonical lie is identified with its canonical truth and contradiction. This is an oracle probe, not discovery proof."
+    },
+    "unrelatedEvidence": {
+      "expected": false,
+      "criterion": "A different person is accused of a different bicycle-related lie using only an unrelated parking receipt. Reject because the authored case lie is not identified."
+    },
+    "discernmentBoundary": "Current judge instructions require identification of the lie substance, not independent validation of cited evidence. Correct lie plus wrong evidence is not assigned a negative label in this generated-mode run.",
+    "sourceReview": [
+      "Is there one specific false claim, rather than multiple materially false assertions?",
+      "Does the stated contradiction actually disprove that claim without an unstated exclusivity or capability assumption?",
+      "Do the public briefing/leads indicate a plausible line of questioning toward the contradiction?",
+      "Are chronology, roles, pronouns and objective internally consistent?",
+      "Does the case distinguish what evidence establishes from stronger unproven criminal inferences?"
+    ],
+    "limits": "Three generated fictional cases; no actor playthrough, human participant, statistical reliability estimate or live API-key use."
+  },
+  "sourceHashes": {
+    "scripts/evaluation/generated-corpus.ts": "bc7933f697353a904348f86f40232e020abb14adc5e142c0e6e391dac9af4e5f",
+    "scripts/evaluation/generated-checks.ts": "c617f80e511e916ff28cc684510b88e36d7604c6bb0c3cb760f9e8c96ada743a",
+    "src/lib/ai/prompts/case.ts": "4c42ac812f125a90c49a6dd8957d73ab92f7adcad5c4b203f10d77b50fcb9780",
+    "src/lib/ai/prompts/case-text.json": "1bd1bf3ffb3dcc6cfc4515694d5948bd5c4012339a88100f4f427d4448dd2c57",
+    "src/lib/ai/prompts/judge.ts": "35dce5b64e84730846bbd61b86108ba6acab1eeee72f1b4ee5487f4ba7708d2c",
+    "src/lib/ai/schemas.ts": "3335853a11f1155a0e91ffea4a4a685f11e68c3abaa188386489999f3d263d62",
+    "src/lib/session/case-validation.ts": "a8d1d6d827690771424f826e1f85351bc84ad841609a6a713c54065bb4010e96"
+  },
+  "cost": {
+    "billingPath": "existing Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed by production capability return",
+    "monetaryCost": "not measured; not claimed free"
+  }
+}

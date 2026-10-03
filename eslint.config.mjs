@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Historical audit reproductions are evidence, not application source.
+    "docs/audit/evidence/**",
   ]),
 ]);
 

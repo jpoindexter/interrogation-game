@@ -1,300 +1,53 @@
 'use client';
 
+import Link from 'next/link';
 import { BackButton, PageShell, PageHeader } from '../components/ui';
-import {
-  motion,
-  PageMotion,
-  fadeIn,
-  fadeUp,
-  stagger,
-  smooth,
-  snappy,
-} from '../components/motion';
+import { motion, PageMotion, fadeUp, stagger, smooth } from '../components/motion';
 
-const PIPELINE = [
-  { step: '01', label: 'Generate', desc: 'Mistral Large creates a unique crime, suspect, cover story, and one specific lie. High temperature (1.3) ensures no two cases repeat. Difficulty controls how well the suspect hides the contradiction.' },
-  { step: '02', label: 'Interrogate', desc: 'The suspect AI defends its story across 3 conversation phases with dynamic prompt weighting. Stress-based speech degradation makes cracks audible through ElevenLabs voice synthesis.' },
-  { step: '03', label: 'Judge', desc: 'A separate Mistral call evaluates your accusation independently. The suspect AI has zero influence on the verdict. Vague accusations are rejected \u2014 you must identify the specific lie.' },
-  { step: '04', label: 'Learn', desc: 'Winning tactics are embedded via Mistral Embed and stored with vector similarity indexing. On the next game, the suspect recognizes common strategies and deflects harder.' },
-  { step: '05', label: 'Export', desc: 'Every completed game persists full transcripts, case secrets, and outcomes to Supabase. An admin JSONL endpoint exports training-ready data for fine-tuning.' },
+const SECTIONS = [
+  { title: 'A fictional account worth questioning', paragraphs: [
+    'You are the detective. An AI plays a suspect with a cover story. Ask questions, keep track of what was said, and make a specific accusation supported by the case.',
+    'The portrait, stress display and vocal delivery are dramatic effects. They are not evidence of guilt or a guide to reading real people.',
+  ] },
+  { title: 'Evidence has a source', paragraphs: [
+    'In an evidence challenge, pin an exact recorded statement, choose a disclosed exhibit and ask how they fit together. Clarify, Present evidence and Leave space prepare editable questions; you decide what to send.',
+    'A reviewed evidence graph determines whether that pair establishes a contradiction. The model supplies the suspect’s reply; it does not create an exhibit or award progress. Other generated cases still use their own clue rules.',
+  ] },
+  { title: 'Voice is optional', paragraphs: [
+    'You can type throughout the game. Voice input and spoken replies use ElevenLabs when the server is configured for it. Microphone permission and provider availability can interrupt voice; use text to continue.',
+    'Provider settings stay on the server. The configuration screen checks what is configured, without claiming a successful live model or voice call.',
+  ] },
+  { title: 'A hackathon project, being rebuilt', paragraphs: [
+    'The original repository presented this as an entry for the Mistral Worldwide Hackathon 2026. That version used Mistral for dialogue and Voxtral for transcription.',
+    'The current upgrade targets a local OpenAI/Codex demonstration with a separate server API path. Full gameplay and voice verification are tracked separately from source changes and automated checks.',
+  ] },
+  { title: 'What this project does not claim', paragraphs: [
+    'Prompts and response validation reduce unwanted behavior; they do not guarantee that a model will never contradict itself or reveal a secret. Live scenarios must be tested.',
+    'Transcripts can support evaluation, but exporting them does not automatically train a model. The game does not claim proven lie detection, real interrogation training or measured improvement from player tactics.',
+  ] },
 ];
 
-const MODELS = [
-  { name: 'Mistral Large', role: 'Suspect brain', uses: 'Case generation, in-character interrogation responses, accusation judgment, win/loss analysis. 4 separate call types with isolated system prompts.', color: 'text-accent' },
-  { name: 'Mistral Embed', role: 'Pattern memory', uses: 'Vector embeddings for RAG. Encodes winning interrogation tactics into similarity-searchable vectors stored in Supabase.', color: 'text-gold' },
-  { name: 'Voxtral STT', role: 'Player voice', uses: 'Mistral\u2019s speech-to-text model. Transcribes player voice input from raw audio blobs into text for the interrogation pipeline.', color: 'text-gray-300' },
-  { name: 'ElevenLabs', role: 'Suspect voice', uses: 'Text-to-speech with dynamic stability parameter. Voice quality degrades as suspect stress rises \u2014 you can hear them breaking.', color: 'text-gray-300' },
-];
+function GameSection({ title, paragraphs }: typeof SECTIONS[number]) {
+  return (
+    <motion.section variants={fadeUp} transition={smooth} className="mb-6 space-y-3 border border-surface-dark bg-surface-darker p-6">
+      <h2 className="text-sm font-bold uppercase tracking-wider text-gold">{title}</h2>
+      {paragraphs.map(paragraph => <p key={paragraph} className="text-sm leading-relaxed text-gray-300">{paragraph}</p>)}
+    </motion.section>
+  );
+}
 
 export default function AboutGamePage() {
   return (
     <PageShell>
-      <motion.div variants={fadeIn} initial="hidden" animate="visible" transition={smooth}><BackButton /></motion.div>
+      <BackButton />
       <PageMotion>
-        <div className="max-w-3xl mx-auto px-6 py-12">
-          <motion.div className="mb-12" variants={fadeUp} initial="hidden" animate="visible" transition={smooth}>
-            <PageHeader label="Behind the Scenes" title="ABOUT THE GAME" />
+        <main className="mx-auto max-w-3xl px-6 py-12">
+          <PageHeader label="Behind the scenes" title="ABOUT THE GAME" />
+          <motion.div variants={stagger(0.08)} initial="hidden" animate="visible">
+            {SECTIONS.map(section => <GameSection key={section.title} {...section} />)}
           </motion.div>
-
-          <motion.div initial="hidden" animate="visible" variants={stagger(0.1)}>
-            {/* The Concept */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">The Concept</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Every case is procedurally generated by Mistral AI &mdash; a unique white-collar crime, suspect, cover story, and one hidden lie. No two cases are the same. The suspect is played by Mistral Large, given a full backstory and instructed to defend it under adversarial pressure.</p>
-              <p className="text-sm text-gray-400 leading-relaxed">You interrogate using your voice (Voxtral STT) or keyboard. As you press on suspicious topics, stress rises and evidence unlocks. The AI deflects, redirects, and stalls &mdash; but it will <span className="text-foreground font-bold">never confess</span>. You win by identifying the specific contradiction and making a formal accusation that a completely separate AI judge evaluates.</p>
-            </motion.div>
-
-            {/* Red Teaming */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">AI Red Teaming as Gameplay</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Red teaming is the practice of probing AI systems for weaknesses &mdash; finding the gaps between what a model is told to do and what it actually does. It&apos;s how organizations stress-test AI before real-world deployment.</p>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">INTERROGATION turns this into a game. The AI is instructed to maintain a logically consistent narrative, but language models struggle with consistency under sustained adversarial pressure. The harder the difficulty, the better the model deflects &mdash; but the contradiction is always there.</p>
-              <p className="text-sm text-gray-400 leading-relaxed">Every player session generates real adversarial data: which questions break the AI, where it leaks information, how it fails under different interrogation strategies. This data feeds back into the system.</p>
-            </motion.div>
-
-            {/* AI Pipeline — what's actually built */}
-            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-5">AI Pipeline</h2>
-              <p className="text-xs text-gray-500 mb-4">Five stages, all implemented and running in production.</p>
-              <div className="space-y-3">
-                {PIPELINE.map((p) => (
-                  <motion.div key={p.step} className="bg-surface-darker border border-surface-dark rounded-sm p-4 flex gap-4" variants={fadeUp} transition={snappy}>
-                    <span className="text-lg font-bold text-accent shrink-0 w-6">{p.step}</span>
-                    <div>
-                      <p className="text-sm font-bold text-gray-300 mb-0.5">{p.label}</p>
-                      <p className="text-xs text-gray-500">{p.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Dynamic Prompt Weighting */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Dynamic Prompt Weighting</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Rather than a static system prompt, the suspect AI&apos;s instructions are dynamically composed per turn based on game state. Three systems layer on top of each other:</p>
-              <div className="space-y-3 mb-4">
-                <div className="bg-surface-dark border border-surface rounded-sm p-3">
-                  <p className="text-xs font-bold text-gray-300 mb-1">Phase-Based Behavior</p>
-                  <p className="text-[11px] text-gray-500">The prompt shifts across 3 conversation phases. Early: relaxed, shares details. Mid: guarded, active deflection. Late: cornered, desperate tactics, fragmented speech. Phase boundaries adjust by question count.</p>
-                </div>
-                <div className="bg-surface-dark border border-surface rounded-sm p-3">
-                  <p className="text-xs font-bold text-gray-300 mb-1">Stress-Based Speech Degradation</p>
-                  <p className="text-[11px] text-gray-500">At stress 1&ndash;3: full coherent sentences. At 4&ndash;5: shorter, pauses appear. At 6&ndash;7: self-corrections, fragmented speech. At 8&ndash;9: either run-on over-explaining or monosyllabic shutdown. ElevenLabs voice stability degrades in parallel.</p>
-                </div>
-                <div className="bg-surface-dark border border-surface rounded-sm p-3">
-                  <p className="text-xs font-bold text-gray-300 mb-1">RAG-Injected Tactics</p>
-                  <p className="text-[11px] text-gray-500">Cross-session intelligence from prior winners is injected as additional prompt instructions. The suspect is told &ldquo;you&apos;ve heard these questions before&rdquo; and deflects known strategies more skillfully.</p>
-                </div>
-              </div>
-              <p className="text-xs text-gray-500">The result: prompt instructions are weighted differently every turn based on conversation phase, stress level, difficulty, timer mode, and aggregate player behavior data.</p>
-            </motion.div>
-
-            {/* Cross-Session RAG */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Cross-Session Learning (RAG)</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">The game runs a retrieval-augmented generation loop that makes suspects smarter over time. After each game, effective interrogation tactics (questions asked when stress was high) are extracted and embedded via <span className="text-gray-300 font-bold">Mistral Embed</span> into vector representations stored in Supabase.</p>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">When a new case begins, the system runs a cosine similarity search against stored patterns, filtered by setting and difficulty. The top 8 most-used questions from <span className="text-green-500">winning</span> games are injected into the suspect&apos;s system prompt as &ldquo;cross-interrogation intelligence.&rdquo;</p>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">The suspect is explicitly told: <span className="italic text-gray-300">&ldquo;You&apos;ve heard variations of these questions before. Deflect them more skillfully than usual.&rdquo;</span></p>
-              <div className="mt-4 border-t border-surface pt-4">
-                <p className="text-[10px] uppercase tracking-wider text-gray-600 mb-2">Live Data Flow</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
-                  <span className="px-2 py-1 bg-surface rounded-sm text-gray-400">Game ends</span>
-                  <span className="text-gray-600">&rarr;</span>
-                  <span className="px-2 py-1 bg-surface rounded-sm text-gray-400">Extract effective Qs</span>
-                  <span className="text-gray-600">&rarr;</span>
-                  <span className="px-2 py-1 bg-surface rounded-sm text-gray-400">Mistral Embed</span>
-                  <span className="text-gray-600">&rarr;</span>
-                  <span className="px-2 py-1 bg-surface rounded-sm text-gray-400">Supabase vectors</span>
-                  <span className="text-gray-600">&rarr;</span>
-                  <span className="px-2 py-1 bg-surface rounded-sm text-gold">Next suspect adapts</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Training Data Export */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Training Data Export</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">Every completed game &mdash; win or lose &mdash; is persisted to Supabase with full case data (including the hidden lie and all secrets), the complete conversation transcript, outcome type, difficulty, and performance stats. This happens fire-and-forget after each game without blocking the player.</p>
-              <p className="text-sm text-gray-400 leading-relaxed mb-3">A protected admin endpoint exports this data as <span className="text-gray-300 font-bold">JSONL</span> (one JSON object per line) &mdash; the standard format for LLM fine-tuning. Filterable by outcome, difficulty, and setting. Each record contains everything needed to reconstruct the game: case setup, every exchange with stress levels, clue unlocks, accusation text, and whether the player won.</p>
-              <div className="mt-4 bg-surface-dark border border-surface rounded-sm p-3">
-                <p className="text-[10px] uppercase tracking-wider text-gray-600 mb-2">Exported Per Game</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['session_id', 'case_data (with secrets)', 'conversation[]', 'outcome', 'difficulty', 'setting', 'stats { time, hints, accusations, questions, stress, clues }', 'accusation_text', 'created_at'].map((f) => (
-                    <span key={f} className="px-2 py-0.5 bg-surface rounded-sm text-[10px] text-gray-500 font-mono">{f}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-4 border-t border-surface pt-3">
-                <p className="text-[10px] uppercase tracking-wider text-gray-600 mb-2">What This Enables</p>
-                <ul className="space-y-1 text-xs text-gray-500 ml-2">
-                  <li className="flex gap-2"><span className="text-gold">&bull;</span>Fine-tune Mistral on real interrogation data to create stronger suspects</li>
-                  <li className="flex gap-2"><span className="text-gold">&bull;</span>Train reward models for stress prediction accuracy</li>
-                  <li className="flex gap-2"><span className="text-gold">&bull;</span>Build per-setting suspect archetypes with specialized behavior</li>
-                  <li className="flex gap-2"><span className="text-gold">&bull;</span>Analyze which interrogation strategies are most effective per difficulty</li>
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Adaptive Suspect AI */}
-            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-3">Adaptive Suspect AI</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-4">The suspect isn&apos;t a static character. Behavior shifts in real-time based on multiple signals:</p>
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-sm font-bold text-green-500 mb-1.5">Q1&ndash;3</p>
-                  <p className="text-[11px] text-gray-500">Relaxed, confident. Full sentences, willing to share. Guards down.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-sm font-bold text-warn mb-1.5">Q4&ndash;7</p>
-                  <p className="text-[11px] text-gray-500">Guarded. Active deflection, measured answers, redirects questions back at you.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-sm font-bold text-accent mb-1.5">Q8+</p>
-                  <p className="text-[11px] text-gray-500">Cornered. Counter-interrogates, desperate tactics, fragmented speech.</p>
-                </div>
-              </div>
-              <div className="bg-surface-darker border border-surface-dark rounded-sm p-5 space-y-3">
-                <p className="text-xs text-gray-400 leading-relaxed">Stress degrades speech patterns independently: self-corrections, run-on explanations, or monosyllabic shutdown. The ElevenLabs voice stability parameter decreases with stress &mdash; you can literally <em>hear</em> the suspect breaking.</p>
-                <p className="text-xs text-gray-400 leading-relaxed">In Unlimited mode on Hard/Expert, 4 consecutive high-stress exchanges trigger a <span className="text-accent font-bold">lawyer-up</span> &mdash; the suspect demands a lawyer and the game ends. This prevents brute-force strategies and rewards careful pressure management.</p>
-              </div>
-            </motion.div>
-
-            {/* Security */}
-            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-3">Security &amp; Anti-Jailbreak</h2>
-              <p className="text-sm text-gray-400 leading-relaxed mb-4">Since the game is literally about adversarial prompting, the suspect AI is hardened across multiple layers:</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Prompt Injection Defense</p>
-                  <p className="text-[11px] text-gray-500">30+ regex patterns catching role markers, unicode homoglyphs, full-width chars, base64 payloads, anti-extraction paraphrases, and judge manipulation.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Unicode Normalization</p>
-                  <p className="text-[11px] text-gray-500">All input NFKD-normalized before pattern matching. Cyrillic homoglyph substitution attacks are caught.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Output Scanning</p>
-                  <p className="text-[11px] text-gray-500">AI responses scanned for secret leaks using 40% fuzzy word-match with stop-word filtering. Blocks accidental reveals.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Judge Isolation</p>
-                  <p className="text-[11px] text-gray-500">Separate Mistral call with its own system message, randomized boundary tokens, injection stripping. Never uses player API keys.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Stress Enforcement</p>
-                  <p className="text-[11px] text-gray-500">Server clamps stress to max +1 per turn, never allows decrease. AI cannot game clue gates.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Win Token Security</p>
-                  <p className="text-[11px] text-gray-500">128-bit cryptographic tokens, timing-safe comparison, single-use, 30-minute TTL. Prevents score forging.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Server-Side Scoring</p>
-                  <p className="text-[11px] text-gray-500">Score calculated from server-tracked stats. Client values are never trusted.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Session Locking</p>
-                  <p className="text-[11px] text-gray-500">Mutex prevents race conditions on concurrent requests to the same session.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">RAG Poisoning Defense</p>
-                  <p className="text-[11px] text-gray-500">Learned tactics filtered through injection detection before prompt inclusion. Poisoned embeddings can&apos;t inject instructions.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">TTS Abuse Prevention</p>
-                  <p className="text-[11px] text-gray-500">Voice synthesis validates text against conversation history. Can&apos;t use the endpoint as a free TTS proxy.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Timer Pinned Server-Side</p>
-                  <p className="text-[11px] text-gray-500">Stored in session at creation. Can&apos;t be spoofed via headers mid-game.</p>
-                </div>
-                <div className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                  <p className="text-xs font-bold text-accent mb-1.5">Additional Hardening</p>
-                  <p className="text-[11px] text-gray-500">Input length limits, rate limiting, gibberish detection, non-English blocking, setting whitelist, history caps.</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Models & Tech */}
-            <motion.div className="mb-10" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-5">Mistral Models Used</h2>
-              <div className="space-y-3">
-                {MODELS.map((m) => (
-                  <div key={m.name} className="bg-surface-darker border border-surface-dark rounded-sm p-4">
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className={`text-sm font-bold ${m.color}`}>{m.name}</span>
-                      <span className="text-[10px] text-gray-600">{m.role}</span>
-                    </div>
-                    <p className="text-xs text-gray-500">{m.uses}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 bg-surface-darker border border-surface-dark rounded-sm p-4">
-                <p className="text-[10px] uppercase tracking-wider text-gray-600 mb-2">Also Built With</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['Next.js 16', 'TypeScript', 'Tailwind v4', 'Framer Motion', 'Supabase', 'PixelLab', 'Suno AI', 'OpenAI Sora', 'FFmpeg'].map((t) => (
-                    <span key={t} className="px-2 py-0.5 bg-surface rounded-sm text-[10px] text-gray-500">{t}</span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Architecture Summary */}
-            <motion.div className="mb-10 bg-surface-darker border border-surface-dark rounded-sm p-6" variants={fadeUp} transition={smooth}>
-              <h2 className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Architecture Summary</h2>
-              <div className="space-y-3 text-xs text-gray-500">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Mistral API calls per game</span>
-                  <span className="text-gray-300 font-bold">5+ types</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Distinct system prompts</span>
-                  <span className="text-gray-300 font-bold">4 isolated contexts</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">RAG pipeline</span>
-                  <span className="text-green-500 font-bold">Live &mdash; adapts per game</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Training data export</span>
-                  <span className="text-green-500 font-bold">Live &mdash; JSONL endpoint</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Dynamic prompt weighting</span>
-                  <span className="text-green-500 font-bold">Live &mdash; per-turn composition</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Anti-jailbreak hardening</span>
-                  <span className="text-green-500 font-bold">Live &mdash; 12 defense layers</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Server-side scoring</span>
-                  <span className="text-green-500 font-bold">Live &mdash; win tokens + server stats</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Session security</span>
-                  <span className="text-green-500 font-bold">Live &mdash; mutex + TTL + pruning</span>
-                </div>
-                <div className="border-t border-surface my-2" />
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Fine-tuning from exports</span>
-                  <span className="text-warn font-bold">Ready &mdash; data collecting</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Per-archetype suspect models</span>
-                  <span className="text-warn font-bold">Ready &mdash; data structured for it</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Pitch Line */}
-            <motion.div className="mb-6 text-center" variants={fadeUp} transition={smooth}>
-              <p className="text-lg text-gray-400 italic leading-relaxed">&ldquo;Mistral can reason. I made it lie. Your job is to catch it.&rdquo;</p>
-              <p className="text-xs text-gray-600 mt-2">Mistral Worldwide Hackathon 2026 &bull; Solo Build</p>
-            </motion.div>
-          </motion.div>
-        </div>
+          <Link href="/help" className="text-sm text-gold underline underline-offset-4">Read the field manual</Link>
+        </main>
       </PageMotion>
     </PageShell>
   );

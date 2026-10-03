@@ -1,3 +1,4 @@
+import ModalSurface from '../../components/ModalSurface';
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from '../../components/motion';
 import type { BriefingSection } from './BriefingScreen';
@@ -17,13 +18,11 @@ interface BriefingDialogProps {
 }
 
 function SectionedText({ sections, charIndex }: { sections: BriefingSection[]; charIndex: number }) {
-  let offset = 0;
   return (
     <>
       {sections.map((s, i) => {
-        const start = offset;
-        const end = offset + s.text.length;
-        offset = end + 1; // +1 for the space join
+        const start = sections.slice(0, i).reduce((offset, section) => offset + section.text.length + 1, 0);
+        const end = start + s.text.length;
         const visible = charIndex > start;
         if (!visible) return null;
         const sliceEnd = Math.min(charIndex - start, s.text.length);
@@ -57,6 +56,7 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
   return (
     <AnimatePresence>
       {show && (
+        <ModalSurface label="Case briefing" onClose={onClose}>
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
           initial={{ opacity: 0 }}
@@ -65,9 +65,25 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
           transition={{ duration: 0.2 }}
         >
           <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-          <div className="relative flex items-start justify-center gap-5">
-            <motion.div
-              className="relative rounded-sm p-6 pl-10 text-left flex flex-col w-[32rem] h-[36rem]"
+          <div className="relative flex w-full items-start justify-center gap-5">
+            <BriefingSheet sfx={sfx} onClose={onClose} isPlaying={isPlaying} sections={sections} charIndex={charIndex} fullText={fullText} onSkip={onSkip} onStart={onStart} />
+
+            {charIndex >= fullText.length && leads && leads.length > 0 && (
+              <LeadStickies leads={leads} />
+            )}
+          </div>
+        </motion.div>
+        </ModalSurface>
+      )}
+    </AnimatePresence>
+  );
+}
+
+
+function BriefingSheet({ sfx, onClose, isPlaying, sections, charIndex, fullText, onSkip, onStart }: { sfx: ReturnType<typeof useSfx>; onClose: () => void; isPlaying: boolean; sections: BriefingSection[]; charIndex: number; fullText: string; onSkip: () => void; onStart: () => void }) {
+  return (
+<motion.div
+              data-surface="paper" className="relative rounded-sm p-4 sm:p-6 sm:pl-10 text-left flex flex-col w-full max-w-[32rem] h-[min(36rem,90dvh)]"
               style={{
                 background: 'repeating-linear-gradient(transparent, transparent 19px, rgba(100,140,180,0.2) 19px, rgba(100,140,180,0.2) 20px), linear-gradient(180deg, #F5E6A3 0%, #EDD98B 100%)',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.05)',
@@ -80,7 +96,7 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
               <div className="absolute top-0 bottom-0 left-[26px] w-[1px] pointer-events-none" style={{ background: 'rgba(196,60,60,0.35)' }} />
               <div className="absolute -top-[1px] left-0 right-0 h-[4px] pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(139,119,70,0.4) 0%, transparent 100%)' }} />
 
-              <button onClick={() => { sfx('close'); onClose(); }} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 transition-colors">
+              <button aria-label="Close case briefing" onClick={() => { sfx('close'); onClose(); }} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
 
@@ -89,11 +105,11 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
                 <p className="text-xs uppercase tracking-[0.3em] text-red-800 font-bold">Case Briefing</p>
               </div>
 
-              <div className="flex-1 overflow-y-auto mb-4">
+              <div className="min-h-0 flex-1 overflow-y-auto mb-4">
                 <SectionedText sections={sections} charIndex={charIndex} />
               </div>
 
-              <div className="flex items-center justify-between shrink-0">
+              <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
                 <div className="flex items-center gap-3">
                   <button onClick={() => { sfx('close'); onClose(); }} className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wider transition-colors">Close</button>
                   {charIndex < fullText.length && (
@@ -108,13 +124,5 @@ export default function BriefingDialog({ show, sections, fullText, charIndex, is
                 </button>
               </div>
             </motion.div>
-
-            {charIndex >= fullText.length && leads && leads.length > 0 && (
-              <LeadStickies leads={leads} />
-            )}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   );
 }

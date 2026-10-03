@@ -12,15 +12,19 @@ export function pickRandomIcons(count: number): string[] {
   return [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5).slice(0, count);
 }
 
+const SCENE_KEYWORDS: [string, string[]][] = [
+  ['medical', ['hospital', 'medical', 'clinic', 'doctor', 'pharma']],
+  ['lawfirm', ['law', 'legal', 'attorney', 'firm']],
+  ['server', ['server', 'data center', 'tech', 'software', 'cyber']],
+  ['startup', ['startup', 'co-working', 'coworking', 'incubator']],
+  ['trade', ['bank', 'trading', 'finance', 'hedge', 'investment', 'brokerage', 'stock']],
+  ['police', ['police', 'precinct', 'station', 'interrogation']],
+];
+
 export function getSceneBg(setting: string): string {
-  const s = setting.toLowerCase();
-  if (s.includes('hospital') || s.includes('medical') || s.includes('clinic') || s.includes('doctor') || s.includes('pharma')) return '/bg/medical.png';
-  if (s.includes('law') || s.includes('legal') || s.includes('attorney') || s.includes('firm')) return '/bg/lawfirm.png';
-  if (s.includes('server') || s.includes('data center') || s.includes('tech') || s.includes('software') || s.includes('cyber')) return '/bg/server.png';
-  if (s.includes('startup') || s.includes('co-working') || s.includes('coworking') || s.includes('incubator')) return '/bg/startup.png';
-  if (s.includes('bank') || s.includes('trading') || s.includes('finance') || s.includes('hedge') || s.includes('investment') || s.includes('brokerage') || s.includes('stock')) return '/bg/trade.png';
-  if (s.includes('police') || s.includes('precinct') || s.includes('station') || s.includes('interrogation')) return '/bg/police.png';
-  return '/bg/office.png';
+  const normalized = setting.toLowerCase();
+  const match = SCENE_KEYWORDS.find(([, keywords]) => keywords.some(keyword => normalized.includes(keyword)));
+  return `/bg/${match?.[0] ?? 'office'}.png`;
 }
 
 export function formatTime(secs: number) {

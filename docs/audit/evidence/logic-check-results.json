@@ -1,0 +1,68 @@
+{
+  "scope": "Actual route/session modules with AI/DB/embedding mocks; no network or browser",
+  "results": [
+    {
+      "name": "Unearned win evaluation accepted and session deleted",
+      "observed": {
+        "status": 200,
+        "disclosedMockSecret": true,
+        "sessionDeleted": true
+      }
+    },
+    {
+      "name": "Timeout export misclassified as exhausted accusations",
+      "observed": {
+        "storedOutcome": "lose_accusations"
+      }
+    },
+    {
+      "name": "Repeated clue reaches server cap while client has only one clue",
+      "observed": {
+        "server": 2,
+        "clientRuleCount": 1
+      }
+    },
+    {
+      "name": "Fresh easy session can submit an expert win learning record",
+      "observed": {
+        "status": 200,
+        "storedDifficulty": "expert",
+        "storedOutcome": "win"
+      }
+    },
+    {
+      "name": "Accusation remains accepted two hours after start",
+      "observed": {
+        "status": 200,
+        "remaining": 2
+      }
+    },
+    {
+      "name": "Truth-leak filter flags exact cover story denial",
+      "observed": {
+        "blocked": true
+      }
+    },
+    {
+      "name": "Case schema accepts blank fields and unsupported difficulty",
+      "observed": {
+        "accepted": true
+      }
+    },
+    {
+      "name": "Malformed judge response spends a real accusation as wrong",
+      "observed": {
+        "status": 200,
+        "correct": false,
+        "attemptsLeft": 2
+      }
+    },
+    {
+      "name": "Suspect TTS validates only prefix and accepts appended arbitrary text",
+      "observed": {
+        "status": 200,
+        "mockedProviderReceivedSuffix": true
+      }
+    }
+  ]
+}

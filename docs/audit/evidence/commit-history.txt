@@ -1,0 +1,98 @@
+468a983 | 2026-02-28T12:41:41+01:00 | Initial commit — INTERROGATION voice detective game
+e235583 | 2026-02-28T12:50:16+01:00 | Add case select screen and dynamic scene backgrounds
+acad73e | 2026-02-28T12:52:50+01:00 | Fix case generation caching — each scenario now generates a unique case
+0afa3bd | 2026-02-28T12:55:49+01:00 | Unique voice per suspect — pick from ElevenLabs voice pool
+4a757b1 | 2026-02-28T13:01:21+01:00 | Add exit button and hint system to game screen
+eec8dc9 | 2026-02-28T13:03:15+01:00 | Fix gendered pronouns — case text and voice now match suspect gender
+2cd9bc4 | 2026-02-28T13:05:50+01:00 | Confession on crack, how-to-win instructions, navigation fixes
+db74626 | 2026-02-28T13:13:46+01:00 | ACCUSE mechanic — formal accusation system replaces auto-confess
+5ac1788 | 2026-02-28T13:23:17+01:00 | Bigger avatar with animations and facial expressions
+cb936fa | 2026-02-28T15:56:28+01:00 | Sora portraits with gender-matched avatars and voices
+356bd71 | 2026-02-28T17:28:14+01:00 | UX overhaul — dock, Voxtral STT, settings, accessibility
+1121d8c | 2026-02-28T17:51:29+01:00 | Dialogue box, accuse button, and Voxtral fixes
+9520481 | 2026-02-28T18:23:36+01:00 | Clue badges, Neon leaderboard, case solved tracking
+0abb0aa | 2026-02-28T18:59:09+01:00 | Homepage redesign, help page, case select cleanup
+21d4fe3 | 2026-02-28T19:06:46+01:00 | Flicker effect, case select props, UI polish
+6d1a9cf | 2026-02-28T20:06:41+01:00 | Random evidence icons per case + PixelLab pixel art items
+0f4e47f | 2026-02-28T20:25:08+01:00 | Difficulty system, star ratings, Mistral logos on homepage
+325c2d7 | 2026-02-28T21:28:14+01:00 | Modularize game, scoring formula, sponsors, count-up timer
+b071ed6 | 2026-02-28T21:31:31+01:00 | Help page About section, project docs rewrite, settings gear on homepage
+f764ae2 | 2026-02-28T21:35:08+01:00 | About page, Settings page, gear icon links to /settings
+d64ffbe | 2026-02-28T21:37:26+01:00 | Fix about page — UX designer bio, voice or text questioning
+6d73507 | 2026-02-28T21:39:45+01:00 | Design system tokens, settings persistence, software credits
+2a811f8 | 2026-02-28T21:41:19+01:00 | Replace homepage with new hero image (main3.png)
+009e96c | 2026-02-28T21:41:45+01:00 | Black background on homepage for seamless hero blend
+882e095 | 2026-02-28T21:42:28+01:00 | Tighten homepage spacing — menu closer to hero
+c818300 | 2026-02-28T21:43:52+01:00 | Homepage nav overhaul — icon bar top-right, single CTA
+d60d4b8 | 2026-02-28T21:45:07+01:00 | Pin sponsors to bottom, custom tooltips on nav icons
+6cc9ead | 2026-02-28T21:45:33+01:00 | Add CRT effects to hero — flicker, scanlines, scan drift, REC
+d271fa0 | 2026-02-28T21:46:18+01:00 | Replace scan line with red glow pulse + interference flicker
+4d00675 | 2026-02-28T21:46:32+01:00 | Remove red glow behind hero image
+160903f | 2026-02-28T21:46:58+01:00 | Film noir color grade on hero — desaturated, sepia, high contrast
+9484b40 | 2026-02-28T21:56:18+01:00 | Pure black background across all pages
+221722f | 2026-02-28T23:45:24+01:00 | Modularize codebase, add end-game screens, high score flow, give up, Supabase leaderboard
+09a3299 | 2026-02-28T23:47:53+01:00 | Update .gitignore, project docs with current architecture and patterns
+4392ffe | 2026-02-28T23:55:07+01:00 | Add error recovery, rate limiting, and prompt injection hardening
+5b81a75 | 2026-02-28T23:58:10+01:00 | Add share results button to win and lose screens
+a3fc746 | 2026-03-01T00:01:36+01:00 | Adaptive suspect AI + mobile mic permissions flow
+8debbcb | 2026-03-01T00:07:14+01:00 | Add transcript viewer and case history tracking
+ac7abf7 | 2026-03-01T00:11:32+01:00 | Update About page with stronger portfolio highlights
+df696e0 | 2026-03-01T00:13:15+01:00 | Add first-time onboarding + Siri-style voice waveform
+43934f0 | 2026-03-01T00:18:59+01:00 | Server-side session store: strip secrets from client, prevent cheating
+f7ac0af | 2026-03-01T00:49:57+01:00 | Red team rounds 2-3: 22 security hardening fixes
+3078d3d | 2026-03-01T02:08:28+01:00 | Redesign case select, briefing, and loading screens
+299355b | 2026-03-01T02:43:05+01:00 | Briefing TTS + typewriter, detective leads with red herrings, push pin stickies
+cfc72e6 | 2026-03-01T07:39:33+01:00 | Security hardening + modularize codebase to enforce line limits
+8e7d5b8 | 2026-03-01T08:11:45+01:00 | Briefing sections, Gloria Hallelujah font, fix session store + case variety
+63dd6ab | 2026-03-01T08:29:33+01:00 | Quick fixes: tooltips below, about page cleanup, help outcomes, live settings
+b4632c3 | 2026-03-01T08:36:14+01:00 | Legal pad case file + help page improvements
+b8aaf0e | 2026-03-01T08:41:18+01:00 | Clarify win condition across all how-to-play surfaces
+898758b | 2026-03-01T09:11:19+01:00 | Police report case file, fix clue system, standardize buttons
+49f5cf2 | 2026-03-01T09:25:24+01:00 | Replace waveform with siriwave, stop audio on navigation
+a2bb131 | 2026-03-01T10:05:46+01:00 | Music volume toggle in top bar, global font settings, sticky back button
+5a4c12e | 2026-03-01T10:24:55+01:00 | Tabbed case file, skip speech, compact buttons, transcription fixes
+400a800 | 2026-03-01T11:37:00+01:00 | Fix borders, typography, high-contrast, and TTS race condition
+cf201d5 | 2026-03-01T12:07:55+01:00 | UI polish: bg consistency, torn edges, draggable settings, log timestamps
+3e2da27 | 2026-03-01T12:10:54+01:00 | Resizable notes panel, remove torn edge from case file
+7ff1f7c | 2026-03-01T12:22:36+01:00 | Global music system with menu/game tracks and crossfade
+15e0612 | 2026-03-01T12:27:11+01:00 | Faster music startup — preload, any-interaction unlock, shorter fade
+666fbea | 2026-03-01T12:30:46+01:00 | Move REC indicator to bottom-left of hero image
+49359dc | 2026-03-01T12:33:38+01:00 | Add UI sound effects — clicks, paper, typewriter, close
+fde9c14 | 2026-03-01T12:59:03+01:00 | Expand SFX — click on all buttons, mic on/off, slam, win/lose sounds
+772fbf5 | 2026-03-01T13:14:28+01:00 | Fix music overlap, add tension/error/keystroke SFX, instant mute
+34b92f6 | 2026-03-01T13:21:54+01:00 | Add SFX volume control — slider in settings, mute button mutes both music and SFX
+2440c79 | 2026-03-01T13:26:07+01:00 | Add folder open sound on briefing screen appearance
+dae5eac | 2026-03-01T13:31:06+01:00 | Add chair slide + sigh sounds on give up
+a4511b2 | 2026-03-01T13:32:46+01:00 | Add ambient stress sounds — nervous fidgeting, clock ticks, stress stings
+840e21e | 2026-03-01T13:36:41+01:00 | Normalize all SFX — lower volumes, tighter fades, compress to tiny MP3s
+8877b89 | 2026-03-01T13:37:33+01:00 | Update project docs — add sound system docs, hooks, efx/music directories
+7d492e4 | 2026-03-01T13:40:29+01:00 | Fix briefing screen — move tape player inline, show sound button
+b64416a | 2026-03-01T13:43:44+01:00 | Add tape start/stop sound on briefing, fix typewriter keystroke volume
+212afa6 | 2026-03-01T13:49:20+01:00 | Add click sounds to briefing dialog buttons and settings page controls
+5d438a6 | 2026-03-01T13:57:27+01:00 | Add voice volume control + detective voice for briefing narration
+4c72cd8 | 2026-03-01T14:49:50+01:00 | Countdown timer, sound balance, time-up sequence, click-outside-to-close, attributions
+0570cac | 2026-03-01T15:01:03+01:00 | Cross-session RAG learning — suspect AI adapts from aggregate player behavior
+af730ca | 2026-03-01T15:22:55+01:00 | Security hardening, dedup, line limits, and AI improvements
+172e5cb | 2026-03-01T15:30:15+01:00 | Remove duplication, add cop-show interrogation techniques
+ac1b171 | 2026-03-01T16:47:59+01:00 | Data export pipeline — persist completed games to Supabase for fine-tuning
+bc5eba0 | 2026-03-01T17:03:34+01:00 | Audit: strip slop, dedup countQuestions, fix security gaps
+42aa67a | 2026-03-01T17:20:30+01:00 | User-provided API keys — Mistral & ElevenLabs via Settings
+c132c95 | 2026-03-01T17:33:01+01:00 | Add Supabase keys to settings UI + .env.example for judges
+ecd5557 | 2026-03-01T18:17:21+01:00 | Security hardening, timer modes, lawyer-up mechanic, asset optimization
+bd45811 | 2026-03-01T18:29:08+01:00 | Social share modal — X, WhatsApp, Telegram, LinkedIn, Facebook
+0ba58be | 2026-03-01T18:48:14+01:00 | About the Game page, game mode cards, export UI, nav restructure
+52e50ad | 2026-03-01T19:04:19+01:00 | Red team security hardening — 10 exploit fixes
+a4bcc5b | 2026-03-01T19:13:42+01:00 | Restore user-provided Supabase keys — app ships keyless
+4e6177f | 2026-03-01T19:40:42+01:00 | Settings connect buttons, code cleanup, docs update, git hygiene
+217c9f0 | 2026-03-01T19:45:57+01:00 | Gate Accuse button behind clue collection — client + server enforced
+d5da3f2 | 2026-03-01T19:49:03+01:00 | Clean up section divider comments in interrogate route
+54b264a | 2026-03-01T19:51:37+01:00 | Remove project docs from repo, add to gitignore
+fd3db24 | 2026-03-01T20:05:39+01:00 | Comprehensive README — setup, mechanics, architecture, security, Supabase schema
+272b175 | 2026-03-01T20:08:22+01:00 | README — remove personal details, add hackathon context and future potential
+e0fa569 | 2026-03-01T20:45:23+01:00 | Help: add lawyered up as third outcome, fix briefing typewriter sync
+a570b0a | 2026-03-01T20:49:31+01:00 | Help: show 4 case outcomes — add Gave Up as separate result
+655627f | 2026-03-01T21:06:16+01:00 | Distinct lose images, 5 help outcomes, quieter music volume
+cf4a3c1 | 2026-03-01T21:28:46+01:00 | About: tile layout for Adaptive AI and Security sections
+23ad1f0 | 2026-03-01T22:35:01+01:00 | Add title screen screenshot to README
+1fe2e1e | 2026-05-08T01:18:04+02:00 | chore: add source-available license
+f8d4c3c | 2026-05-08T11:18:51+02:00 | fix: move export secret from query param to Authorization header

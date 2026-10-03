@@ -1,0 +1,20 @@
+{
+  "change": "Approved deterministic secondary-contradiction guard correction after the frozen v2 run; no prompt or label retuning.",
+  "reviewVersion": "generated-consistency-v2.1-guard",
+  "liveCallsAfterChange": 0,
+  "files": {
+    "src/lib/ai/generated-review/comparisons.ts": {
+      "liveRunHash": "66c5befd65923e4160653710e8bf646d69f27f93198a6ba44175ec386fda59b2",
+      "postCaptureHash": "b719c5dc929135f631ecb78983438a52c65beb63f905133c302036d267f142ef"
+    },
+    "src/lib/ai/generated-review/contract.ts": {
+      "liveRunHash": "51187168b93fa104a0f2f151f8c01b71c4a68ae226fbe65a2f06c9ac0adc54ce",
+      "postCaptureHash": "b43cf02730f170b5eedc5f84397c765c8f20adc39a242358b24a7f7826da5368"
+    }
+  },
+  "verification": {
+    "focusedTests": 13,
+    "typescript": "passed",
+    "scopedStrictLint": "passed"
+  }
+}

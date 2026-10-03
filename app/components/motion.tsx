@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from './preference-motion';
 
 export const fadeIn = {
   hidden: { opacity: 0 },
@@ -56,4 +56,5 @@ export function PageMotion({ children, className }: { children: React.ReactNode;
   );
 }
 
-export { motion, AnimatePresence } from 'framer-motion';
+export { motion };
+export { AnimatePresence } from 'motion/react';

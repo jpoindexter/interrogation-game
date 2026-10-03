@@ -8,12 +8,12 @@ interface TopBarProps {
   timeLimit: number;
   isUnlimited?: boolean;
   stressLevel: number;
-  musicVolume: number;
-  onMusicToggle: () => void;
+  audioMuted: boolean;
+  onAudioToggle: () => void;
 }
 
-export default function TopBar({ remaining, elapsed, timeLimit, isUnlimited, stressLevel, musicVolume, onMusicToggle }: TopBarProps) {
-  const muted = musicVolume === 0;
+export default function TopBar({ remaining, elapsed, isUnlimited, stressLevel, audioMuted, onAudioToggle }: TopBarProps) {
+  const muted = audioMuted;
   const urgent = !isUnlimited && remaining <= 60;
   const warning = !isUnlimited && remaining <= 120 && !urgent;
   return (
@@ -24,7 +24,15 @@ export default function TopBar({ remaining, elapsed, timeLimit, isUnlimited, str
       variants={fadeDown}
       transition={snappy}
     >
-      <div className="flex items-center gap-6">
+      <GameStatusBar urgent={urgent} warning={warning} isUnlimited={isUnlimited} elapsed={elapsed} remaining={remaining} stressLevel={stressLevel} onAudioToggle={onAudioToggle} muted={muted} />
+    </motion.div>
+  );
+}
+
+
+function GameStatusBar({ urgent, warning, isUnlimited, elapsed, remaining, stressLevel, onAudioToggle, muted }: { urgent: boolean; warning: boolean; isUnlimited: boolean | undefined; elapsed: number | undefined; remaining: number; stressLevel: number; onAudioToggle: () => void; muted: boolean }) {
+  return (
+<div className="flex items-center gap-3 sm:gap-6">
         <div className={`text-4xl font-bold tabular-nums ${urgent ? 'text-accent animate-pulse' : warning ? 'text-warn' : ''}`}>
           {isUnlimited ? formatTime(elapsed ?? 0) : formatTime(remaining)}
         </div>
@@ -46,10 +54,19 @@ export default function TopBar({ remaining, elapsed, timeLimit, isUnlimited, str
             />
           </div>
         </div>
+        <AudioToggle muted={muted} onToggle={onAudioToggle} />
+      </div>
+  );
+}
+
+function AudioToggle({ muted, onToggle }: { muted: boolean; onToggle: () => void }) {
+  return (
         <button
-          onClick={() => { playClick(); onMusicToggle(); }}
-          className="text-gray-500 hover:text-foreground transition-colors"
-          title={muted ? 'Unmute music' : 'Mute music'}
+          onClick={() => { playClick(); onToggle(); }}
+          className="min-h-11 min-w-11 text-gray-300 hover:text-foreground transition-colors"
+          title={muted ? 'Unmute all audio' : 'Mute all audio'}
+          aria-label={muted ? 'Unmute all audio' : 'Mute all audio'}
+          aria-pressed={muted}
         >
           {muted ? (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -65,7 +82,5 @@ export default function TopBar({ remaining, elapsed, timeLimit, isUnlimited, str
             </svg>
           )}
         </button>
-      </div>
-    </motion.div>
   );
 }

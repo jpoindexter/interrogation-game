@@ -1,0 +1,86 @@
+# Current architecture
+
+Source review: 3 October 2026. This describes the working tree, not a published release. Historical findings remain under `docs/audit/`. See [acceptance coverage](audit/ACCEPTANCE-COVERAGE.md) for what has actually been exercised.
+
+## Boundaries and ownership
+
+```mermaid
+flowchart LR
+  Player[Player: text or reviewed speech] --> UI[Client controller and public case]
+  UI --> API[Next route: validate and authorize]
+  API --> Ledger[Durable request receipt and session lock]
+  Ledger --> Rules[Canonical game transitions]
+  Rules --> AI[Structured provider adapter]
+  AI --> Codex[Local Codex subscription]
+  AI --> OpenAI[Separate OpenAI API]
+  Rules --> Files[Private local snapshots]
+  Files --> Public[Explicit public projection]
+  Public --> UI
+  UI --> Voice[Authorized ElevenLabs STT and TTS]
+  Rules --> Results[Canonical result and conversation path]
+  Results --> Score[Ranked challenge receipt]
+```
+
+| Owner | Source | Authority and limits |
+|---|---|---|
+| Browser presentation | `app/game/controller`, `state`, `view`, `playbook` | Owns drafts, visible phase, panels, audio controls and stable request IDs. Cannot award clues, set outcome or submit a trusted score. |
+| Session service | `src/lib/session` | Owns private case, accepted transcript, clues, attempts, clock anchor, mode, terminal outcome and persisted receipts. |
+| Reviewed evidence rules | `src/lib/gameplay` | Owns authored claim/exhibit relationships. Exact pinned text and disclosed exhibits support a challenge; unreviewed live wording has no invented correctness verdict. |
+| AI boundary | `src/lib/ai`; compatibility wrappers in `src/lib/mistral` | Selects provider, schema, timeout and cancellation. Actor prose does not directly establish guilt or evidence progress. The model judges accusations; the accepted judgment is frozen once. |
+| Voice boundary | `src/lib/voice`, `app/game/audio` | Authorizes speech against accepted session utterances; validates recording uploads. Playback owns cancellation and browser resource cleanup. Real microphone/ElevenLabs behavior is not yet proven. |
+| Results and storage | `app/game/result`, `src/lib/leaderboard`, `database` | Debrief projects stored facts, not a second judgment. Only canonical timed challenge wins can enter the ranked leaderboard. |
+
+## State and time
+
+A session moves `briefing → active → won/lost`. The first admitted opening request begins server time before provider work; reading the briefing does not. Provider waiting and failed attempts therefore count toward a running challenge clock. Terminal outcomes are win, failed accusations, deadline, give-up, or lawyer. `finishSession` cannot overwrite an existing result. The client wall clock is synchronized to server timestamps, catches up after backgrounding, and does not emit a fresh timeout while restoring a terminal result.
+
+Mode is frozen at creation. **Challenge** has a countdown and ranked score. **Relaxed** keeps difficulty/clue requirements without countdown or lawyer pressure. **Endurance** is untimed but permits sustained-stress lawyer endings on hard/expert. Both untimed scores use zero elapsed time in the formula while retaining actual duration in stats; both are unranked. Old result caches without mode remain explicitly unknown.
+
+## System condition → player behavior
+
+| Condition | Visible behavior/control | Recovery and evidence |
+|---|---|---|
+| Generation or turn takes seconds | Processing state preserves prior dialogue; no invented progress percentage | Stable request ID permits committed-response replay. `tests/request-ledger.test.ts`, generation tests. Browser status timing still needs inspection. |
+| Transport response is lost | Retry the same action | Pending receipt precedes provider work; completed state/response persist before success. Child-process tests cover crash and restart, not a guarantee of provider billing reversal. |
+| Generation completed but delivery failed | Resume the same case | Reserved session ID + private validated-case checkpoint recover before/after session materialization. No new inference after that checkpoint. |
+| Process dies before a recoverable checkpoint | Explicit interrupted state | A new attempt is a player decision; the external provider's outcome cannot be reconstructed safely. |
+| Voice is unavailable or cancelled | Text remains usable; playback can stop/skip | Fake-resource lifecycle and route tests verify cleanup logic. Actual speakers, mic and call audio remain separate acceptance. |
+| A live sentence lacks reviewed factual binding | “Statement not reviewed” | Dialogue remains usable; it is not labelled wrong or awarded evidence progress. |
+| Browser result storage is blocked | Server-backed result URL/recovery path | Canonical server result is retained; storage-failure fixtures exist. Actual blocked-storage navigation remains unverified. |
+| AI allowance exhausted or operator stopped work | Explicit allowance/stop error; current transcript remains available | The provider gateway checks durable session/operator work limits before adapter entry. A completed denial is a saved failed receipt; a new attempt requires resolving the condition first. |
+
+The client validates case options, timer anchors and public evidence references before accepting recovery or action data. Source IDs must be unique, pinned text must belong to its recorded turn, and a challenge's reply/counts must match its public projection. Unknown case fields are discarded rather than copied into client state. These checks validate transport consistency; they do not establish the truth of model-authored facts.
+
+## Human control and uncertainty
+
+The player chooses each question, edits suggested approaches and confirms accusations; the model is a response/judgment engine rather than an autonomous operator. Skip/stop controls affect speech, not already accepted server outcomes. Retry can recover a committed action, but cannot reverse an accepted wrong accusation; a new case is a separate decision. Stress is dramatic state, never a calibrated probability of lying.
+
+Execution telemetry currently consists of structured receipts, canonical event history and bounded test/rehearsal timings. Product outcomes such as comprehension, enjoyment, task improvement and perceived wait have no measured participant baseline. Optional pattern retrieval evolves input context without training model weights or proving that repeated questions caused success.
+
+## Transactions and persistence
+
+Generation uses `generation-requests.ts`: stable ID + normalized options fingerprint, reserved random session ID, durable private checkpoint, idempotent `createSessionAt`, then public response receipt. Receipts expire after 24 hours; a 1,000-record cap fails closed instead of erasing retry protection.
+
+Session actions use `request-ledger.ts` and a per-session filesystem lock. Same ID/body replays; changed body conflicts; an unfinished provider attempt without a committed response requires review. Each session permits 500 ledger entries. A failed final save cannot report an accepted turn. Local child-process restart and concurrency tests exercise these paths.
+
+Private data defaults to `.local` or `INTERROGATION_DATA_DIR`. Sessions, generation checkpoints, exports and leaderboard redemption material use private files (0600; directories 0700). Sessions expire from gameplay after one idle hour; expiry does not delete files. Dead-process locks can be recovered; a crash in lock recovery can leave a fail-closed guard requiring operator review. Never remove a live process's lock.
+
+Leaderboard rows are immutable, atomically published and keyed by session. Duplicate submissions recover the original receipt; token consumption follows confirmed persistence. Unknown legacy ranking fields are not backfilled. Completion exports first persist locally; optional Supabase delivery uses an outbox retried on status/evaluation, not a background worker. See [database details](../database/LOCAL-DEMO.md).
+
+**Hosted persistence is not implemented.** Vercel/non-local session storage fails explicitly. A hosted leaderboard or an OpenAI key alone does not make the game deployable. Endpoint, AI and voice allowances now share durable local files across Node processes and restarts; this is not a distributed hosted backend. See [shared local budgets](audit/SHARED-BUDGETS.md).
+
+## Provider and privacy boundary
+
+Local Codex runs through a child process with the existing user-managed sign-in. The application does not read or copy login tokens. A pinned CLI profile disables tool features, host networking for tool execution and project rules; structured output is validated. The saved proof reports no available tools for its tested configuration. This is bounded observed evidence, not a universal isolation guarantee.
+
+OpenAI uses separate server API credentials; a subscription is not an API key. ElevenLabs receives audio for transcription and approved text for speech. Local voice receipts retain completed synthesized audio and transcription/error responses for safe replay; raw microphone recordings are not written to disk by this feature. The cache is bounded to 64 MB/256 receipts and has a 24-hour replay lifetime; expired records remain until deliberate maintenance. See [voice receipts](audit/VOICE-IDEMPOTENCY.md). Optional retrieval requires its own embedding API key and versioned Supabase schema; it retrieves observed past questions, not demonstrated effective tactics or model training. Health reports configuration, not provider authentication or end-to-end readiness.
+
+Session IDs and win tokens are bearer capabilities. Do not expose resume URLs, `.local`, raw exports, server configuration or credentials in screen sharing. Evidence scripts redact capabilities; operators should inspect the resulting artifact before sharing it.
+
+## Proof and unresolved trade-offs
+
+The saved automated gate and current layout gate cover lint, size, types, tests and production build. Real local HTTP/Codex traces cover an authored win and a relaxed give-up result. `/rehearsal` presents a curated recording of that trace, with persistent recorded/not-live provenance and no inference or score submission; its browser interaction remains unverified. Ten declared authored judge/disclosure samples provide limited live evidence. The generated-v1 evaluation adds three generated cases and six passing judge probes, yet source review found role/perpetrator, multiple-lie and objective mismatches. Neither sample establishes generated-case solvability, semantic secrecy or fairness across models/cases. Tests using injected providers do not prove live OpenAI, ElevenLabs or Supabase.
+
+Browser interaction, keyboard/VoiceOver, actual rendered contrast/zoom, audible screen share and three timed rehearsals remain acceptance gaps. Website/portfolio publication follows game acceptance. The coverage matrix lists individual card boundaries rather than declaring the whole project done.
+
+Skills applied: dec-software-principles, dec-quality-testing, system-architecture-translator, ai-agent-case-study.

@@ -1,0 +1,65 @@
+{
+  "scope": "Real server modules; mocked AI, DB, and TTS network. No live browser or provider test.",
+  "results": [
+    {
+      "name": "Filtered clue still counted and raw leak persisted",
+      "observed": {
+        "returnedClue": null,
+        "serverClues": 1,
+        "storedRawLeak": true
+      }
+    },
+    {
+      "name": "Unlimited easy session expires after 10 minutes",
+      "observed": {
+        "timeExpired": true
+      }
+    },
+    {
+      "name": "Provider failure refunds remaining attempt but retains score penalty",
+      "observed": {
+        "status": 500,
+        "left": 3,
+        "used": 1
+      }
+    },
+    {
+      "name": "Failed leaderboard write consumes retry token after evaluation",
+      "observed": {
+        "first": 500,
+        "retry": 401,
+        "serverQuestionCount": 2
+      }
+    },
+    {
+      "name": "Detective role skips conversation text validation",
+      "observed": {
+        "status": 200,
+        "mockedProviderCalls": 1
+      }
+    },
+    {
+      "name": "Ordinary detective question classified as injection",
+      "observed": {
+        "question": "What were you told about the security alarm?",
+        "blocked": true
+      }
+    },
+    {
+      "name": "Missing IP headers yield fresh rate-limit buckets",
+      "observed": {
+        "sameRequestDifferentBuckets": true
+      }
+    },
+    {
+      "name": "Win token accepted twice while game session remains alive",
+      "observed": {
+        "accepts": [
+          true,
+          true,
+          false
+        ]
+      }
+    }
+  ]
+}

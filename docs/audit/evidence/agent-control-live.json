@@ -1,0 +1,36 @@
+{
+  "executedAt": "2026-10-03T12:58:36Z",
+  "model": "gpt-6.1-sol",
+  "provider": "codex-local",
+  "actualInferenceCalls": 1,
+  "observed": [
+    {
+      "command": "start",
+      "status": 200,
+      "milliseconds": 324
+    },
+    {
+      "command": "opening",
+      "status": 200,
+      "milliseconds": 258
+    },
+    {
+      "command": "ask",
+      "status": 200,
+      "milliseconds": 10197
+    },
+    {
+      "command": "giveup",
+      "status": 200,
+      "milliseconds": 191
+    },
+    {
+      "command": "result",
+      "status": 200,
+      "milliseconds": 226
+    }
+  ],
+  "publicResponse": "I was an operations analyst on the trading floor. My work was on the operations side, not making trades.",
+  "conversationPathNodes": 2,
+  "scope": "Actual local CLI and HTTP with signed-in Codex; no browser or voice acceptance"
+}

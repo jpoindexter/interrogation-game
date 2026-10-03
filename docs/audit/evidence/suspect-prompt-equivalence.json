@@ -1,0 +1,78 @@
+{
+  "baseline": "working source before provider migration",
+  "matched": 12,
+  "cases": [
+    {
+      "difficulty": "easy",
+      "questionCount": 0,
+      "currentStress": 0,
+      "sha256": "8d6a436145caec515581904f5c74f424cc70a66ff1be10dc518dc6d1bf7df71b"
+    },
+    {
+      "difficulty": "easy",
+      "questionCount": 5,
+      "currentStress": 5,
+      "sha256": "62921346d41428a94ac204e8d0d2e7172f826b373c443b6d519ed2d32be2f88f"
+    },
+    {
+      "difficulty": "easy",
+      "questionCount": 10,
+      "currentStress": 8,
+      "sha256": "e899b2721a950219943b33e3dbdc120e5ef415309145f9a6c55bddaa4c3f051c"
+    },
+    {
+      "difficulty": "medium",
+      "questionCount": 0,
+      "currentStress": 0,
+      "sha256": "38c5b0b7d41cb8b922af334a0909f5be6ff8a1172cfaf5a577c0d87c6c212a44"
+    },
+    {
+      "difficulty": "medium",
+      "questionCount": 5,
+      "currentStress": 5,
+      "sha256": "7dd6623e47bb04cd2280154db8fd1911e5633245be599fb8afc722a127f90c0a"
+    },
+    {
+      "difficulty": "medium",
+      "questionCount": 10,
+      "currentStress": 8,
+      "sha256": "57cc7acc5d196e3c3f420b9fa941d19efbaf62527dceb3a25508687708aab8ad"
+    },
+    {
+      "difficulty": "hard",
+      "questionCount": 0,
+      "currentStress": 0,
+      "sha256": "e76985a1e2ba8663ac77cf56c982e362634996b9c18434ea9b1fcbd8de597ff4"
+    },
+    {
+      "difficulty": "hard",
+      "questionCount": 5,
+      "currentStress": 5,
+      "sha256": "e5463caffb219be952d239693bc2fd4ef580661990f72b81d6d99087d2aa42cb"
+    },
+    {
+      "difficulty": "hard",
+      "questionCount": 10,
+      "currentStress": 8,
+      "sha256": "062a22b074c771fb4426889789785f28d14a6344fd92e7d54707f308d3641d26"
+    },
+    {
+      "difficulty": "expert",
+      "questionCount": 0,
+      "currentStress": 0,
+      "sha256": "befba589c7bc30b9339f4a337a922d9ca4e63793eab20a7c0fc4c277fba19826"
+    },
+    {
+      "difficulty": "expert",
+      "questionCount": 5,
+      "currentStress": 5,
+      "sha256": "0d36b5ce3ceae9dbc50854eab56782086bc33abf8391b7da491150f8a528b580"
+    },
+    {
+      "difficulty": "expert",
+      "questionCount": 10,
+      "currentStress": 8,
+      "sha256": "3074fca606fc7fee2e69bf3a9143e1bb4985cb306fbeaa64de239bf11d60502f"
+    }
+  ]
+}

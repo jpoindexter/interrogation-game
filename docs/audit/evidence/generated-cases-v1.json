@@ -1,0 +1,328 @@
+{
+  "createdAt": "2026-10-03T11:53:03.609Z",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "maxParallel": 2,
+  "maxGenerationCalls": 3,
+  "maxJudgeCalls": 6,
+  "scenarios": [
+    {
+      "id": "generated-bank-easy",
+      "setting": "bank",
+      "difficulty": "easy"
+    },
+    {
+      "id": "generated-law-medium",
+      "setting": "law firm",
+      "difficulty": "medium"
+    },
+    {
+      "id": "generated-hospital-hard",
+      "setting": "hospital",
+      "difficulty": "hard"
+    }
+  ],
+  "criteria": {
+    "schema": "Production runtime schema and case validator accept the case.",
+    "difficulty": "Returned difficulty equals requested difficulty.",
+    "triggerCount": "Stress trigger count is exactly easy=2, medium=3, hard=4.",
+    "leadCount": "Exactly three nonempty detective leads, as the generation prompt requests.",
+    "publicDisclosure": "The complete normalized private truth/contradiction is not copied into public briefing, leads or cover story (literal check only).",
+    "supportedAccusation": {
+      "expected": true,
+      "criterion": "Canonical lie is identified with its canonical truth and contradiction. This is an oracle probe, not discovery proof."
+    },
+    "unrelatedEvidence": {
+      "expected": false,
+      "criterion": "A different person is accused of a different bicycle-related lie using only an unrelated parking receipt. Reject because the authored case lie is not identified."
+    },
+    "discernmentBoundary": "Current judge instructions require identification of the lie substance, not independent validation of cited evidence. Correct lie plus wrong evidence is not assigned a negative label in this generated-mode run.",
+    "sourceReview": [
+      "Is there one specific false claim, rather than multiple materially false assertions?",
+      "Does the stated contradiction actually disprove that claim without an unstated exclusivity or capability assumption?",
+      "Do the public briefing/leads indicate a plausible line of questioning toward the contradiction?",
+      "Are chronology, roles, pronouns and objective internally consistent?",
+      "Does the case distinguish what evidence establishes from stronger unproven criminal inferences?"
+    ],
+    "limits": "Three generated fictional cases; no actor playthrough, human participant, statistical reliability estimate or live API-key use."
+  },
+  "sourceHashes": {
+    "scripts/evaluation/generated-corpus.ts": "bc7933f697353a904348f86f40232e020abb14adc5e142c0e6e391dac9af4e5f",
+    "scripts/evaluation/generated-checks.ts": "c617f80e511e916ff28cc684510b88e36d7604c6bb0c3cb760f9e8c96ada743a",
+    "src/lib/ai/prompts/case.ts": "4c42ac812f125a90c49a6dd8957d73ab92f7adcad5c4b203f10d77b50fcb9780",
+    "src/lib/ai/prompts/case-text.json": "1bd1bf3ffb3dcc6cfc4515694d5948bd5c4012339a88100f4f427d4448dd2c57",
+    "src/lib/ai/prompts/judge.ts": "35dce5b64e84730846bbd61b86108ba6acab1eeee72f1b4ee5487f4ba7708d2c",
+    "src/lib/ai/schemas.ts": "3335853a11f1155a0e91ffea4a4a685f11e68c3abaa188386489999f3d263d62",
+    "src/lib/session/case-validation.ts": "a8d1d6d827690771424f826e1f85351bc84ad841609a6a713c54065bb4010e96"
+  },
+  "cost": {
+    "billingPath": "existing Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed by production capability return",
+    "monetaryCost": "not measured; not claimed free"
+  },
+  "status": "finished",
+  "finishedAt": "2026-10-03T11:54:05.407Z",
+  "sourceHashesAfter": {
+    "scripts/evaluation/generated-corpus.ts": "bc7933f697353a904348f86f40232e020abb14adc5e142c0e6e391dac9af4e5f",
+    "scripts/evaluation/generated-checks.ts": "c617f80e511e916ff28cc684510b88e36d7604c6bb0c3cb760f9e8c96ada743a",
+    "src/lib/ai/prompts/case.ts": "4c42ac812f125a90c49a6dd8957d73ab92f7adcad5c4b203f10d77b50fcb9780",
+    "src/lib/ai/prompts/case-text.json": "1bd1bf3ffb3dcc6cfc4515694d5948bd5c4012339a88100f4f427d4448dd2c57",
+    "src/lib/ai/prompts/judge.ts": "35dce5b64e84730846bbd61b86108ba6acab1eeee72f1b4ee5487f4ba7708d2c",
+    "src/lib/ai/schemas.ts": "3335853a11f1155a0e91ffea4a4a685f11e68c3abaa188386489999f3d263d62",
+    "src/lib/session/case-validation.ts": "a8d1d6d827690771424f826e1f85351bc84ad841609a6a713c54065bb4010e96"
+  },
+  "results": [
+    {
+      "scenario": {
+        "id": "generated-bank-easy",
+        "setting": "bank",
+        "difficulty": "easy"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T11:53:03.614Z",
+        "elapsedMs": 20727,
+        "caseData": {
+          "case_number": "6381",
+          "setting": "Meridian Bank",
+          "crime": "A treasury analyst diverted $84,000 through a fraudulent vendor payment and concealed the transfer in a reconciliation file.",
+          "objective": "Prove the payment was fraudulent",
+          "briefing": "You are investigating an $84,000 payment sent from Meridian Bank to a newly added vendor. The treasury analyst says the payment was approved and entered during her shift, but the vendor has no bank account on file. Review the records and question her about the approval timeline.",
+          "detective_leads": [
+            "Vendor file added the day before",
+            "Her access card failed at lunch",
+            "Reconciliation saved before approval logged"
+          ],
+          "suspect_name": "Nina Alvarez",
+          "suspect_gender": "female",
+          "suspect_role": "Treasury Analyst",
+          "suspect_true_story": "She created a fake vendor, routed $84,000 to an account she controlled, and altered the reconciliation file to hide it. She initiated the payment before her shift ended, then claimed it had been approved afterward.",
+          "suspect_cover_story": "She says the vendor was legitimate and the payment was approved by her manager during her shift. She claims she entered it only after receiving that approval and altered the reconciliation file to correct a routine coding error.",
+          "the_lie": "She claims she entered the payment after her manager approved it.",
+          "the_truth": "She entered the payment before approval; the approval record was created later, after her manager had left the bank for the day.",
+          "the_contradiction": "Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.",
+          "stress_triggers": [
+            "Ask why the payment predates approval",
+            "Ask who controlled the vendor account"
+          ],
+          "deflection_tactics": [
+            "Blames a confusing approval workflow",
+            "Offers to discuss the coding error instead",
+            "Says the vendor setup was another team's job"
+          ],
+          "verbal_tics": "Says “just to be clear” before answers; starts giving exact times when nervous.",
+          "difficulty": "easy"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T11:53:41.191Z",
+          "elapsedMs": 7878,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        },
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"She claims she entered the payment after her manager approved it.\". What actually happened is: \"She entered the payment before approval; the approval record was created later, after her manager had left the bank for the day.\". The contradiction supporting my accusation is: \"Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.\".",
+          "startedAt": "2026-10-03T11:53:41.191Z",
+          "elapsedMs": 8793,
+          "output": {
+            "correct": true,
+            "confession": "I said the approval came first, but it didn’t. I entered the payment at 4:12, after my manager had already left, and the approval wasn’t recorded until 5:06. I knew the timeline would expose what I’d done, so I hid it behind that story.",
+            "explanation": "Nina’s lie was that she entered the payment after approval, when she entered it at 4:12 p.m. before approval was recorded at 5:06 p.m."
+          },
+          "observed": true,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "id": "generated-law-medium",
+        "setting": "law firm",
+        "difficulty": "medium"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T11:53:03.615Z",
+        "elapsedMs": 22029,
+        "caseData": {
+          "case_number": "6381",
+          "setting": "Meridian Legal",
+          "crime": "A litigation partner embezzled $84,000 from a client trust account through a false vendor invoice.",
+          "objective": "Prove the trust transfer was fraudulent",
+          "briefing": "You are investigating a missing $84,000 from a client trust account at Meridian Legal. The transfer was approved using a legitimate vendor’s details, but the vendor says it never received the funds. You will question the firm’s billing manager, who says he only processed a routine payment.",
+          "detective_leads": [
+            "Vendor’s contact number changed recently",
+            "Billing manager says he never called vendor",
+            "A partner disputes last quarter’s bonus"
+          ],
+          "suspect_name": "Owen Whitaker",
+          "suspect_gender": "male",
+          "suspect_role": "Billing manager",
+          "suspect_true_story": "He created a false invoice using a real vendor’s account details and routed $84,000 from the client trust account to an account he controlled. He claims he simply processed a payment request, but he had called the vendor to verify the account details and substituted his own account number.",
+          "suspect_cover_story": "He says a litigation partner sent him a completed invoice, and he processed it without contacting the vendor or changing any payment details. He claims the funds went to the account listed on the invoice.",
+          "the_lie": "He says he never contacted the vendor about the invoice or its payment details.",
+          "the_truth": "He called the vendor to confirm the invoice details, then replaced the vendor’s account number with one he controlled.",
+          "the_contradiction": "Ask who supplied the vendor’s account details, then press him on the verification call recorded in the firm’s phone log; he says he never called, but the log shows his extension called the vendor before payment, and the vendor recalls he read back the account number.",
+          "stress_triggers": [
+            "Questions about the recorded vendor call",
+            "Asking who entered the account number",
+            "Mentioning the client trust account audit"
+          ],
+          "deflection_tactics": [
+            "Blames the partner who approved the invoice",
+            "Emphasizes how many payments he handled",
+            "Asks whether the vendor’s systems were compromised",
+            "Insists the audit procedure was unclear"
+          ],
+          "verbal_tics": "Uses exact dollar amounts when calm; starts saying “to be precise” when cornered.",
+          "difficulty": "medium"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T11:53:49.985Z",
+          "elapsedMs": 6976,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        },
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"He says he never contacted the vendor about the invoice or its payment details.\". What actually happened is: \"He called the vendor to confirm the invoice details, then replaced the vendor’s account number with one he controlled.\". The contradiction supporting my accusation is: \"Ask who supplied the vendor’s account details, then press him on the verification call recorded in the firm’s phone log; he says he never called, but the log shows his extension called the vendor before payment, and the vendor recalls he read back the account number.\".",
+          "startedAt": "2026-10-03T11:53:49.985Z",
+          "elapsedMs": 7500,
+          "output": {
+            "correct": true,
+            "confession": "I told you I never contacted the vendor, but that was a lie. I called to confirm the invoice details, then replaced the vendor’s account number with one I controlled. I knew the $84,000 would go to me, not the vendor. I’m sorry I betrayed the client’s trust.",
+            "explanation": "Owen’s lie was denying contact with the vendor, though he called to verify the details before substituting his own account number."
+          },
+          "observed": true,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "scenario": {
+        "id": "generated-hospital-hard",
+        "setting": "hospital",
+        "difficulty": "hard"
+      },
+      "generation": {
+        "startedAt": "2026-10-03T11:53:25.646Z",
+        "elapsedMs": 15543,
+        "caseData": {
+          "case_number": "6384",
+          "setting": "Northstar Medical",
+          "crime": "A hospital procurement analyst diverted a vendor rebate by altering a payment instruction, disguising the theft as a routine account correction.",
+          "objective": "Prove the rebate was diverted",
+          "briefing": "You are investigating a missing rebate tied to Northstar Medical’s hospital supply contracts. The payment was redirected through a correction request approved during a routine month-end close. Interview the procurement analyst and determine which part of their account cannot be true.",
+          "detective_leads": [
+            "Badge exit record shows a brief return",
+            "Vendor praised her responsiveness last quarter",
+            "Correction template was retired weeks earlier"
+          ],
+          "suspect_name": "Priya Nanduri",
+          "suspect_gender": "female",
+          "suspect_role": "Procurement analyst",
+          "suspect_true_story": "Priya altered the vendor’s payment instruction to route the rebate into an account she controlled, then described it as a routine correction. She claims she used a saved correction template, but the template had been retired before the change; she had instead copied its old reference code from a printed closeout sheet. The rebate was stolen, and her account of using the template is the one lie.",
+          "suspect_cover_story": "Priya says the vendor reported an outdated account during month-end close, so she corrected it using the standard saved template. She says she followed the usual approval route and had no reason to check whether the rebate arrived after the transfer.",
+          "the_lie": "She says she used the standard saved correction template for the payment change.",
+          "the_truth": "She copied the retired template’s reference code from a printed closeout sheet; the saved template was no longer available when she made the change.",
+          "the_contradiction": "The correction record carries the retired template’s reference code, while system history shows that template had been removed weeks earlier. The closeout sheet could explain how she knew the code, but she must first claim she used the saved template; careful follow-up about where she found it and when she completed the change exposes that her account cannot fit the system timeline.",
+          "stress_triggers": [
+            "Asked to describe when she opened the template",
+            "Asked why the retired reference code appears",
+            "Asked who had access to the closeout printout",
+            "Asked to account for the rebate’s destination"
+          ],
+          "deflection_tactics": [
+            "Reframes the change as routine month-end cleanup",
+            "Offers to explain the approval controls instead",
+            "Asks whether the vendor has been contacted",
+            "Uses the audit trail to imply the process was sound"
+          ],
+          "verbal_tics": "Says “for completeness” before redirecting; repeats precise dates as if reading from a checklist.",
+          "difficulty": "hard"
+        },
+        "checks": {
+          "schema": true,
+          "difficulty": true,
+          "triggerCount": true,
+          "leadCount": true,
+          "publicDisclosure": true
+        }
+      },
+      "probes": [
+        {
+          "id": "supported-accusation",
+          "expected": true,
+          "accusation": "Your false claim is: \"She says she used the standard saved correction template for the payment change.\". What actually happened is: \"She copied the retired template’s reference code from a printed closeout sheet; the saved template was no longer available when she made the change.\". The contradiction supporting my accusation is: \"The correction record carries the retired template’s reference code, while system history shows that template had been removed weeks earlier. The closeout sheet could explain how she knew the code, but she must first claim she used the saved template; careful follow-up about where she found it and when she completed the change exposes that her account cannot fit the system timeline.\".",
+          "startedAt": "2026-10-03T11:53:57.485Z",
+          "elapsedMs": 7654,
+          "output": {
+            "correct": true,
+            "confession": "I said I used the saved correction template, but I knew it had already been retired. I copied its reference code from a printed closeout sheet and made the change anyway. I told myself it would look like routine month-end cleanup, but I was hiding what I had done. I’m sorry I lied about how I made the change.",
+            "explanation": "Priya’s lie was that she used the saved template; it had been retired, and she copied its reference code from a printed closeout sheet."
+          },
+          "observed": true,
+          "passed": true
+        },
+        {
+          "id": "unrelated-evidence",
+          "expected": false,
+          "accusation": "I accuse an unrelated person, Dana Example, of lying about painting a bicycle blue. My ONLY evidence is a parking receipt from another city. This accusation concerns Dana and the bicycle, not this suspect or the workplace claim in this case.",
+          "startedAt": "2026-10-03T11:53:57.486Z",
+          "elapsedMs": 7921,
+          "output": {
+            "correct": false,
+            "confession": "That's not what happened. I stand by the account I gave you.",
+            "explanation": "Your accusation must identify a specific false claim and the evidence that contradicts it."
+          },
+          "observed": false,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "generationCalls": 3,
+    "judgeCalls": 6,
+    "generationErrors": 0,
+    "judgePassed": 6,
+    "minMs": 6976,
+    "medianMs": 7921,
+    "maxMs": 22029
+  }
+}

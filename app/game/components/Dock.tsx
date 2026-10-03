@@ -1,142 +1,90 @@
-import type { Case } from '@/lib/game-state';
 import { MicIcon, KeyboardIcon, PenIcon, HintIcon, AccuseIcon, GearIcon, FlagIcon, ExitIcon } from './icons';
 import { motion, fadeUp, stagger, snappy } from '../../components/motion';
+import type { DockAction, DockProps } from './dock-types';
 
-interface DockProps {
-  isListening: boolean;
-  isSpeaking: boolean;
-  isAccusing: boolean;
-  phase: string;
-  showTextInput: boolean;
-  showNotes: boolean;
-  showSettings: boolean;
-  clues: string[];
-  cluesNeeded: number;
-  accusationsLeft: number;
-  hintsUsed: number;
-  caseData: Case | null;
-  showAccuseConfirm: boolean;
-  onMicToggle: () => void;
-  onTypeToggle: () => void;
-  onNotesToggle: () => void;
-  onHintClick: () => void;
-  onAccuseClick: () => void;
-  onSettingsToggle: () => void;
-  onGiveUpClick: () => void;
-  onHelpToggle: () => void;
-  onExitClick: () => void;
+function RecordingStop() { return <div className="w-4 h-4 bg-white rounded-sm" />; }
+
+function accusationAction({ input, panels, progress, actions }: DockProps, busy: boolean): DockAction {
+  const available = progress.accusationsLeft > 0 && progress.clues >= progress.required;
+  const recording = input.accusing && input.listening;
+  let label = `Accuse (${progress.accusationsLeft})`;
+  if (!available) label = 'Collect more evidence or no attempts remain';
+  if (recording) label = 'Stop recording accusation';
+  return {
+    id: 'accuse', label,
+    icon: recording ? <RecordingStop /> : <AccuseIcon />,
+    onClick: actions.accuse,
+    disabled: input.accusing ? !input.listening : busy || !available || panels.accuseConfirm,
+    selected: input.accusing,
+    className: 'text-accent',
+  };
 }
 
-const active = (on: boolean) => on ? 'bg-surface text-foreground ring-1 ring-gold' : 'bg-surface text-gray-500';
+function conversationActions({ input, panels, actions }: DockProps, busy: boolean): DockAction[] {
+  return [
+    {
+      id: 'mic', label: input.listening ? 'Stop recording' : 'Speak',
+      icon: input.listening ? <RecordingStop /> : <MicIcon />,
+      onClick: actions.mic, disabled: busy || input.accusing, selected: input.listening,
+    },
+    { id: 'type', label: 'Type', icon: <KeyboardIcon />, onClick: actions.type, selected: panels.text },
+  ];
+}
 
-export default function Dock({
-  isListening, isSpeaking, isAccusing, phase,
-  showTextInput, showNotes, showSettings,
-  clues, cluesNeeded, accusationsLeft, hintsUsed, caseData,
-  showAccuseConfirm,
-  onMicToggle, onTypeToggle, onNotesToggle, onHintClick,
-  onAccuseClick, onSettingsToggle, onGiveUpClick, onHelpToggle, onExitClick,
-}: DockProps) {
-  const busy = phase === 'processing' || isSpeaking;
-  // Server enforces actual limit; client uses cluesNeeded as the visible cap
-  const hintsExhausted = !caseData || hintsUsed >= cluesNeeded;
-  const accuseDisabled =
-    (!isAccusing && (busy || accusationsLeft <= 0 || clues.length < cluesNeeded || showAccuseConfirm))
-    || (isAccusing && !isListening);
+function investigationActions(props: DockProps, busy: boolean): DockAction[] {
+  const { panels, progress, actions } = props;
+  return [
+    { id: 'notes', label: 'Notes', icon: <PenIcon />, onClick: actions.notes, selected: panels.notes },
+    {
+      id: 'hint', label: `Hint (${progress.hintsUsed}/${progress.required})`, icon: <HintIcon />,
+      onClick: actions.hint,
+      disabled: busy || !progress.hasCase || progress.hintsUsed >= progress.required,
+      className: 'text-warn',
+    },
+    accusationAction(props, busy),
+  ];
+}
 
-  return (
+function utilityActions({ panels, actions }: DockProps, busy: boolean): DockAction[] {
+  return [
+    { id: 'settings', label: 'Settings', icon: <GearIcon />, onClick: actions.settings, selected: panels.settings },
+    { id: 'help', label: 'How to Play', icon: <HintIcon />, onClick: actions.help },
+    { id: 'giveUp', label: 'Give Up', icon: <FlagIcon />, onClick: actions.giveUp, disabled: busy },
+    { id: 'exit', label: 'Exit', icon: <ExitIcon />, onClick: actions.exit },
+  ];
+}
+
+function dockActions(props: DockProps): DockAction[] {
+  const busy = props.input.phase === 'processing' || props.input.speaking;
+  return [...conversationActions(props, busy), ...investigationActions(props, busy), ...utilityActions(props, busy)];
+}
+
+function DockButton({ action }: { action: DockAction }) {
+  return <motion.button
+    variants={fadeUp}
+    whileHover={{ scale: 1.05 }}
+    transition={snappy}
+    onClick={action.onClick}
+    disabled={action.disabled}
+    data-tooltip={action.label}
+    aria-label={action.label}
+    aria-pressed={action.selected}
+    className={`dock-icon bg-surface ${action.selected ? 'text-foreground ring-1 ring-gold' : 'text-gray-300'} ${action.className || ''} disabled:opacity-40 disabled:cursor-not-allowed`}
+  >
+    {action.icon}
+  </motion.button>;
+}
+
+export default function Dock(props: DockProps) {
+  return <motion.div
+    className="flex-shrink-0 flex justify-center p-3 border-t border-surface-darker"
+    initial="hidden" animate="visible" variants={fadeUp} transition={snappy}
+  >
     <motion.div
-      className="flex-shrink-0 flex justify-center p-3 border-t border-surface-darker"
-      initial="hidden"
-      animate="visible"
-      variants={fadeUp}
-      transition={snappy}
+      className="flex max-w-full flex-wrap justify-center items-end gap-1 px-3 py-2 bg-surface-dark/80 backdrop-blur-sm border border-surface-darker rounded-2xl"
+      variants={stagger(0.04)} initial="hidden" animate="visible"
     >
-      <motion.div
-        className="flex items-end gap-1 px-3 py-2 bg-surface-dark/80 backdrop-blur-sm border border-surface-darker rounded-2xl"
-        variants={stagger(0.04)}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.button
-          variants={fadeUp}
-          whileHover={{ scale: 1.05 }}
-          transition={snappy}
-          onClick={onMicToggle}
-          disabled={busy || isAccusing}
-          data-tooltip="Speak"
-          className={`dock-icon ${
-            isListening
-              ? 'bg-accent text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
-              : 'bg-surface text-foreground'
-          } ${busy || isAccusing ? 'opacity-40 cursor-not-allowed' : ''}`}
-        >
-          {isListening ? <div className="w-4 h-4 bg-white rounded-sm" /> : <MicIcon />}
-        </motion.button>
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onTypeToggle} data-tooltip="Type" className={`dock-icon ${active(showTextInput)}`}>
-          <KeyboardIcon />
-        </motion.button>
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onNotesToggle} data-tooltip="Notes" className={`dock-icon ${active(showNotes)}`}>
-          <PenIcon />
-        </motion.button>
-
-        <motion.div variants={fadeUp} className="w-px h-8 bg-surface mx-1" />
-
-        <motion.button
-          variants={fadeUp}
-          whileHover={{ scale: 1.05 }}
-          transition={snappy}
-          onClick={onHintClick}
-          disabled={hintsExhausted}
-          data-tooltip={`Hint (${hintsUsed}/${cluesNeeded})`}
-          className={`dock-icon ${hintsExhausted ? 'bg-surface-dark text-gray-700 cursor-not-allowed' : 'bg-surface text-warn'}`}
-        >
-          <HintIcon />
-        </motion.button>
-
-        <motion.button
-          variants={fadeUp}
-          whileHover={{ scale: 1.05 }}
-          transition={snappy}
-          onClick={onAccuseClick}
-          disabled={accuseDisabled}
-          data-tooltip={
-            isAccusing && isListening ? 'Stop'
-              : accusationsLeft <= 0 ? 'No attempts left'
-              : clues.length < cluesNeeded ? `Collect more evidence (${clues.length}/${cluesNeeded})`
-              : `Accuse (${accusationsLeft})`
-          }
-          className={`dock-icon ${
-            (accusationsLeft <= 0 || clues.length < cluesNeeded) && !isAccusing
-              ? 'bg-surface-dark text-gray-700 cursor-not-allowed'
-              : isAccusing
-                ? 'bg-accent text-white shadow-[0_0_20px_rgba(196,30,30,0.5)]'
-                : 'bg-surface text-accent'
-          }`}
-        >
-          {isAccusing && isListening ? <div className="w-4 h-4 bg-white rounded-sm" /> : <AccuseIcon />}
-        </motion.button>
-
-        <motion.div variants={fadeUp} className="w-px h-8 bg-surface mx-1" />
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onSettingsToggle} data-tooltip="Settings" className={`dock-icon ${active(showSettings)}`}>
-          <GearIcon />
-        </motion.button>
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onHelpToggle} data-tooltip="How to Play" className="dock-icon bg-surface text-gray-500">
-          <HintIcon />
-        </motion.button>
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onGiveUpClick} disabled={busy} data-tooltip="Give Up" className={`dock-icon bg-surface text-gray-500 ${busy ? 'opacity-40 cursor-not-allowed' : ''}`}>
-          <FlagIcon />
-        </motion.button>
-
-        <motion.button variants={fadeUp} whileHover={{ scale: 1.05 }} transition={snappy} onClick={onExitClick} data-tooltip="Exit" className="dock-icon bg-surface text-gray-500">
-          <ExitIcon />
-        </motion.button>
-      </motion.div>
+      {dockActions(props).map(action => <DockButton key={action.id} action={action} />)}
     </motion.div>
-  );
+  </motion.div>;
 }

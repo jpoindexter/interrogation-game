@@ -23,7 +23,7 @@ const PixiAvatar = dynamic(() => import('./SuspectAvatarPixi'), {
 
 interface SuspectAvatarProps {
   name: string;
-  gender?: string;
+  portraitId?: string;
   stressLevel: number;
   size?: 'sm' | 'md' | 'lg';
   speaking?: boolean;

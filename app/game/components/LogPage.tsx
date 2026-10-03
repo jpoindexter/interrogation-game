@@ -11,17 +11,7 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
   logEndRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const fmt = (s: number) => { const m = Math.floor(s / 60); return `${m}:${(s % 60) < 10 ? '0' : ''}${s % 60}`; };
-  const pairs: { question: string; answer: string; time?: number }[] = [];
-  for (let i = 0; i < conversationHistory.length; i++) {
-    const msg = conversationHistory[i];
-    if (msg.role === 'user') {
-      const next = conversationHistory[i + 1];
-      pairs.push({ question: msg.content, answer: next?.role === 'assistant' ? next.content : '', time: msg.timestamp });
-      if (next?.role === 'assistant') i++;
-    } else if (msg.role === 'assistant' && (i === 0 || conversationHistory[i - 1]?.role !== 'user')) {
-      pairs.push({ question: '', answer: msg.content, time: msg.timestamp });
-    }
-  }
+  const pairs = groupExchanges(conversationHistory);
 
   return (
     <div className="text-black" style={MONO}>
@@ -44,7 +34,18 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
       )}
 
       {pairs.length > 0 && (
-        <div className="px-4">
+        <ExchangeList pairs={pairs} fmt={fmt} />
+      )}
+
+      <div ref={logEndRef} />
+    </div>
+  );
+}
+
+
+function ExchangeList({ pairs, fmt }: { pairs: { question: string; answer: string; time?: number; }[]; fmt: (s: number) => string }) {
+  return (
+<div className="px-4">
           {pairs.map((pair, i) => {
             const isLatest = i === pairs.length - 1;
             return (
@@ -53,7 +54,7 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: 0.02 }}
-                className={`py-2.5 ${!isLatest ? 'border-b border-black/15 opacity-50' : 'pb-6'}`}
+                className={`py-2.5 ${!isLatest ? 'border-b border-black/15' : 'pb-6'}`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="text-[10px] uppercase tracking-widest text-black/25" style={MONO}>
@@ -66,22 +67,33 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
                 {pair.question && (
                   <div className="mb-2">
                     <p className={`${LABEL} underline mb-0.5`}>Detective</p>
-                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/60'}`}>{pair.question}</p>
+                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/80'}`}>{pair.question}</p>
                   </div>
                 )}
                 {pair.answer && (
                   <div>
                     <p className={`${LABEL} underline mb-0.5`}>Subject</p>
-                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/60'}`}>{pair.answer}</p>
+                    <p className={`text-sm leading-relaxed ${isLatest ? 'text-black font-bold' : 'text-black/80'}`}>{pair.answer}</p>
                   </div>
                 )}
               </motion.div>
             );
           })}
         </div>
-      )}
-
-      <div ref={logEndRef} />
-    </div>
   );
+}
+
+function groupExchanges(conversationHistory: ConversationMessage[]) {
+  const pairs: { question: string; answer: string; time?: number }[] = [];
+  for (let i = 0; i < conversationHistory.length; i++) {
+    const msg = conversationHistory[i];
+    if (msg.role === 'user') {
+      const next = conversationHistory[i + 1];
+      pairs.push({ question: msg.content, answer: next?.role === 'assistant' ? next.content : '', time: msg.timestamp });
+      if (next?.role === 'assistant') i++;
+    } else if (msg.role === 'assistant') {
+      pairs.push({ question: '', answer: msg.content, time: msg.timestamp });
+    }
+  }
+  return pairs;
 }

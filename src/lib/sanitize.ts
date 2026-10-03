@@ -33,18 +33,11 @@ const INJECTION_PATTERNS = [
   /aWdub3Jl|c3lzdGVt|cHJvbXB0/i,
 ];
 
+/** Preserve player intent, including adversarial questions; structured provider boundaries
+ * treat this text as untrusted game input. Pattern removal is not a security boundary. */
 export function sanitizeInput(input: string): string {
-  if (!input || typeof input !== 'string') return '';
-  let clean = input.trim();
-  // Remove (not replace) any injection pattern matches — don't leave [REDACTED] artifacts
-  // that could be used as signals by the model
-  for (const pattern of INJECTION_PATTERNS) {
-    const global = new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g');
-    clean = clean.replace(global, '');
-  }
-  // Collapse excessive whitespace left by removals
-  clean = clean.replace(/\s{2,}/g, ' ').trim();
-  return clean;
+  if (typeof input !== 'string') return '';
+  return input.normalize('NFKC').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
 }
 
 /** Normalize unicode confusables (homoglyphs, full-width chars) to ASCII for regex matching */
@@ -86,23 +79,6 @@ export function isNonEnglish(input: string): boolean {
   return false;
 }
 
-/** Check if AI response leaks case secrets (fuzzy keyword matching) */
-export function containsSecretLeak(response: string, secrets: string[]): boolean {
-  const lower = response.toLowerCase();
-  for (const secret of secrets) {
-    if (!secret) continue;
-    // Extract significant words (3+ chars) from the secret — lowered from 4 to catch short secrets
-    const words = secret.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w));
-    if (words.length === 0) continue;
-    const matched = words.filter(w => lower.includes(w)).length;
-    // If 40%+ of significant words appear in the response, it's a potential leak
-    if (matched >= Math.ceil(words.length * 0.4)) return true;
-  }
-  return false;
-}
-
-const STOP_WORDS = new Set(['the', 'and', 'was', 'were', 'that', 'this', 'with', 'for', 'not', 'but', 'had', 'has', 'have', 'from', 'they', 'been', 'said', 'will', 'are', 'who', 'its', 'can', 'did', 'her', 'his', 'him', 'she', 'may', 'all', 'our', 'out', 'you', 'one', 'two']);
-
 export function validateString(val: unknown, maxLen: number): string | null {
   if (!val || typeof val !== 'string') return null;
   const t = val.trim();
@@ -119,36 +95,7 @@ export function validateDifficulty(val: unknown): string | null {
   return typeof val === 'string' && allowed.includes(val) ? val : null;
 }
 
-const CASE_FIELDS: Record<string, number> = {
-  case_number: 20, setting: 200, crime: 500, briefing: 1000,
-  suspect_name: 100, suspect_gender: 10, suspect_role: 200,
-  suspect_true_story: 1000, suspect_cover_story: 1000,
-  the_lie: 500, the_truth: 500, the_contradiction: 500, difficulty: 20,
-};
-const OPTIONAL_CASE_FIELDS: Record<string, number> = { objective: 100 };
-
-export function validateCaseData(data: unknown): Record<string, unknown> | null {
-  if (!data || typeof data !== 'object') return null;
-  const d = data as Record<string, unknown>, clean: Record<string, unknown> = {};
-  for (const [key, max] of Object.entries(CASE_FIELDS)) {
-    if (typeof d[key] !== 'string') return null;
-    clean[key] = sanitizeInput((d[key] as string).slice(0, max));
-  }
-  for (const [key, max] of Object.entries(OPTIONAL_CASE_FIELDS)) {
-    if (typeof d[key] === 'string') clean[key] = sanitizeInput((d[key] as string).slice(0, max));
-  }
-  for (const key of ['stress_triggers', 'deflection_tactics'] as const) {
-    if (!Array.isArray(d[key])) return null;
-    clean[key] = (d[key] as string[]).slice(0, 10).map((s) =>
-      typeof s === 'string' ? sanitizeInput(s.slice(0, 300)) : '');
-  }
-  // Optional arrays
-  if (Array.isArray(d.detective_leads)) {
-    clean.detective_leads = (d.detective_leads as string[]).slice(0, 5).map((s) =>
-      typeof s === 'string' ? sanitizeInput(s.slice(0, 500)) : '');
-  }
-  return clean;
-}
+export { validateCaseData } from './session/case-validation';
 
 export function validateConversationHistory(val: unknown): Array<{ role: 'user' | 'assistant'; content: string }> {
   if (!Array.isArray(val)) return [];

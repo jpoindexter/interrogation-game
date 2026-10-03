@@ -1,3 +1,4 @@
+import AssetImage from '../../components/AssetImage';
 import { motion } from '../../components/motion';
 import { SECTION_HEADER } from './CaseFilePage';
 
@@ -14,16 +15,7 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
 
       <hr className="border-black/20 mb-3" />
 
-      <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Physical Evidence</div>
-      <div className="py-3 flex items-center gap-3 justify-center flex-wrap">
-        {clueIcons.map((icon, i) => (
-          <div key={i} className={`w-20 h-20 border border-black/40 flex items-center justify-center transition-all duration-700 ${
-            clues.length >= i + 1 ? 'bg-white' : 'grayscale opacity-30'
-          }`}>
-            <img src={icon} alt={`Evidence ${i + 1}`} className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
-          </div>
-        ))}
-      </div>
+      <EvidenceIcons clues={clues} clueIcons={clueIcons} />
 
       {clues.length > 0 && (
         <>
@@ -63,4 +55,20 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
       )}
     </div>
   );
+}
+
+
+function EvidenceIcons({ clues, clueIcons }: { clues: string[]; clueIcons: string[] }) {
+  return (<>
+      <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Physical Evidence</div>
+      <div className="py-3 flex items-center gap-3 justify-center flex-wrap">
+        {clueIcons.map((icon, i) => (
+          <div key={i} className={`w-20 h-20 border border-black/40 flex items-center justify-center transition-all duration-700 ${
+            clues.length >= i + 1 ? 'bg-white' : 'grayscale opacity-30'
+          }`}>
+            <AssetImage src={icon} alt={`Evidence ${i + 1}`} className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
+          </div>
+        ))}
+      </div>
+  </>);
 }

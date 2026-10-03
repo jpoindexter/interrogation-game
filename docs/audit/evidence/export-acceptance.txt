@@ -1,0 +1,20 @@
+✔ actual private export route rejects wrong credentials and pages filtered durable records (128.437875ms)
+✔ CLI authenticates using Bearer and writes JSONL without logging credentials (79.561209ms)
+✔ HTTP 401 preserves existing output and does not echo response secrets (76.229125ms)
+✔ HTTP 500 preserves existing output and does not echo response secrets (68.644334ms)
+✔ invalid JSONL preserves an existing export (70.675459ms)
+✔ redirects are refused rather than forwarding an export credential (70.43325ms)
+✔ invalid limits fail before requesting an export (46.906625ms)
+✔ an empty JSONL response writes a valid empty export (65.10925ms)
+✔ completion exports persist once and the real admin route rejects invalid pagination (46.058917ms)
+✔ actual export CLI retrieves persisted local completion through the actual HTTP route (118.848208ms)
+✔ remote export failure leaves a durable outbox and confirmed retry stops resending (51.311708ms)
+✔ remote success with failed durable confirmation stays pending and retries the same export (51.540708ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 541.361833

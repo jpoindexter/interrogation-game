@@ -1,290 +1,124 @@
 # Interrogation
 
-![Interrogation — Title Screen](public/screenshots/hero.png)
+A fictional noir detective game built by Jason Poindexter for a hackathon. Question an AI suspect, compare its account with the case, and make a specific accusation.
 
-A voice-based detective interrogation game. You're a detective. Mistral is a suspect who's lying. Your job is to catch the lie through questioning alone.
+The current upgrade targets a **local video demonstration** using a signed-in Codex subscription, with ElevenLabs voice and a separate OpenAI API adapter for future hosting. Integration is active: a real local HTTP/Codex playthrough and a small fairness sample have passed, while browser and voice acceptance remain unverified. See [current implementation status](docs/audit/IMPLEMENTATION-STATUS.md). See [the audit](docs/audit/AUDIT.md), [implementation plan](docs/audit/IMPLEMENTATION-PLAN.md) and [gameplay upgrade](docs/audit/GAMEPLAY-UPGRADE.md) for evidence and remaining acceptance work.
 
-Every case is procedurally generated — a unique white-collar crime, suspect, cover story, and one hidden lie. The suspect is played by Mistral Large, given a full backstory and instructed to defend it under adversarial pressure. No two cases are the same.
+![Historical hackathon title screen](public/screenshots/hero.png)
 
-Built for the **Mistral Worldwide Hackathon 2026** (Online Track).
+*This screenshot records the earlier hackathon version; it is not proof of the current runtime.*
 
-> *"Mistral can reason. I made it lie. Your job is to catch it."*
+## Run locally
 
-## How It Works
-
-1. Pick a location and difficulty
-2. A unique case is generated — crime, suspect, cover story, and one lie
-3. Interrogate the suspect using voice or text
-4. The suspect responds in character with stress-reactive voice
-5. Collect clues by asking the right questions under pressure
-6. Make your accusation — a separate judge AI evaluates it
-7. Correct = confession. Wrong = lose an attempt (3 total)
-
-The AI is instructed to **never confess**, even at maximum stress. You win by making a specific, accurate accusation — not by getting the suspect to crack.
-
-## Stack
-
-- **Next.js 16** — App Router, TypeScript, Tailwind v4
-- **Mistral Large 3** — suspect AI brain, case generation, accusation evaluation
-- **Voxtral STT** — speech-to-text for player voice input
-- **ElevenLabs TTS** — suspect voice with dynamic stress-based stability
-- **Browser SpeechSynthesis** — fallback when ElevenLabs unavailable
-- **Supabase** — leaderboard persistence with RLS, game export storage
-- **Framer Motion** — animations across all pages
-- **PixelLab** — procedurally generated suspect portraits
-
-## Getting Started
+Use **Node.js 24** and **npm 11**. The repository pins exact application dependencies in `package-lock.json`.
 
 ```bash
-npm install
-cp .env.example .env    # Fill in your API keys
-npm run dev             # http://localhost:3000
+npm ci
+[ -f .env.local ] || cp .env.example .env.local
+npm run dev
 ```
 
-### Environment Variables
+Open `http://127.0.0.1:3000`. The development server binds to loopback and does not terminate unrelated processes using nearby ports.
 
-```
-MISTRAL_API_KEY=            # Required — case gen, interrogation, evaluation, STT
-ELEVENLABS_API_KEY=         # Required — TTS for suspect voice
-ELEVENLABS_VOICE_ID=        # Optional — specific ElevenLabs voice ID
-NEXT_PUBLIC_SUPABASE_URL=   # Required — Supabase project URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required — Supabase anon key (RLS-protected)
-SUPABASE_SERVICE_ROLE_KEY=  # Optional — admin export endpoint
-EXPORT_SECRET=              # Optional — admin export auth
-```
-
-API keys can also be configured in the Settings page at runtime — the app ships keyless and players bring their own keys.
-
-### Commands
+The local Codex adapter uses the project CLI and its existing local sign-in. Before a live demonstration, check the installed CLI and sign in interactively if needed:
 
 ```bash
-npm run dev       # Dev server
-npm run build     # Production build
-npm run start     # Production server
-npm run lint      # ESLint
+./node_modules/.bin/codex --version
+./node_modules/.bin/codex login status
+./node_modules/.bin/codex login
 ```
 
-## Game Mechanics
+Do not copy local Codex authentication files into the repository, browser or hosted deployment. A Codex subscription is not an OpenAI API key; the hosted API path requires separate credentials and API billing. Local usage remains subject to the signed-in account's availability and limits.
 
-### Difficulty
+## Server configuration
 
-| Level | Clues | Timer | Suspect Behavior |
-|-------|-------|-------|-----------------|
-| Easy | 2 | 5 min | Obvious lie, nervous |
-| Medium | 3 | 7 min | Catchable lie, composed |
-| Hard | 4 | 9 min | Subtle lie, skilled deflector |
-| Expert | 5 | 10 min | Deeply buried lie, manipulative |
+These are server environment variables, never browser settings. The provider migration is being integrated; use the configuration report and an actual game turn to validate the selected path.
 
-An **unlimited** timer mode is also available — on hard/expert, the suspect will lawyer up after 4 consecutive high-stress exchanges.
+| Variable | Purpose |
+|---|---|
+| `AI_PROVIDER` | `codex-local` for the local subscription adapter; `openai` for the API adapter |
+| `CODEX_BIN` | Optional local Codex executable override; defaults to the project CLI |
+| `CODEX_MODEL` | Local model selection; default is `gpt-6.1-sol`; `gpt-6-luna` remains an explicit lower-usage option |
+| `OPENAI_API_KEY`, `OPENAI_MODEL` | Separate OpenAI API adapter credentials and model |
+| `ELEVENLABS_API_KEY` | Optional voice input and spoken replies; text remains available without it |
+| `AI_WORK_ENABLED` | Set `false` and restart the local server to stop new structured AI and embedding calls |
+| `ELEVENLABS_STT_MODEL` | Defaults to `scribe_v2` in the voice adapter |
+| `ELEVENLABS_TTS_MODEL` | Defaults to `eleven_flash_v2_5` in the voice adapter |
+| `INTERROGATION_DATA_DIR` | Optional private local data directory; defaults to `.local` |
+| `LEADERBOARD_STORAGE` | Local files by default; optional `supabase` server backend |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Trusted server credentials when using Supabase |
+| `EXPORT_SECRET` | Bearer credential for the private export endpoint |
+| `EXPORT_STORAGE` | Local exports by default; optional `supabase` backend |
 
-### Clue System
+`GET /api/health` and Settings report **configuration only**. They do not prove sign-in, quota, provider reachability, valid voices, successful playback or database policies. “Configured” must not be interpreted as “tested.”
 
-Clues unlock at stress thresholds spread across 1–9, gated by:
-- Minimum question count per difficulty
-- Minimum question length (no one-word fishing)
-- Server-enforced stress thresholds per clue number
+Preferences are stored under `appPreferences`. Only known nonsecret preferences are carried forward from older `appSettings` data. Legacy keys are not sent to providers or copied into new preference writes. They remain in the old storage entry until the user removes it; resetting preferences does not silently delete them.
 
-The Accuse button unlocks only after all required clues are collected.
+Voice retries use private local receipts to avoid repeating provider work. The bounded server cache retains synthesized audio and transcription/error responses; a failed microphone clip remains only in the current view's memory for explicit retry/discard. See [voice storage and recovery](docs/audit/VOICE-IDEMPOTENCY.md) and [AI/voice work limits](docs/audit/SHARED-BUDGETS.md). Neither feature establishes real microphone or playback acceptance.
 
-### Scoring
+## Play
 
-```
-score = timeScore x difficultyMultiplier x efficiencyBonus x hintPenalty x accusationPenalty
+1. Choose a case and difficulty; read the briefing before beginning.
+2. Ask questions using text or, when configured, voice. The accepted transcript is the source for the case file.
+3. In the reviewed evidence challenge, pin an exact statement, attach a disclosed exhibit, edit the question and explicitly send it. Clarify and Leave space offer different editable approaches.
+4. Compare the cited result with the source. An irrelevant exhibit does not establish a contradiction, and repeating an established pair does not earn more progress.
+5. Write the accusation yourself. The game freezes its accepted terminal result; a later debrief must not reverse it.
 
-timeScore       = 1000 x sqrt(max(0, 1 - elapsed / (parTime x 2)))
-multiplier      = easy 1.0x, medium 1.5x, hard 2.0x, expert 2.5x
-efficiencyBonus = 1.0-1.5x (fewer questions than par = bonus)
-hintPenalty     = 0.85^hintsUsed
-accusePenalty   = max(0, 1 - wrongAccusations x 0.1)
-```
+Both result screens include a compact **Conversation path** in the existing noir palette. Expand a step to review the exchange and its cited evidence. Gold identifies supported findings, red identifies rejected accusations or unsupported evidence challenges, and ordinary dialogue stays neutral. Live wording without a reviewed claim binding is explicitly unverified. The map records the route taken; it does not invent alternative conversations or score every question.
 
-Score is calculated **server-side** from frozen stats at win time — client values are ignored.
+For a connection-free fallback, open **Recorded walkthrough** from Cases (`/rehearsal`). It uses saved exchanges, labels every screen Recorded / not live AI, and makes no model calls or score submissions. See [fallback provenance](docs/audit/RECORDED-FALLBACK.md).
 
-### End Game
+Generated cases still have their own clue requirements. Recent samples exposed multiple false claims and ambiguous evidence; generated-case fairness remains under evaluation. The authored evidence case is the current rehearsal target. Stress and vocal delivery are dramatic devices, not lie detection. The project makes no claim to teach real interrogation techniques or reliably infer guilt from behavior.
 
-- **Win:** APPREHENDED stamp, staggered score reveal, arcade-style 3-letter initials entry, leaderboard
-- **Lose (accusations):** ESCAPED, case summary, suspect taunt, the lie revealed
-- **Lose (time):** Same as above with timeout outcome
-- **Give up:** AI-generated smug remark via TTS, full case reveal
+Timed challenge uses an authoritative server deadline that continues through provider requests and speech. Relaxed removes the deadline and pressure-triggered lawyer ending while preserving the selected difficulty; elapsed time does not reduce its score. Endurance removes the deadline but retains the Hard/Expert lawyer rule: four successive turns at stress 8 or higher end the interview. Both modes without a countdown are unranked. Provider allowances still apply. See `src/lib/scoring.ts` for scoring.
 
-## Architecture
+## Architecture and data
 
-```
-app/
-├── page.tsx                     # Title screen
-├── cases/                       # Case select — locations + difficulty
-├── game/
-│   ├── page.tsx                 # Main game orchestrator
-│   ├── hooks/                   # useVoiceRecorder, useTTS, useGameTimer, useSfx, useSettings
-│   ├── components/              # Dock, TopBar, CaseFile, SuspectZone, BriefingScreen, dialogs
-│   ├── win/                     # Win screen + InitialsEntry
-│   └── lose/                    # Lose screen
-├── leaderboard/                 # Top 20, new-entry animation
-├── settings/                    # API key config, export, preferences
-├── help/                        # How to play, scoring, about
-├── about/                       # Builder info
-└── api/
-    ├── generate-case/           # GET — Mistral case generation
-    ├── interrogate/             # POST — player question → suspect response
-    ├── accuse/                  # POST — accusation evaluation (separate judge)
-    ├── evaluate/                # POST — win/loss analysis
-    ├── hint/                    # POST — obfuscated stress trigger hints
-    ├── tts/                     # POST — ElevenLabs TTS
-    ├── transcribe/              # POST — Voxtral STT
-    ├── leaderboard/             # GET/POST — Supabase leaderboard
-    ├── patterns/                # GET/POST — cross-session learning patterns
-    └── export/                  # GET — admin JSONL export
+An AI agent can use the local JSON command interface through `npm run --silent agent:control`. It shares the same HTTP game rules as the browser and stores its session capability privately. Start with `printf '%s\n' '{"command":"discover"}' | npm run --silent agent:control`; see [agent controls and recovery](docs/AGENT-CONTROL.md). Commands run one action at a time; they do not start an autonomous play loop.
 
-src/lib/
-├── mistral/                     # Mistral client, interrogation, evaluation, case gen, embeddings
-├── game-session.ts              # Server-side session store, win tokens, export
-├── game-state.ts                # Type definitions
-├── scoring.ts                   # Score calculation + detective ratings
-├── sanitize.ts                  # Input validation, injection detection
-├── db.ts                        # Supabase client
-└── rate-limit.ts                # Per-IP rate limiting
+See the [current architecture](docs/ARCHITECTURE.md) and [local rehearsal runbook](docs/LOCAL-DEMO.md) for ownership, recovery and acceptance steps.
+
+- `app/game/state/`, `app/game/view/`: client orchestration and presentation boundaries.
+- `app/game/playbook/`: public evidence controls, editable approaches and source-cited feedback.
+- `src/lib/session/`: transitions, transactions, durable local snapshots, canonical results and exports.
+- `src/lib/gameplay/`: reviewed facts, public projections, recorded statements and idempotent challenge actions. Authored secret case data stays on the server.
+- `src/lib/ai/`: provider contracts and local Codex/OpenAI migration.
+- `src/lib/voice/`: server-side ElevenLabs transcription and speech authorization.
+- `src/lib/leaderboard/`: receipt-based score storage. Public views do not mix in fictional seed scores.
+
+Local session snapshots, score receipts and exports are private files under the data directory. They may include full transcripts, case secrets and private redemption data. Keep them out of version control and screen sharing. Optional hosted leaderboard migrations are documented in [database/README.md](database/README.md).
+
+**Vercel readiness is incomplete.** The local session repository explicitly rejects hosted use without a shared durable session implementation. Configuring an API key or hosted leaderboard alone does not complete deployment. Verify hosted persistence, migrations, credentials and end-to-end behavior separately before publishing.
+
+## Checks
+
+Run checks appropriate to the changed behavior. Reserve the complete suite for integration checkpoints; documentation edits and repeated rehearsals do not need a full rerun. Keep live model and voice checks small and deliberate.
+
+```bash
+npm run lint        # zero-warning ESLint
+npm run check:size  # file/function size and complexity gates
+npm run typecheck   # Next route types + TypeScript
+npm test            # deterministic tests, including TSX markup tests
+npm run build       # production build
+npm run verify      # all checks above
 ```
 
-## Security
+Executable handwritten modules have a 300-line ceiling, functions 50 lines, complexity 10 and at most four parameters. Split concerns rather than suppress rules. Data/fixtures and generated outputs need explicit treatment rather than being disguised as executable modules.
 
-The game runs adversarial AI against player input — security is a core feature, not an afterthought.
+A passing build or mock test is not a live demo pass. The remaining demonstration gate includes real text and voice turns, an evidence challenge, canonical result, failure recovery, actual browser/keyboard behavior and rehearsed timing. Browser interaction previously lacked authorization; do not claim visual or keyboard verification from source inspection.
 
-**Input sanitization:** 30+ regex injection patterns, Unicode normalization (NFKD), zero-width char stripping, base64 payload detection, gibberish/non-English blocking.
+## Private exports
 
-**Output scanning:** AI responses checked against case secrets with fuzzy matching (40% threshold, stop-word filtered). Leaked responses replaced with deflection.
+Configure `EXPORT_SECRET` on the server and in the operator's terminal, then run:
 
-**Judge isolation:** Accusation evaluation uses a separate Mistral call with dedicated system prompt, randomized boundary tokens, stripped injection markers. Judge calls never use player-provided API keys.
-
-**Stress enforcement:** Server-side monotonic clamping — stress only goes up, max +1 per turn. Clue thresholds are server-enforced. AI cannot spike or drop stress to game gates.
-
-**Win tokens:** 128-bit random, timing-safe comparison, single-use, 30-minute TTL. Score calculated from server-side stats snapshot — client-reported values ignored.
-
-**Session security:** 192-bit random IDs, mutex locks, 1-hour TTL, 5000 max sessions with LRU eviction. Timer mode pinned at creation.
-
-**TTS validation:** Requires active session. Text must match a recent assistant message. Prevents free TTS proxy abuse.
-
-**RAG poisoning defense:** Cross-session learned tactics filtered through injection detection and sanitization before prompt inclusion.
-
-## Data Export
-
-Completed games are persisted to Supabase for analysis and model improvement:
-- Full case data (including secrets), conversation history, outcome, stats, accusation details
-- Admin export: `GET /api/export?limit=100&offset=0&outcome=win&difficulty=hard` with `Authorization: Bearer <EXPORT_SECRET>` header
-- CLI: `EXPORT_SECRET=xxx npx tsx scripts/export-data.ts --output=data/export.jsonl`
-
-## Sound Design
-
-- Immersive audio: ambient clock ticking, nervous fidgeting at high stress, dramatic stings
-- Background music with crossfade between menu and game pools
-- All SFX mono 22kHz 48kbps MP3, <1s each, with per-sound fade envelopes
-- Master volume controls for music and SFX independently
-- ElevenLabs voice stability decreases with suspect stress — the voice literally degrades
-
-## Design
-
-Noir detective aesthetic. Dark, minimal, typographic. JetBrains Mono. Pixel art backgrounds and suspect portraits. No chat bubbles — dialogue appears as styled text in the scene.
-
-## Supabase Setup
-
-Create a `leaderboard` table:
-
-```sql
-CREATE TABLE leaderboard (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  player_name text NOT NULL,
-  case_number text,
-  case_setting text,
-  suspect_name text,
-  time_remaining int,
-  stress_level int,
-  clues_found int,
-  hints_used int,
-  accusations_used int,
-  detective_rating text,
-  score int NOT NULL,
-  created_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE leaderboard ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read" ON leaderboard FOR SELECT USING (true);
-CREATE POLICY "Public insert" ON leaderboard FOR INSERT WITH CHECK (true);
+```bash
+npx tsx scripts/export-data.ts --output=data/export.jsonl --limit=1000
 ```
 
-Optional `game_exports` table for training data:
+The CLI sends the secret in an Authorization header; it is not a URL query parameter. `EXPORT_BASE_URL` defaults to localhost. Exports are session records for review and evaluation. No automatic model training or proven learning loop is implemented.
 
-```sql
-CREATE TABLE game_exports (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  session_id text UNIQUE NOT NULL,
-  case_data jsonb NOT NULL,
-  conversation jsonb NOT NULL,
-  outcome text NOT NULL,
-  difficulty text NOT NULL,
-  setting text,
-  stats jsonb NOT NULL,
-  accusation_text text,
-  accusation_correct boolean,
-  created_at timestamptz DEFAULT now()
-);
+## History and claims
 
-ALTER TABLE game_exports ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "anon_insert" ON game_exports FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "no_public_read" ON game_exports FOR SELECT TO anon USING (false);
-```
+The original README identified the project as a Mistral Worldwide Hackathon 2026 entry and described Mistral dialogue, Voxtral transcription and ElevenLabs speech. Git history is preserved. The earlier model names and sponsor artwork are historical context, not the current provider contract or evidence of an award.
 
-Optional `interrogation_patterns` table for cross-session learning:
-
-```sql
-CREATE TABLE interrogation_patterns (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  session_id text UNIQUE NOT NULL,
-  setting text,
-  difficulty text NOT NULL,
-  outcome text NOT NULL,
-  questions jsonb,
-  effective_questions jsonb,
-  max_stress int,
-  clues_found int,
-  time_elapsed int,
-  embedding vector(1024),
-  created_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE interrogation_patterns ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "anon_insert" ON interrogation_patterns FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "anon_read" ON interrogation_patterns FOR SELECT TO anon USING (true);
-```
-
-## Hackathon
-
-**Mistral Worldwide Hackathon 2026** — Online Track, "Anything Goes" category.
-
-**Judging criteria:** Creativity/uniqueness (most important), future potential, technical implementation, pitch quality.
-
-**Special prizes:** Best Mistral Vibe (AirPods), Best Voice AI (ElevenLabs 6mo subscription).
-
-**Sponsors:** Mistral, ElevenLabs, NVIDIA, AWS, Hugging Face, Jump Trading, Weights & Biases, Giant, Raise, Tilde Research, White Circle.
-
-### Why This Project
-
-Most hackathon AI projects are assistants or chatbots. This flips the script — the AI isn't helping you, it's lying to you. The player is adversarial to the model, not collaborative. This creates a fundamentally different interaction: you're probing for inconsistencies, applying pressure, and reading behavioral cues rather than asking for help.
-
-The game also generates training data. Every completed session — questions asked, stress progression, which tactics worked, which didn't — is exportable as JSONL. This creates a feedback loop: play the game, export the data, fine-tune the model, make it harder to catch.
-
-### Mistral Ecosystem Usage
-
-- **Mistral Large 3** — suspect AI brain (adversarial roleplay with structured JSON output), case generation (procedural crime scenarios), accusation evaluation (separate judge call)
-- **Voxtral STT** — player voice input transcription
-- **Mistral Embeddings** — vector similarity for cross-session pattern matching (RAG learning)
-
-### Future Potential
-
-- Fine-tune Mistral on exported game data to create increasingly difficult suspects
-- Multiplayer mode — one player interrogates, another watches and advises
-- Case editor — community-created scenarios with custom suspects
-- Mobile app with always-on voice
-- Training tool for real interrogation technique practice
-
-## Built By
-
-Jason Poindexter — Solo entry, online track from Barcelona.
+The audit reviewed 98 reachable commit subjects and selected implementation diffs. It found correctness, security, accessibility and maintainability gaps; individual fixes require their own executed evidence. Unsupported career metrics, awards and claims of guaranteed secrecy or automatic model learning have been removed from the demo copy and recorded in [the copy accuracy ledger](docs/audit/COPY-ACCURACY.md) for verification.

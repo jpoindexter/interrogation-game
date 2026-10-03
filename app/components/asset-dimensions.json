@@ -1,0 +1,270 @@
+{
+  "/ui/arrow_right.png": [
+    64,
+    64
+  ],
+  "/ui/notepad.png": [
+    1024,
+    1536
+  ],
+  "/ui/star_filled.png": [
+    32,
+    32
+  ],
+  "/ui/recorder.png": [
+    1024,
+    1536
+  ],
+  "/ui/arrow_left.png": [
+    64,
+    64
+  ],
+  "/ui/tape_player.png": [
+    712,
+    539
+  ],
+  "/ui/mistral-logo.png": [
+    3426,
+    540
+  ],
+  "/ui/folder.png": [
+    1024,
+    1536
+  ],
+  "/ui/star_empty.png": [
+    32,
+    32
+  ],
+  "/ui/folders/server.png": [
+    400,
+    300
+  ],
+  "/ui/folders/lawfirm.png": [
+    400,
+    300
+  ],
+  "/ui/folders/medical.png": [
+    400,
+    300
+  ],
+  "/ui/folders/ceos_office.png": [
+    400,
+    300
+  ],
+  "/ui/folders/ai_lab.png": [
+    400,
+    300
+  ],
+  "/ui/folders/office.png": [
+    400,
+    300
+  ],
+  "/ui/folders/startup.png": [
+    400,
+    300
+  ],
+  "/ui/folders/trade.png": [
+    400,
+    300
+  ],
+  "/ui/folders/police.png": [
+    400,
+    300
+  ],
+  "/screenshots/hero.png": [
+    1400,
+    910
+  ],
+  "/clues/notepad_pl.png": [
+    64,
+    64
+  ],
+  "/clues/coffee.png": [
+    64,
+    64
+  ],
+  "/clues/recorder2.png": [
+    64,
+    64
+  ],
+  "/clues/recorder.png": [
+    64,
+    64
+  ],
+  "/clues/key.png": [
+    64,
+    64
+  ],
+  "/clues/clue1.png": [
+    64,
+    64
+  ],
+  "/clues/clue3.png": [
+    64,
+    64
+  ],
+  "/clues/clue2.png": [
+    64,
+    64
+  ],
+  "/clues/flashlight.png": [
+    64,
+    64
+  ],
+  "/clues/magnifying_glass.png": [
+    64,
+    64
+  ],
+  "/clues/folder.png": [
+    64,
+    64
+  ],
+  "/clues/walkie_talkie.png": [
+    64,
+    64
+  ],
+  "/clues/handcuffs.png": [
+    64,
+    64
+  ],
+  "/notes/notes.png": [
+    1024,
+    1536
+  ],
+  "/notes/notepad_1.png": [
+    590,
+    782
+  ],
+  "/notes/notes_2.png": [
+    1536,
+    1024
+  ],
+  "/logo/main2.png": [
+    1536,
+    1024
+  ],
+  "/logo/main3.png": [
+    1536,
+    1024
+  ],
+  "/detective/desk.png": [
+    1536,
+    1024
+  ],
+  "/detective/detective-01-m.png": [
+    1017,
+    971
+  ],
+  "/detective/detective_bg.png": [
+    1536,
+    1024
+  ],
+  "/bg/server.png": [
+    1536,
+    1024
+  ],
+  "/bg/lawfirm.png": [
+    1536,
+    1024
+  ],
+  "/bg/medical.png": [
+    1536,
+    1024
+  ],
+  "/bg/ceos_office.png": [
+    1536,
+    1024
+  ],
+  "/bg/ai_lab.png": [
+    1536,
+    1024
+  ],
+  "/bg/office.png": [
+    1536,
+    1024
+  ],
+  "/bg/startup.png": [
+    1536,
+    1024
+  ],
+  "/bg/trade.png": [
+    1536,
+    1024
+  ],
+  "/bg/police.png": [
+    1536,
+    1024
+  ],
+  "/suspects/suspect-06-f.png": [
+    1024,
+    1024
+  ],
+  "/suspects/suspect-04-f.png": [
+    1025,
+    1024
+  ],
+  "/suspects/suspect-11-m.png": [
+    1025,
+    1024
+  ],
+  "/suspects/suspect-02-f.png": [
+    1028,
+    1024
+  ],
+  "/suspects/suspect-09-m.png": [
+    982,
+    1024
+  ],
+  "/suspects/suspect-12-m.png": [
+    1025,
+    1024
+  ],
+  "/suspects/suspect-07-m.png": [
+    1024,
+    1024
+  ],
+  "/suspects/suspect-05-m.png": [
+    1024,
+    1024
+  ],
+  "/suspects/suspect-03-m.png": [
+    1024,
+    1024
+  ],
+  "/suspects/suspect-10-f.png": [
+    1024,
+    1023
+  ],
+  "/suspects/suspect-08-f.png": [
+    1024,
+    1024
+  ],
+  "/solved/accusations.png": [
+    900,
+    600
+  ],
+  "/solved/caught.png": [
+    1536,
+    1024
+  ],
+  "/solved/case_closed.png": [
+    645,
+    400
+  ],
+  "/solved/escaped.png": [
+    1536,
+    1024
+  ],
+  "/solved/lawyered_up.png": [
+    900,
+    600
+  ],
+  "/solved/timesup.png": [
+    900,
+    600
+  ],
+  "/solved/fail-stamp-3.png": [
+    1820,
+    1462
+  ]
+}

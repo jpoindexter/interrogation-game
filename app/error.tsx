@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { motion, fadeUp, smooth } from './components/motion';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -18,9 +20,9 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           <button onClick={reset} className="px-8 py-3 bg-accent text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-colors">
             Try Again
           </button>
-          <a href="/" className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors">
+          <Link href="/" className="px-8 py-3 bg-surface text-foreground text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-surface-hover transition-colors">
             Home
-          </a>
+          </Link>
         </div>
       </motion.div>
     </div>

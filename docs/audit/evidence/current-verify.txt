@@ -1,0 +1,377 @@
+
+> interrogation@0.1.0 verify
+> npm run lint && npm run check:size && npm run typecheck && npm test && npm run build
+
+
+> interrogation@0.1.0 lint
+> eslint --max-warnings=0
+
+
+> interrogation@0.1.0 check:size
+> eslint --config eslint.size.config.mjs app src scripts
+
+
+> interrogation@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> interrogation@0.1.0 test
+> node scripts/run-tests.mjs
+
+✔ malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement (28.263042ms)
+✔ invalid accusation count retains draft, attempts and history, then recovers one valid judgment (0.478458ms)
+✔ invalid hint cannot consume hints or append partial text; retry recovers same receipt (0.33325ms)
+✔ validated expired turn ends once without adding the unaccepted question (0.172084ms)
+✔ final wrong accusation ends exactly once without an active-phase flicker (0.238041ms)
+✔ cancelled confession cannot trigger late handcuffs or win navigation (0.313625ms)
+✔ cancelled final rejection does not start a delayed ending after exit (0.161ms)
+✔ an already terminal win response recovers the result without a fabricated conversation turn (0.208458ms)
+✔ malformed expiry response cannot change timing or trigger an ending (0.188167ms)
+✔ turn boundary rejects invalid numeric, boolean, list, lifecycle and public projection fields (1.44825ms)
+✔ valid public projection is parsed and unknown response fields are excluded (0.266792ms)
+✔ judgment and hint counts must match a single accepted attempt, not just a finite number (0.4415ms)
+✔ malformed positive JSON envelopes keep the retry identity and never mutate game progress (60.85325ms)
+✔ known failures allow a new attempt while uncertain storage errors retain their ID (0.594208ms)
+✔ cancelled receipt cannot acknowledge or change progress even when fetch resolves late (0.267667ms)
+✔ recorded HTTP judgment fields remain valid independently of the redacted gameplay links (0.552583ms)
+✔ malformed success followed by budget and rate denial retains the same recovery request ID (1.801458ms)
+✔ operator stop reaches the real turn route, blocks the adapter and permits a new explicit attempt (1130.973333ms)
+✔ the actual provider gateway denies exhausted and oversized inputs before entering an adapter (13055.598291ms)
+✔ a completed budget failure advances the client ID only when it matches this receipt (5.962208ms)
+✔ generation work denial is a stable failed receipt with no case and an explicit new-attempt path (249.309375ms)
+✔ optional embeddings obey the same operator stop and aggregate reservation before fetch (5592.007792ms)
+✔ request abort reaches normal suspect/judge routes and late provider output consumes no turn or attempt (976.471792ms)
+✔ actual local child and descendant stop on cancellation without a delayed side effect (700.426542ms)
+✔ pre-cancelled process and all capabilities reject before starting provider work (0.97375ms)
+✔ Responses forwards cancellation to transport and refuses a late successful response (13.294916ms)
+✔ Responses pre-cancelled task performs no fetch (0.131958ms)
+✔ defensive reactions count canonical accusation kinds rather than player-supplied prefixes (76.336542ms)
+✔ Codex arguments restrict capabilities and never incorporate player input or shell syntax (1.804875ms)
+✔ Codex JSONL parser rejects tool events, missing output and provider failure (0.945833ms)
+✔ runtime structured gate rejects coerced judgments, invalid stress and unknown authority fields (1.461417ms)
+✔ Responses request uses fixed official endpoint, no tools, no storage and separated task/data (12.11725ms)
+✔ Responses missing key, refusal and incomplete output cannot become a wrong verdict (1.836875ms)
+✔ local process stops on unexpected tool event instead of accepting later output (42.699666ms)
+✔ local process deadline terminates pending work and returns a retryable failure (56.080042ms)
+✔ player input is piped as literal data, never shell-expanded (83.779125ms)
+✔ wrong judgment cannot disclose hidden facts through either explanation or dialogue (0.477584ms)
+✔ default-off GET, POST and new-case retrieval perform no fetch or log (3.818875ms)
+✔ embedding opt-in requires exact version and key before network (1.818708ms)
+✔ embedding adapter sends fixed versioned space and validates every vector (564.293875ms)
+✔ storage derives facts from terminal server session and rejects unfinished before embedding (234.081375ms)
+✔ retrieval excludes wrong versions, dimensions, models and authored fixtures (135.887791ms)
+✔ actual POST ignores spoofed client outcome and persists canonical terminal facts through mocked adapters (372.482291ms)
+✔ actual simultaneous AI callers share a durable call allowance across restart (18005.51425ms)
+✔ aggregate input budget is conservative and errors do not refund reservations (3826.369333ms)
+✔ overlapping async scopes stay isolated and direct operator calls get their own durable cap (6950.258625ms)
+✔ operator stop and oversized inputs deny before reservation; restoring switch permits work (2350.894875ms)
+✔ lock errors are explicit pre-provider unavailable failures and hosted execution is unsupported (23.89375ms)
+✔ normal playback releases audio and URL and calls completion once (5.680084ms)
+✔ skip during audio download aborts and suppresses later audio and duplicate completion (0.51825ms)
+✔ a new turn cancels an older download without firing its continuation (4.865666ms)
+✔ autoplay rejection reports failure once and releases resources (0.611792ms)
+✔ navigation cancellation disposes playing audio without a game continuation (2.926417ms)
+✔ disabled voice and mute skip speech without fetching (0.23225ms)
+✔ manual stop transcribes once and disposes microphone and silence monitor (4.047875ms)
+✔ navigation during microphone permission discards and releases a late stream (0.189458ms)
+✔ navigation cancels transcription and ignores its late result (1.115708ms)
+✔ recorder construction failure closes an already acquired microphone (0.414417ms)
+✔ starting another recording suppresses an older transcription (1.127ms)
+✔ recording filenames match actual recorder MIME types (0.332375ms)
+✔ transcription HTTP failures do not become accepted transcripts (20.040709ms)
+✔ transcription sends actual MIME extension, session and abort signal (1.968583ms)
+✔ manual analyser disposal closes AudioContext and all nodes exactly once (0.820959ms)
+✔ silence stops recording and closes monitoring resources (0.1105ms)
+✔ AudioContext is closed when analyser initialization fails (1.147375ms)
+✔ HTTP distinguishes exhausted budget from unavailable storage before provider work (1436.003958ms)
+✔ remounts and equivalent intents retain ID, while mode/timer changes separate requests (1.120083ms)
+✔ confirmed session receipt remains until the matching recovered URL is observed (0.192625ms)
+✔ unavailable or silently dropped storage fails closed before generation (0.584458ms)
+✔ confirmed creation recovers by session GET on remount instead of issuing another POST (11.778291ms)
+✔ network ambiguity replays the same persisted request ID (0.318875ms)
+✔ effect cleanup cancellation and replay preserve a single generation identity (0.588917ms)
+✔ optional case controls are validated and unknown/private fields never enter client state (1.013167ms)
+✔ HTTP error payloads never enter the case state and preserve status/code (57.421375ms)
+✔ invalid cases are rejected even when the server returns success (0.311875ms)
+✔ case creation POST contains its stable identity, options and cancellation (0.403ms)
+✔ generation deadline is 120 seconds and known failures require manual new attempt (6.106917ms)
+✔ non-JSON HTTP failures retain HTTP status and same-request recovery (0.262542ms)
+✔ public cover story and shared vocabulary remain speakable; private facts and metadata do not (83.233667ms)
+✔ adversarial questions remain exact player intent instead of silently rewritten instructions (0.133875ms)
+✔ actual private export route rejects wrong credentials and pages filtered durable records (1072.441792ms)
+✔ CLI authenticates using Bearer and writes JSONL without logging credentials (133.383834ms)
+✔ HTTP 401 preserves existing output and does not echo response secrets (127.187125ms)
+✔ HTTP 500 preserves existing output and does not echo response secrets (131.837708ms)
+✔ invalid JSONL preserves an existing export (111.753292ms)
+✔ redirects are refused rather than forwarding an export credential (87.293541ms)
+✔ invalid limits fail before requesting an export (66.098542ms)
+✔ an empty JSONL response writes a valid empty export (136.674ms)
+✔ briefing time is excluded; elapsed wall time includes provider/audio delays (0.474209ms)
+✔ expiry uses latest callback and fires only once after a delayed tick (0.0825ms)
+✔ unlimited mode counts up without expiry; server timestamp corrects drift (0.080792ms)
+✔ synchronizing an expired restored game before callback registration still delivers expiry once (0.068ms)
+✔ terminal/loading restore updates elapsed time without triggering a new timeout ending (0.064584ms)
+✔ callback replacement and cleanup retain the newest handler at an overdue deadline (0.060791ms)
+✔ server correction after an early local timeout permits the later authoritative deadline (0.055542ms)
+✔ invalid anchors cannot turn briefing into an epoch-based timeout (0.0505ms)
+✔ public projection exposes discovered sources but no authored truths or hidden exhibits (1.063167ms)
+✔ valid short evidence challenge advances exactly one canonical contradiction (0.356084ms)
+✔ irrelevant evidence gives a grounded non-success without inventing guilt (0.138084ms)
+✔ clarify and leave-space are distinct editable dialogue actions with no automatic reward (0.151167ms)
+✔ same action is replayable; same evidence under a new request cannot farm progress (0.423458ms)
+✔ request ID conflicts and concurrent actions cannot create duplicate events (0.164ms)
+✔ failed provider responses commit nothing and retry safely rejects stale attempts (0.228791ms)
+✔ foreign statements and unavailable exhibits fail before any provider preparation (0.163542ms)
+✔ alternate authored assertions remain valid paths to the same grounded result (0.243917ms)
+✔ a quoted or negated assertion cannot acquire canonical binding by substring (0.139292ms)
+✔ results cite the actual challenged statement when earlier related claims exist (0.092667ms)
+✔ terminal state rejects new actions and late provider mutation but keeps replay receipts (0.106417ms)
+✔ browser parser discards injected factual authority and receipt prototype names are safe (0.071541ms)
+✔ invalid authored graph cannot produce an impossible initial case (0.073583ms)
+✔ authored case plays through real routes: wrong exhibit, exact replay, contradiction, recovery, win (3758.881541ms)
+✔ a legitimate live paraphrase is unreviewed, never falsely classified as wrong evidence (148.397791ms)
+✔ generated objective follows runtime win contract even when provider supplies a stronger crime claim (442.195541ms)
+✔ versioned generation prompt states semantic constraints without changing judge acceptance (0.258625ms)
+✔ the actual v2 schema-ceiling fragments cannot enter a newly playable generated case (2.560166ms)
+✔ a complete sentence at the size boundary and shorter prose are not rejected by the narrow check (0.091625ms)
+✔ predeclared generation checks expose wrong difficulty, counts, malformed facts and literal public leakage (1.849667ms)
+✔ unrelated-evidence probe alleges a different person and claim without supplying canonical support (0.164125ms)
+✔ v2 preserves all six frozen candidates and criteria and declares only two additional controls (5.752667ms)
+✔ generation performs a separate review with normalized objective and returns no private review findings (274.496375ms)
+✔ each unfavorable criterion blocks generation after exactly two calls without rewriting (1569.611292ms)
+✔ malformed review and provider failure cannot return a candidate or cause a hidden retry (593.057ms)
+✔ cancellation during review aborts the second transport and rejects the complete flow (319.84875ms)
+✔ candidate plus review share one deadline instead of resetting the budget for review (1036.654834ms)
+✔ review data stays in a separate input and cannot amend the instructions or schema (197.216708ms)
+✔ rejected review never reaches the playable-case checkpoint or materializes a session (291.037042ms)
+✔ favorable verdicts cannot override a comparison identifying an extra lie or actor conflict (0.307083ms)
+✔ fabricated comparison quotes reject the review before its verdict can be trusted (152.350791ms)
+✔ a reported secondary contradiction rejects even when its supporting excerpt is empty (0.1855ms)
+✔ final receipt write failure never reports success or replays provider work (280.952375ms)
+✔ expired receipts are tombstones and require an explicit new intent rather than charging again (191.372917ms)
+✔ receipt admission enforces the bounded store without evicting retry protection (10488.995583ms)
+✔ missing IDs, known failures and unsupported hosted storage never silently start another attempt (211.958708ms)
+✔ a completed case with a failed public receipt recovers from the private checkpoint without re-generation (416.118083ms)
+✔ CASE_REVIEW_REJECTED preserves one failure receipt and offers an explicit new attempt without a playable session (458.448958ms)
+✔ INVALID_CASE_CONTENT preserves one failure receipt and offers an explicit new attempt without a playable session (349.331583ms)
+✔ completed generation survives a process restart without a second provider call or new session (740.368916ms)
+✔ a concurrent process cannot invoke the same generation provider twice (817.973375ms)
+✔ process death during provider work retains a pending receipt and never silently charges again (496.853084ms)
+✔ different inputs conflict while reordered identical inputs replay the completed case (474.11375ms)
+✔ a dropped HTTP response replays the persisted generated case after server restart (825.307875ms)
+✔ generation recovers the reserved case after checkpoint-crash without another provider call (816.364417ms)
+✔ generation recovers the reserved case after session-crash without another provider call (1020.684083ms)
+✔ giveup and timeout endings become authorized transcript speech once and preserve prior substantive response (2490.628125ms)
+✔ late timeout client recovers canonical win and preserves confession, even when browser storage throws (525.098125ms)
+✔ quoted internal JSON fields and direct private clues are withheld without replacing harmless spoken dialogue (127.517375ms)
+✔ canonical question and accusation timestamps use accepted elapsed whole seconds (103.390583ms)
+✔ ending before any substantive assistant reply does not fabricate a closest moment (531.587584ms)
+✔ hosted storage requires explicit configuration and rejects a local filesystem backend (0.617625ms)
+✔ request-controlled database headers cannot replace trusted server configuration (16.343917ms)
+✔ Supabase adapter uses conflict-ignore persistence and removes private fields from reads (383.645667ms)
+✔ HTTP save and read expose confirmed id and score but no private redemption data (362.623166ms)
+✔ HTTP malformed input and unavailable storage never return false save success (156.772ms)
+✔ failed persistence leaves win redeemable and retry returns canonical frozen metadata (387.683667ms)
+✔ concurrent duplicate redemptions persist one record and replay the same receipt (633.286625ms)
+✔ a lost confirmation can be retried after the record was committed (211.879916ms)
+✔ an incorrect token cannot retrieve or replace an existing receipt (370.101625ms)
+✔ actual leaderboard routes persist a win locally and expose its exact record id (683.903542ms)
+✔ mode rules preserve difficulty and define explicit clock, lawyer, ranking behavior (0.542084ms)
+✔ untimed score has no time penalty across all difficulties while actual duration is retained (3145.197375ms)
+✔ only timed wins receive tokens and persist ranked mode in their canonical snapshot (404.671ms)
+✔ result labels preserve unknown legacy mode and untimed scoring instead of inferring ranked eligibility (0.565042ms)
+✔ leaderboard rejects unranked canonical snapshots even when client claims ranked challenge (185.053875ms)
+✔ ranked leaderboard excludes old rows without recorded mode and refuses their receipt replay (471.715958ms)
+✔ all recorded lines and provenance match the actual saved public exchange (0.747167ms)
+✔ curated fixture contains only display content with no session, token or score fields (0.306458ms)
+✔ manual next/back/restart navigation is bounded and never mutates the recording (0.197416ms)
+✔ initial render is explicitly recorded, has native navigation, and withholds the final reveal (4.504916ms)
+✔ final reveal and path distinguish unsupported evidence and accepted accusation with provenance (0.930125ms)
+✔ the fallback route has no gameplay network, storage, audio or provider dependencies (0.543958ms)
+✔ transport ambiguity retains ID, acknowledged failure permits deliberate new attempt (6.307583ms)
+✔ different actions never reuse an uncertain request ID (0.23825ms)
+✔ concurrent debrief consumers and a refreshed page reuse one canonical response (25.629292ms)
+✔ failed debrief remains retryable and never caches invented facts (6.370792ms)
+✔ score save requires confirmed success and retry sends auth headers (2.854041ms)
+✔ HTTP success with an error-shaped body cannot become Recorded (1.756167ms)
+✔ a mismatched canonical outcome is rejected (1.223292ms)
+✔ actual win evaluation records neutral dialogue, wrong accusation then accepted accusation in order (1380.59675ms)
+✔ actual loss evaluation preserves three rejected attempts and never labels dialogue wrong (1173.278875ms)
+✔ loss map distinguishes authored failed/successful evidence challenges using recorded receipts (535.579083ms)
+✔ old transcript without an accusation receipt remains explicitly unverified (142.712083ms)
+✔ a typed accusation prefix stays dialogue and cannot shift canonical accusation verdicts (1058.222ms)
+✔ legacy gameResult remains readable while malformed saved content is rejected (0.688584ms)
+✔ result refresh records exactly one history entry using canonical score and difficulty (0.266958ms)
+✔ score presentation uses authoritative total and clamps zero-question efficiency (0.123792ms)
+✔ loss presentation uses canonical lawyer outcome over stale browser flags (0.0625ms)
+✔ materializing the same reserved ID retains accepted progress and creation time (439.561333ms)
+✔ reserved ID cannot be rebound to another case or materialized during a session action (627.471458ms)
+✔ completion exports persist once and the real admin route rejects invalid pagination (552.7585ms)
+✔ actual export CLI retrieves persisted local completion through the actual HTTP route (504.5335ms)
+✔ remote export failure leaves a durable outbox and confirmed retry stops resending (408.542666ms)
+✔ remote success with failed durable confirmation stays pending and retries the same export (478.7615ms)
+✔ clue repeats and filtered leaks do not create invisible progress; transcript matches display (164.96ms)
+✔ all difficulty countdowns expire exactly at shared boundary; unlimited does not (1049.583959ms)
+✔ malformed or failed judgments spend no attempts or question count (142.79525ms)
+✔ a correct verdict freezes facts, time and score; later play cannot change result (501.749459ms)
+✔ early evaluation is rejected and expired accusation cannot call judge (127.148375ms)
+✔ provider response after deadline is discarded without consuming accusation (141.266416ms)
+✔ session lock prevents simultaneous finalize or question, releases for next action (496.495708ms)
+✔ briefing time is excluded and loss reasons are immutable (125.749458ms)
+✔ generated case structural gate rejects blank facts, invalid difficulty and empty triggers (0.31925ms)
+✔ all difficulties can collect their distinct clue quota (534.03675ms)
+✔ lawyer-up response is the persisted, speakable text and retains precise outcome (191.709084ms)
+✔ three valid wrong accusations produce exhausted-attempt outcome once (147.152541ms)
+✔ legacy unlimited sessions remain relaxed without hidden lawyer escalation (206.757291ms)
+✔ a committed request replays after a real process restart without another provider call (806.1845ms)
+✔ concurrent requests and changed-body reuse cannot call a provider twice (570.451375ms)
+✔ a crashed provider attempt survives restart as interrupted and its stale lock is recovered (592.954375ms)
+✔ failed final persistence returns no success and cannot silently replay the provider (452.255625ms)
+✔ a canonical win token grant survives a real process restart (352.70175ms)
+✔ terminal win recovery preserves canonical result, transcript and score token without activating timer (1.187958ms)
+✔ all loss causes recover their canonical flags and route without a new timeout (0.303708ms)
+✔ blocked browser storage still opens the canonical result recovery link (0.205208ms)
+✔ actual session resume endpoint only projects safe case fields and known progress (565.329292ms)
+✔ explicit give-up is idempotent, terminal and recoverable through status (1253.54925ms)
+✔ an early client time-expiry request cannot terminate a live game (552.75575ms)
+✔ mutations without a stable request ID fail before changing the session (702.962208ms)
+✔ actual evaluation route refuses invented win and retains session (490.863583ms)
+✔ actual accusation route refuses expired session without model call (529.987458ms)
+✔ actual routes honor shared session lock (743.391042ms)
+✔ actual interrogation route cannot continue a won session (633.880791ms)
+✔ session route response passes the same recovery parser for briefing, active and terminal states (1220.442625ms)
+✔ malformed successful recovery payloads fail before client state can be restored (172.713542ms)
+✔ terminal recovery rejects mismatched result cause and retains accepted message metadata (165.282167ms)
+✔ actual simultaneous processes never overspend an endpoint; restart retains consumption (1062.058166ms)
+✔ actual simultaneous voice reservations share both caps and survive fresh processes (1624.751916ms)
+✔ a live owner is never displaced; actual dead-process lock is safely recovered (351.796375ms)
+✔ malformed and unwritable storage deny both budgets without resetting existing data (139.288208ms)
+✔ expiry prunes only under transaction; active entries remain bounded and consumed (336.557375ms)
+✔ invalid units/capacities and hosted storage never receive an allowance (107.468041ms)
+✔ endpoint refill and backward clocks cannot manufacture an extra token (554.752459ms)
+✔ full retention fails closed and removes expired entries before admitting a new key (477.245709ms)
+✔ typed endpoint decision distinguishes exhausted allowance from unavailable storage (299.074834ms)
+✔ all retained portrait IDs resolve to real PNG artwork with accurate intrinsic metadata (6.709125ms)
+✔ casting uses role wardrobe once and explicit identity survives name changes (0.282792ms)
+✔ outcome motif uses existing clean artwork and semantic title (5.98625ms)
+✔ disposing audio cancels fade/hold timers, detaches events and releases the source (0.476208ms)
+✔ direct volume changes invalidate an older fade target (0.1015ms)
+✔ late playback resolution cannot revive a disposed audio resource (0.077375ms)
+✔ music disposal releases both sides of a transition and prevents later tracks (0.229375ms)
+✔ calm state clears stress shake and advances speaking only during speech (0.533958ms)
+✔ stress relief clears obsolete sweat without drawing effects (0.459625ms)
+✔ case progress recovers from malformed and wrong-shaped stored history (0.644125ms)
+✔ case progress counts only valid results and scores won cases (0.097ms)
+✔ semantic dock groups retain nine named actions and selected state (8.243916ms)
+✔ busy and recording dock controls preserve their original availability (4.746625ms)
+✔ pin parser validates saved exact source and drops internal fields (1.8265ms)
+✔ action parser rejects mismatched sources and malformed state before update (0.329583ms)
+✔ evidence response integrity rejects forged progress, broken references and inconsistent dialogue (0.2165ms)
+✔ unchanged pin retries keep identity within a session and changed intent gets a new ID (0.113ms)
+✔ transport posts the same retry body and exposes server errors (9.977458ms)
+✔ a hung evidence request has a bounded deadline and preserves its retry identity (5.344ms)
+✔ cancellation rejects late success and prevents concurrent submission (0.673041ms)
+✔ case selector offers a native authored-practice link and names free-form mode (4.40675ms)
+✔ confirmed failed attempts require review and a new ID while uncertain outcomes preserve identity (0.164833ms)
+✔ introduction uses a named modal, actionable close button and evidence-led guidance (4.348292ms)
+✔ dismissal remembers completion before closing once (0.398791ms)
+✔ dismissal still closes once when storage access or writes fail (0.084458ms)
+✔ panel bounds recover every edge after shrinking a shared window (1.275459ms)
+✔ keyboard movement has bounded normal and large steps (0.112833ms)
+✔ settings and notes expose modal, close, keyboard move, reset and labeled controls (8.189708ms)
+✔ transcript is a named modal and retains full readable exchanges (0.569208ms)
+✔ reduced motion ends decorative keyframes and nested repeats without dropping callbacks (0.186834ms)
+✔ master mute snapshots preserve intentionally silent channels (1.746167ms)
+✔ approaches create distinct editable drafts while retaining selected evidence (0.423667ms)
+✔ submission retains edited prose, reuses an unchanged retry ID and changes ID for new intent (0.129375ms)
+✔ only disclosed exhibits and current transcript sources can be challenged (0.258959ms)
+✔ source pinning and exhibit controls have native labels and exact public content (3.774625ms)
+✔ three approach buttons report selection and original source survives later turns (0.918916ms)
+✔ legacy preferences survive while credentials are excluded and old storage is untouched (0.984209ms)
+✔ new preferences take precedence and injected unknown fields are never persisted (0.199209ms)
+✔ readiness requires the explicit configuration-only contract (0.71375ms)
+✔ settings hydrate only known values with valid types and ranges (0.619625ms)
+✔ settings preserve valid preferences and recover corrupt storage (0.099208ms)
+✔ play modes migrate legacy unlimited to relaxed and keep timer rules aligned (0.074667ms)
+✔ speech and transcription retain request IDs after a dropped response without automatic retry (13.357625ms)
+✔ failed recording retains the exact clip; explicit retry delivers only the recovered transcript (1.722041ms)
+✔ known interrupted attempt requires explicit new attempt and discard prevents any repeat (0.469333ms)
+✔ leaving during retained-clip retry cancels delivery and clears recovery (0.649834ms)
+✔ recovery controls name the action and disclose possible repeated provider usage (3.572292ms)
+✔ blocked browser storage keeps same-view retry IDs and stores no raw content when available (1.108417ms)
+✔ real HTTP dropped speech response and concurrent retry synthesize once, then replay private bytes (1194.660958ms)
+✔ real HTTP transcription replay is byte-hash bound and conflicting audio does not reach provider (740.839417ms)
+✔ provider failure is a completed receipt; only explicit new request ID starts another attempt (974.701875ms)
+✔ pending crash receipt rejects automatic repeat and persisted success replays in another process (771.9105ms)
+✔ real HTTP dropped transcription and concurrent retry recognize one recording (662.022125ms)
+✔ speech replay does not reserve usage twice and changed text or server model conflicts (883.981542ms)
+✔ expired receipt cannot silently regenerate audio (552.285208ms)
+✔ in-flight audio reservations bound total cache size before another provider call starts (867.076875ms)
+✔ bounded receipt count and corrupt receipt both fail closed (4284.438292ms)
+✔ provider response body cannot exceed its limit or wait past the deadline after headers arrive (2.82075ms)
+✔ speech authorizes the entire accepted statement and exact briefing (199.241792ms)
+✔ recording is limited to an active session and exact supported media type (172.575458ms)
+✔ ElevenLabs adapters send documented model fields, server auth and cancellation (140.893041ms)
+✔ endpoint buckets cannot be bypassed by absent IPs; voice budgets cap work (911.827083ms)
+✔ a confirmed win still navigates to server recovery when browser storage is full (0.885875ms)
+✔ URL result recovery derives the canonical outcome without reading browser storage (0.2185ms)
+ℹ tests 297
+ℹ suites 0
+ℹ pass 297
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31358.489833
+
+> interrogation@0.1.0 build
+> next build
+
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 10ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 836ms
+  Running TypeScript ...
+  Finished TypeScript in 1640ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/25) ...
+  Generating static pages using 11 workers (6/25)
+  Generating static pages using 11 workers (12/25)
+  Generating static pages using 11 workers (18/25)
+✓ Generating static pages using 11 workers (25/25) in 162ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /about-game
+├ ƒ /api/accuse
+├ ƒ /api/evaluate
+├ ƒ /api/export
+├ ƒ /api/gameplay
+├ ƒ /api/generate-case
+├ ƒ /api/health
+├ ƒ /api/hint
+├ ƒ /api/interrogate
+├ ƒ /api/leaderboard
+├ ƒ /api/patterns
+├ ƒ /api/session
+├ ƒ /api/session/end
+├ ƒ /api/transcribe
+├ ƒ /api/tts
+├ ○ /cases
+├ ○ /game
+├ ○ /game/lose
+├ ○ /game/win
+├ ○ /help
+├ ○ /leaderboard
+├ ○ /rehearsal
+└ ○ /settings
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

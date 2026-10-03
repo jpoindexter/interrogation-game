@@ -1,0 +1,63 @@
+
+> interrogation@0.1.0 lint
+> eslint --max-warnings=0
+
+
+> interrogation@0.1.0 check:size
+> eslint --config eslint.size.config.mjs app src scripts
+
+
+> interrogation@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> interrogation@0.1.0 build
+> next build
+
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 10ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 345ms
+  Running TypeScript ...
+  Finished TypeScript in 866ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/24) ...
+  Generating static pages using 11 workers (6/24)
+  Generating static pages using 11 workers (12/24)
+  Generating static pages using 11 workers (18/24)
+✓ Generating static pages using 11 workers (24/24) in 155ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /about-game
+├ ƒ /api/accuse
+├ ƒ /api/evaluate
+├ ƒ /api/export
+├ ƒ /api/gameplay
+├ ƒ /api/generate-case
+├ ƒ /api/health
+├ ƒ /api/hint
+├ ƒ /api/interrogate
+├ ƒ /api/leaderboard
+├ ƒ /api/patterns
+├ ƒ /api/session
+├ ƒ /api/session/end
+├ ƒ /api/transcribe
+├ ƒ /api/tts
+├ ○ /cases
+├ ○ /game
+├ ○ /game/lose
+├ ○ /game/win
+├ ○ /help
+├ ○ /leaderboard
+└ ○ /settings
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

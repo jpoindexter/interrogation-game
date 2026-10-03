@@ -1,0 +1,80 @@
+# Implementation status — 3 October 2026
+
+This is the current implementation ledger. The original audit documents preserve the historical baseline. Work is active and the complete goal is not achieved.
+
+## Outcome and authority
+
+Build a reliable local interview demo and portfolio project, with a modern modular stack, Codex subscription dialogue, ElevenLabs voice, richer evidence-led play and truthful documentation. The private Trello board now contains 70 cards: 62 original tasks and eight accepted expansions. The latest expansion is the win/loss conversation map. Website and case study integration into https://jason.theft.studio follow game acceptance.
+
+Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user now directs Git commits/pushes as work is completed; root owns the next commit/push checkpoint. A push has not yet been confirmed in this ledger. Deployment remains unperformed. Browser automation was declined during the audit; renewed authorization has been requested and remains pending. Do not bypass that restriction through a different browser interface.
+
+## Executed evidence
+
+- A clean `npm ci` in a separate temporary directory succeeds with Node 24.21.0 / npm 11.21.0. Its ESLint deprecation warning and development advisories remain explicit.
+- The latest integrated automated gate ran 297 tests successfully, zero-warning ESLint, module/function-size checks, TypeScript and a warning-free production build. See evidence/current-verify.txt; these are local automated checks, not browser or voice acceptance.
+- `evidence/local-http-gameplay.json` records a real localhost HTTP/Codex subscription playthrough: authored opening, pinned statement, unrelated exhibit, supported contradiction, wrong accusation, correct accusation, canonical debrief and recovered win. Model responses took about 7–9 seconds. It does not establish browser or voice behavior. The earlier evidence file preserves the false-positive disclosure filter that this run corrected.
+- `evidence/judge-fairness.expected.json` fixed expectations before execution. `judge-fairness.json` records 10/10 live checks: two valid paraphrases, wrong evidence/person, unrelated assertion, unsupported theft inference, instruction attacks, public alibi and metadata extraction. One case/one sample per item is a limited sample, not a reliability guarantee.
+- Durable sessions, atomic score redemption, completion export, actual process restart/crash, dropped HTTP responses, provider cancellation and request replay have regression evidence. The provider cancellation test starts a real parent/child process group and verifies both stop with no delayed side effect.
+- The conversation path is integrated into win and loss results. It classifies canonical accusation attempts and saved evidence challenges; ordinary dialogue remains neutral. Exact statements and disclosed exhibits are inspectable. A typed fake accusation marker cannot manufacture a verdict.
+- Asset identity is explicit and persisted, outcome decoration uses an existing text-free motif, and CSS was split with equivalent compiled rule trees. The asset manifest records 134 media files and unknown rights rather than inventing provenance. No media was regenerated.
+
+## Latest portfolio checkpoint
+
+The local JSON agent-control CLI now supports one action at a time through the canonical HTTP routes. Its actual authored start/state/opening/pin/give-up/result/recovery path ran with AI disabled. One additional real `gpt-6.1-sol` question succeeded through the signed-in Codex adapter in 10.197 seconds including CLI startup; the result retained both turns. See [agent control](../AGENT-CONTROL.md) and `evidence/agent-control-live.json`. The local model default is now Sol; earlier Luna evaluation evidence is not reattributed to it.
+
+The bounded design pass improves home entry/setup wording, multiline question and accusation review, visible input limits, larger controls, authored-case replay and expert-case labels. Scoped lint/size and type checks passed; the combined production build passed (`evidence/demo-checkpoint-build.txt`). No new test suite was added and the earlier 297-test suite was not rerun for these changes. Actual visual/browser acceptance remains pending.
+
+Exactly one live ElevenLabs plugin sample completed at a reported 12.5 credits. The game server still has no configured ElevenLabs API key. See [connector check](ELEVENLABS-LIVE-CHECK.md). Plugin generation does not prove in-game voice.
+
+## Current work
+
+Latest user scope adds AI-agent control of the local app and a design-polish pass. The agent-control and UI agents own those increments. Acceptance is a local start/read/action/result path through canonical routes with explicit failure handling and preserved server authority, plus inspection of the polished demo. Neither path is claimed executed yet.
+
+The latest integration adds durable local endpoint, voice and aggregate AI work budgets, an operator stop switch, replay-safe voice receipts, an independent structured preflight for generated cases, and response validation before gameplay state changes. `SHARED-BUDGETS.md` records real concurrent-process and restart evidence. Every rate-limited API now distinguishes exhausted allowance (429) from unavailable budget storage (503) before work starts. Independent test files use private roots; explicit cross-process fixtures continue sharing their chosen root.
+
+Aggregate AI reservations cover candidate generation, review, suspect dialogue, judgment, debrief and optional embeddings before adapter/fetch entry. Session and direct-operator allowances survive concurrent processes and restart; `AI_WORK_ENABLED=false` stops new work but does not cancel already-running calls. These are conservative call/input-character limits, not token/currency billing. `ai-budget-integration.test.ts` covers the real route/provider gateway and embedding stop/exhaustion boundary. Hosted shared budgets remain unimplemented.
+
+`VOICE-IDEMPOTENCY.md` records durable, byte-bound speech/transcription request receipts, private bounded audio replay, dropped-response/concurrent retry and process-restart tests. Completed replay does not repeat the provider or reserve usage twice. Interrupted or expired work requires an explicit new attempt; no universal one-charge guarantee is made. Client clip recovery, explicit retry/discard and cancellation have controlled tests, not real microphone/playback proof.
+
+Case and evidence response parsers reject malformed public controls, forged progress, broken source references, inconsistent dialogue and unknown/private fields before state mutation. Their focused tests are included in the integrated gate; actual browser recovery is still unverified.
+
+`GENERATED-REVIEW.md` preserves the first six live reviews (3/6 diagnostic matches, one authored false rejection). `GENERATED-REVIEW-V2.md` records eight further predeclared reviews: 6/8 full criteria and 7/8 admit/reject labels matched, with a material false acceptance of unsupported phone-to-person attribution and a missed recorded-time inference. All three authored controls were accepted. The exact saved phone case is separately rejected by the deterministic 500-character content guard; the semantic review itself remains fallible. No generated-case fairness or solvability guarantee is claimed. The approved post-capture deterministic comparison correction is versioned v2.1-guard; frozen live hashes and labels remain intact. A rejected new case never reaches its playable checkpoint; stable failure receipts and an explicit new-attempt flow are tested. Historical generation checkpoints retain their existing recovery contract. Gameplay response parsers validate complete turn, accusation and hint payloads before changing state. Malformed responses and transient 429/503 failures retain the same request ID; an executed recovery regression appends the accepted turn once. The final rejected accusation and cancelled-confession paths have controller regression coverage, not browser proof.
+
+
+This continuation added a clearly labeled recorded fallback at `/rehearsal`, corrected onboarding stress guidance and storage-safe dismissal, and made finished-game recovery independent of browser result-cache writes. A strict session parser now rejects malformed recovery fields before client state updates. Its actual localhost give-up/recovery path passed (`evidence/recovery-parser-http.json`). Export delivery now remains pending if the final local confirmation write fails; actual filesystem failure/retry is covered. The export CLI card ARCH-01 is complete against its controlled CLI/HTTP acceptance, with 12 targeted checks in `evidence/export-acceptance.txt`.
+
+Generated-case evaluation now preserves v1, v2 and a single v3 completeness check. Runtime objectives match the real win condition, and a narrow guard rejects the observed schema-ceiling fragments. Source inspection still finds multiple material false claims and ambiguous evidence; see `GENERATED-CASE-EVAL.md`. Generated-case fairness is open despite passing structural/verdict probes.
+
+Current architecture, rehearsal instructions and all 70 card acceptance gaps are mapped in `docs/ARCHITECTURE.md`, `docs/LOCAL-DEMO.md` and `ACCEPTANCE-COVERAGE.md`. Recorded-route HTTP and markup checks passed; no browser interaction, voice or screen-share proof is claimed.
+
+Generation now uses POST, a reserved session ID and a private validated-case checkpoint. Real child-process crash tests cover recovery before and after session materialization without repeating inference. Client receipts retain the same request through remount/transport ambiguity and require an explicit new attempt after known failure; actual browser remount remains unverified.
+
+The independent review fixes and their regression checks are recorded in `INTEGRATION-REVIEW.md`: authorized terminal speech, canonical result recovery, quoted metadata/private clue filtering, accepted timestamps and unreviewed live statement labels. Movable panels, global accessibility preferences and explicit Challenge/Relaxed/Endurance rules are implemented. Browser behavior remains pending.
+
+`evidence/local-http-gameplay-map.json` records a subsequent real HTTP/Codex win and relaxed give-up loss. The win path is neutral dialogue → unsupported challenge → supported challenge → rejected accusation → accepted accusation. Both result paths survive server recovery; actual model calls took 8.6–9.8 seconds. The loss opening is authored rather than an inference call. This is server behavior evidence, not browser or microphone proof.
+
+The literal disclosure guard now preserves public cover-story dialogue and exact player wording instead of stripping adversarial questions. It blocks internal metadata and verbatim undisclosed facts. It does not claim to detect all semantic paraphrases; authoritative evidence progress and outcome rules remain separate from actor prose.
+
+## Remaining acceptance gaps
+
+- Actual browser: start/resume, keyboard/dialog focus, small windows, text sizing, reduced motion, results/map, failure recovery and screen-share rehearsal. Renewed authorization pending.
+- ElevenLabs: one plugin Flash v2.5 sample completed (1.6254 seconds, reported 12.5 credits), without a paid retry; see `ELEVENLABS-LIVE-CHECK.md`. The 10,000-credit starting balance remains user-reported. The local game has no configured ELEVENLABS_API_KEY. Game TTS/STT, microphone capture, audible playback and screen-share routing remain unverified; use further credits sparingly.
+- Hosted path: server OpenAI adapter exists, but no API key/live API proof. Shared durable session backend and live database migrations/RLS/delivery are incomplete. Vercel session requests fail explicitly until that dependency is implemented.
+- Dependencies: production audit reports 0 advisories. Five high development-chain findings remain from braces 3.0.3 through the current Next ESLint configuration. Registry reports no newer braces release. ESLint 10 is outside the current React/import/accessibility plugin peer ranges. Do not hide these findings or force a framework downgrade.
+- Wider generated-case solvability, broader fairness evaluation and real player feedback are not established by the authored sample.
+- Website, portfolio publication and evidence-backed case study remain required after game acceptance. No invented outcomes, user research or metrics.
+
+## Working constraints
+
+- **Outcome:** finish a convincing, reliable local game demo, then portfolio/site work grounded in its executed behavior.
+- **Target:** this repository and the existing 70-card Trello board; root coordinates Git checkpoints and pushes.
+- **Must:** use parallel work where useful; keep the portfolio/interview outcome central; run only tests needed to verify meaningful behavior or a changed risk. The recorded 297-test full gate is existing evidence, not a reason to repeat it for documentation edits.
+- **Must not:** claim browser, audio, hosted, billing or semantic reliability from fixtures; consume ElevenLabs credits with broad or redundant testing; claim a push before root confirms its commit and remote result.
+- **Authority:** implementation, Trello updates, Git pushes and necessary sparing voice checks are user-authorized. Existing browser restriction remains pending explicit renewal.
+- **Done evidence:** actual required game paths and demo rehearsal, truthful residual limits, followed by the authorized portfolio/site deliverable. The overall goal remains active.
+
+## Re-entry
+
+Inspect Git status and active agent ownership; read this ledger and the plan; refresh Trello; read the latest integrated evidence, then continue pending browser/voice acceptance when authorized/configured. Capture actual check output under `evidence/` without replacing audit-baseline files. Continue the earliest unverified acceptance path. Never mark the entire goal complete from a build or mock test.
+
+Skills applied: agent-fanout, enforcing-code-size, dec-software-principles, dec-quality-testing, dec-ai-native-patterns; specialist skills are listed in the corresponding reports.

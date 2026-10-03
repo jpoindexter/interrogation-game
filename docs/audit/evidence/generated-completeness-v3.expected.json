@@ -1,0 +1,20 @@
+{
+  "declaredAt": "2026-10-03T12:05:06.517Z",
+  "calls": 1,
+  "setting": "hospital",
+  "difficulty": "hard",
+  "promptVersion": "one-false-claim-v3",
+  "sources": {
+    "src/lib/ai/prompts/case-text.json": "1d6a37da5e29cfa2c49b676d9bffb2af57c14bac23a4e5a17d73b83c75e537b3",
+    "src/lib/ai/prompts/case.ts": "ac23354ceeb575e62fca9c303d56a66ec5a0e591f30a8313d95e30bea0a77b12",
+    "src/lib/ai/generated-content.ts": "dff33043f62325071f41170a97c214071d5af9f26ed47bf14a5bcf5fe59e72e4",
+    "src/lib/mistral/generate-case.ts": "ff81ed15dda747d1b60bb836ba42eaf7f20b2b393002abad15f9e5d739525164"
+  },
+  "checks": [
+    "production generation returns without schema or completeness rejection",
+    "runtime case validator accepts output",
+    "objective is Identify the false claim",
+    "contradiction is a complete sentence below500characters"
+  ],
+  "scope": "Single real Codex generation through the production capability. Does not establish semantic coherence, discoverability, judge fairness or browser behavior."
+}

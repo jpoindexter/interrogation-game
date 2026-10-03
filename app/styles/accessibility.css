@@ -1,0 +1,57 @@
+/* High contrast mode */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #444444;
+  --surface-dark: #333333;
+  --surface-darker: #222222;
+  --surface-hover: #555555;
+  --text-secondary: #ffffff;
+  --text-muted: #cccccc;
+  --text-dim: #999999;
+  --gold: #FFD700;
+  --accent: #FF4444;
+  --warn: #FFCC00;
+}
+.high-contrast .text-gray-300,
+.high-contrast .text-gray-400,
+.high-contrast .text-gray-500,
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700 {
+  color: #ffffff !important;
+}
+.high-contrast .placeholder-gray-600::placeholder {
+  color: #999999 !important;
+}
+
+/* Reduced motion — respects both OS preference and in-game setting */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.reduced-motion *, .reduced-motion *::before, .reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
+
+
+/* Paper retains dark ink when the surrounding interface uses high contrast. */
+.high-contrast [data-surface="paper"] {
+  --foreground: #171717;
+  --text-secondary: #171717;
+  --gold: #694600;
+  --accent: #991b1b;
+}
+.high-contrast [data-surface="paper"] [class*="text-gray-"],
+.high-contrast [data-surface="paper"] [class*="text-black"] {
+  color: #171717 !important;
+}
+.high-contrast [data-surface="paper"] [class*="text-red-"] {
+  color: #991b1b !important;
+}

@@ -1,0 +1,210 @@
+[
+  {
+    "id": "ARCH-01",
+    "title": "Fix export CLI auth regression and secret logging",
+    "priority": "P1",
+    "evidence": "f8d4c3c changed endpoint to Authorization; scripts/export-data.ts:22\u201329 still puts secret in URL/log. Synthetic execution with mocked fetch/filesystem confirmed secret in URL/log and no auth header. No real secret/network used.",
+    "status": "executed",
+    "fix": "Use Bearer Authorization; remove secret query/log output; preserve filters; lock tsx runner as dev dependency or supported Node runner.",
+    "acceptance": "Execute CLI against controlled fixture export: success with header; missing/wrong auth returns401; captured logs and URL contain no token; pagination/output valid.",
+    "dependsOn": []
+  },
+  {
+    "id": "ARCH-02",
+    "title": "Upgrade security baseline with paired Next and ESLint config",
+    "priority": "P1",
+    "evidence": "Installed Next16.1.6; audit18 packages (critical1/high14/moderate2/low1). Registry candidate16.3.8. npm audit proposes inappropriate ESLint-config downgrade14.2.35 for some paths. next.config enables AVIF.",
+    "status": "executed",
+    "fix": "Update Next+eslint-config-next together; refresh lockfile/transitives; inspect runtime/tooling reachability; do not blindly force audit fixes.",
+    "acceptance": "npm ci, lint, typecheck, build, full fixture game, image routes and production audit pass; unresolved advisories documented with reachability and decision.",
+    "dependsOn": []
+  },
+  {
+    "id": "ARCH-03",
+    "title": "Pin a reproducible Node24 and package-manager baseline",
+    "priority": "P2",
+    "evidence": "No engines/runtime pin; current shell22.23.2, @types/node20. Official Node24 LTS and Vercel24 support verified; latest Supabase requires>=22.",
+    "status": "code-path",
+    "fix": "Pin Node24.x major in package engines and exact reviewed local version/runtime file; align Node types24, packageManager and setup docs.",
+    "acceptance": "Fresh checkout on pinned runtime installs/builds/runs fixture game; Vercel runtime config later matches major.",
+    "dependsOn": []
+  },
+  {
+    "id": "ARCH-04",
+    "title": "Separate game AI contracts from Mistral implementation",
+    "priority": "P1",
+    "evidence": "Five Mistral capability groups: generate-case/interrogate/evaluate, Voxtral transcribe, embeddings+seed-rag; UI imports ConversationMessage from mistral. Accuse/evaluate require server credentials even with browser BYOK.",
+    "status": "code-path",
+    "fix": "Introduce provider-neutral validated case/turn/outcome contracts and small server-only adapters; separate optional embedding capability; move shared types out of provider folder.",
+    "acceptance": "Contract fixture suite covers generate/respond/judge/summarize and structured errors; no UI/vendor type coupling; every live capability uses selected provider.",
+    "dependsOn": [
+      "ARCH-02"
+    ]
+  },
+  {
+    "id": "ARCH-05",
+    "title": "Prove local Codex subscription adapter for interview",
+    "priority": "P1",
+    "evidence": "Root verified CLI0.144.1 and ChatGPT login; official exec supports saved auth/schema. No inference, latency or end-to-end game integration tested.",
+    "status": "proposal",
+    "fix": "Local-only adapter with isolated input/cwd, no unrelated tools or source access, bounded queue/deadline, cancellation/schema validation; never expose generic exec or copy auth to Vercel. Verify installed CLI controls first.",
+    "acceptance": "Ten real browser turns and correct/incorrect accusation via signed-in Codex; measure latency; demonstrate quota/timeout/malformed/cancel handling; no command/file tool use or credentials visible.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-06",
+    "title": "Add future hosted OpenAI adapter without subscription token reuse",
+    "priority": "P3",
+    "evidence": "User has no API key yet. Official local subscription and API-key billing differ. globalThis state not suitable for multiple hosted instances.",
+    "status": "proposal",
+    "fix": "Future server-only Responses API adapter configured by API key and explicit model; shared game contracts; keep hosting work after local demo.",
+    "acceptance": "When key exists: Vercel preview completes real text/voice game; secrets absent client assets/logs; spend/error limits tested.",
+    "dependsOn": [
+      "ARCH-04",
+      "ARCH-16"
+    ]
+  },
+  {
+    "id": "ARCH-07",
+    "title": "Migrate STT to ElevenLabs and update deprecated speech model",
+    "priority": "P1",
+    "evidence": "app/api/transcribe uses Voxtral; tts uses eleven_turbo_v2_5, officially deprecated in favor of Flash2.5; dev default disables TTS.",
+    "status": "code-path",
+    "fix": "ElevenLabs STT+TTS adapters/server credentials; audition Flash2.5; explicit local demo voice configuration, valid media MIME/file names and provider health.",
+    "acceptance": "Real mic\u2192transcript\u2192question\u2192suspect speech, stable voices, readable date/currency pronunciation, text fallback on unavailable voice; actual video-call audio-share verified.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-08",
+    "title": "Unify cancellable voice and microphone lifecycle",
+    "priority": "P1",
+    "evidence": "useVoiceRecorder lacks unmount cleanup/AudioContext ownership; useTTS pending fetch not aborted and URL not revoked on skip/unmount. Routes buffer complete audio.",
+    "status": "code-path",
+    "fix": "Shared lifecycle player/recorder with AbortController, generation ID, exact-once callback and resource cleanup; measure latency before adding documented streaming path.",
+    "acceptance": "Stop, skip, navigate, switch case during pending/playing speech; no stale playback, open tracks, leaked blob URL or duplicate completion; provider failure preserves active text game.",
+    "dependsOn": [
+      "ARCH-07"
+    ]
+  },
+  {
+    "id": "ARCH-09",
+    "title": "Make retrieval optional and version embedding migration",
+    "priority": "P2",
+    "evidence": "generate-case performs Mistral embedding+Supabase RPC; README schema vector1024; no Codex embedding interface; spaces not compatible across providers.",
+    "status": "code-path",
+    "fix": "Disable RAG or use explicitly curated local tactic set for rehearsal; future hosted embeddings get versioned column/index and complete re-embedding.",
+    "acceptance": "Local case works without database/embedding credentials; later retrieval evaluation compares known query/results; never mix old/new embeddings.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-10",
+    "title": "Split game orchestration and enforce readable module limits",
+    "priority": "P2",
+    "evidence": "Raw lines: game/page313, game-session307, mistral/interrogate357; AST function spans266/289. Settings/lose hide multiple concerns below300. ESLint lacks size gates.",
+    "status": "code-path",
+    "fix": "Thin route/GameScreen, session loading/turn/accusation hooks, reducer, prompt sections, session repository and transition service. Prefer150\u2013200 lines; review200/250, hard300 executable; functions30/50 and complexity10.",
+    "acceptance": "Lint enforces accurate limits excluding blanks/comments/generated files; full fixture critical flows retain behavior; no minification or arbitrary one-function fragmentation.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-11",
+    "title": "Return validated service errors instead of corrupt game state",
+    "priority": "P1",
+    "evidence": "game/page117\u2013125 parses HTTP error JSON into briefing case; evaluateAccusation85\u201389 parses failure into incorrect result, spending an accusation.",
+    "status": "code-path",
+    "fix": "Validated result union for case/turn/judge; HTTP failures never become case data; malformed judge result is retryable provider failure with all counters preserved.",
+    "acceptance": "Inject500/429/invalidJSON/missingfields/refusal: visible recoverable error, no broken briefing or lost accusation/stats.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-12",
+    "title": "Make question retries idempotent and finalize visible turn atomically",
+    "priority": "P1",
+    "evidence": "game/page172 retries POST without ID; api/interrogate109\u2013151 stores raw model text and clue before secret filtering.",
+    "status": "code-path",
+    "fix": "Per-turn request ID and result replay; validate/finalize visible response+clue before atomic mutation; duplicate/timeout request returns same outcome.",
+    "acceptance": "Simulate server commit then lost client response; retry yields exactly one question/clue/stress mutation and transcript/TTS/UI match.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-13",
+    "title": "Use one authoritative game clock and terminal outcome model",
+    "priority": "P1",
+    "evidence": "Client clock counts active non-speaking seconds from localStorage settings; server wall clock starts createSession; timerMode stored separately.",
+    "status": "code-path",
+    "fix": "Define start/pause/cap once in session transitions; freeze mode per session, drive UI from authoritative timestamps/state; test voice/wait/briefing intervals.",
+    "acceptance": "Long briefing, slow AI/TTS, tab backgrounding and mode changes cannot disagree on expiry/score; one terminal result each session.",
+    "dependsOn": []
+  },
+  {
+    "id": "ARCH-14",
+    "title": "Remove stale dependencies and stage low-risk library updates",
+    "priority": "P2",
+    "evidence": "Neon zero source imports after221722f Supabase switch. Same-major registry candidates recorded; latest TS7/ESLint10/Motion14 not validated together.",
+    "status": "executed",
+    "fix": "Remove Neon; same-major Supabase/font/Tailwind pair/Motion12/ESLint9 updates in bounded groups; remove Mistral only after capability+script migration; evaluate major jumps individually.",
+    "acceptance": "Import scan/install/build/fixture game prove removal; dependency diff reviewed; no forced major or unexplained lockfile churn.",
+    "dependsOn": [
+      "ARCH-02",
+      "ARCH-03"
+    ]
+  },
+  {
+    "id": "ARCH-15",
+    "title": "Make completion export destination and durability explicit",
+    "priority": "P2",
+    "evidence": "game-session251 uses global default Supabase and fire-and-forget upsert while other routes accept request database config; no observed persistence proof.",
+    "status": "code-path",
+    "fix": "Local demo: local storage or explicitly disabled export; hosted: one server-side destination and awaited/retriable terminal persistence; clear retention/consent and redacted logs.",
+    "acceptance": "Complete game saves exactly one intended result or visibly reports persistence failure; inspect stored record without sensitive logging; retry cannot duplicate/overwrite unrelated session.",
+    "dependsOn": []
+  },
+  {
+    "id": "ARCH-16",
+    "title": "Add shared session persistence only when preparing Vercel",
+    "priority": "P3",
+    "evidence": "globalThis maps/locks/tokens introduced8e7d5b8 to fix hot reload; only process-local. Rate limits process-local too.",
+    "status": "code-path",
+    "fix": "Keep memory repository for controlled local demo; future serverless adapter uses shared store with atomic turn/token operations and consistent limiter; test cold starts.",
+    "acceptance": "Two worker instances complete same session; duplicate accusation/token use accepted once; restart does not lose active state; expiration deterministic.",
+    "dependsOn": [
+      "ARCH-10",
+      "ARCH-12",
+      "ARCH-13"
+    ]
+  },
+  {
+    "id": "ARCH-17",
+    "title": "Add representative fixture, AI evaluation and real-demo proof suite",
+    "priority": "P1",
+    "evidence": "Build passes but lint fails; no visible test scripts/tests. Historical fixes repeatedly target voice races/security/clue and outcome rules.",
+    "status": "code-path",
+    "fix": "Small deterministic provider fixtures; integration tests for state/voice/errors; a few full-browser win/loss/recovery paths; bounded real-provider eval corpus for answer leakage, contradictions, fair judgments and schema fidelity.",
+    "acceptance": "Run fixture game end-to-end on pinned stack; separately run actual Codex+ElevenLabs demo and label each proof; replay clearly marked; coverage includes poor connection, permissions and all terminal outcomes.",
+    "dependsOn": [
+      "ARCH-04"
+    ]
+  },
+  {
+    "id": "ARCH-18",
+    "title": "Restore concise versioned architecture and rehearsal docs",
+    "priority": "P2",
+    "evidence": "54b264a removed CLAUDE.md; README describes old provider/key paths; package dev kills arbitrary processes on ports3000\u20133002.",
+    "status": "code-path",
+    "fix": "Small contributor/architecture decisions doc, local setup/preflight/reset/runbook, provider modes and evidence ledger; replace port-killing dev script with owned process/explicit port.",
+    "acceptance": "Fresh checkout starts without killing unrelated apps; newcomer can run fixture and live demo, distinguish modes, reset/recover, and trace documented claims to evidence.",
+    "dependsOn": []
+  }
+]

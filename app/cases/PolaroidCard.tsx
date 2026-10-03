@@ -1,5 +1,6 @@
 'use client';
 
+import AssetImage from '../components/AssetImage';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from '../components/motion';
 import { DIFFICULTY_CONFIG } from '../data/cases';
@@ -30,13 +31,14 @@ interface PolaroidCardProps {
   onClick: () => void;
 }
 
-const ROTATIONS = [-3, 2.5, -1.5, 4, -2, 3.5, -4];
 const STICKY_COLORS = ['#F5E6A3,#EDD98B', '#FFB3B3,#F5A0A0', '#A3D5F5,#8DC8EE', '#B3F5B3,#9BE89B', '#F5C8A3,#EEB88D', '#D5A3F5,#C88DEE', '#F5A3D5,#EE8DC8'];
 const STICKY_ROTS = [1, -1.5, 2, -1, 1.5, -2, 0.5];
 
 export default function PolaroidCard({ caseData, isActive, expanded, isSolved, index, fanX, fanY, fanRotate, fanScale, zIndex, opacity, onClick }: PolaroidCardProps) {
   const router = useRouter();
   const caseDiff = DIFFICULTY_CONFIG[caseData.difficulty];
+  const raised = isActive && expanded;
+  const hovering = isActive && !expanded;
 
   return (
     <motion.div
@@ -45,22 +47,38 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
       transition={{ duration: 0.25, ease: 'easeOut' }}
       style={{ zIndex, transformOrigin: 'bottom center' }}
     >
-      <motion.div animate={isActive && !expanded ? { y: [0, -3, 0] } : { y: 0 }} transition={isActive && !expanded ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 } : { duration: 0.15 }}>
-        <button onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] xl:w-[340px] ${isActive ? '' : 'pointer-events-auto'}`}>
+      <motion.div animate={hovering ? { y: [0, -3, 0] } : { y: 0 }} transition={hovering ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 } : { duration: 0.15 }}>
+        <button onClick={onClick} className={`group relative cursor-pointer w-[260px] sm:w-[290px] xl:w-[340px] `}>
           <motion.div
+            data-surface="paper"
             className="relative p-2 pb-14"
             style={{
               background: 'linear-gradient(135deg, #E8E0D0 0%, #D8CFC0 40%, #E2DAC8 60%, #D5CCBB 100%)',
               boxShadow: isActive ? '3px 5px 20px rgba(0,0,0,0.7), 1px 2px 4px rgba(0,0,0,0.3), inset 0 0 30px rgba(0,0,0,0.05)' : '2px 3px 10px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.03)',
             }}
-            animate={isActive && expanded ? { scale: 1.12, y: -8 } : { scale: 1, y: 0 }}
-            whileHover={isActive && !expanded ? { scale: 1.03 } : {}}
-            transition={isActive && expanded ? { type: 'spring', stiffness: 300, damping: 20 } : { duration: 0.2, ease: 'easeOut' }}
+            animate={raised ? { scale: 1.12, y: -8 } : { scale: 1, y: 0 }}
+            whileHover={hovering ? { scale: 1.03 } : {}}
+            transition={raised ? { type: 'spring', stiffness: 300, damping: 20 } : { duration: 0.2, ease: 'easeOut' }}
           >
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(45deg, transparent 48%, rgba(0,0,0,0.03) 49%, rgba(0,0,0,0.03) 51%, transparent 52%)' }} />
             <div className="absolute top-0 right-0 w-6 h-6 pointer-events-none" style={{ background: 'linear-gradient(225deg, rgba(0,0,0,0.08) 0%, transparent 60%)' }} />
 
-            <div className="relative overflow-hidden" style={{ aspectRatio: '3 / 2' }}>
+            <CasePhoto isActive={isActive} caseData={caseData} caseDiff={caseDiff} isSolved={isSolved} />
+
+            <CaseCaption caseData={caseData} isActive={isActive} expanded={expanded} />
+          </motion.div>
+
+        </button>
+          <CaseDescription isActive={isActive} expanded={expanded} index={index} caseData={caseData} caseDiff={caseDiff} router={router} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+
+function CasePhoto({ isActive, caseData, caseDiff, isSolved }: { isActive: boolean; caseData: CaseData; caseDiff: { label: string; color: string; clues: number; stars: number; }; isSolved: boolean }) {
+  return (
+<div className="relative overflow-hidden" style={{ aspectRatio: '3 / 2' }}>
               <div className={`absolute inset-0 ${isActive ? 'transition-transform duration-500 group-hover:scale-105' : ''}`} style={{ backgroundImage: `url(${caseData.bg})`, backgroundSize: 'cover', backgroundPosition: 'center', imageRendering: 'pixelated' }} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
 
@@ -84,22 +102,17 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
 
               {isSolved && (
                 <motion.div className="absolute inset-0 flex items-center justify-center" initial={{ scale: 2, opacity: 0, rotate: -30 }} animate={{ scale: 1, opacity: 0.7, rotate: -12 }} transition={{ duration: 0.4, type: 'spring', damping: 12 }}>
-                  <img src="/solved/case_closed.png" alt="Solved" className="w-28" />
+                  <AssetImage src="/solved/case_closed.png" alt="Solved" className="w-28" />
                 </motion.div>
               )}
             </div>
+  );
+}
 
-            <div className="absolute bottom-0 left-0 right-0 h-12 flex items-center justify-center px-3">
-              <div className="text-center">
-                <h2 className={`text-sm font-bold tracking-wider ${isActive ? 'text-gray-800 group-hover:text-accent transition-colors' : 'text-gray-700'}`}>{caseData.title}</h2>
-                {isActive && !expanded && (
-                  <motion.p className="text-[9px] text-gray-500 uppercase tracking-wider" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>{caseData.subtitle}</motion.p>
-                )}
-              </div>
-            </div>
-          </motion.div>
 
-          <AnimatePresence>
+function CaseDescription({ isActive, expanded, index, caseData, caseDiff, router }: { isActive: boolean; expanded: boolean; index: number; caseData: CaseData; caseDiff: { label: string; color: string; clues: number; stars: number; }; router: ReturnType<typeof useRouter> }) {
+  return (
+<AnimatePresence>
             {isActive && expanded && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.12, ease: 'easeOut' }} className="mt-2 overflow-hidden">
                 <div className="relative p-4 text-left" style={{
@@ -114,16 +127,26 @@ export default function PolaroidCard({ caseData, isActive, expanded, isSolved, i
                   <p className="text-[11px] text-gray-800 leading-relaxed mb-3">{caseData.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{caseDiff.label} &middot; {caseDiff.clues} clues to find</span>
-                    <motion.span className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2" animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
+                    <motion.button type="button" className="text-[10px] font-bold text-accent uppercase tracking-wider cursor-pointer hover:text-red-500 transition-colors px-2 py-1 -mr-2" animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
                       onClick={(e) => { e.stopPropagation(); playClick(); router.push(`/game?setting=${encodeURIComponent(caseData.setting)}&difficulty=${caseData.difficulty}`); }}
-                    >PLAY &rarr;</motion.span>
+                    >PLAY &rarr;</motion.button>
                   </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </button>
-      </motion.div>
-    </motion.div>
+  );
+}
+
+function CaseCaption({ caseData, isActive, expanded }: Pick<PolaroidCardProps, 'caseData' | 'isActive' | 'expanded'>) {
+  return (
+            <div className="absolute bottom-0 left-0 right-0 h-12 flex items-center justify-center px-3">
+              <div className="text-center">
+                <h2 data-surface="paper" className={`text-sm font-bold tracking-wider ${isActive ? 'text-gray-800 group-hover:text-accent transition-colors' : 'text-gray-700'}`}>{caseData.title}</h2>
+                {isActive && !expanded && (
+                  <motion.p className="text-[9px] text-gray-500 uppercase tracking-wider" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>{caseData.subtitle}</motion.p>
+                )}
+              </div>
+            </div>
   );
 }

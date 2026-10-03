@@ -3,31 +3,46 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "kill": "lsof -ti:3000,3001,3002 2>/dev/null | xargs kill -9; rm -f .next/dev/lock",
-    "dev": "npm run kill && next dev",
+    "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "agent:control": "tsx scripts/agent-control.ts",
+    "lint": "eslint --max-warnings=0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node scripts/run-tests.mjs",
+    "check:size": "eslint --config eslint.size.config.mjs app src scripts",
+    "verify": "npm run lint && npm run check:size && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
-    "@fontsource/opendyslexic": "^5.2.5",
-    "@mistralai/mistralai": "^1.14.1",
-    "@neondatabase/serverless": "^1.0.2",
-    "@supabase/supabase-js": "^2.98.0",
-    "framer-motion": "^12.34.3",
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "@fontsource/opendyslexic": "5.3.0",
+    "@supabase/supabase-js": "2.117.2",
+    "motion": "14.0.0",
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "siriwave": "^2.4.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@openai/codex": "0.160.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@typescript/native": "npm:typescript@7.0.2",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.8",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
+  },
+  "engines": {
+    "node": "24.x",
+    "npm": "11.x"
+  },
+  "packageManager": "npm@11.21.0",
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true,
+    "fsevents@2.3.3": true
   }
 }

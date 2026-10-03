@@ -1,0 +1,313 @@
+{
+  "startedAt": "2026-10-03T12:33:06.771Z",
+  "version": "generated-consistency-v2",
+  "provider": "codex-local",
+  "model": "gpt-6-luna",
+  "maxCalls": 8,
+  "maxParallel": 2,
+  "generationCalls": 0,
+  "corpus": [
+    {
+      "id": "v1-bank-extra-lie",
+      "source": "docs/audit/evidence/generated-cases-v1.json#results/0",
+      "candidate": {
+        "case_number": "6381",
+        "setting": "Meridian Bank",
+        "crime": "A treasury analyst diverted $84,000 through a fraudulent vendor payment and concealed the transfer in a reconciliation file.",
+        "objective": "Prove the payment was fraudulent",
+        "briefing": "You are investigating an $84,000 payment sent from Meridian Bank to a newly added vendor. The treasury analyst says the payment was approved and entered during her shift, but the vendor has no bank account on file. Review the records and question her about the approval timeline.",
+        "detective_leads": [
+          "Vendor file added the day before",
+          "Her access card failed at lunch",
+          "Reconciliation saved before approval logged"
+        ],
+        "suspect_name": "Nina Alvarez",
+        "suspect_gender": "female",
+        "suspect_role": "Treasury Analyst",
+        "suspect_true_story": "She created a fake vendor, routed $84,000 to an account she controlled, and altered the reconciliation file to hide it. She initiated the payment before her shift ended, then claimed it had been approved afterward.",
+        "suspect_cover_story": "She says the vendor was legitimate and the payment was approved by her manager during her shift. She claims she entered it only after receiving that approval and altered the reconciliation file to correct a routine coding error.",
+        "the_lie": "She claims she entered the payment after her manager approved it.",
+        "the_truth": "She entered the payment before approval; the approval record was created later, after her manager had left the bank for the day.",
+        "the_contradiction": "Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.",
+        "stress_triggers": [
+          "Ask why the payment predates approval",
+          "Ask who controlled the vendor account"
+        ],
+        "deflection_tactics": [
+          "Blames a confusing approval workflow",
+          "Offers to discuss the coding error instead",
+          "Says the vendor setup was another team's job"
+        ],
+        "verbal_tics": "Says “just to be clear” before answers; starts giving exact times when nervous.",
+        "difficulty": "easy"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim",
+        "evidenceSufficiency"
+      ],
+      "criterion": "Legitimate vendor conflicts with fake vendor; recorded approval and physical departure do not establish actual authorization time."
+    },
+    {
+      "id": "v1-law-role-conflict",
+      "source": "docs/audit/evidence/generated-cases-v1.json#results/1",
+      "candidate": {
+        "case_number": "6381",
+        "setting": "Meridian Legal",
+        "crime": "A litigation partner embezzled $84,000 from a client trust account through a false vendor invoice.",
+        "objective": "Prove the trust transfer was fraudulent",
+        "briefing": "You are investigating a missing $84,000 from a client trust account at Meridian Legal. The transfer was approved using a legitimate vendor’s details, but the vendor says it never received the funds. You will question the firm’s billing manager, who says he only processed a routine payment.",
+        "detective_leads": [
+          "Vendor’s contact number changed recently",
+          "Billing manager says he never called vendor",
+          "A partner disputes last quarter’s bonus"
+        ],
+        "suspect_name": "Owen Whitaker",
+        "suspect_gender": "male",
+        "suspect_role": "Billing manager",
+        "suspect_true_story": "He created a false invoice using a real vendor’s account details and routed $84,000 from the client trust account to an account he controlled. He claims he simply processed a payment request, but he had called the vendor to verify the account details and substituted his own account number.",
+        "suspect_cover_story": "He says a litigation partner sent him a completed invoice, and he processed it without contacting the vendor or changing any payment details. He claims the funds went to the account listed on the invoice.",
+        "the_lie": "He says he never contacted the vendor about the invoice or its payment details.",
+        "the_truth": "He called the vendor to confirm the invoice details, then replaced the vendor’s account number with one he controlled.",
+        "the_contradiction": "Ask who supplied the vendor’s account details, then press him on the verification call recorded in the firm’s phone log; he says he never called, but the log shows his extension called the vendor before payment, and the vendor recalls he read back the account number.",
+        "stress_triggers": [
+          "Questions about the recorded vendor call",
+          "Asking who entered the account number",
+          "Mentioning the client trust account audit"
+        ],
+        "deflection_tactics": [
+          "Blames the partner who approved the invoice",
+          "Emphasizes how many payments he handled",
+          "Asks whether the vendor’s systems were compromised",
+          "Insists the audit procedure was unclear"
+        ],
+        "verbal_tics": "Uses exact dollar amounts when calm; starts saying “to be precise” when cornered.",
+        "difficulty": "medium"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim",
+        "canonicalConsistency"
+      ],
+      "criterion": "Crime names partner, truth names billing manager; no contact and no payment changes are independent false claims."
+    },
+    {
+      "id": "v2-law-device-attribution",
+      "source": "docs/audit/evidence/generated-cases-v2.json#results/1",
+      "candidate": {
+        "case_number": "6831",
+        "setting": "Meridian Law",
+        "crime": "A sealed client escrow account is short by $18,400 after an internal transfer was recorded.",
+        "objective": "Identify the false claim",
+        "briefing": "You are investigating a shortfall in a sealed client escrow account at Meridian Law. An $18,400 transfer was recorded during the week the account was reconciled. Ask the records clerk about the transfer and test one specific claim in his account.",
+        "detective_leads": [
+          "A calendar invite was rescheduled",
+          "Escrow transfer has a second-factor trail",
+          "Client complained about delayed copies"
+        ],
+        "suspect_name": "Julian Mercer",
+        "suspect_gender": "male",
+        "suspect_role": "Trust Accounts Clerk",
+        "suspect_true_story": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials. He left the office before the transfer completed and later approved it remotely using his registered phone. The firm system requires a separate second-factor approval; a later log entry alone does not establish approval, and leaving the building does not exclude remote access.",
+        "suspect_cover_story": "I processed the transfer as part of the reconciliation, and the account was already short when I checked it. I left the office before the transfer completed. I did not approve it remotely after I left.",
+        "the_lie": "I did not approve it remotely after I left.",
+        "the_truth": "He approved the transfer remotely on his registered phone after leaving the office.",
+        "the_contradiction": "If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+        "stress_triggers": [
+          "Whether his registered phone received the approval code",
+          "Why he left before the transfer completed",
+          "How he knew the account was already short"
+        ],
+        "deflection_tactics": [
+          "Blames a reconciliation delay without naming evidence",
+          "Redirects questions to the client’s late paperwork",
+          "Insists the transfer was routine",
+          "Asks whether anyone else had access"
+        ],
+        "verbal_tics": "Says “to be precise” before correcting small details; becomes unusually formal under pressure.",
+        "difficulty": "medium"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "evidenceSufficiency"
+      ],
+      "criterion": "Phone attribution lacks exclusive possession or observed actor identity; do not reject merely because of missing final punctuation."
+    },
+    {
+      "id": "v3-hospital-extra-lie",
+      "source": "docs/audit/evidence/generated-completeness-v3.json",
+      "candidate": {
+        "case_number": "6381",
+        "setting": "Meridian Hospital",
+        "crime": "A scheduled $84,600 supplier payment was diverted to a different bank account before it was released.",
+        "objective": "Identify the false claim",
+        "briefing": "You are investigating a diverted supplier payment at Meridian Hospital. Interview procurement analyst Ivo Serrano, who says he followed the standard approval process. Identify the false claim in his account; you do not need to prove every element of the crime.",
+        "detective_leads": [
+          "Vendor complained about duplicate forms",
+          "Payment audit shows a quiet revision",
+          "Night-shift badge reader malfunctioned"
+        ],
+        "suspect_name": "Ivo Serrano",
+        "suspect_gender": "male",
+        "suspect_role": "Procurement Analyst",
+        "suspect_true_story": "Ivo changed the supplier's bank account using a stolen vendor credential, then released the $84,600 payment. He did not have the required second approver's authorization. The payment system records each account revision and approval as separate events, and an approval must be explicitly entered by a second authorized user before release. He left the hospital before the release, but used remote access afterward.",
+        "suspect_cover_story": "I changed the supplier's bank account after receiving a vendor update request. The second approver entered his authorization before I released the payment. I left the hospital before the payment was released, and I did not access the system remotely afterward.",
+        "the_lie": "The second approver entered his authorization before I released the payment.",
+        "the_truth": "Ivo released the payment without a second approver's authorization; the later approval entry was added after release using Ivo's own credentials.",
+        "the_contradiction": "The public payment audit shows release at 16:42 and an approval entry at 16:49; system procedure confirms that only an explicit second-user approval entered before release authorizes payment. Follow-up audit records show the 16:49 entry used Ivo's credentials, not the approver's, so the later timestamp is not evidence of earlier approval.",
+        "stress_triggers": [
+          "Who supplied the vendor's new bank details?",
+          "Why was the approval entered seven minutes later?",
+          "Why does the later entry use his credentials?",
+          "How did he access the system after leaving?"
+        ],
+        "deflection_tactics": [
+          "Recasts the account change as routine paperwork.",
+          "Emphasizes that the payment amount matched the invoice.",
+          "Insists the audit timestamps are easy to misread.",
+          "Asks whether the vendor complaint has been resolved."
+        ],
+        "verbal_tics": "Uses exact times and says “for the record” before redirecting.",
+        "difficulty": "hard"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim"
+      ],
+      "criterion": "Cover denies remote access as well as claiming prior approval; private truth contradicts both."
+    },
+    {
+      "id": "authored-ledger-control",
+      "source": "src/lib/gameplay/session.ts#authoredCaseData",
+      "candidate": {
+        "case_number": "RT-001",
+        "setting": "trading floor",
+        "difficulty": "easy",
+        "mode": "redteam",
+        "requiredClues": 1,
+        "crime": "A ledger disappeared from the trading office after closing.",
+        "objective": "Establish one contradiction, then identify the false claim about returning to the building. Presence alone does not prove theft.",
+        "briefing": "A ledger disappeared from a fictional trading office. Ask Casey Vale about the evening, compare the available records, and identify the specific false claim. This is an authored practice case with live AI dialogue.",
+        "detective_leads": [
+          "Compare the departure claim with the visitor record.",
+          "Check whose name appears on each record."
+        ],
+        "suspect_name": "Casey Vale",
+        "suspect_gender": "nonbinary",
+        "suspect_role": "Operations analyst",
+        "suspect_cover_story": "I left at six and did not return to the building that evening.",
+        "suspect_true_story": "Casey returned to the building at 18:42. The visitor record establishes presence, not who took the ledger.",
+        "the_lie": "I left at six and did not return to the building that evening.",
+        "the_truth": "Casey returned to the building at 18:42. The visitor record establishes presence, not who took the ledger.",
+        "the_contradiction": "The statement says there was no return after six, but the visitor record names Casey arriving at 18:42. These accounts conflict about returning to the building.",
+        "stress_triggers": [
+          "The signed visitor record",
+          "The difference between presence and responsibility"
+        ],
+        "deflection_tactics": [
+          "Question the accuracy of the time",
+          "Point to the unrelated badge record"
+        ],
+        "verbal_tics": "Precise about work, evasive about times."
+      },
+      "expected": true,
+      "requiredFailures": [],
+      "criterion": "The existing authored visitor record contradicts absence; neither goal nor proof claims theft."
+    },
+    {
+      "id": "authored-observation-control",
+      "source": "scripts/evaluation/generated-review-corpus.ts#approvalControl",
+      "candidate": {
+        "case_number": "CONTROL-2",
+        "setting": "Fictional records office",
+        "suspect_name": "Ari Chen",
+        "suspect_role": "Records clerk",
+        "crime": "A file was moved between office drawers.",
+        "objective": "Identify the false claim",
+        "briefing": "Ask Ari about moving the file. The desk observer and timestamped video are available facts to discuss.",
+        "detective_leads": [
+          "Compare the account with the desk observation."
+        ],
+        "suspect_cover_story": "I worked at the desk that afternoon. I never moved the file.",
+        "suspect_true_story": "Ari worked at the desk that afternoon and moved the file from drawer A to drawer B at 14:10. The observer knew Ari personally, saw Ari move it and confirmed Ari on the timestamped video. Moving the file does not establish theft.",
+        "the_lie": "I never moved the file.",
+        "the_truth": "Ari moved the file from drawer A to drawer B at 14:10.",
+        "the_contradiction": "The desk observer personally recognized Ari moving the file at 14:10; timestamped video confirms the same action. Ask Ari about that observation. This establishes movement, not theft.",
+        "difficulty": "easy"
+      },
+      "expected": true,
+      "requiredFailures": [],
+      "criterion": "One false movement claim; personally recognized eyewitness and confirming video explicitly bind the action to Ari; no theft inference."
+    },
+    {
+      "id": "heldout-authored-door-control",
+      "source": "authored v2 control, written before inference",
+      "expected": true,
+      "requiredFailures": [],
+      "criterion": "One false opening claim; a personally recognizing observer directly saw the action. No proof of taking documents is required.",
+      "candidate": {
+        "case_number": "REVIEW-CONTROL-3",
+        "setting": "Fictional archive office",
+        "suspect_name": "Lena Sol",
+        "suspect_role": "Archive assistant",
+        "crime": "An archive door was found open during the afternoon shift.",
+        "objective": "Identify the false claim",
+        "briefing": "Question Lena about the archive door and compare the account with the observer report.",
+        "detective_leads": [
+          "Ask what the desk observer saw."
+        ],
+        "suspect_cover_story": "I worked in the archive office that afternoon. I did not open the archive door.",
+        "suspect_true_story": "Lena worked in the archive office that afternoon and opened the archive door at 14:05. The desk observer knows Lena personally and saw Lena turn the handle and open that door. No claim is made that Lena removed documents.",
+        "the_lie": "I did not open the archive door.",
+        "the_truth": "Lena opened the archive door at 14:05.",
+        "the_contradiction": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05. Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "heldout-authored-role-extra-lie",
+      "source": "authored v2 defect, written before inference",
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim",
+        "canonicalConsistency"
+      ],
+      "criterion": "Crime assigns erasure to auditor while true story assigns it to coordinator; archive-entry denial is a second falsehood beyond erasure denial.",
+      "candidate": {
+        "case_number": "REVIEW-DEFECT-1",
+        "setting": "Fictional dispatch office",
+        "suspect_name": "Remy Moss",
+        "suspect_role": "Dispatch coordinator",
+        "crime": "A warehouse auditor erased the dispatch log.",
+        "objective": "Identify the false claim",
+        "briefing": "Ask Remy about the dispatch log and compare the account with the supervisor observation.",
+        "detective_leads": [
+          "Ask what the supervisor observed at the desk."
+        ],
+        "suspect_cover_story": "I worked at the dispatch desk. I never erased the dispatch log. I did not enter the archive room.",
+        "suspect_true_story": "Remy, the dispatch coordinator, worked at the dispatch desk, erased the dispatch log and entered the archive room. The supervisor personally recognized Remy and saw the erasure and archive entry. No warehouse auditor erased the log.",
+        "the_lie": "I never erased the dispatch log.",
+        "the_truth": "Remy erased the dispatch log.",
+        "the_contradiction": "The supervisor, who knows Remy personally, witnessed Remy erase the dispatch log. Follow-up questions about the supervisor observation reveal the erasure. This directly contradicts the denial.",
+        "difficulty": "medium"
+      }
+    }
+  ],
+  "sources": {
+    "src/lib/ai/generated-review/prompt.ts": "97e84e16f1e088b69fb5b540f7bac9ce53974b6717fe0fc6a13bd8998382173f",
+    "src/lib/ai/generated-review/contract.ts": "51187168b93fa104a0f2f151f8c01b71c4a68ae226fbe65a2f06c9ac0adc54ce",
+    "src/lib/ai/generated-review/review.ts": "93a4cfb0662016a641bb59ee93e1921b8e1a461a32ae93fb280a384cb2b05f41",
+    "src/lib/mistral/generate-case.ts": "0ec974d86b99a0c0423c75429a2399d9cc396a1728e141f527b24ec24499557d",
+    "scripts/evaluation/generated-review-v2-corpus.ts": "530b34a0be0c67088e06d01647f5a1ec3d34eaa96e59fbb3a39b4d1a355bc145",
+    "src/lib/ai/generated-review/comparisons.ts": "66c5befd65923e4160653710e8bf646d69f27f93198a6ba44175ec386fda59b2",
+    "src/lib/ai/generated-review/quotes.ts": "9d72a5ecfad041f327c9c8696810fc3ffc06af7b9c097328ac32ec9cf2d5119b",
+    "src/lib/ai/generated-content.ts": "dff33043f62325071f41170a97c214071d5af9f26ed47bf14a5bcf5fe59e72e4"
+  },
+  "limits": "Six frozen v1 cases plus two held-out authored cases; same-model review, not human judgment or statistical reliability.",
+  "cost": {
+    "billingPath": "existing Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed",
+    "monetaryCost": "unmeasured"
+  }
+}
