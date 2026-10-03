@@ -27,7 +27,7 @@ async function main() {
   try {
     for (const migration of ['001_private_leaderboard', '004_leaderboard_play_mode', '006_hosted_sessions',
       '007_hosted_budgets', '008_hosted_terminal_export', '009_hosted_claimed_work',
-      '010_hosted_redemption', '011_hosted_generation', '012_hosted_generation_finish']) {
+      '010_hosted_redemption', '011_hosted_generation', '012_hosted_generation_finish', '015_hosted_request_identity']) {
       await database.migrate(`database/migrations/${migration}.sql`);
     }
     Object.assign(process.env, { SESSION_STORAGE: 'unsupported-fixture', VERCEL: '1', AI_PROVIDER: 'openai',

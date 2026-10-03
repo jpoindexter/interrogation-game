@@ -1,0 +1,32 @@
+✔ HTTP distinguishes exhausted budget from unavailable storage before provider work (836.132625ms)
+✔ headerless question retries share one restrictive bucket without consuming leaderboard quota, and denial precedes provider entry (2535.116958ms)
+✔ authored case plays through real routes: wrong exhibit, exact replay, contradiction, recovery, win (1633.717166ms)
+✔ a timed-out case records its actual cause and replay never starts another generation (239.466625ms)
+✔ completed generation survives a process restart without a second provider call or new session (448.955042ms)
+✔ a concurrent process cannot invoke the same generation provider twice (507.675083ms)
+✔ process death during provider work retains a pending receipt and never silently charges again (229.982042ms)
+✔ different inputs conflict while reordered identical inputs replay the completed case (178.642875ms)
+✔ a dropped HTTP response replays the persisted generated case after server restart (295.08775ms)
+✔ generation recovers the reserved case after checkpoint-crash without another provider call (271.766375ms)
+✔ generation recovers the reserved case after session-crash without another provider call (292.60825ms)
+✔ generation progress exposes only durable phases while private checkpoints remain hidden (308.290375ms)
+✔ hosted selection requires explicit operator configuration and bounded integer budgets (1.171625ms)
+✔ backend selection has no hosted-to-local fallback and adapters hold no shared session state (0.671542ms)
+✔ shared readiness reports configuration only, hides credentials and disables hosted voice (0.358292ms)
+✔ actual leaderboard routes persist a win locally and expose its exact record id (384.622333ms)
+✔ actual evaluation route refuses invented win and retains session (256.157666ms)
+✔ actual accusation route refuses expired session without model call (265.37275ms)
+✔ actual routes honor shared session lock (319.038334ms)
+✔ actual interrogation route cannot continue a won session (245.031ms)
+✔ speech authorizes the entire accepted statement and exact briefing (28.096917ms)
+✔ recording is limited to an active session and exact supported media type (45.904834ms)
+✔ ElevenLabs adapters send documented model fields, server auth and cancellation (80.578459ms)
+✔ endpoint buckets cannot be bypassed by absent IPs; voice budgets cap work (608.058167ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3811.686208

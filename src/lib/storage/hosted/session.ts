@@ -3,10 +3,10 @@ import type { GameExport } from '../../session/exports/storage';
 import type { RequestRecord } from '../../session/repository-types';
 import { object } from './rpc';
 import { supabaseRpc, integer, invalidResponse, requireInput, type HostedRpc } from './rpc';
-import { actionParameters, parseKind, parseResponse, parseSnapshot, sessionKey,
+import { actionParameters, hashKey, parseKind, parseResponse, parseSnapshot, sessionKey,
   type ActionClaim, type ActionIdentity, type ClaimResult, type CompleteResult, type HostedSnapshot, type StoredResponse } from './contracts';
 
-/** Explicit staged adapter; the application keeps its local-only guard until all stores are integrated. */
+/** Shared authority selected only by validated server configuration. */
 export class HostedSessionStorage {
   constructor(private readonly rpc: HostedRpc = supabaseRpc) {}
 
@@ -36,7 +36,7 @@ export class HostedSessionStorage {
 
   async claim(input: Omit<ActionIdentity, 'owner'> & { owner?: string }): Promise<ClaimResult> {
     const identity = { ...input, owner: input.owner ?? randomUUID() };
-    const result = parseKind(await this.rpc('interrogation_session_claim', actionParameters(identity)),
+    const result = parseKind(await this.rpc('interrogation_action_claim', { ...actionParameters(identity), p_request_id: input.requestId }),
       ['claimed', 'replay', 'busy', 'conflict', 'interrupted', 'limit', 'unavailable', 'invalid']);
     if (result.kind === 'replay') return { kind: 'replay', response: parseResponse(result.response) };
     if (result.kind !== 'claimed') return { kind: result.kind } as ClaimResult;
@@ -64,7 +64,15 @@ export class HostedSessionStorage {
 function parseRequest(key: string, value: unknown): RequestRecord {
   if (!/^[a-f0-9]{64}$/.test(key) || !object(value) || typeof value.hash !== 'string'
     || !/^[a-f0-9]{64}$/.test(value.hash) || !integer(value.startedAt)) return invalidResponse();
-  if (value.state === 'pending') return { hash: value.hash, state: 'pending', startedAt: value.startedAt };
+  const publicId = parsePublicId(key, value.publicId);
+  if (value.state === 'pending') return { hash: value.hash, publicId, state: 'pending', startedAt: value.startedAt };
   if (value.state !== 'complete') return invalidResponse();
-  return { hash: value.hash, state: 'complete', startedAt: value.startedAt, response: parseResponse(value.response) };
+  return { hash: value.hash, publicId, state: 'complete', startedAt: value.startedAt, response: parseResponse(value.response) };
+}
+
+function parsePublicId(key: string, value: unknown): string | null {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== 'string' || !/^[a-zA-Z0-9_-]{8,128}$/.test(value)
+    || hashKey(value) !== key) return invalidResponse();
+  return value;
 }

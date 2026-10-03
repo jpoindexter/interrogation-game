@@ -26,7 +26,7 @@ const originalFetch = globalThis.fetch;
 let providerCalls = 0;
 try {
   for (const file of ['001_private_leaderboard', '004_leaderboard_play_mode', '006_hosted_sessions',
-    '007_hosted_budgets', '008_hosted_terminal_export', '009_hosted_claimed_work']) {
+    '007_hosted_budgets', '008_hosted_terminal_export', '009_hosted_claimed_work', '015_hosted_request_identity']) {
     await database.migrate(`database/migrations/${file}.sql`);
   }
   process.env.INTERROGATION_DATA_DIR = directory;

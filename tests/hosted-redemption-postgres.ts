@@ -109,7 +109,7 @@ async function main() {
   const database = await isolatedPostgres();
   try {
     for (const file of ['001_private_leaderboard', '004_leaderboard_play_mode', '006_hosted_sessions',
-      '008_hosted_terminal_export', '010_hosted_redemption']) await database.migrate(`database/migrations/${file}.sql`);
+      '008_hosted_terminal_export', '010_hosted_redemption', '015_hosted_request_identity']) await database.migrate(`database/migrations/${file}.sql`);
     console.log(`Database: ${await database.sql('SHOW server_version;')}`);
     const rpc = transport(database), sessions = new HostedSessionStorage(rpc), scores = new HostedRedemptionStorage(rpc);
     await concurrency(database, scores, sessions);

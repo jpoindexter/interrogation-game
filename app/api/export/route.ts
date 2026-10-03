@@ -5,6 +5,7 @@ import { getSupabaseClient } from '../../../src/lib/db';
 import { getClientIp } from '../../../src/lib/rate-limit';
 import { readLocalExports, exportStorageMode } from '../../../src/lib/session/exports/storage';
 import { parseExportQuery, type ExportQuery } from '../../../src/lib/session/exports/query';
+import { storageBackend } from '@/lib/storage/backend';
 
 function authorized(request: NextRequest): boolean {
   const supplied = request.headers.get('authorization')?.replace(/^Bearer /, '') || '';
@@ -29,9 +30,10 @@ async function readRows(options: ExportQuery) {
   return data ?? [];
 }
 export async function GET(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(`export:${getClientIp(request)}`, 10);
+  const budgetFailure = await requestBudgetFailure(`export:${getClientIp(request)}`, 10);
   if (budgetFailure) return budgetFailure;
   if (!authorized(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (storageBackend() === 'supabase') return NextResponse.json({ error: 'Bulk export is unavailable in this hosted preview until byte-bounded pagination is configured.' }, { status: 503 });
   let options: ExportQuery;
   try { options = parseExportQuery(request.nextUrl.searchParams); }
   catch { return NextResponse.json({ error: 'Invalid export filters or pagination' }, { status: 400 }); }

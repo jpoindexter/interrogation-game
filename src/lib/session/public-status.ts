@@ -13,6 +13,7 @@ export function publicSessionStatus(session: GameSession) {
     stats: getSessionStats(session.id), winToken: session.outcome === 'win' ? session.winToken : undefined,
     result: session.outcome ? projectResult(session) : undefined,
     pendingRequests: Object.entries(requests).filter(([, entry]) => entry.state === 'pending')
-      .map(([requestId, entry]) => ({ requestId, startedAt: entry.startedAt })),
+      .filter(([, entry]) => entry.publicId !== null)
+      .map(([requestId, entry]) => ({ requestId: entry.publicId ?? requestId, startedAt: entry.startedAt })),
   };
 }

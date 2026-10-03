@@ -9,7 +9,7 @@ import { DISABLED_RETRIEVAL, retrievePatterns, storeSessionPattern } from '../..
 
 export async function POST(req: NextRequest) {
   if (!retrievalEnabled()) return NextResponse.json(DISABLED_RETRIEVAL);
-  const budgetFailure = requestBudgetFailure(`patterns:write:${getClientIp(req)}`, 5);
+  const budgetFailure = await requestBudgetFailure(`patterns:write:${getClientIp(req)}`, 5);
   if (budgetFailure) return budgetFailure;
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   if (!retrievalEnabled()) return NextResponse.json(DISABLED_RETRIEVAL);
-  const budgetFailure = requestBudgetFailure(`patterns:read:${getClientIp(req)}`, 10);
+  const budgetFailure = await requestBudgetFailure(`patterns:read:${getClientIp(req)}`, 10);
   if (budgetFailure) return budgetFailure;
   const url = new URL(req.url);
   const difficulty = validateDifficulty(url.searchParams.get('difficulty'));

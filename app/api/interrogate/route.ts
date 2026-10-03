@@ -8,9 +8,12 @@ import { interrogate } from '../../../src/lib/game-ai';
 import { sanitizeInput, validateString } from '../../../src/lib/sanitize';
 import { getClientIp } from '../../../src/lib/rate-limit';
 import { commitTurn, prepareTurn, terminalResponse } from '../../../src/lib/session/turn';
-import { runSessionRequest, type SessionResponse } from '../../../src/lib/session/request-ledger';
+import { runSessionRequest, type SessionResponse } from '../../../src/lib/session/dispatch';
 import { exportSession } from '../../../src/lib/session/export';
 import type { GameSession } from '../../../src/lib/session/types';
+
+export const runtime = 'nodejs';
+export const maxDuration = 180;
 
 async function runTurn(session: GameSession, question: string, signal: AbortSignal): Promise<SessionResponse> {
   ensureNotAborted(signal);
@@ -28,7 +31,7 @@ async function runTurn(session: GameSession, question: string, signal: AbortSign
   return { status: 200, body: { ...body, ...(delivery ? { export: delivery } : {}) } };
 }
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(`interrogate:${getClientIp(request)}`, 30);
+  const budgetFailure = await requestBudgetFailure(`interrogate:${getClientIp(request)}`, 30);
   if (budgetFailure) return budgetFailure;
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }

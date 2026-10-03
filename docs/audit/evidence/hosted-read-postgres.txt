@@ -1,0 +1,5 @@
+Database: 14.18 (Homebrew)
+PASS reads: repeated projection leaves zero receipts/markers; full500 actionledger remains readable; active lease and late writer excluded; anonymous claim denied
+PASS timeout read: canonical expiry/result/export atomic; forced export failure rolls back and leaves no action receipt; recovered repeat retains one export
+Scope: actual domain projections/TS read orchestration and PostgreSQL. No live Supabase/PostgREST, public HTTP route, browser, provider, voice or deployment.
+CLEANUP isolated database and seed directory removed

@@ -129,7 +129,7 @@ test('generation progress exposes only durable phases while private checkpoints 
   await generationFixture(context);
   const requestId = 'progress-only-generation';
   const readStatus = async () => {
-    const response = generationStatus(new NextRequest(`http://localhost/api/generate-case/status?requestId=${requestId}`));
+    const response = await generationStatus(new NextRequest(`http://localhost/api/generate-case/status?requestId=${requestId}`));
     assert.equal(response.headers.get('Cache-Control'), 'no-store');
     const body = await response.json();
     assert.deepEqual(Object.keys(body).sort(), ['phase', 'startedAt', 'state']);

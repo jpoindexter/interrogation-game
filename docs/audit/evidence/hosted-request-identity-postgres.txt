@@ -1,0 +1,7 @@
+Database: 14.18 (Homebrew)
+PASS public retry identity: actual adapter claim/receipt/project preserves original ID; hash mismatch denied; exact completed replay; old claim RPC denied
+PASS internal reads: real 014 claim/complete leaves no receipt; seeded legacy internal marker is excluded from receipt/public projections
+PASS legacy recovery: unknown hashed ID hidden, matching retry restores original ID, database constraint rejects malformed identity binding
+PASS malformed adapter receipts rejected; provider/network calls: 0
+Scope: disposable PostgreSQL plus actual adapters, domain factory and publicSessionStatus. No live Supabase/HTTP/browser verification.
+CLEANUP isolated cluster stopped and temporary directory removed

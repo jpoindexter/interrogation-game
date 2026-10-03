@@ -1,6 +1,8 @@
 import type { GameSession } from './types';
 import type { WinSnapshot } from './tokens';
 export interface RequestRecord {
+  /** Shared storage keeps lookup hashes; null means an older receipt has no recoverable public ID. */
+  publicId?: string | null;
   hash: string;
   state: 'pending' | 'complete';
   startedAt: number;

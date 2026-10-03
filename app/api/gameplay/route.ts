@@ -1,10 +1,13 @@
 import { requestBudgetFailure } from '@/lib/limits/http';
 import { NextRequest, NextResponse } from 'next/server';
-import { runSessionRequest } from '@/lib/session/request-ledger';
+import { runSessionRequest } from '@/lib/session/dispatch';
 import { playDialogue, pinDialogue } from '@/lib/gameplay/interaction';
 import { GameplayError } from '@/lib/gameplay/errors';
 import { getClientIp } from '@/lib/rate-limit';
 import type { GameSession } from '@/lib/session/types';
+
+export const runtime = 'nodejs';
+export const maxDuration = 180;
 
 async function execute(session: GameSession, body: Record<string, unknown>, signal: AbortSignal) {
   try {
@@ -17,7 +20,7 @@ async function execute(session: GameSession, body: Record<string, unknown>, sign
 }
 
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(getClientIp(request), 40);
+  const budgetFailure = await requestBudgetFailure(getClientIp(request), 40);
   if (budgetFailure) return budgetFailure;
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }

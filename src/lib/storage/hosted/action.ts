@@ -45,7 +45,7 @@ async function execute(request: HostedAction, workspace: SessionWorkspace): Prom
   catch (cause) { response = aiWorkFailure(cause) ?? failure(502, 'ACTION_FAILED'); }
   response = { ...response, body: { ...response.body, requestId: request.requestId } };
   workspace.record.requests[hashKey(request.requestId)] = { hash: generationFingerprint(request.fingerprint),
-    state: 'complete', startedAt: Date.now(), response };
+    publicId: request.requestId, state: 'complete', startedAt: Date.now(), response };
   if (workspace.record.session.outcome) {
     projectResult(workspace.record.session);
     await exportSession(request.sessionId, workspace.record.session.outcome);
@@ -57,7 +57,7 @@ function storageSnapshot(record: SessionRecord): HostedSnapshot {
   return snapshot;
 }
 
-/** Explicit integration entry point. Routing remains guarded until generation/admission/redemption are shared. */
+/** Runs domain actions under shared admission, ownership and atomic commit. */
 export async function runHostedSessionRequest(request: HostedAction, stores: HostedActionStores): Promise<SessionResponse> {
   if (!/^[a-zA-Z0-9_-]{8,128}$/.test(request.requestId)) return failure(400, 'INVALID_REQUEST_ID');
   try {

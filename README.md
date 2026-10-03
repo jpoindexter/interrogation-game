@@ -2,7 +2,7 @@
 
 A fictional noir detective game built by Jason Poindexter for a hackathon. Question an AI suspect, compare its account with the case, and make a specific accusation.
 
-The current upgrade targets a **local video demonstration** using a signed-in Codex subscription, with ElevenLabs voice and a separate OpenAI API adapter for future hosting. Integration is active: one generated public CLI playthrough completed case preparation, three questions, evidence release, a supported accusation and result recovery. Preparation took 70.667 seconds. The earlier 77.144-second review failure remains recorded; this small sample does not establish broad fairness or reliability. Browser and voice acceptance remain unverified. See [current implementation status](docs/audit/IMPLEMENTATION-STATUS.md). See [the audit](docs/audit/AUDIT.md), [implementation plan](docs/audit/IMPLEMENTATION-PLAN.md) and [gameplay upgrade](docs/audit/GAMEPLAY-UPGRADE.md) for evidence and remaining acceptance work.
+The current upgrade targets a **local video demonstration** using a signed-in Codex subscription, optional local ElevenLabs voice and an explicit shared text mode using the OpenAI API and Supabase. Integration is active: one generated public CLI playthrough completed case preparation, three questions, evidence release, a supported accusation and result recovery. Preparation took 70.667 seconds. The earlier 77.144-second review failure remains recorded; this small sample does not establish broad fairness or reliability. Browser and voice acceptance remain unverified. See [current implementation status](docs/audit/IMPLEMENTATION-STATUS.md). See [the audit](docs/audit/AUDIT.md), [implementation plan](docs/audit/IMPLEMENTATION-PLAN.md) and [gameplay upgrade](docs/audit/GAMEPLAY-UPGRADE.md) for evidence and remaining acceptance work.
 
 ![Historical hackathon title screen](public/screenshots/hero.png)
 
@@ -34,7 +34,7 @@ Do not copy local Codex authentication files into the repository, browser or hos
 
 ## Server configuration
 
-These are server environment variables, never browser settings. The provider migration is being integrated; use the configuration report and an actual game turn to validate the selected path.
+These are server environment variables, never browser settings. Local Codex remains the default. Shared text mode is selected only by the complete server configuration below; configuration checks do not test credentials or deployed gameplay.
 
 | Variable | Purpose |
 |---|---|
@@ -49,6 +49,11 @@ These are server environment variables, never browser settings. The provider mig
 | `ELEVENLABS_STT_MODEL` | Defaults to `scribe_v2` in the voice adapter |
 | `ELEVENLABS_TTS_MODEL` | Defaults to `eleven_flash_v2_5` in the voice adapter |
 | `INTERROGATION_DATA_DIR` | Optional private local data directory; defaults to `.local` |
+| `SESSION_STORAGE`, `HOSTED_TEXT_ENABLED` | Default `local`; shared routes require `supabase` and explicit `true` |
+| `HOSTED_DEPLOYMENT_ID` | Required stable shared allowance namespace, 1–96 letters, digits, underscores, dots, colons or hyphens |
+| `HOSTED_AI_CALLS_PER_WINDOW` | Required shared deployment call cap, integer 0–1,000,000 |
+| `HOSTED_AI_CHARACTERS_PER_WINDOW` | Required shared deployment input-character cap, integer 0–1,000,000,000,000 |
+| `HOSTED_AI_WINDOW_SECONDS` | Required shared deployment window, integer 60–86,400 seconds |
 | `LEADERBOARD_STORAGE` | Local files by default; optional `supabase` server backend |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Optional managed project origin (`https://<project>.supabase.co`) and server credential; custom domains, self-hosted targets and redirects are unsupported |
 | `EXPORT_SECRET` | Bearer credential for the private export endpoint |
@@ -58,7 +63,7 @@ These are server environment variables, never browser settings. The provider mig
 
 Preferences are stored under `appPreferences`. Only known nonsecret preferences are carried forward from older `appSettings` data. Legacy keys are not sent to providers or copied into new preference writes. They remain in the old storage entry until the user removes it; resetting preferences does not silently delete them.
 
-Voice retries use private local receipts to avoid repeating provider work. The bounded server cache retains synthesized audio and transcription/error responses; a failed microphone clip remains only in the current view's memory for explicit retry/discard. See [voice storage and recovery](docs/audit/VOICE-IDEMPOTENCY.md) and [AI/voice work limits](docs/audit/SHARED-BUDGETS.md). Neither feature establishes real microphone or playback acceptance.
+**Local** voice retries use private local receipts to avoid repeating provider work. The bounded server cache retains synthesized audio and transcription/error responses; a failed microphone clip remains only in the current view's memory for explicit retry/discard. See [voice storage and recovery](docs/audit/VOICE-IDEMPOTENCY.md) and [AI/voice work limits](docs/audit/SHARED-BUDGETS.md). Neither feature establishes real microphone or playback acceptance.
 
 ## Play
 
@@ -95,9 +100,23 @@ See the [current architecture](docs/ARCHITECTURE.md) and [local rehearsal runboo
 - `src/lib/voice/`: server-side ElevenLabs transcription and speech authorization.
 - `src/lib/leaderboard/`: receipt-based score storage. Public views do not mix in fictional seed scores.
 
-Local session snapshots, score receipts and exports are private files under the data directory. They may include full transcripts, case secrets and private redemption data. Keep them out of version control and screen sharing. One-hour session expiry and 24-hour generation/voice receipt expiry limit availability; they do not erase the stored files. Custom data directories are not automatically covered by this repository’s `.gitignore`. Review/archive data only while the demo server is stopped, and do not retry archived request IDs against a fresh store. Optional hosted leaderboard migrations are documented in [database/README.md](database/README.md).
+Local session snapshots, score receipts and exports are private files under the data directory. They may include full transcripts, case secrets and private redemption data. Keep them out of version control and screen sharing. One-hour session expiry and 24-hour generation/voice receipt expiry limit availability; they do not erase the stored files. Custom data directories are not automatically covered by this repository’s `.gitignore`. Review/archive data only while the demo server is stopped, and do not retry archived request IDs against a fresh store. Database migrations and the distinct local/remote/shared storage modes are documented in [database/README.md](database/README.md).
 
-**Vercel readiness is incomplete.** The local session repository explicitly rejects hosted use without a shared durable session implementation. Configuring an API key or hosted leaderboard alone does not complete deployment. Verify hosted persistence, migrations, credentials and end-to-end behavior separately before publishing.
+### Opt-in shared text mode
+
+The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–015 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
+
+- `SESSION_STORAGE=supabase`, `HOSTED_TEXT_ENABLED=true`, `AI_PROVIDER=openai` and `AI_RAG_ENABLED=false`.
+- `LEADERBOARD_STORAGE=supabase`, `EXPORT_STORAGE=supabase`, a managed `SUPABASE_URL`, server-only `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY`.
+- A stable `HOSTED_DEPLOYMENT_ID` and explicit integer values for all three `HOSTED_AI_*` limits above. `.env.example` leaves the caps unset for the operator to choose.
+
+Shared AI reservations consume one call and their input characters, including failed provider attempts. Session allowances remain 120 calls and 2,000,000 input characters; deployment caps add a database-time window across sessions. These are conservative work limits, not exact billing. Zero deployment caps admit no new AI work. After the first reservation attempt, an existing deployment/provider policy refuses changed caps or window settings; coordinate policy changes with the database rather than rotating deployment IDs to reset usage. `AI_WORK_ENABLED=false` stops new AI work without changing that stored policy.
+
+When `VERCEL` is set, local session storage is refused. Shared configuration, transport or database failures never fall back to local files. Shared endpoint admission uses fixed minute windows and hashed endpoint/identity keys; it reports exhausted allowances separately from unavailable storage.
+
+**Shared mode is text only.** Hosted transcription and speech remain unavailable even with an ElevenLabs key. Historical retrieval must remain off. Canonical completion exports are saved transactionally, but the private admin bulk-download endpoint is unavailable until byte-bounded pagination is implemented.
+
+**Live deployment acceptance remains open.** Disposable PostgreSQL, adapters and controlled integration checks do not prove an actual Supabase project, OpenAI credentials, Vercel runtime, browser playthrough or voice. See [shared route integration and remaining gates](docs/audit/HOSTED-ROUTE-INTEGRATION.md). No live database migration or deployment is implied by enabling configuration.
 
 ## Checks
 
@@ -118,7 +137,7 @@ A passing build or mock test is not a live demo pass. The remaining demonstratio
 
 ## Private exports
 
-Configure `EXPORT_SECRET` on the server and in the operator's terminal, then run:
+This download command applies to local session mode, including its optional remote export delivery. Shared text mode deliberately returns an unavailable response for admin bulk downloads until byte-bounded pagination is implemented. Configure `EXPORT_SECRET` on the server and in the operator's terminal, then run:
 
 ```bash
 npx tsx scripts/export-data.ts --output=data/export.jsonl --limit=1000

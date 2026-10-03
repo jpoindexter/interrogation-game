@@ -6,8 +6,11 @@ import { sanitizeInput, validateString } from '../../../src/lib/sanitize';
 import { getClientIp } from '../../../src/lib/rate-limit';
 import { exportSession } from '../../../src/lib/session/export';
 import { accusationError, judgeAccusation } from '../../../src/lib/session/accusation';
-import { runSessionRequest, type SessionResponse } from '../../../src/lib/session/request-ledger';
+import { runSessionRequest, type SessionResponse } from '../../../src/lib/session/dispatch';
 import type { GameSession } from '../../../src/lib/session/types';
+
+export const runtime = 'nodejs';
+export const maxDuration = 180;
 
 async function runAccusation(session: GameSession, accusation: string, signal: AbortSignal): Promise<SessionResponse> {
   ensureNotAborted(signal);
@@ -20,7 +23,7 @@ async function runAccusation(session: GameSession, accusation: string, signal: A
   return { status: 200, body: { ...result, ...(delivery ? { export: delivery } : {}) } };
 }
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(`accuse:${getClientIp(request)}`, 30);
+  const budgetFailure = await requestBudgetFailure(`accuse:${getClientIp(request)}`, 30);
   if (budgetFailure) return budgetFailure;
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }

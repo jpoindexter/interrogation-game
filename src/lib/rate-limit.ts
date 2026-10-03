@@ -1,11 +1,11 @@
 import type { NextRequest } from 'next/server';
+import { isIP } from 'node:net';
 import { consumeEndpoint } from './limits/consume';
 
 /** Endpoint-scoped buckets. Missing IP must share a bucket, never bypass the limit. */
 export function getClientIp(request: NextRequest): string {
-  const address = process.env.VERCEL === '1'
-    ? request.headers.get('x-real-ip')?.trim() || 'unknown'
-    : 'local';
+  const supplied = request.headers.get('x-real-ip')?.trim() ?? '';
+  const address = process.env.VERCEL === '1' ? (isIP(supplied) ? supplied : 'unknown') : 'local';
   return `${request.nextUrl.pathname}:${address}`;
 }
 

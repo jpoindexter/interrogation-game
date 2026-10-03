@@ -2,7 +2,7 @@ import { requestBudgetFailure } from '@/lib/limits/http';
 import { acceptedTimestamp } from '../../../../src/lib/session/accepted-time';
 import type { GameSession } from '../../../../src/lib/session/types';
 import { NextRequest, NextResponse } from 'next/server';
-import { runSessionRequest } from '../../../../src/lib/session/request-ledger';
+import { runSessionRequest } from '../../../../src/lib/session/dispatch';
 import { expireSession, finishSession } from '../../../../src/lib/session/transitions';
 import { terminalResponse } from '../../../../src/lib/session/turn';
 import { publicSessionStatus } from '../../../../src/lib/session/public-status';
@@ -10,7 +10,7 @@ import { exportSession } from '../../../../src/lib/session/export';
 import { getClientIp } from '../../../../src/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(`session:end:${getClientIp(request)}`, 20);
+  const budgetFailure = await requestBudgetFailure(`session:end:${getClientIp(request)}`, 20);
   if (budgetFailure) return budgetFailure;
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }

@@ -1,11 +1,11 @@
 import { requestBudgetFailure } from '@/lib/limits/http';
 import { NextRequest, NextResponse } from 'next/server';
-import { runSessionRequest } from '@/lib/session/request-ledger';
+import { runSessionRequest } from '@/lib/session/dispatch';
 import { requestHint } from '@/lib/session/hints';
 import { getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(getClientIp(request), 10);
+  const budgetFailure = await requestBudgetFailure(getClientIp(request), 10);
   if (budgetFailure) return budgetFailure;
   try {
     const body = await request.json();

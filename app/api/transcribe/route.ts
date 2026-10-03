@@ -5,9 +5,12 @@ import { requestTranscription } from '@/lib/voice/requests';
 import { voiceResponse } from '@/lib/voice/receipt-types';
 import { voiceFailure } from '@/lib/voice/http';
 import { readVoiceBytes } from '@/lib/voice/bounded-body';
+import { hostedVoiceFailure } from '@/lib/voice/availability';
 
 export async function POST(request: NextRequest) {
-  const budgetFailure = requestBudgetFailure(getClientIp(request), 20);
+  const unavailable = hostedVoiceFailure();
+  if (unavailable) return unavailable;
+  const budgetFailure = await requestBudgetFailure(getClientIp(request), 20);
   if (budgetFailure) return budgetFailure;
   try {
     const body = await readVoiceBytes(request.body, 26 * 1024 * 1024, request.signal);

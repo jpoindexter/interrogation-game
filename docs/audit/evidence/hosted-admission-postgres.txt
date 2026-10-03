@@ -1,0 +1,6 @@
+Database: 14.18 (Homebrew)
+PASS admission adapter: hashed endpoint/identity key; same unknown-client bucket; distinct exhausted versus storage/policy failure without fallback
+PASS admission capacity: six concurrent new keys admit only final slot; existing key works at cap; expired counters safely free capacity
+PASS admission: concurrent boundary, endpoint/deployment isolation, database-time windows, policy freeze, expired counter reset, roles and bounded keys
+Scope: disposable PostgreSQL + TypeScript adapter; window expiry uses expired-row fixture, not a 60-second sleep. No live hosted/provider/browser verification.
+CLEANUP isolated cluster stopped and temporary directory removed

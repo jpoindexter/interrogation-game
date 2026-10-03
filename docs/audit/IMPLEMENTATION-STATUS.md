@@ -8,6 +8,16 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Shared public text route checkpoint
+
+[Shared route integration](HOSTED-ROUTE-INTEGRATION.md) now connects explicit hosted configuration to generation/status, game actions, session/result reads and score redemption. Migrations013–015 add shared endpoint admission, transient read leases and original public retry IDs. Local Codex remains the default; hosted configuration cannot fall back to local files. Hosted voice and admin bulk export return explicit unavailable states while their shared implementations remain unfinished.
+
+Executed: three actual Next production processes and isolated PostgreSQL completed the authored evidence/accusation/result/score path, recovered a killed worker's original request ID without repeat inference, retained one export/score across replay, and enforced one endpoint limit across workers. Polling consumes no permanent action receipts. SDK transport and OpenAI responses were controlled. Twenty-four affected local/configuration checks, current redemption SQL, strict lint, size, types and production build passed. No paid call, remote migration, browser action or deployment ran.
+
+**Next:** implement bounded hosted voice storage/receipts, byte-bounded admin exports and retention that preserves retry protection. Actual Supabase/PostgREST/OpenAI/Vercel and user-owned browser/audio/rehearsal acceptance remain open. ARCH-06 stays In progress; LOGIC-12 stays Verify; the board remains70cards/15Done. The complete goal is active.
+
+Earlier checkpoints below are historical; their former public-route guard and integration-next statements are superseded by this checkpoint.
+
 ## Shared generation and score checkpoint
 
 [Generation recovery and redemption](HOSTED-GENERATION-REDEMPTION.md) now connect the actual case preparation/review path to shared session creation, action execution, terminal export and score consumption. A disposable PostgreSQL integration recovered lost completion/checkpoint responses, preserved one session/export/score, and enforced the same lifetime allowance across generation and gameplay. Provider HTTP was controlled; no paid call or deployed acceptance is claimed. Nineteen affected existing local checks, strict lint, size and production build passed.
