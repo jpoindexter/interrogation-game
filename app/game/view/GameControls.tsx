@@ -56,7 +56,9 @@ export function GameControls(model: GameController) {
     }}
     progress={{
       hasCase: Boolean(model.caseData),
-      clues: model.clues.length,
+      interviewStarted: model.conversationHistory.some(message => message.role === 'assistant'),
+      requiresEvidence: model.caseData?.mode === 'redteam' || Boolean(model.gameplay),
+      clues: model.gameplay?.establishedCount ?? model.clues.length,
       required: model.cluesNeeded,
       accusationsLeft: model.accusationsLeft,
       hintsUsed: model.hintsUsed,

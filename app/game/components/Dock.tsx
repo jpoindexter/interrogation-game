@@ -4,17 +4,23 @@ import type { DockAction, DockProps } from './dock-types';
 
 function RecordingStop() { return <div className="w-4 h-4 bg-white rounded-sm" />; }
 
+function accusationBlock(progress: DockProps['progress']) {
+  if (!progress.hasCase) return 'Load a case before accusing';
+  if (!progress.interviewStarted) return 'Begin the interview before accusing';
+  if (progress.accusationsLeft <= 0) return 'No accusation attempts remain';
+  if (progress.requiresEvidence && progress.clues < progress.required) return 'Establish a contradiction before accusing';
+  return null;
+}
+
 function accusationAction({ input, panels, progress, actions }: DockProps, busy: boolean): DockAction {
-  const available = progress.accusationsLeft > 0 && progress.clues >= progress.required;
+  const blocked = accusationBlock(progress);
   const recording = input.accusing && input.listening;
-  let label = `Accuse (${progress.accusationsLeft})`;
-  if (!available) label = 'Collect more evidence or no attempts remain';
-  if (recording) label = 'Stop recording accusation';
+  const label = recording ? 'Stop recording accusation' : blocked ?? `Accuse (${progress.accusationsLeft})`;
   return {
     id: 'accuse', label,
     icon: recording ? <RecordingStop /> : <AccuseIcon />,
     onClick: actions.accuse,
-    disabled: input.accusing ? !input.listening : busy || !available || panels.accuseConfirm,
+    disabled: input.accusing ? !input.listening : busy || input.listening || Boolean(blocked) || panels.accuseConfirm,
     selected: input.accusing,
     className: 'text-accent',
   };

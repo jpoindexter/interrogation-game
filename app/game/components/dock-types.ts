@@ -13,7 +13,7 @@ export interface DockActions {
 export interface DockProps {
   input: { listening: boolean; speaking: boolean; accusing: boolean; phase: string };
   panels: { text: boolean; notes: boolean; settings: boolean; accuseConfirm: boolean };
-  progress: { hasCase: boolean; clues: number; required: number; accusationsLeft: number; hintsUsed: number };
+  progress: { hasCase: boolean; interviewStarted: boolean; requiresEvidence: boolean; clues: number; required: number; accusationsLeft: number; hintsUsed: number };
   actions: DockActions;
 }
 export interface DockAction {

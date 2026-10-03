@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 
 /** Requests optional storage of the terminal server record. Disabled retrieval is a no-op. */
 export function usePatterns(

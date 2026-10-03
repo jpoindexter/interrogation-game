@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { generationFixture } from './generation-fixtures';
 import { passingReview } from './generated-review-fixtures';
 import { CASE_SCHEMA } from '../src/lib/ai/schemas';
-import { generateCase } from '../src/lib/mistral/generate-case';
+import { generateCase } from '../src/lib/game-ai/generate-case';
 import { authoredCaseData } from '../src/lib/gameplay/session';
 import { buildCasePrompt, CASE_PROMPT_VERSION } from '../src/lib/ai/prompts/case';
 

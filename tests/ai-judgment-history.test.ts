@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { evaluateAccusation } from '../src/lib/mistral/evaluate';
+import { evaluateAccusation } from '../src/lib/game-ai/evaluate';
 
 test('defensive reactions count canonical accusation kinds rather than player-supplied prefixes', async () => {
   const previous = { AI_PROVIDER: process.env.AI_PROVIDER, OPENAI_API_KEY: process.env.OPENAI_API_KEY };

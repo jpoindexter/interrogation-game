@@ -91,6 +91,6 @@ test('the fallback route has no gameplay network, storage, audio or provider dep
   for (const file of readdirSync('app/rehearsal').filter(name => /\.tsx?$/.test(name))) {
     const text = readFileSync(`app/rehearsal/${file}`, 'utf8');
     assert.doesNotMatch(text, /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|navigator\.mediaDevices|localStorage|sessionStorage|new Audio|\/api\//);
-    assert.doesNotMatch(text, /from ['"].*(?:gameplay\/demo-case|session\/|ai\/|mistral)/);
+    assert.doesNotMatch(text, /from ['"].*(?:gameplay\/demo-case|session\/|ai\/|game-ai|mistral)/);
   }
 });

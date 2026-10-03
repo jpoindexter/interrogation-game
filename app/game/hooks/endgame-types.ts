@@ -2,7 +2,7 @@ import type { MutableRefObject } from 'react';
 import type { SpeakResponseOptions } from './useTTS';
 import type { PlaybackOutcome } from '../audio/speech-player';
 import type { Case } from '@/lib/game-state';
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import type { useSfx } from './useSfx';
 
 export interface EndGameDeps {

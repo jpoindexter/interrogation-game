@@ -1,5 +1,5 @@
 import type { Case } from '@/lib/game-state';
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import { parseSessionSnapshot } from './snapshot-validation';
 
 export interface SessionSnapshot {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Case } from '@/lib/game-state';
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import { pickRandomIcons } from '../components/utils';
 export function useGameState() {
   const [gameplay, setGameplay] = useState<import('../playbook/types').PublicGameplayProjection | null>(null);

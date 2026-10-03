@@ -1,7 +1,7 @@
 import { requestBudgetFailure } from '@/lib/limits/http';
 import { ensureNotAborted } from '../../../src/lib/ai/execution';
 import { NextRequest, NextResponse } from 'next/server';
-import { evaluateAccusation } from '../../../src/lib/mistral';
+import { evaluateAccusation } from '../../../src/lib/game-ai';
 import { sanitizeInput, validateString } from '../../../src/lib/sanitize';
 import { getClientIp } from '../../../src/lib/rate-limit';
 import { exportSession } from '../../../src/lib/session/export';

@@ -1,6 +1,6 @@
 import { AiError } from '../../src/lib/ai/contracts';
-import { generateCase } from '../../src/lib/mistral/generate-case';
-import { evaluateAccusation } from '../../src/lib/mistral/evaluate';
+import { generateCase } from '../../src/lib/game-ai/generate-case';
+import { evaluateAccusation } from '../../src/lib/game-ai/evaluate';
 import type { JudgeCase } from '../../src/lib/ai/prompts/judge';
 import { generatedChecks, generatedProbes } from './generated-checks';
 import type { GeneratedCaseScenario } from './generated-corpus';

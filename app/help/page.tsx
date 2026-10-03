@@ -26,7 +26,7 @@ function EvidenceGuide() {
       <li>For Present evidence, choose a disclosed exhibit and read it alongside the pinned quote. Selecting an exhibit does not replace or send your question.</li>
       <li>Review the question and explicitly send it. The result explains whether that pair established a contradiction. The count records established contradictions, not how close the suspect is to confessing.</li>
     </ol>
-    <p>These controls apply to the reviewed evidence challenge. Generated cases use the clues and accusation requirement shown in their case file. Decorative clue icons do not prove the existence of a physical object.</p>
+    <p>These controls apply to the reviewed evidence challenge. In generated cases, clues are optional investigation leads. You can accuse after beginning the interview without collecting them all. Decorative clue icons are markers, not proof of a physical object.</p>
   </section>;
 }
 
@@ -34,7 +34,7 @@ function AccusationGuide() {
   return <section className="space-y-4">
     <h2 className="text-lg font-bold">Make the accusation</h2>
     <p>State what the suspect lied about and what the case supports instead. Include the relevant statement or exhibit. A vague claim such as “you did it” is not enough.</p>
-    <p>The game shows the remaining attempts and evidence requirement. The verdict is separate from the suspect&apos;s acting. Review your words before confirming, particularly after voice transcription.</p>
+    <p>The game shows the remaining attempts. Evidence practice requires an established contradiction; generated cases require the interview to have begun, without a clue-count requirement. The verdict is separate from the suspect&apos;s acting. Review your words before confirming, particularly after voice transcription.</p>
     <p>An unavailable provider or invalid response is an error to retry, not evidence that your accusation was wrong.</p>
   </section>;
 }

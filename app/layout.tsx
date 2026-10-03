@@ -25,17 +25,17 @@ const handwriting = Gloria_Hallelujah({
 
 export const metadata: Metadata = {
   title: 'Interrogation — Voice Detective Game',
-  description: 'A voice-based detective game powered by Mistral AI. Interrogate suspects, catch lies, crack the case.',
+  description: 'A noir detective game with AI suspects. Question their stories, compare evidence, and expose the contradiction.',
   openGraph: {
     title: 'Interrogation — Voice Detective Game',
-    description: 'Mistral can reason. I made it lie. Your job is to catch it.',
+    description: 'An AI suspect. A cover story. Find the evidence that breaks it.',
     type: 'website',
     siteName: 'Interrogation',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Interrogation — Voice Detective Game',
-    description: 'Mistral can reason. I made it lie. Your job is to catch it.',
+    description: 'An AI suspect. A cover story. Find the evidence that breaks it.',
   },
   robots: { index: true, follow: true },
 };

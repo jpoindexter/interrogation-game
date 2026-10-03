@@ -1,8 +1,9 @@
 import { AiError } from '../contracts';
 
+export const PATTERN_SCHEMA_VERSION = 'accepted-events-v1' as const;
 export const EMBEDDING_SPACE = {
   model: 'text-embedding-3-small', dimensions: 1536,
-  version: 'openai-text-embedding-3-small-1536-v1',
+  version: 'openai-text-embedding-3-small-1536-events-v2',
 } as const;
 
 export function retrievalEnabled(env: Record<string, string | undefined> = process.env): boolean {

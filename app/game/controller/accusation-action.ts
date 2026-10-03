@@ -1,4 +1,4 @@
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import type { GameActionsContext, AccusationResponse } from './action-types';
 import { parseAccusationResponse } from './action-response-validation';
 

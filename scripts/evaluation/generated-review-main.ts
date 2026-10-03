@@ -9,7 +9,7 @@ import { generatedReviewV2Corpus } from './generated-review-v2-corpus';
 
 async function sourceHashes() {
   const paths = ['src/lib/ai/generated-review/prompt.ts', 'src/lib/ai/generated-review/contract.ts',
-    'src/lib/ai/generated-review/review.ts', 'src/lib/mistral/generate-case.ts',
+    'src/lib/ai/generated-review/review.ts', 'src/lib/game-ai/generate-case.ts',
     'scripts/evaluation/generated-review-v2-corpus.ts', 'src/lib/ai/generated-review/comparisons.ts',
     'src/lib/ai/generated-review/quotes.ts', 'src/lib/ai/generated-content.ts'];
   return Object.fromEntries(await Promise.all(paths.map(async path =>

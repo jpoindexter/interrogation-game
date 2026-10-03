@@ -1,10 +1,14 @@
-import type { ConversationMessage } from '../mistral';
+import type { AiProvenance } from '../ai/contracts';
+import type { AcceptedTurnEvent } from './turn-events';
+import type { ConversationMessage } from '../game-ai';
 import type { GameplayState } from '../gameplay/types';
 
 export type Outcome = 'win' | 'lose_accusations' | 'lose_time' | 'lose_giveup' | 'lose_lawyer';
 export interface Clue { id: string; text: string }
 export interface GameSession {
   gameplay?: GameplayState;
+  acceptedTurns?: AcceptedTurnEvent[];
+  caseProvenance?: AiProvenance[];
   id: string;
   caseData: Record<string, unknown>;
   conversationHistory: ConversationMessage[];

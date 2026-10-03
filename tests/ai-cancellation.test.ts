@@ -6,9 +6,9 @@ import { join } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { runCodexProcess } from '../src/lib/ai/codex-process';
 import { OpenAIProvider } from '../src/lib/ai/openai';
-import { interrogate } from '../src/lib/mistral/interrogate';
-import { evaluateAccusation } from '../src/lib/mistral/evaluate';
-import { generateCase } from '../src/lib/mistral/generate-case';
+import { interrogate } from '../src/lib/game-ai/interrogate';
+import { evaluateAccusation } from '../src/lib/game-ai/evaluate';
+import { generateCase } from '../src/lib/game-ai/generate-case';
 import type { StructuredTask } from '../src/lib/ai/contracts';
 
 async function waitForPids(file: string): Promise<number[]> {

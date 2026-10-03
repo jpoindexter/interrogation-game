@@ -1,7 +1,8 @@
-import { AiError } from './contracts';
+import { AiError, type AiProvenance } from './contracts';
 
 export interface AiExecution {
   signal?: AbortSignal;
+  onProvenance?: (provenance: AiProvenance) => void;
   onProgress?: (phase: 'generating' | 'reviewing') => void;
 }
 /** Legacy credential strings are ignored; credentials are server configured. */

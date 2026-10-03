@@ -8,7 +8,7 @@ import { GENERATED_REVIEW_INSTRUCTIONS } from './prompt';
 /** Separate inference; findings remain private and are never merged into the public case. */
 export async function reviewGeneratedCase(candidate: Record<string, unknown>, execution: AiExecution = {}): Promise<GeneratedReview> {
   const raw = await requestStructured({ capability: 'case-review', instructions: GENERATED_REVIEW_INSTRUCTIONS,
-    input: JSON.stringify({ candidate }), schema: GENERATED_REVIEW_SCHEMA, signal: execution.signal });
+    input: JSON.stringify({ candidate }), schema: GENERATED_REVIEW_SCHEMA, signal: execution.signal, onProvenance: execution.onProvenance });
   ensureNotAborted(execution.signal);
   const review = raw as GeneratedReview;
   assertReviewQuotes(review.comparisons, candidate);

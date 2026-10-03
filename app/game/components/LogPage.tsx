@@ -1,4 +1,4 @@
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import { motion } from '../../components/motion';
 import { SECTION_HEADER } from './CaseFilePage';
 

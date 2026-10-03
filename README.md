@@ -72,7 +72,7 @@ Both result screens include a compact **Conversation path** in the existing noir
 
 For a connection-free fallback, open **Recorded walkthrough** from Cases (`/rehearsal`). It uses saved exchanges, labels every screen Recorded / not live AI, and makes no model calls or score submissions. See [fallback provenance](docs/audit/RECORDED-FALLBACK.md).
 
-Generated cases still have their own clue requirements. Recent samples exposed multiple false claims and ambiguous evidence; generated-case fairness remains under evaluation. The authored evidence case is the current rehearsal target. Stress and vocal delivery are dramatic devices, not lie detection. The project makes no claim to teach real interrogation techniques or reliably infer guilt from behavior.
+In generated cases, clue markers are optional investigation hints. Once the interview begins, you can submit a specific accusation without filling the clue meter; the judge evaluates the claim and an incorrect verdict consumes an attempt. Evidence practice requires an established statement-and-exhibit contradiction first. Recent generated samples exposed multiple false claims and ambiguous evidence, so generated-case fairness remains under evaluation. The authored evidence case is the current rehearsal target. Stress and vocal delivery are dramatic devices, not lie detection. The project makes no claim to teach real interrogation techniques or reliably infer guilt from behavior.
 
 Timed challenge uses an authoritative server deadline that continues through provider requests and speech. Relaxed removes the deadline and pressure-triggered lawyer ending while preserving the selected difficulty; elapsed time does not reduce its score. Endurance removes the deadline but retains the Hard/Expert lawyer rule: four successive turns at stress 8 or higher end the interview. Both modes without a countdown are unranked. Provider allowances still apply. See `src/lib/scoring.ts` for scoring.
 
@@ -86,6 +86,7 @@ See the [current architecture](docs/ARCHITECTURE.md) and [local rehearsal runboo
 - `app/game/playbook/`: public evidence controls, editable approaches and source-cited feedback.
 - `src/lib/session/`: transitions, transactions, durable local snapshots, canonical results and exports.
 - `src/lib/gameplay/`: reviewed facts, public projections, recorded statements and idempotent challenge actions. Authored secret case data stays on the server.
+- `src/lib/game-ai/`: case preparation, suspect dialogue and accusation judgment, using the selected provider.
 - `src/lib/ai/`: provider contracts and local Codex/OpenAI migration.
 - `src/lib/voice/`: server-side ElevenLabs transcription and speech authorization.
 - `src/lib/leaderboard/`: receipt-based score storage. Public views do not mix in fictional seed scores.

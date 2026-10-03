@@ -1,6 +1,7 @@
+import type { AiProvenance } from '../ai/contracts';
 import type { GenerationContext } from './generation-requests';
 import type { NextRequest } from 'next/server';
-import { generateCase } from '../mistral';
+import { generateCase } from '../game-ai';
 import { selectPortrait, AUTHORED_PORTRAIT } from '../art/portraits';
 import { validateCaseData, validateDifficulty } from '../sanitize';
 import { sanitizeCaseForClient } from '../game-session';
@@ -46,6 +47,7 @@ interface CaseCheckpoint extends Record<string, unknown> {
   data: Record<string, unknown>;
   learnedTactics: string[];
   totalPriorGames: number;
+  provenance?: AiProvenance[];
 }
 
 function restoreCheckpoint(value: Record<string, unknown>): CaseCheckpoint {
@@ -66,7 +68,7 @@ async function prepareCase(options: GenerationOptions, request: NextRequest, con
   data.playMode = options.playMode;
   data.portraitId = authored ? AUTHORED_PORTRAIT : selectPortrait({ role: String(data.suspect_role), gender: String(data.suspect_gender) });
   if (authored) Object.assign(data, { mode: 'redteam', requiredClues: 1 });
-  return { data, learnedTactics, totalPriorGames };
+  return { data, learnedTactics, totalPriorGames, provenance: raw._aiProvenance as AiProvenance[] | undefined };
 }
 
 export async function createPlayableCase(options: GenerationOptions, request: NextRequest, context: GenerationContext): Promise<Record<string, unknown>> {
@@ -77,6 +79,9 @@ export async function createPlayableCase(options: GenerationOptions, request: Ne
   const sessionId = createSessionAt({ sessionId: context.sessionId, caseData: data, learnedTactics,
     totalPriorGames, timerMode: options.timerMode });
   const session = getSession(sessionId)!;
+  if (checkpoint.provenance && !session.caseProvenance) {
+    session.caseProvenance = checkpoint.provenance; persistSession(sessionId);
+  }
   if (options.authored && !session.gameplay) { attachAuthoredGameplay(session); persistSession(sessionId); }
   return { ...sanitizeCaseForClient(data), sessionId, timerMode: options.timerMode, startedAt: session.startTime,
     priorGames: totalPriorGames, gameplay: gameplayProjection(session) };

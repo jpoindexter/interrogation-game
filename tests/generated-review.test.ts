@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, rm } from 'node:fs/promises';
@@ -5,7 +6,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { NextRequest } from 'next/server';
 import { createPlayableCase } from '../src/lib/session/generate-case';
-import { generateCase } from '../src/lib/mistral/generate-case';
+import { generateCase } from '../src/lib/game-ai/generate-case';
 import { reviewGeneratedCase } from '../src/lib/ai/generated-review/review';
 import { acceptsGeneratedReview, REVIEW_CHECKS } from '../src/lib/ai/generated-review/contract';
 import { CASE_SCHEMA } from '../src/lib/ai/schemas';
@@ -47,6 +48,13 @@ test('generation performs a separate review with normalized objective and return
     const output = await generateCase('bank', 'easy');
     assert.equal(tasks.length, 2); assert.equal(output.objective, 'Identify the false claim');
     assert.equal('singleFalseClaim' in output, false);
+    const provenance = output._aiProvenance as { provider: string; model: string; promptHash: string; capability: string }[];
+    assert.deepEqual(provenance.map(item => item.capability), ['case', 'case-review']);
+    for (const [index, item] of provenance.entries()) {
+      const task = tasks[index] as { model: string; input: { content: string }[] };
+      assert.equal(item.provider, 'openai'); assert.equal(item.model, task.model);
+      assert.equal(item.promptHash, createHash('sha256').update(task.input[0].content).digest('hex'));
+    }
     const second = tasks[1] as { text: { format: { name: string } }; input: { content: string }[] };
     assert.equal(second.text.format.name, 'interrogation_case-review');
     assert.equal(JSON.parse(second.input[1].content).candidate.objective, 'Identify the false claim');

@@ -5,6 +5,7 @@ import { motion, fadeUp, stagger, smooth } from '../../components/motion';
 interface HelpPanelProps {
   show: boolean;
   pos: { x: number; y: number } | null;
+  authored: boolean;
   cluesNeeded: number;
   clueIcons: string[];
   isUnlimited?: boolean;
@@ -14,14 +15,14 @@ interface HelpPanelProps {
   onPosChange: (pos: { x: number; y: number } | null) => void;
 }
 
-export default function HelpPanel({ show, pos, cluesNeeded, clueIcons, isUnlimited, playMode, difficulty, onClose, onPosChange }: HelpPanelProps) {
+export default function HelpPanel({ show, pos, authored, cluesNeeded, clueIcons, isUnlimited, playMode, difficulty, onClose, onPosChange }: HelpPanelProps) {
   if (!show) return null;
   return <FloatingPanel title="How to play" pos={pos} onPosition={onPosChange} onClose={onClose}>
-    <HelpInstructions playMode={playMode} isUnlimited={isUnlimited} difficulty={difficulty} cluesNeeded={cluesNeeded} clueIcons={clueIcons} />
+    <HelpInstructions authored={authored} playMode={playMode} isUnlimited={isUnlimited} difficulty={difficulty} cluesNeeded={cluesNeeded} clueIcons={clueIcons} />
   </FloatingPanel>;
 }
 
-function HelpInstructions({ isUnlimited, playMode, difficulty, cluesNeeded, clueIcons }: { playMode?: 'challenge' | 'relaxed' | 'endurance'; isUnlimited: boolean | undefined; difficulty: string | undefined; cluesNeeded: number; clueIcons: string[] }) {
+function HelpInstructions({ authored, isUnlimited, playMode, difficulty, cluesNeeded, clueIcons }: { authored: boolean; playMode?: 'challenge' | 'relaxed' | 'endurance'; isUnlimited: boolean | undefined; difficulty: string | undefined; cluesNeeded: number; clueIcons: string[] }) {
   return (
 <motion.div
             className="p-4 space-y-4 overflow-y-auto min-h-0"
@@ -39,8 +40,8 @@ function HelpInstructions({ isUnlimited, playMode, difficulty, cluesNeeded, clue
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>
               <span className="text-sm font-bold text-accent shrink-0">02</span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1">Collect {cluesNeeded} Clues</p>
-                <p className="text-sm text-gray-400 leading-relaxed">Compare statements and disclosed evidence. Authored practice awards clues for established contradictions. Stress is a fictional game response, not proof of a lie.</p>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1">{authored ? 'Establish a contradiction' : `Explore up to ${cluesNeeded} clues`}</p>
+                <p className="text-sm text-gray-400 leading-relaxed">{authored ? 'Pin a recorded statement, select a disclosed exhibit, and present it to establish the contradiction.' : 'Clues are optional investigation leads. Compare them with the case record and suspect statements; collecting every clue is not required to accuse.'} Stress is a fictional game response, not proof of a lie.</p>
                 <div className="flex flex-wrap items-center gap-3 mt-2">
                   {clueIcons.map((icon, i) => (
                     <AssetImage key={i} src={icon} alt="" className="w-16 h-16 object-contain" style={{ imageRendering: 'pixelated' }} />
@@ -52,7 +53,7 @@ function HelpInstructions({ isUnlimited, playMode, difficulty, cluesNeeded, clue
               <span className="text-sm font-bold text-accent shrink-0">03</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Make Your Accusation</p>
-                <p className="text-sm text-gray-400 leading-relaxed">Once you have all {cluesNeeded} clues, hit ACCUSE. State <span className="text-foreground">what</span> they lied about and <span className="text-foreground">what actually happened</span>. Be specific &mdash; &ldquo;you&apos;re lying&rdquo; won&apos;t count. You get 3 attempts.</p>
+                <p className="text-sm text-gray-400 leading-relaxed">{authored ? 'After establishing the contradiction, hit ACCUSE.' : 'Once the interview has begun, you can ACCUSE when you identify the contradiction.'} State <span className="text-foreground">what</span> they lied about and <span className="text-foreground">what actually happened</span>. Be specific &mdash; &ldquo;you&apos;re lying&rdquo; won&apos;t count. You get 3 attempts.</p>
               </div>
             </motion.div>
             <motion.div className="border-t border-surface pt-3" variants={fadeUp} transition={smooth}>

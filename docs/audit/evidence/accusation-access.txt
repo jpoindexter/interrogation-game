@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: authored case plays through real routes: wrong exhibit, exact replay, contradiction, recovery, win
+ok 1 - authored case plays through real routes: wrong exhibit, exact replay, contradiction, recovery, win
+  ---
+  duration_ms: 849.297167
+  type: 'test'
+  ...
+# Subtest: generated accusations are judged on the claim without requiring stress-unlocked clue markers
+ok 2 - generated accusations are judged on the claim without requiring stress-unlocked clue markers
+  ---
+  duration_ms: 22.250125
+  type: 'test'
+  ...
+# Subtest: clue repeats and filtered leaks do not create invisible progress; transcript matches display
+ok 3 - clue repeats and filtered leaks do not create invisible progress; transcript matches display
+  ---
+  duration_ms: 21.121416
+  type: 'test'
+  ...
+# Subtest: all difficulty countdowns expire exactly at shared boundary; unlimited does not
+ok 4 - all difficulty countdowns expire exactly at shared boundary; unlimited does not
+  ---
+  duration_ms: 178.802375
+  type: 'test'
+  ...
+# Subtest: malformed or failed judgments spend no attempts or question count
+ok 5 - malformed or failed judgments spend no attempts or question count
+  ---
+  duration_ms: 33.673875
+  type: 'test'
+  ...
+# Subtest: a correct verdict freezes facts, time and score; later play cannot change result
+ok 6 - a correct verdict freezes facts, time and score; later play cannot change result
+  ---
+  duration_ms: 94.621292
+  type: 'test'
+  ...
+# Subtest: early evaluation is rejected and expired accusation cannot call judge
+ok 7 - early evaluation is rejected and expired accusation cannot call judge
+  ---
+  duration_ms: 34.2985
+  type: 'test'
+  ...
+# Subtest: provider response after deadline is discarded without consuming accusation
+ok 8 - provider response after deadline is discarded without consuming accusation
+  ---
+  duration_ms: 29.030958
+  type: 'test'
+  ...
+# Subtest: session lock prevents simultaneous finalize or question, releases for next action
+ok 9 - session lock prevents simultaneous finalize or question, releases for next action
+  ---
+  duration_ms: 103.47275
+  type: 'test'
+  ...
+# Subtest: briefing time is excluded and loss reasons are immutable
+ok 10 - briefing time is excluded and loss reasons are immutable
+  ---
+  duration_ms: 37.286042
+  type: 'test'
+  ...
+# Subtest: generated case structural gate rejects blank facts, invalid difficulty and empty triggers
+ok 11 - generated case structural gate rejects blank facts, invalid difficulty and empty triggers
+  ---
+  duration_ms: 0.559042
+  type: 'test'
+  ...
+# Subtest: all difficulties can collect their distinct clue quota
+ok 12 - all difficulties can collect their distinct clue quota
+  ---
+  duration_ms: 151.433625
+  type: 'test'
+  ...
+# Subtest: lawyer-up response is the persisted, speakable text and retains precise outcome
+ok 13 - lawyer-up response is the persisted, speakable text and retains precise outcome
+  ---
+  duration_ms: 32.644959
+  type: 'test'
+  ...
+# Subtest: three valid wrong accusations produce exhausted-attempt outcome once
+ok 14 - three valid wrong accusations produce exhausted-attempt outcome once
+  ---
+  duration_ms: 37.071208
+  type: 'test'
+  ...
+# Subtest: legacy unlimited sessions remain relaxed without hidden lawyer escalation
+ok 15 - legacy unlimited sessions remain relaxed without hidden lawyer escalation
+  ---
+  duration_ms: 36.840333
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1601.167833

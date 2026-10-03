@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Case } from '@/lib/game-state';
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import { motion, slideRight, smooth } from '../../components/motion';
 import CasePage from './CaseFilePage';
 import EvidencePage from './EvidencePage';
@@ -77,7 +77,7 @@ export default function CaseFile({
 function CaseTabs({ page, setPage, clueCount, messageCount }: { page: Page; setPage: (page: Page) => void; clueCount: number; messageCount: number }) {
   const tabs: { key: Page; label: string; badge?: number; color: string; activeColor: string }[] = [
     { key: 'case', label: 'Case', color: 'bg-[#b8a88a]', activeColor: 'bg-[#d4c4a0]' },
-    { key: 'evidence', label: 'Evidence', badge: clueCount > 0 ? clueCount : undefined, color: 'bg-[#8aabb8]', activeColor: 'bg-[#a0c4d4]' },
+    { key: 'evidence', label: 'Leads', badge: clueCount > 0 ? clueCount : undefined, color: 'bg-[#8aabb8]', activeColor: 'bg-[#a0c4d4]' },
     { key: 'log', label: 'Log', badge: messageCount > 0 ? messageCount : undefined, color: 'bg-[#b88a8a]', activeColor: 'bg-[#d4a0a0]' },
   ];
   return (

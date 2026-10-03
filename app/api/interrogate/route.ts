@@ -3,7 +3,7 @@ import { ensureNotAborted } from '../../../src/lib/ai/execution';
 import { acceptAuthoredOpening } from '../../../src/lib/gameplay/session';
 import { sessionProjection } from '../../../src/lib/session/turn';
 import { NextRequest, NextResponse } from 'next/server';
-import { interrogate } from '../../../src/lib/mistral';
+import { interrogate } from '../../../src/lib/game-ai';
 import { sanitizeInput, validateString } from '../../../src/lib/sanitize';
 import { getClientIp } from '../../../src/lib/rate-limit';
 import { commitTurn, prepareTurn, terminalResponse } from '../../../src/lib/session/turn';

@@ -13,7 +13,7 @@ export function origin(): string {
 
 export async function call(base: string, route: string, body?: Record<string, unknown>): Promise<Reply> {
   const response = await fetch(`${base}/api/${route}`, { redirect: 'error', cache: 'no-store',
-    signal: AbortSignal.timeout(65000),
+    signal: AbortSignal.timeout(route === 'generate-case' ? 210000 : 65000),
     ...(body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {}) });
   const data: unknown = await response.json();
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw new ControlError('The server did not return a JSON object. Retry the saved request.');

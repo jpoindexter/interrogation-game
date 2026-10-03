@@ -13,7 +13,7 @@ async function hashes() {
     'src/lib/ai/prompts/case.ts', 'src/lib/ai/prompts/case-text.json', 'src/lib/ai/prompts/judge.ts',
     'src/lib/ai/generated-review/prompt.ts', 'src/lib/ai/generated-review/contract.ts',
     'src/lib/ai/generated-review/review.ts', 'scripts/evaluation/generated-runner.ts',
-    'src/lib/ai/schemas.ts', 'src/lib/session/case-validation.ts', 'src/lib/mistral/generate-case.ts'];
+    'src/lib/ai/schemas.ts', 'src/lib/session/case-validation.ts', 'src/lib/game-ai/generate-case.ts'];
   return Object.fromEntries(await Promise.all(paths.map(async path =>
     [path, createHash('sha256').update(await readFile(path)).digest('hex')])));
 }

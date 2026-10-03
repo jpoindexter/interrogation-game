@@ -1,4 +1,4 @@
-import type { ConversationMessage } from '@/lib/mistral';
+import type { ConversationMessage } from '@/lib/game-ai';
 import type { Evaluation } from '../result/types';
 import { validateEvaluation } from '../result/validation';
 import type { EndGameDeps } from './endgame-types';

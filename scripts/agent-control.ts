@@ -26,8 +26,11 @@ async function readState(saved: SavedSession, command: string) {
 
 async function requireOpening(saved: SavedSession) {
   const state = await readState(saved, 'state');
-  const gameplay = state.data.gameplay as { turns?: unknown[] } | undefined;
-  if (state.status !== 200 || !gameplay?.turns || gameplay.turns.length > 0) throw new ControlError('Opening is unavailable or already recorded. Read state instead.');
+  const history = state.data.conversationHistory;
+  if (state.status !== 200 || !['briefing', 'active'].includes(String(state.data.status))
+    || state.data.outcome || !Array.isArray(history) || history.length > 0) {
+    throw new ControlError('Opening is unavailable or already recorded. Read state instead.');
+  }
 }
 
 async function preparePending(input: Input, saved: SavedSession) {

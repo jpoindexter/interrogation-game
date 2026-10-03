@@ -31,6 +31,22 @@ function readyToAccuse() {
 }
 const wrong = { correct: false, confession: 'That is not what happened.', explanation: 'The evidence does not match.' };
 
+test('generated accusations are judged on the claim without requiring stress-unlocked clue markers', async () => {
+  const session = makeSession();
+  beginSession(session);
+  assert.equal(session.clues.length, 0);
+  const rejected = await judgeAccusation(session, 'An unsupported accusation', async () => wrong);
+  assert.equal(rejected.correct, false);
+  assert.equal(session.accusationsLeft, 2);
+  const accepted = await judgeAccusation(session, 'The witness contradicts your alibi', async () => ({
+    correct: true, confession: 'The alibi was false.', explanation: 'The named witness contradicts the denial.',
+  }));
+  assert.equal(accepted.correct, true);
+  assert.equal(session.outcome, 'win');
+  assert.equal(session.clues.length, 0);
+  deleteSession(session.id);
+});
+
 test('clue repeats and filtered leaks do not create invisible progress; transcript matches display', () => {
   const session = makeSession();
   beginSession(session);

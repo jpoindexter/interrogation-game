@@ -1,4 +1,4 @@
-import { interrogate } from '../mistral';
+import { interrogate } from '../game-ai';
 import { requireActive, acceptClue } from '../session/transitions';
 import { commitTurn, sessionProjection } from '../session/turn';
 import type { GameSession } from '../session/types';

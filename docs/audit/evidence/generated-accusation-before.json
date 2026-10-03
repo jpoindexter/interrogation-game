@@ -1,0 +1,88 @@
+{
+  "sourceCommit": "e84f614",
+  "scope": "Actual production HTTP follow-up on the startup/easy case generated in generation-v4-live.json. No private solution was read. Questions and accusation use public briefing and replies only.",
+  "results": [
+    {
+      "route": "interrogate",
+      "status": 200,
+      "milliseconds": 18638,
+      "input": "Please explain where you were on Tuesday between 10:00 and 10:30 a.m., and how Mara could confirm your account.",
+      "data": {
+        "spoken_response": "Right, I handle NimbleNest\u2019s sprint board, but I wasn\u2019t in the meeting room on Tuesday between 10:00 and 10:30 a.m. Mara... you\u2019d have to ask her what she remembers; why does that half hour matter?",
+        "stress_level": 1,
+        "clue_unlocked": null,
+        "caught": false,
+        "lawyered_up": false,
+        "clues": [],
+        "cluesCollected": 0,
+        "status": "active",
+        "outcome": null,
+        "startedAt": 1791034339812,
+        "endedAt": null,
+        "timerMode": "countdown",
+        "timeLimit": 300,
+        "timeElapsed": 18.553
+      }
+    },
+    {
+      "route": "interrogate",
+      "status": 200,
+      "milliseconds": 20132,
+      "input": "What does Mara\u2019s dated witness statement say she personally saw in the meeting room that Tuesday, and at what time?",
+      "data": {
+        "spoken_response": "Right... she says she personally recognized me holding the signed product roadmap in the meeting room at 10:20 a.m. Tuesday. But she must be mistaken\u2014I wasn\u2019t in that room between 10:00 and 10:30.",
+        "stress_level": 2,
+        "clue_unlocked": null,
+        "caught": false,
+        "lawyered_up": false,
+        "clues": [],
+        "cluesCollected": 0,
+        "status": "active",
+        "outcome": null,
+        "startedAt": 1791034339812,
+        "endedAt": null,
+        "timerMode": "countdown",
+        "timeLimit": 300,
+        "timeElapsed": 50.405
+      }
+    },
+    {
+      "route": "interrogate",
+      "status": 200,
+      "milliseconds": 15524,
+      "input": "You deny being in the room from 10:00 to 10:30, but Mara says she personally recognized you there at 10:20 holding the roadmap. Which part of her account do you dispute?",
+      "data": {
+        "spoken_response": "Right... I dispute that she recognized me. Not the time, not the roadmap\u2014I mean, I can't confirm those either, but I wasn't in that room.",
+        "stress_level": 3,
+        "clue_unlocked": "Imani disputes Mara\u2019s personal identification but initially leaves the time and roadmap unchallenged, despite denying being in the room.",
+        "caught": false,
+        "lawyered_up": false,
+        "clues": [
+          {
+            "id": "clue-1",
+            "text": "Imani disputes Mara\u2019s personal identification but initially leaves the time and roadmap unchallenged, despite denying being in the room."
+          }
+        ],
+        "cluesCollected": 1,
+        "status": "active",
+        "outcome": null,
+        "startedAt": 1791034339812,
+        "endedAt": null,
+        "timerMode": "countdown",
+        "timeLimit": 300,
+        "timeElapsed": 98.103
+      }
+    },
+    {
+      "route": "accuse",
+      "status": 409,
+      "milliseconds": 74,
+      "input": "Your claim that you were not in the meeting room on Tuesday between 10:00 and 10:30 a.m. is false. Mara personally recognized you in that room at 10:20 holding the signed product roadmap. That contradicts your denial of being there; it does not by itself prove you stole the document.",
+      "data": {
+        "error": "Not enough clues collected. Need 2, have 1.",
+        "outcome": null
+      }
+    }
+  ],
+  "finding": "The published witness contradiction was discussable after two questions, but a specific accusation was rejected before model judgment because only one of two clue markers had unlocked."
+}

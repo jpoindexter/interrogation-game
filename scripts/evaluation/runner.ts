@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { authoredCaseData } from '../../src/lib/gameplay/session';
-import { evaluateAccusation } from '../../src/lib/mistral/evaluate';
-import { interrogate } from '../../src/lib/mistral/interrogate';
+import { evaluateAccusation } from '../../src/lib/game-ai/evaluate';
+import { interrogate } from '../../src/lib/game-ai/interrogate';
 import type { ConversationMessage, SuspectCase } from '../../src/lib/ai/types';
 import type { JudgeCase } from '../../src/lib/ai/prompts/judge';
 import type { EvaluationItem } from './corpus';
@@ -35,7 +35,7 @@ export async function runItem(item: EvaluationItem) {
 
 export async function sourceHashes() {
   const paths = ['src/lib/ai/prompts/judge.ts', 'src/lib/ai/prompts/suspect.ts', 'src/lib/ai/prompts/suspect-text.json',
-    'src/lib/mistral/evaluate.ts', 'src/lib/mistral/interrogate.ts', 'src/lib/gameplay/demo-case.ts'];
+    'src/lib/game-ai/evaluate.ts', 'src/lib/game-ai/interrogate.ts', 'src/lib/gameplay/demo-case.ts'];
   return Object.fromEntries(await Promise.all(paths.map(async path =>
     [path, createHash('sha256').update(await readFile(path)).digest('hex')])));
 }

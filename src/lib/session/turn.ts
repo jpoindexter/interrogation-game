@@ -1,3 +1,5 @@
+import type { AiProvenance } from '../ai/contracts';
+import { turnSnapshot, recordTurnEvent } from './turn-events';
 import { allowsLawyerEscalation } from './play-mode';
 import { acceptedTimestamp } from './accepted-time';
 import { recordGameplayTurn } from '../gameplay/state';
@@ -86,6 +88,7 @@ function applyStressConsequence(session: GameSession, response: SuspectResponse,
 export function commitTurn(session: GameSession, question: string, raw: Record<string, unknown>, options: { recordGameplay?: boolean } = {}) {
   expireSession(session);
   if (session.outcome) return terminalResponse(session);
+  const before = turnSnapshot(session);
   const response = filterResponse(session, validateSuspectResponse(raw));
   const stress = Math.max(session.currentStress, Math.min(Math.floor(response.stress_level), session.currentStress + 1, 9));
   response.stress_level = stress;
@@ -97,6 +100,7 @@ export function commitTurn(session: GameSession, question: string, raw: Record<s
   const timestamp = acceptedTimestamp(session);
   session.conversationHistory.push({ role: 'user', kind: 'question', content: question, timestamp },
     { role: 'assistant', content: response.spoken_response, timestamp, ...(session.outcome ? { kind: 'terminal' as const } : {}) });
+  recordTurnEvent(session, before, { question, timestamp, provenance: raw._aiProvenance as AiProvenance | undefined });
   recordAcceptedGameplay(session, { question, answer: response.spoken_response }, options.recordGameplay);
   return { ...response, lawyered_up: session.outcome === 'lose_lawyer', ...sessionProjection(session) };
 }

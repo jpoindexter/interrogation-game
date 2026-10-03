@@ -2,12 +2,13 @@ import AssetImage from '../../components/AssetImage';
 import { motion, scaleIn, springy } from '../../components/motion';
 
 interface ClueNotificationProps {
+  authored: boolean;
   clueNumber: number | null;
   clueIcons: string[];
   cluesNeeded: number;
 }
 
-export default function ClueNotification({ clueNumber, clueIcons, cluesNeeded }: ClueNotificationProps) {
+export default function ClueNotification({ authored, clueNumber, clueIcons, cluesNeeded }: ClueNotificationProps) {
   if (!clueNumber) return null;
   return (
     <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
@@ -18,10 +19,10 @@ export default function ClueNotification({ clueNumber, clueIcons, cluesNeeded }:
         variants={scaleIn}
         transition={{ ...springy, stiffness: 400, damping: 15 }}
       >
-        <span className="text-[10px] uppercase tracking-[0.4em] text-gray-500">Evidence Found</span>
+        <span className="text-[10px] uppercase tracking-[0.4em] text-gray-500">{authored ? 'Contradiction established' : 'Investigation clue'}</span>
         <AssetImage
           src={clueIcons[clueNumber - 1] || clueIcons[0]}
-          alt={`Evidence ${clueNumber}`}
+          alt=""
           className="w-28 h-28 object-contain drop-shadow-2xl"
           style={{ imageRendering: 'pixelated' }}
         />

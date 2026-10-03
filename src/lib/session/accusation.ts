@@ -1,6 +1,5 @@
 import { acceptedTimestamp } from './accepted-time';
-import { DIFFICULTY_CLUES } from '../game-state';
-import { sanitizeAccusationResponse } from '../mistral/sanitize-response';
+import { sanitizeAccusationResponse } from '../game-ai/sanitize-response';
 import { commitAccusation, requireActive } from './transitions';
 import { issueWinToken } from './tokens';
 import { getSessionStats } from './stats';
@@ -10,9 +9,7 @@ import type { GameSession } from './types';
 export function accusationError(session: GameSession): string | null {
   try { requireActive(session); } catch { return 'This interrogation has ended or has not begun'; }
   if (session.gameplay && session.gameplay.establishedContradictionIds.length === 0) return 'Establish a contradiction using a pinned statement and an exhibit first.';
-  const required = session.gameplay ? 1 : DIFFICULTY_CLUES[String(session.caseData.difficulty)] ?? 3;
   if (session.accusationsLeft <= 0) return 'No accusations remaining';
-  if (session.clues.length < required) return `Not enough clues collected. Need ${required}, have ${session.clues.length}.`;
   return null;
 }
 

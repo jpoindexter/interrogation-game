@@ -10,7 +10,7 @@ export const DISABLED_RETRIEVAL = { status: 'disabled', stored: false, tactics: 
 const production = {
   embed: async (text: string) => (await embedTexts([text]))[0],
   save: async (pattern: CanonicalPattern, embedding: number[]) => {
-    const { error } = await getSupabaseClient().from('interrogation_patterns_v2').upsert({
+    const { error } = await getSupabaseClient().from('interrogation_patterns_v3').upsert({
       ...pattern, embedding: JSON.stringify(embedding),
     }, { onConflict: 'session_id,embedding_version', ignoreDuplicates: true });
     if (error) throw new Error('Pattern storage unavailable');
@@ -28,7 +28,7 @@ export async function storeSessionPattern(session: GameSession, dependencies = p
 export async function retrievePatterns(setting: string, difficulty: string, signal?: AbortSignal) {
   if (!retrievalEnabled()) return DISABLED_RETRIEVAL;
   const [embedding] = await embedTexts([JSON.stringify({ setting, difficulty, outcome: 'win' })], { signal });
-  const { data, error } = await getSupabaseClient().rpc('match_patterns_v2', {
+  const { data, error } = await getSupabaseClient().rpc('match_patterns_v3', {
     query_embedding: JSON.stringify(embedding), match_threshold: 0.5, match_count: 20,
     filter_difficulty: difficulty, filter_version: EMBEDDING_SPACE.version, filter_model: EMBEDDING_SPACE.model,
   }).abortSignal(signal ?? AbortSignal.timeout(20000));

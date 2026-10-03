@@ -10,16 +10,17 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
 }) {
   return (
     <div className="p-4 text-black">
-      <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Evidence Report</p>
-      <p className="text-xs text-black/40 text-center mb-3">{clues.length}/{cluesNeeded} Items Collected</p>
+      <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Investigation Leads</p>
+      <p className="text-xs text-black/70 text-center mb-3">{clues.length}/{cluesNeeded} Optional Clues Collected</p>
 
+      <p className="text-sm text-black/70 mb-3">Clues suggest what to investigate. They are not proof, and you do not need every clue to accuse.</p>
       <hr className="border-black/20 mb-3" />
 
       <EvidenceIcons clues={clues} clueIcons={clueIcons} />
 
       {clues.length > 0 && (
         <>
-          <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Evidence Details</div>
+          <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Clue Notes</div>
           {clues.map((clue, i) => (
             <motion.div
               key={i}
@@ -28,7 +29,7 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
               transition={{ duration: 0.2 }}
               className={`py-2 ${i < clues.length - 1 ? 'border-b border-black/10' : ''}`}
             >
-              <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Item #{i + 1}</p>
+              <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Clue #{i + 1}</p>
               <p className="text-sm leading-relaxed">{clue}</p>
             </motion.div>
           ))}
@@ -37,8 +38,8 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
 
       {clues.length === 0 && (
         <div className="py-4 text-center">
-          <p className="text-xs italic text-black/40">No evidence collected yet.</p>
-          <p className="text-xs italic text-black/30 mt-1">Raise the suspect&apos;s stress to uncover evidence.</p>
+          <p className="text-xs italic text-black/70">No optional clues collected yet.</p>
+          <p className="text-xs italic text-black/70 mt-1">Compare the case record with their answers. You can accuse when you identify the contradiction.</p>
         </div>
       )}
 
@@ -60,13 +61,13 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
 
 function EvidenceIcons({ clues, clueIcons }: { clues: string[]; clueIcons: string[] }) {
   return (<>
-      <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Physical Evidence</div>
+      <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Clue Markers</div>
       <div className="py-3 flex items-center gap-3 justify-center flex-wrap">
         {clueIcons.map((icon, i) => (
           <div key={i} className={`w-20 h-20 border border-black/40 flex items-center justify-center transition-all duration-700 ${
             clues.length >= i + 1 ? 'bg-white' : 'grayscale opacity-30'
           }`}>
-            <AssetImage src={icon} alt={`Evidence ${i + 1}`} className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
+            <AssetImage src={icon} alt="" className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
           </div>
         ))}
       </div>

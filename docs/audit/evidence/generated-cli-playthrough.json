@@ -1,0 +1,327 @@
+{
+  "executedAt": "2026-10-03T13:45:23.776Z",
+  "scope": "Actual generated startup/easy relaxed CLI through production localhost HTTP and signed-in Codex. Public briefing/replies alone informed the accusation. No browser, microphone, ElevenLabs or hosted calls.",
+  "start": {
+    "ok": true,
+    "status": 200,
+    "data": {
+      "case_number": "4827",
+      "setting": "BrightKite Labs",
+      "crime": "A signed investor update document is missing from the startup’s shared office tray.",
+      "objective": "Identify the false claim",
+      "briefing": "You are investigating a missing investor update at BrightKite Labs. You are interviewing product coordinator Mara Venn. You can ask about the dated statement from office manager Ivo Chen.",
+      "detective_leads": [
+        "Ivo Chen’s dated statement",
+        "Mara’s Tuesday lunch routine",
+        "Mara’s role in product coordination"
+      ],
+      "playMode": "relaxed",
+      "portraitId": "02-f",
+      "suspect_name": "Mara Venn",
+      "suspect_gender": "female",
+      "suspect_role": "Product coordinator",
+      "suspect_cover_story": "I usually eat lunch at my desk. I coordinate product launch checklists. I was not in the copy room on Tuesday, May 12, between noon and 12:30 p.m.",
+      "difficulty": "easy",
+      "verbal_tics": "She starts sentences with “Well,” when nervous.",
+      "timerMode": "unlimited",
+      "startedAt": 0,
+      "priorGames": 0
+    },
+    "pending": false
+  },
+  "actions": [
+    {
+      "at": "2026-10-03T13:43:14.848Z",
+      "input": {
+        "command": "ask",
+        "question": "Your cover story denies being in the copy room on Tuesday, May 12, between noon and 12:30. What does Ivo Chen’s dated witness statement say he personally saw, and at what time?"
+      },
+      "milliseconds": 22399,
+      "exitCode": 0,
+      "reply": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "spoken_response": "Well, I coordinate launch checklists at BrightKite, not witness statements. His statement says he personally recognized me in the copy room at 12:18 p.m. on Tuesday, May 12. But I wasn't there—can I see his exact wording?",
+          "stress_level": 1,
+          "clue_unlocked": null,
+          "caught": false,
+          "lawyered_up": false,
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791034995206,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 22.011
+        },
+        "pending": false
+      }
+    },
+    {
+      "at": "2026-10-03T13:43:55.640Z",
+      "input": {
+        "command": "accuse",
+        "accusation": "You lied when you said you were not in the copy room on Tuesday, May 12, between noon and 12:30 p.m. Ivo Chen’s dated statement says he personally recognized you there at 12:18 p.m., inside that interval. That contradicts your denial of being there; it does not by itself establish that you took the missing investor update."
+      },
+      "milliseconds": 18029,
+      "exitCode": 0,
+      "reply": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "correct": true,
+          "confession": "Well, I lied when I said I wasn't in the copy room on Tuesday, May 12, between noon and 12:30 p.m. I was there at 12:18, just as Ivo recorded. I'm ashamed that I kept denying it even after you pointed out his statement. But being there doesn't mean I took the investor update.",
+          "explanation": "The accusation identifies Mara’s exact false denial of being in the copy room during the interval when Ivo personally recognized her there, without treating her presence as proof of theft.",
+          "accusationsLeft": 2,
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "won",
+          "outcome": "win",
+          "startedAt": 1791034995206,
+          "endedAt": 1791035053631,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 58.425,
+          "stats": {
+            "timeElapsed": 58.425,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 1,
+            "score": 1500,
+            "detectiveRating": "Veteran"
+          },
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        },
+        "pending": false
+      }
+    },
+    {
+      "at": "2026-10-03T13:44:30.630Z",
+      "input": {
+        "command": "result"
+      },
+      "milliseconds": 420,
+      "exitCode": 0,
+      "reply": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "outcome": "win",
+          "stats": {
+            "timeElapsed": 58.425,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 1,
+            "score": 1500,
+            "detectiveRating": "Veteran"
+          },
+          "detective_rating": "Veteran",
+          "correct": true,
+          "explanation": "The accusation identifies Mara’s exact false denial of being in the copy room during the interval when Ivo personally recognized her there, without treating her presence as proof of theft.",
+          "reveal_the_lie": "I was not in the copy room on Tuesday, May 12, between noon and 12:30 p.m.",
+          "reveal_the_truth": "Ivo Chen personally recognized Mara in the copy room at 12:18 p.m. on Tuesday, May 12; this establishes her presence, not that she took the missing document.",
+          "reveal_the_clue": "Ivo Chen’s dated statement says he personally recognized Mara Venn in the copy room at 12:18 p.m. on Tuesday, May 12. That directly contradicts her claim that she was not there between noon and 12:30 p.m.",
+          "conversationPath": [
+            {
+              "id": "conversation-0",
+              "kind": "dialogue",
+              "question": "Your cover story denies being in the copy room on Tuesday, May 12, between noon and 12:30. What does Ivo Chen’s dated witness statement say he personally saw, and at what time?",
+              "answer": "Well, I coordinate launch checklists at BrightKite, not witness statements. His statement says he personally recognized me in the copy room at 12:18 p.m. on Tuesday, May 12. But I wasn't there—can I see his exact wording?",
+              "status": "neutral"
+            },
+            {
+              "id": "conversation-2",
+              "kind": "accusation",
+              "question": "You lied when you said you were not in the copy room on Tuesday, May 12, between noon and 12:30 p.m. Ivo Chen’s dated statement says he personally recognized you there at 12:18 p.m., inside that interval. That contradicts your denial of being there; it does not by itself establish that you took the missing investor update.",
+              "answer": "Well, I lied when I said I wasn't in the copy room on Tuesday, May 12, between noon and 12:30 p.m. I was there at 12:18, just as Ivo recorded. I'm ashamed that I kept denying it even after you pointed out his statement. But being there doesn't mean I took the investor update.",
+              "status": "supported",
+              "explanation": "The accusation identifies Mara’s exact false denial of being in the copy room during the interval when Ivo personally recognized her there, without treating her presence as proof of theft."
+            }
+          ],
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        }
+      }
+    },
+    {
+      "at": "2026-10-03T13:44:31.077Z",
+      "input": {
+        "command": "state"
+      },
+      "milliseconds": 259,
+      "exitCode": 0,
+      "reply": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "caseData": {
+            "case_number": "4827",
+            "setting": "BrightKite Labs",
+            "crime": "A signed investor update document is missing from the startup’s shared office tray.",
+            "objective": "Identify the false claim",
+            "briefing": "You are investigating a missing investor update at BrightKite Labs. You are interviewing product coordinator Mara Venn. You can ask about the dated statement from office manager Ivo Chen.",
+            "detective_leads": [
+              "Ivo Chen’s dated statement",
+              "Mara’s Tuesday lunch routine",
+              "Mara’s role in product coordination"
+            ],
+            "playMode": "relaxed",
+            "portraitId": "02-f",
+            "suspect_name": "Mara Venn",
+            "suspect_gender": "female",
+            "suspect_role": "Product coordinator",
+            "suspect_cover_story": "I usually eat lunch at my desk. I coordinate product launch checklists. I was not in the copy room on Tuesday, May 12, between noon and 12:30 p.m.",
+            "difficulty": "easy",
+            "verbal_tics": "She starts sentences with “Well,” when nervous."
+          },
+          "conversationHistory": [
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "Your cover story denies being in the copy room on Tuesday, May 12, between noon and 12:30. What does Ivo Chen’s dated witness statement say he personally saw, and at what time?",
+              "timestamp": 22
+            },
+            {
+              "role": "assistant",
+              "content": "Well, I coordinate launch checklists at BrightKite, not witness statements. His statement says he personally recognized me in the copy room at 12:18 p.m. on Tuesday, May 12. But I wasn't there—can I see his exact wording?",
+              "timestamp": 22
+            },
+            {
+              "role": "user",
+              "kind": "accusation",
+              "accusationAttempt": 1,
+              "content": "[ACCUSATION] You lied when you said you were not in the copy room on Tuesday, May 12, between noon and 12:30 p.m. Ivo Chen’s dated statement says he personally recognized you there at 12:18 p.m., inside that interval. That contradicts your denial of being there; it does not by itself establish that you took the missing investor update.",
+              "timestamp": 58
+            },
+            {
+              "role": "assistant",
+              "content": "Well, I lied when I said I wasn't in the copy room on Tuesday, May 12, between noon and 12:30 p.m. I was there at 12:18, just as Ivo recorded. I'm ashamed that I kept denying it even after you pointed out his statement. But being there doesn't mean I took the investor update.",
+              "timestamp": 58
+            }
+          ],
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "won",
+          "outcome": "win",
+          "startedAt": 1791034995206,
+          "endedAt": 1791035053631,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 58.425,
+          "accusationsLeft": 2,
+          "accusationsUsed": 1,
+          "hintsUsed": 0,
+          "hintTexts": [],
+          "questionsAsked": 1,
+          "stressLevel": 1,
+          "stats": {
+            "timeElapsed": 58.425,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 1,
+            "score": 1500,
+            "detectiveRating": "Veteran"
+          },
+          "result": {
+            "outcome": "win",
+            "stats": {
+              "timeElapsed": 58.425,
+              "difficulty": "easy",
+              "playMode": "relaxed",
+              "ranked": false,
+              "hintsUsed": 0,
+              "accusationsUsed": 1,
+              "questionsAsked": 1,
+              "score": 1500,
+              "detectiveRating": "Veteran"
+            },
+            "detective_rating": "Veteran",
+            "correct": true,
+            "explanation": "The accusation identifies Mara’s exact false denial of being in the copy room during the interval when Ivo personally recognized her there, without treating her presence as proof of theft.",
+            "reveal_the_lie": "I was not in the copy room on Tuesday, May 12, between noon and 12:30 p.m.",
+            "reveal_the_truth": "Ivo Chen personally recognized Mara in the copy room at 12:18 p.m. on Tuesday, May 12; this establishes her presence, not that she took the missing document.",
+            "reveal_the_clue": "Ivo Chen’s dated statement says he personally recognized Mara Venn in the copy room at 12:18 p.m. on Tuesday, May 12. That directly contradicts her claim that she was not there between noon and 12:30 p.m.",
+            "conversationPath": [
+              {
+                "id": "conversation-0",
+                "kind": "dialogue",
+                "question": "Your cover story denies being in the copy room on Tuesday, May 12, between noon and 12:30. What does Ivo Chen’s dated witness statement say he personally saw, and at what time?",
+                "answer": "Well, I coordinate launch checklists at BrightKite, not witness statements. His statement says he personally recognized me in the copy room at 12:18 p.m. on Tuesday, May 12. But I wasn't there—can I see his exact wording?",
+                "status": "neutral"
+              },
+              {
+                "id": "conversation-2",
+                "kind": "accusation",
+                "question": "You lied when you said you were not in the copy room on Tuesday, May 12, between noon and 12:30 p.m. Ivo Chen’s dated statement says he personally recognized you there at 12:18 p.m., inside that interval. That contradicts your denial of being there; it does not by itself establish that you took the missing investor update.",
+                "answer": "Well, I lied when I said I wasn't in the copy room on Tuesday, May 12, between noon and 12:30 p.m. I was there at 12:18, just as Ivo recorded. I'm ashamed that I kept denying it even after you pointed out his statement. But being there doesn't mean I took the investor update.",
+                "status": "supported",
+                "explanation": "The accusation identifies Mara’s exact false denial of being in the copy room during the interval when Ivo personally recognized her there, without treating her presence as proof of theft."
+              }
+            ]
+          },
+          "pendingRequests": [],
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        }
+      }
+    }
+  ],
+  "checks": {
+    "canonicalRecoveryMatches": true,
+    "zeroClueWin": true,
+    "localExportSaved": true,
+    "conversationPathSteps": 2,
+    "privateProvenanceOmitted": true,
+    "caseProvenance": [
+      {
+        "provider": "codex-local",
+        "model": "gpt-6-luna",
+        "capability": "case",
+        "promptHash": "065d31178103aa576e0b41b8489c81420bfe4ab4709ccfcd51fe021cfa913d1f"
+      },
+      {
+        "provider": "codex-local",
+        "model": "gpt-6.1-sol",
+        "capability": "case-review",
+        "promptHash": "8f8e386567f01c8d5e7a5d8a6f29efae27211a62dde3a39633adce1ecd6ecc59"
+      }
+    ],
+    "acceptedTurnProvenance": [
+      {
+        "provider": "codex-local",
+        "model": "gpt-6.1-sol",
+        "capability": "suspect",
+        "promptHash": "36373302d9a0bc92bb9e7289beb5e6bb8ce6a6269148adb43e999f08ffec6178"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "src/lib/ai/provider.ts": "97e0f8afd6b5cf58864da776d25d716eec8bddb155f102901eb621cb2e20c8e1",
+    "src/lib/ai/prompts/case.ts": "5336df08c532c12755ca19d4c0fed4eb9929dcfe95962ce862f34b2e4c57c41b",
+    "src/lib/ai/prompts/case-text.json": "b8a2576b54debecc4bd5622124a9017d9a9ff7ea84c58c02d313438553e25e99",
+    "src/lib/session/accusation.ts": "1f1768ba072f69927bb0afda275a9c3e499e0af7c17b11c2dd8a23db41956255",
+    "scripts/agent-control/start.ts": "a74c26f34fa2aadf048e96b33da723afff115d5f585538a6513a93289b0d1e72"
+  }
+}

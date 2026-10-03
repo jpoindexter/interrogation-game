@@ -1,5 +1,6 @@
 import { ControlError } from './errors';
 import { randomUUID } from 'node:crypto';
+import { startBody, generatedSettings, difficulties } from './start';
 
 export type Input = Record<string, unknown> & { command: string };
 export interface Pending { command: string; route: string; body: Record<string, unknown> }
@@ -7,7 +8,10 @@ export const discovery = {
   protocol: 'interrogation-agent-control-v1',
   usage: 'Send one JSON object on stdin. One process performs one action. Use retry after an uncertain response.',
   commands: {
-    discover: {}, start: { playMode: 'relaxed (default) | challenge | endurance' }, state: {}, opening: {},
+    discover: {}, start: { case: 'authored (default) | generated (uses AI)',
+      setting: { requiredFor: 'generated', choices: generatedSettings },
+      difficulty: { requiredFor: 'generated', choices: difficulties },
+      playMode: 'relaxed (default) | challenge | endurance' }, state: {}, opening: {},
     ask: { question: '1–500 characters; may use AI' }, pin: { turnId: 'from state', quote: 'exact recorded quote' },
     evidence: { statementId: 'from pin/state', exhibitId: 'from state', question: '1–500 characters; uses AI' },
     clarify: { statementId: 'from pin/state', question: '1–500 characters; uses AI' },
@@ -15,19 +19,13 @@ export const discovery = {
     accuse: { accusation: '1–1000 characters; may use AI' }, giveup: {}, result: {}, retry: {},
     'discard-pending': { confirm: true, warning: 'Only after checking state. Does not undo an accepted action.' },
   },
-  limits: 'Local authored case only. No automatic loops, AI retries, audio generation, or leaderboard submission.',
+  limits: 'Local cases only. Generated start and its opening use AI. No automatic loops, AI retries, audio generation, or leaderboard submission. Evidence actions require gameplay in state.',
 };
 
 function text(input: Input, key: string, max = 500): string {
   const value = input[key];
   if (typeof value !== 'string' || !value.trim() || value.length > max) throw new ControlError(`${key} must contain 1–${max} characters.`);
   return value;
-}
-
-function startBody(input: Input): Record<string, unknown> {
-  const playMode = input.playMode ?? 'relaxed';
-  if (!['relaxed', 'challenge', 'endurance'].includes(String(playMode))) throw new ControlError('Invalid playMode.');
-  return { mode: 'redteam', playMode, timerMode: playMode === 'challenge' ? 'countdown' : 'unlimited' };
 }
 
 function gameplayBody(input: Input, requestId: string): Record<string, unknown> {

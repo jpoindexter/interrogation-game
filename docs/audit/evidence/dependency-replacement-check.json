@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-03T13:34:41.527833+00:00",
+  "runtime": {
+    "node": "24.21.0",
+    "npm": "11.21.0"
+  },
+  "registry": {
+    "braces": "3.0.3",
+    "micromatch": "4.0.8",
+    "fast-glob": "3.3.3",
+    "eslint-config-next": "16.3.8",
+    "@next/eslint-plugin-next": "16.3.8",
+    "tinyglobby": "0.2.17"
+  },
+  "installedPath": [
+    "eslint-config-next@16.3.8",
+    "@next/eslint-plugin-next@16.3.8",
+    "fast-glob@3.3.1",
+    "micromatch@4.0.8",
+    "braces@3.0.3"
+  ],
+  "candidate": {
+    "scope": "isolated temporary package tree; no shared dependency changes",
+    "override": {
+      "@next/eslint-plugin-next": {
+        "fast-glob": "npm:tinyglobby@0.2.17"
+      }
+    },
+    "install": "npm install --ignore-scripts --no-fund",
+    "installAuditTotal": 0,
+    "actualNextGetRootDirsParity": {
+      "rootDir": "apps/store",
+      "fixtureDirectories": [
+        "apps/store",
+        "apps/store/pages"
+      ],
+      "original": [
+        "apps/store"
+      ],
+      "replacement": [
+        "apps/store/",
+        "apps/store/pages/"
+      ],
+      "passed": false
+    },
+    "decision": "Rejected; replacement changes actual Next lint root discovery. Remaining variants and downstream lint not run after first parity failure."
+  },
+  "source": "https://superchupu.dev/tinyglobby/migration#switching-from-fast-glob",
+  "packageChanges": false
+}
