@@ -1,0 +1,8 @@
+Runtime: Node v24.21.0; PostgreSQL 17.6; image sha256:ce01659027cd1ce958ebfc8c1547aee3a42f68b50e332308cc6958f469f5e2fc
+Isolation executed: new disposable cluster, network none, no TCP listener/ports/host mounts/volumes, read-only root and tmpfs database; explicit synthetic non-superuser roles
+PASS fresh unmodified migrations 002/003/005: real pgvector 0.8.2, distinct empty legacy/v2/v3 tables, RLS enabled
+PASS actual roles across legacy/v2/v3: anon/auth direct writes/reads/upserts/update/delete/RPC denied; trusted inserts/read/match succeed; session duplicates reject; conflict-ignore retry preserves exact original row; versioned rows deny update/delete; PUBLIC RPC execute absent
+PASS real constraints: incompatible model/version/dimension/source rejected; v3 event-schema/hash/array constraints; mismatched query dimensions rejected; concurrent same-session insert wins once
+PASS real cosine match RPC: known synthetic same/orthogonal/opposite vectors, difficulty/model/version isolation, strict threshold, zero/negative/one/20 result limits; legacy and v2 vectors remain separate with no backfill
+RESULT optional pattern/vector SQL acceptance executed. Scope: local real PostgreSQL roles/migrations/constraints/pgvector RPC with synthetic data. No Supabase/PostgREST JWT boundary, provider embeddings, semantic relevance or gameplay-adaptation benefit established.
+CLEANUP owned disposable container removed; its tmpfs database discarded; no host data or existing container changed

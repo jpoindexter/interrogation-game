@@ -1,6 +1,6 @@
 # Database privilege acceptance — 3 October 2026
 
-**Core leaderboard/export SQL criteria executed; optional pattern/vector criteria remain blocked.** This supplies missing actual-role evidence for LOGIC-16 without requiring a remote database. It does not close the full card, LOGIC-10's optional database path, or live Supabase/PostgREST acceptance.
+**Core leaderboard/export SQL criteria executed.** The initial PostgreSQL 14 environment lacked pgvector; the subsequent [isolated PostgreSQL 17 pattern check](PATTERN-DATABASE-ACCEPTANCE.md) executed the optional migrations, roles, duplicate handling and real vector RPC. Together these provide actual local SQL evidence for the original database criteria. Live Supabase/PostgREST and semantic retrieval quality remain separate, unverified paths.
 
 ## Executed path
 
@@ -22,7 +22,7 @@ Observed with Node24.21.0 and PostgreSQL14.18:
 
 The runner was executed twice: after the initial core run, explicit rejected conflict-retry/update assertions were added and executed. Both fresh runs encountered the same missing extension while attempting002; no extension installation, build, substitute type or further retry was performed. Only the final expanded receipt is the acceptance output.
 
-## Exact optional-path blocker
+## Initial optional-path blocker — resolved in a separate runtime
 
 `pg_available_extensions` reported no `vector` extension. After creating an actual `extensions` schema, applying002 failed at its first extension statement:
 
@@ -32,12 +32,12 @@ psql:database/migrations/002_optional_legacy_patterns.sql:3: ERROR:  could not o
 
 The failed transaction left no legacy pattern table. Migrations003/005 require the same unavailable extension and were not attempted. No fake vector type or SQL replacement was used. The current v3 path needs005;002/003 are historical optional schemas, not prerequisites for the local demo or shared text path.
 
-Still unexecuted: actual legacy/v2/v3 pattern migration, pattern table/RPC privileges, trusted pattern inserts, `(session_id, embedding_version)` duplicate enforcement, and vector match execution. The narrowly required re-entry environment is an authorized disposable PostgreSQL database with real pgvector already available. That does not require an embedding provider call to exercise synthetic vector/schema/permission behavior.
+Those optional criteria were subsequently executed in a new disposable, network-disabled container from an already installed PostgreSQL 17.6/pgvector 0.8.2 image. [Pattern database acceptance](PATTERN-DATABASE-ACCEPTANCE.md) records actual migrations, table/RPC privileges, trusted inserts, duplicate enforcement and synthetic-vector matching. The original PostgreSQL 14 failure remains intact above; no extension was installed into that environment or into the existing running database.
 
 ## Existing evidence reused and card disposition
 
-- **LOGIC-16:** original table-permission and unique core-session criteria now have actual SQL evidence. The optional pattern/vector portion prevents claiming the complete criterion satisfied. Separately, no real Supabase/PostgREST role/JWT boundary was exercised.
-- **LOGIC-10:** [current-schema pattern acceptance](PATTERN-ACCEPTANCE.md) already executes unfinished/spoofed rejection, canonical accepted-event association and one byte-identical local export. This increment does not rerun it or imply that optional pattern persistence passed. Actual v3 pattern duplicate handling remains unverified.
+- **LOGIC-16:** original table-permission and unique core-session criteria now have actual SQL evidence. The later optional pattern/vector report supplies the remaining local SQL portion. Separately, no real Supabase/PostgREST role/JWT boundary was exercised.
+- **LOGIC-10:** [current-schema pattern acceptance](PATTERN-ACCEPTANCE.md) already executes unfinished/spoofed rejection, canonical accepted-event association and one byte-identical local export. This increment does not rerun it or imply that optional pattern persistence passed. The later pattern database report executes v3 duplicate handling without claiming remote delivery or embedding quality.
 - Existing [redemption SQL receipt](evidence/hosted-redemption-postgres.txt) executes the production adapters' concurrent one-record redemption, rollback, exact receipt replay and anonymous RPC denial. It was not rerun. This new test targets the earlier direct table-write contract, not the later shared-action RPC path or its immutable export triggers.
 
 Reproduce this bounded check, without project configuration:

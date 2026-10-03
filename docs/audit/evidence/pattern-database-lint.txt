@@ -1,0 +1,4 @@
+Command: npm exec --offline --yes --package=node@24.21.0 --package=npm@11.21.0 -- node node_modules/eslint/bin/eslint.js tests/pattern-privilege-acceptance.mjs
+Exit code: 0
+Output: none (no lint diagnostics)
+Scope: only tests/pattern-privilege-acceptance.mjs; no broad suite or build.
