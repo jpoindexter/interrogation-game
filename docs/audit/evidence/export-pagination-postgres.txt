@@ -1,0 +1,9 @@
+Transcript collected from the completed tool call; this file does not represent an additional run.
+Command: node --import tsx tests/export-pagination-postgres.ts
+Observed exit code: 0
+
+Database: 14.18 (Homebrew)
+PASS real export route + SDK + PostgreSQL: authenticated filtered keyset pages <=1MiB, timestamp ties complete once, offset compatibility, signed/filter-bound cursor, explicit oversized-row413
+PASS SQL page boundary: returns prior complete rows then explicit oversized next row; anonymous RPC denied
+Scope: actual Next route handlers, Supabase SDK serialization and PostgreSQL behind controlled HTTP transport. No live Supabase/Vercel/provider/browser proof.
+CLEANUP isolated database removed

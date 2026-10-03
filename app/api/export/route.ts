@@ -1,12 +1,15 @@
 import { requestBudgetFailure } from '@/lib/limits/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
-import { getSupabaseClient } from '../../../src/lib/db';
 import { getClientIp } from '../../../src/lib/rate-limit';
-import { readLocalExports, exportStorageMode } from '../../../src/lib/session/exports/storage';
-import { parseExportQuery, type ExportQuery } from '../../../src/lib/session/exports/query';
+import { exportStorageMode } from '../../../src/lib/session/exports/storage';
+import { parseExportQuery } from '../../../src/lib/session/exports/query';
 import { storageBackend } from '@/lib/storage/backend';
+import { decodeExportCursor, encodeExportCursor, type ExportCursorContext, type ExportKey } from '@/lib/session/exports/cursor';
+import { EXPORT_PAGE_BYTES, OversizedExportError, readRemoteExportPage, type ExportPage } from '@/lib/session/exports/page';
+import { readLocalExportPage } from '@/lib/session/exports/local-page';
 
+export const runtime = 'nodejs';
 function authorized(request: NextRequest): boolean {
   const supplied = request.headers.get('authorization')?.replace(/^Bearer /, '') || '';
   const expected = process.env.EXPORT_SECRET;
@@ -14,34 +17,38 @@ function authorized(request: NextRequest): boolean {
   const left = Buffer.from(supplied), right = Buffer.from(expected);
   return left.length === right.length && timingSafeEqual(left, right);
 }
-async function readRows(options: ExportQuery) {
-  if (exportStorageMode() === 'local') {
-    return readLocalExports().filter(row => (!options.outcome || row.outcome === options.outcome)
-      && (!options.difficulty || row.difficulty === options.difficulty) && (!options.setting || row.setting === options.setting))
-      .slice(options.offset, options.offset + options.limit);
+function download(request: NextRequest, page: ExportPage, context: ExportCursorContext): Response {
+  const headers = new Headers({ 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store',
+    'Content-Disposition': 'attachment; filename="game_exports.jsonl"', 'X-Export-Count': String(page.count),
+    'X-Export-Page-Bytes': String(EXPORT_PAGE_BYTES) });
+  if (page.next) {
+    const cursor = encodeExportCursor(page.next, context);
+    const params = new URLSearchParams(request.nextUrl.searchParams);
+    params.delete('offset'); params.set('cursor', cursor);
+    headers.set('X-Export-Next-Cursor', cursor);
+    headers.set('Link', `</api/export?${params}>; rel="next"`);
   }
-  let query = getSupabaseClient().from('game_exports').select('*').order('created_at', { ascending: false })
-    .range(options.offset, options.offset + options.limit - 1);
-  if (options.outcome) query = query.eq('outcome', options.outcome);
-  if (options.difficulty) query = query.eq('difficulty', options.difficulty);
-  if (options.setting) query = query.eq('setting', options.setting);
-  const { data, error } = await query;
-  if (error) throw new Error('Export storage unavailable');
-  return data ?? [];
+  return new Response(page.body, { headers });
 }
 export async function GET(request: NextRequest) {
   const budgetFailure = await requestBudgetFailure(`export:${getClientIp(request)}`, 10);
   if (budgetFailure) return budgetFailure;
   if (!authorized(request)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (storageBackend() === 'supabase') return NextResponse.json({ error: 'Bulk export is unavailable in this hosted preview until byte-bounded pagination is configured.' }, { status: 503 });
-  let options: ExportQuery;
-  try { options = parseExportQuery(request.nextUrl.searchParams); }
-  catch { return NextResponse.json({ error: 'Invalid export filters or pagination' }, { status: 400 }); }
+  let source: ExportCursorContext['source'];
+  try { source = storageBackend() === 'supabase' ? 'supabase' : exportStorageMode(); }
+  catch { return NextResponse.json({ error: 'Export storage unavailable. Please retry.' }, { status: 503 }); }
+  let context: ExportCursorContext, after: ExportKey | undefined;
   try {
-    const rows = await readRows(options);
-    const body = rows.map(row => JSON.stringify(row)).join('\n');
-    return new Response(body ? `${body}\n` : '', { headers: {
-      'Content-Type': 'application/x-ndjson', 'Content-Disposition': 'attachment; filename="game_exports.jsonl"',
-    } });
-  } catch { return NextResponse.json({ error: 'Export storage unavailable. Please retry.' }, { status: 503 }); }
+    context = { source, query: parseExportQuery(request.nextUrl.searchParams), secret: process.env.EXPORT_SECRET! };
+    after = decodeExportCursor(request.nextUrl.searchParams.get('cursor'), context);
+  } catch { return NextResponse.json({ error: 'Invalid export filters, pagination or cursor' }, { status: 400 }); }
+  try {
+    const page = context.source === 'local' ? readLocalExportPage(context.query, after) : await readRemoteExportPage(context.query, after);
+    return download(request, page, context);
+  } catch (error) {
+    if (error instanceof OversizedExportError) return NextResponse.json({ error: error.message,
+      code: 'EXPORT_RECORD_TOO_LARGE', recordBytes: error.bytes, maximumBytes: EXPORT_PAGE_BYTES,
+      recovery: 'This record was not skipped. Use a trusted server-side export to retrieve it intact.' }, { status: 413, headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ error: 'Export storage unavailable. Please retry.' }, { status: 503 });
+  }
 }

@@ -75,7 +75,7 @@ Private data defaults to `.local` or `INTERROGATION_DATA_DIR`. Sessions, generat
 
 Leaderboard rows are immutable, atomically published and keyed by session. Duplicate submissions recover the original receipt; token consumption follows confirmed persistence. Unknown legacy ranking fields are not backfilled. Completion exports first persist locally; optional Supabase delivery uses an outbox retried on status/evaluation, not a background worker. See [database details](../database/LOCAL-DEMO.md).
 
-**Hosted persistence is not implemented.** Vercel/non-local session storage fails explicitly. A hosted leaderboard or an OpenAI key alone does not make the game deployable. Endpoint, AI and voice allowances now share durable local files across Node processes and restarts; this is not a distributed hosted backend. See [shared local budgets](audit/SHARED-BUDGETS.md).
+**Shared storage is opt-in.** Explicit validated server configuration selects transactional Supabase generation/actions/results/redemption and shared admission, with no local fallback. Optional shared voice adds private receipts, fenced object recovery and signed audio delivery; admin exports are byte bounded. The local Codex/filesystem path remains the default. See [shared text routes](audit/HOSTED-ROUTE-INTEGRATION.md) and [voice/export integration](audit/HOSTED-VOICE-EXPORT.md). Controlled PostgreSQL/HTTP execution is not live Supabase/Vercel acceptance.
 
 ## Provider and privacy boundary
 

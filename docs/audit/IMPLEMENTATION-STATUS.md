@@ -8,6 +8,14 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Optional shared voice and bounded export checkpoint
+
+[Voice/export integration](HOSTED-VOICE-EXPORT.md) adds migrations016/017 and modular server/client delivery. Authenticated exports use1 MiB keyset pages with signed cursors; the CLI follows selected pages into an atomic output file. Optional hosted voice loads current authority, reserves usage atomically, stores immutable private audio and returns short-lived signed delivery. Recovery can finalize an existing object without synthesis. Hosted recording is capped at3 MiB and disclosed before capture; local remains25 MiB. A delayed claim cannot start provider work after its remaining lease budget is exhausted.
+
+Executed: two actual production Next workers with isolated PostgreSQL and controlled ElevenLabs/Storage/RPC transport completed TTS/STT replay and saved-object recovery after worker shutdown, without duplicate synthesis or local fallback. Private bucket/client delivery, SQL limits/roles/deadlines, export CLI→HTTP and25 affected local checks passed. Lint, size, types and production build passed. No real voice credits, deployment or browser/microphone action ran.
+
+**Next source work:** retention and cleanup that preserve retry protection. **Live gates:** real app ElevenLabs credentials and microphone/playback, user-owned browser/rehearsal, live Supabase/OpenAI/private bucket/Vercel acceptance. No card closes solely from these controlled checks. The full goal stays active; the separate website remains deferred.
+
 ## Shared public text route checkpoint
 
 [Shared route integration](HOSTED-ROUTE-INTEGRATION.md) now connects explicit hosted configuration to generation/status, game actions, session/result reads and score redemption. Migrations013–015 add shared endpoint admission, transient read leases and original public retry IDs. Local Codex remains the default; hosted configuration cannot fall back to local files. Hosted voice and admin bulk export return explicit unavailable states while their shared implementations remain unfinished.

@@ -9,10 +9,11 @@ process.on('message', message => {
   pending.delete(message.id);
   clearTimeout(entry.timer);
   if (message.error) entry.reject(new Error('Controlled transport interrupted'));
-  else entry.resolve(Response.json(message.value, { status: message.status ?? 200 }));
+  else entry.resolve(message.binary === undefined ? Response.json(message.value, { status: message.status ?? 200 })
+    : new Response(Buffer.from(message.binary, 'base64'), { status: message.status ?? 200, headers: message.headers }));
 });
 
-function bridge(payload) {
+export function bridge(payload) {
   if (!process.send) throw new Error('This preload requires a test IPC parent');
   const id = ++nextId;
   return new Promise((resolve, reject) => {

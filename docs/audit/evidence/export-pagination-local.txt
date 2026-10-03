@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: actual private export route rejects wrong credentials and pages filtered durable records
+ok 1 - actual private export route rejects wrong credentials and pages filtered durable records
+  ---
+  duration_ms: 257.277416
+  type: 'test'
+  ...
+# Subtest: local export downloads retain filtered ordering and expose bounded continuation without truncation
+ok 2 - local export downloads retain filtered ordering and expose bounded continuation without truncation
+  ---
+  duration_ms: 432.898042
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 571.427

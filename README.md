@@ -104,7 +104,7 @@ Local session snapshots, score receipts and exports are private files under the 
 
 ### Opt-in shared text mode
 
-The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–015 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
+The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–017 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
 
 - `SESSION_STORAGE=supabase`, `HOSTED_TEXT_ENABLED=true`, `AI_PROVIDER=openai` and `AI_RAG_ENABLED=false`.
 - `LEADERBOARD_STORAGE=supabase`, `EXPORT_STORAGE=supabase`, a managed `SUPABASE_URL`, server-only `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY`.
@@ -114,7 +114,7 @@ Shared AI reservations consume one call and their input characters, including fa
 
 When `VERCEL` is set, local session storage is refused. Shared configuration, transport or database failures never fall back to local files. Shared endpoint admission uses fixed minute windows and hashed endpoint/identity keys; it reports exhausted allowances separately from unavailable storage.
 
-**Shared mode is text only.** Hosted transcription and speech remain unavailable even with an ElevenLabs key. Historical retrieval must remain off. Canonical completion exports are saved transactionally, but the private admin bulk-download endpoint is unavailable until byte-bounded pagination is implemented.
+**Shared voice is optional and defaults off.** Enable `HOSTED_VOICE_ENABLED=true` only with a server ElevenLabs key, a private `HOSTED_VOICE_BUCKET` and explicit `HOSTED_TTS_CALLS_PER_WINDOW`, `HOSTED_TTS_CHARACTERS_PER_WINDOW`, `HOSTED_STT_CALLS_PER_WINDOW` and `HOSTED_STT_BYTES_PER_WINDOW`. Voice uses the configured shared window. Hosted recordings are limited to 3 MiB; local recordings retain 25 MiB. Speech is downloaded through a private 60-second signed URL; retries recover receipts and saved audio without resynthesis. The application verifies bucket privacy before storage operations and never creates a bucket. Retrieval stays off. Admin exports now use authenticated, byte-bounded pages; see [voice and export integration](docs/audit/HOSTED-VOICE-EXPORT.md).
 
 **Live deployment acceptance remains open.** Disposable PostgreSQL, adapters and controlled integration checks do not prove an actual Supabase project, OpenAI credentials, Vercel runtime, browser playthrough or voice. See [shared route integration and remaining gates](docs/audit/HOSTED-ROUTE-INTEGRATION.md). No live database migration or deployment is implied by enabling configuration.
 
@@ -137,13 +137,17 @@ A passing build or mock test is not a live demo pass. The remaining demonstratio
 
 ## Private exports
 
-This download command applies to local session mode, including its optional remote export delivery. Shared text mode deliberately returns an unavailable response for admin bulk downloads until byte-bounded pagination is implemented. Configure `EXPORT_SECRET` on the server and in the operator's terminal, then run:
+This download command supports local exports and shared Supabase exports after migration 016. Configure `EXPORT_SECRET` on the server and in the operator's terminal, then run:
 
 ```bash
 npx tsx scripts/export-data.ts --output=data/export.jsonl --limit=1000
 ```
 
-The CLI reads the terminal environment; it does not automatically load `.env.local`. Supply the same `EXPORT_SECRET` privately in that terminal and set `EXPORT_BASE_URL=http://127.0.0.1:3187` when using the rehearsal port (default is `http://localhost:3000`). The secret travels in an Authorization header, never a URL query parameter. Each request exports at most 1,000 records; use `--offset=1000` and a different output filename for the next page. A successful export replaces an existing output file, so choose a fresh filename when preserving earlier evidence.
+The CLI reads the terminal environment; it does not automatically load `.env.local`. Supply the same `EXPORT_SECRET` privately in that terminal and set `EXPORT_BASE_URL=http://127.0.0.1:3187` when using the rehearsal port (default is `http://localhost:3000`). The secret travels in an Authorization header, never a URL query parameter.
+
+Each HTTP page is bounded to 1 MiB. The CLI follows signed continuation cursors up to `--limit` total records (default and maximum: 1,000), while preserving filters and the initial `--offset`. Use `--offset=1000` and a different output filename for the next batch. The endpoint also exposes `X-Export-Next-Cursor` and a `Link` header for other clients; a cursor must retain the same filters and limit.
+
+A single oversized record returns HTTP 413 and is never skipped or truncated; retrieve that record through a trusted server-side database/file export. Downloads have a five-minute total deadline and retain the existing endpoint rate limit. Any failed page preserves the old output and removes temporary data. Only a successful whole batch atomically replaces the output file, so choose a fresh filename when preserving earlier evidence.
 
 Exports include hidden case facts and full transcripts for private review; they are not presentation-ready public data. Optional historical retrieval is disabled by default and uses evidence-linked questions from completed wins. It does not establish that every game becomes harder, that failures improve the model, or that model weights retrain. See [retrieval evidence and limits](docs/audit/EVENT-GROUNDED-PATTERNS.md).
 

@@ -16,7 +16,7 @@ test('speech and transcription retain request IDs after a dropped response witho
   t.mock.method(globalThis, 'fetch', async (url: string, options: RequestInit) => {
     sent.push(url.endsWith('tts') ? JSON.parse(String(options.body)) : Object.fromEntries((options.body as FormData).entries()));
     if (reject) throw new Error('Dropped response');
-    return url.endsWith('tts') ? new Response('audio') : Response.json({ text: 'Question' });
+    return url.endsWith('tts') ? new Response('audio', { headers: { 'Content-Type': 'audio/mpeg' } }) : Response.json({ text: 'Question' });
   });
   const signal = new AbortController().signal;
   const body = { sessionId: crypto.randomUUID(), text: 'Accepted statement.' };
@@ -120,4 +120,10 @@ test('blocked browser storage keeps same-view retry IDs and stores no raw conten
   assert.doesNotMatch(saved, /raw-recording-sentinel|Private accepted words/);
   const entries = Object.entries(JSON.parse(saved));
   assert.ok(entries.every(([key, value]) => /^[a-f0-9]{64}$/.test(key) && typeof value === 'string'));
+});
+
+test('a recorded provider connection failure requires an explicit new attempt', async () => {
+  const { requireVoiceSuccess } = await import('../app/game/audio/voice-request-error');
+  await assert.rejects(requireVoiceSuccess(Response.json({ error: 'Provider was unreachable.', code: 'NETWORK_UNAVAILABLE' },
+    { status: 502 }), 'Voice failed'), error => error instanceof VoiceRequestError && error.newAttemptRequired);
 });

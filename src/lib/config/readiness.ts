@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { readProviderObservation } from './provider-observations';
 import { hostedConfiguration } from './hosted';
+import { hostedVoiceConfiguration, HOSTED_RECORDING_BYTES } from './hosted-voice';
 
 type Readiness = { provider: string; configured: boolean; status: 'unchecked' | 'missing'; detail: string };
 function service(provider: string, configured: boolean, detail: string): Readiness {
@@ -52,10 +53,17 @@ function storageReadiness(hosted: boolean) {
 }
 
 function voiceReadiness(shared: boolean) {
-  if (shared) return { ...service('elevenlabs', false,
-    'This shared deployment supports text only. Hosted voice is unavailable until its shared authorization and usage accounting are implemented, even when an ElevenLabs key is present.'), observation: null };
+  if (shared) {
+    let configured = false;
+    try { hostedVoiceConfiguration(); configured = true; } catch { /* Text remains available without voice configuration. */ }
+    return { ...service('elevenlabs', configured, configured
+      ? 'Shared voice is configured with private audio storage and usage limits. This check does not verify bucket privacy, credentials, microphone access or playback.'
+      : 'Hosted voice requires explicit enablement, an ElevenLabs key, a private bucket and deployment voice allowances. Continue with text.'),
+    maxRecordingBytes: HOSTED_RECORDING_BYTES, observation: configured ? readProviderObservation('voice') : null };
+  }
   return { ...service('elevenlabs', Boolean(process.env.ELEVENLABS_API_KEY?.trim()),
-    'Speech and transcription require this server’s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.'), observation: readProviderObservation('voice') };
+    'Speech and transcription require this server’s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.'),
+  maxRecordingBytes: 25 * 1024 * 1024, observation: readProviderObservation('voice') };
 }
 
 export function readReadiness() {

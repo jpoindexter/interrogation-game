@@ -2,6 +2,7 @@ import { readPreferences } from '../../settings/preferences-store';
 import type { SpeechDependencies } from './speech-player';
 import { voiceRequestId } from './voice-request-id';
 import { requireVoiceSuccess } from './voice-request-error';
+import { readAudioDelivery } from './audio-delivery';
 
 export function getVoiceVolume(): number { return readPreferences().voiceVolume; }
 export function voiceEnabled(): boolean { return readPreferences().ttsEnabled; }
@@ -18,7 +19,7 @@ export const browserSpeech: SpeechDependencies = {
       body: JSON.stringify({ ...payload, requestId }),
     });
     await requireVoiceSuccess(response, 'TTS failed');
-    return response.blob();
+    return readAudioDelivery(response, signal);
   },
   createUrl: blob => URL.createObjectURL(blob),
   revokeUrl: url => URL.revokeObjectURL(url),

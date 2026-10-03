@@ -9,6 +9,7 @@ export interface RecorderCallbacks {
   onStatus?: (text: string) => void;
 }
 export interface RecorderDependencies {
+  prepare?: (signal: AbortSignal) => Promise<number>;
   getStream: () => Promise<MediaStream>;
   createRecorder: (stream: MediaStream) => RecorderHandle;
   detectSilence: (stream: MediaStream, stop: () => void) => () => void;
@@ -21,6 +22,7 @@ interface Recording {
   callbacks: RecorderCallbacks;
   chunks: Blob[];
   bytes: number;
+  maxBytes: number;
   stream?: MediaStream;
   recorder?: RecorderHandle;
   stopSilence?: () => void;
@@ -36,9 +38,15 @@ export class RecorderSession {
 
   async start(callbacks: RecorderCallbacks): Promise<void> {
     this.cancel();
-    const recording: Recording = { controller: new AbortController(), callbacks, chunks: [], bytes: 0, stopped: false, cancelled: false };
+    const recording: Recording = { controller: new AbortController(), callbacks, chunks: [], bytes: 0,
+      maxBytes: 25 * 1024 * 1024, stopped: false, cancelled: false };
     this.current = recording;
     try {
+      if (this.dependencies.prepare) {
+        recording.maxBytes = await this.dependencies.prepare(recording.controller.signal);
+        if (recording.cancelled) return;
+        callbacks.onStatus?.(`Record up to 60 seconds (${Math.floor(recording.maxBytes / 1024 / 1024)} MiB maximum), or type your question.`);
+      }
       const stream = await this.dependencies.getStream();
       if (recording.cancelled) { stream.getTracks().forEach(track => track.stop()); return; }
       recording.stream = stream;
@@ -95,8 +103,8 @@ export class RecorderSession {
   private acceptChunk(recording: Recording, chunk: Blob): void {
     if (recording.cancelled || this.current !== recording || !chunk.size) return;
     recording.bytes += chunk.size;
-    if (recording.bytes > 25 * 1024 * 1024) {
-      this.fail(recording, 'Recording exceeded 25 MB. Make a shorter recording or type your question.');
+    if (recording.bytes > recording.maxBytes) {
+      this.fail(recording, `Recording exceeded ${Math.floor(recording.maxBytes / 1024 / 1024)} MiB. Make a shorter recording or type your question.`);
       return;
     }
     recording.chunks.push(chunk);

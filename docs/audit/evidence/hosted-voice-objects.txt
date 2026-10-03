@@ -1,0 +1,43 @@
+Hosted voice objects and client playback regression evidence
+Date: 2026-10-03
+Collection: transcript-collected from the already executed focused check; not a new run.
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx --test tests/hosted-voice-objects.test.ts tests/audio-playback.test.ts
+Exit code: 0
+
+Scope: installed Supabase SDK with controlled fetch transport, private bucket checks,
+immutable upload, bounded recovery, signing validation, signed client download,
+same-request retry, and existing SpeechPlayer lifecycle. No live credentials,
+provider credits, real Storage bucket, browser playback, microphone, or deployment proof.
+
+Captured stdout:
+✔ normal playback releases audio and URL and calls completion once (2.431167ms)
+✔ skip during audio download aborts and suppresses later audio and duplicate completion (0.459833ms)
+✔ a new turn cancels an older download without firing its continuation (0.353208ms)
+✔ autoplay rejection reports failure once and releases resources (0.214042ms)
+✔ navigation cancellation disposes playing audio without a game continuation (0.346334ms)
+✔ disabled voice and mute skip speech without fetching (0.107708ms)
+✔ actual SDK uploads immutably, recovers verified bytes and signs only the exact private object (16.161208ms)
+✔ storage rejects public or unavailable buckets, uncertain reads, oversized objects and unsafe keys (2.789333ms)
+✔ browser keeps one voice request ID across signed-link retry and verifies private downloads (3.598125ms)
+✔ browser fails closed on malformed signed responses, redirects, overflow and cancellation (0.400125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213.658416
+
+Supporting static checks (execution receipt; empty successful stdout):
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- eslint --config eslint.size.config.mjs src/lib/voice/hosted-objects.ts app/game/audio/audio-delivery.ts app/game/audio/browser-speech.ts
+Exit code: 0
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- tsc --noEmit --pretty false
+Exit code: 0
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- eslint --max-warnings=0 src/lib/voice/hosted-objects.ts app/game/audio/audio-delivery.ts app/game/audio/browser-speech.ts tests/hosted-voice-objects.test.ts tests/hosted-voice-http*.mjs tests/hosted-http-server.mjs tests/hosted-http-transport.mjs
+Exit code: 0
+
+Official API references consulted:
+https://supabase.com/docs/reference/javascript/storage-from-createsignedurl
+https://supabase.com/docs/reference/javascript/storage-from-upload
+Installed SDK source was also inspected for upload, streamed download, and signing options.

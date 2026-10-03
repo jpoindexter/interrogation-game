@@ -86,7 +86,7 @@ test('shared readiness reports configuration only, hides credentials and disable
   assert.match(ready.services.storage.detail, /does not verify/);
   assert.equal(ready.services.voice.configured, false);
   assert.equal(ready.services.voice.observation, null);
-  assert.match(ready.services.voice.detail, /text only/);
+  assert.match(ready.services.voice.detail, /explicit enablement/);
   assert.doesNotMatch(JSON.stringify(ready), /private-fake|private-fixture/);
   delete process.env.VERCEL;
   assert.equal(readReadiness().services.voice.configured, false, 'shared backend stays text-only on a development server');

@@ -66,9 +66,9 @@ async function freePort() {
   return port;
 }
 
-export async function startNext(root, transport) {
+export async function startNext(root, transport, fixture = {}) {
   const port = await freePort();
-  const child = spawn(process.execPath, ['--import', resolve('tests/hosted-http-transport.mjs'),
+  const child = spawn(process.execPath, ['--import', resolve(fixture.preload ?? 'tests/hosted-http-transport.mjs'),
     resolve('node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', String(port)], {
     stdio: ['ignore', 'pipe', 'pipe', 'ipc'], env: { ...process.env, NODE_ENV: 'production', NEXT_TELEMETRY_DISABLED: '1',
       VERCEL: '1', SESSION_STORAGE: 'supabase', HOSTED_TEXT_ENABLED: 'true', AI_PROVIDER: 'openai',
@@ -77,7 +77,7 @@ export async function startNext(root, transport) {
       HOSTED_DEPLOYMENT_ID: 'http-acceptance', HOSTED_AI_CALLS_PER_WINDOW: '20',
       HOSTED_AI_CHARACTERS_PER_WINDOW: '1000000', HOSTED_AI_WINDOW_SECONDS: '3600',
       AI_WORK_ENABLED: 'true', AI_RAG_ENABLED: 'false', ELEVENLABS_API_KEY: '',
-      INTERROGATION_DATA_DIR: join(root, String(port)) },
+      INTERROGATION_DATA_DIR: join(root, String(port)), ...fixture.env },
   });
   let logs = '';
   child.stdout.on('data', chunk => { logs += chunk; });

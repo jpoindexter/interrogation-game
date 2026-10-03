@@ -33,6 +33,7 @@ export async function transcribeRecording(blob: Blob, signal: AbortSignal, sessi
 
 export function browserRecorder(sessionId?: string): Omit<RecorderDependencies, 'onListening'> {
   return {
+    prepare: recordingLimit,
     getStream: () => navigator.mediaDevices.getUserMedia({ audio: true }),
     createRecorder: stream => {
       const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4']
@@ -42,4 +43,15 @@ export function browserRecorder(sessionId?: string): Omit<RecorderDependencies, 
     detectSilence,
     transcribe: (blob, signal, newAttempt) => transcribeRecording(blob, signal, sessionId, newAttempt),
   };
+}
+
+async function recordingLimit(signal: AbortSignal): Promise<number> {
+  const response = await fetch('/api/health', { signal: AbortSignal.any([signal, AbortSignal.timeout(10_000)]), cache: 'no-store' });
+  if (!response.ok) throw new Error('Recording limits could not be checked. Continue with text.');
+  const data = await response.json();
+  const maximum = data?.services?.voice?.maxRecordingBytes;
+  if (![3 * 1024 * 1024, 25 * 1024 * 1024].includes(maximum)) {
+    throw new Error('Recording limits could not be confirmed. Continue with text.');
+  }
+  return maximum;
 }

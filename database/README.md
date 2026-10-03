@@ -44,6 +44,8 @@ Apply these migrations **in this order** as a trusted database migration owner. 
 | `013_hosted_endpoint_limits.sql` | Shared endpoint admission, fixed minute windows and bounded hashed buckets |
 | `014_hosted_reads.sql` | Provider-free read claims and canonical expiry/result commits |
 | `015_hosted_request_identity.sql` | Original public retry IDs with hashed private lookup keys; internal read markers excluded |
+| `016_hosted_export_page.sql` | Service-only keyset export pages with a 1 MiB row-payload bound |
+| `017_hosted_voice.sql` | Private voice receipts, fenced recovery and atomic voice allowance admission |
 
 Migrations 002, 003 and 005 are not prerequisites for shared text mode. They concern optional historical retrieval, which this mode requires to be disabled. Later migrations revoke service-role access to superseded unbound claim, completion and work-reservation RPCs; applying only an early subset does not satisfy the current adapters.
 
@@ -65,7 +67,11 @@ Use one stable deployment ID across instances. A different ID creates a differen
 
 Private shared tables are inaccessible to `anon`, `authenticated` and direct service-role table reads. The trusted server uses narrowly granted RPCs with fixed search paths. Database state establishes authority on each transaction; there is no process-cache or local-file fallback. When `VERCEL` is set, selecting local session storage is refused. Database unavailability remains distinct from quota exhaustion.
 
-**Hosted voice is intentionally unavailable**, even when an ElevenLabs credential is present. Shared audio receipts, private objects and authorization still need integration. **Admin bulk export download is also unavailable** until byte-bounded pagination is implemented; canonical per-game exports still persist atomically. Retrieval stays off.
+**Hosted voice defaults off.** Its optional configuration requires `HOSTED_VOICE_ENABLED=true`, an ElevenLabs key, a private `HOSTED_VOICE_BUCKET`, and all four `HOSTED_TTS_CALLS_PER_WINDOW`, `HOSTED_TTS_CHARACTERS_PER_WINDOW`, `HOSTED_STT_CALLS_PER_WINDOW`, `HOSTED_STT_BYTES_PER_WINDOW` caps. Calls are integers0–1,000,000 and units0–1,000,000,000,000; the shared window is `HOSTED_AI_WINDOW_SECONDS`. Session caps are256 speech calls/60,000 characters and100 recordings/300 MiB. Failed work stays charged. The app checks the existing bucket is private before each storage operation; it never creates or publishes a bucket.
+
+Migration017 retains at most256 voice receipts and64 MiB reserved storage per session. Pending TTS reserves8 MiB plus32 KiB metadata, shrinking to confirmed audio size plus metadata on success. Ambiguous/error requests retain the reservation; budgets are never refunded. Voice leases last90 seconds, receipts24 hours; access also requires the current session capability. Recovery can finalize an existing immutable object but cannot repeat synthesis. STT interruption requires an explicit new attempt. Private speech URLs last60 seconds and are not stored in receipts or exports.
+
+Admin downloads are now available through migration016: authenticated keyset pages bound to filters, a1 MiB output cap, signed continuation cursors and explicit413 for a single oversized record. The CLI follows pages up to its requested total and preserves prior output on failure. Canonical per-game exports remain atomic. Retrieval stays off. [Executed integration and limits](../docs/audit/HOSTED-VOICE-EXPORT.md).
 
 Session availability expires after one idle hour; generation receipts expire after 24 hours. Generation admission retains at most 1,000 rows including expired tombstones, and sessions admit at most 500 action receipts. Expiry is not data erasure. Do not delete paid-work or generation retry tombstones to reclaim capacity: an old ID could otherwise authorize new provider work. Retention and a safe namespace/archive procedure remain operational acceptance work before broader use.
 

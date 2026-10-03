@@ -1,4 +1,4 @@
-const NEW_ATTEMPT = new Set(['VOICE_FAILED', 'VOICE_INTERRUPTED', 'VOICE_EXPIRED', 'REQUEST_CONFLICT']);
+const NEW_ATTEMPT = new Set(['VOICE_FAILED', 'NETWORK_UNAVAILABLE', 'VOICE_INTERRUPTED', 'VOICE_EXPIRED', 'REQUEST_CONFLICT']);
 export class VoiceRequestError extends Error {
   constructor(message: string, readonly newAttemptRequired: boolean) { super(message); }
 }

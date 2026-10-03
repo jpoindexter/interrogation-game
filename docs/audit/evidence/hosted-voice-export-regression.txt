@@ -1,0 +1,33 @@
+✔ manual stop transcribes once and disposes microphone and silence monitor (4.030125ms)
+✔ navigation during microphone permission discards and releases a late stream (0.192708ms)
+✔ navigation cancels transcription and ignores its late result (0.824417ms)
+✔ recorder construction failure closes an already acquired microphone (0.181ms)
+✔ starting another recording suppresses an older transcription (1.569ms)
+✔ recording filenames match actual recorder MIME types (0.260166ms)
+✔ transcription HTTP failures do not become accepted transcripts (15.300542ms)
+✔ transcription sends actual MIME extension, session and abort signal (0.852125ms)
+✔ hosted recording limit is announced before capture and oversized audio never reaches transcription (0.754834ms)
+✔ actual health handler reports only configuration, reflects runtime storage guards and never exposes supplied secrets (4.942167ms)
+✔ hosted selection requires explicit operator configuration and bounded integer budgets (1.134542ms)
+✔ backend selection has no hosted-to-local fallback and adapters hold no shared session state (0.663375ms)
+✔ shared readiness reports configuration only, hides credentials and disables hosted voice (0.454ms)
+✔ voice configuration requires deliberate private storage and separate bounded speech/transcription allowances (1.233125ms)
+✔ speech and transcription retain request IDs after a dropped response without automatic retry (17.095708ms)
+✔ failed recording retains the exact clip; explicit retry delivers only the recovered transcript (0.919333ms)
+✔ known interrupted attempt requires explicit new attempt and discard prevents any repeat (0.444958ms)
+✔ leaving during retained-clip retry cancels delivery and clears recovery (0.367ms)
+✔ recovery controls name the action and disclose possible repeated provider usage (2.964542ms)
+✔ blocked browser storage keeps same-view retry IDs and stores no raw content when available (1.183542ms)
+✔ a recorded provider connection failure requires an explicit new attempt (0.909542ms)
+✔ speech authorizes the entire accepted statement and exact briefing (24.553208ms)
+✔ recording is limited to an active session and exact supported media type (18.22075ms)
+✔ ElevenLabs adapters send documented model fields, server auth and cancellation (23.102459ms)
+✔ endpoint buckets cannot be bypassed by absent IPs; voice budgets cap work (146.758ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 361.1665

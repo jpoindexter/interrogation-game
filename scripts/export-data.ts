@@ -1,5 +1,6 @@
 #!/usr/bin/env npx tsx
 // Usage: npx tsx scripts/export-data.ts --output=data/export.jsonl --limit=1000
+// Follows bounded server pages up to --limit total records (default 1000).
 // Env: EXPORT_SECRET, EXPORT_BASE_URL (default http://localhost:3000)
 
 import { readExportOptions } from './export/options';

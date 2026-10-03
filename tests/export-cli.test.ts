@@ -90,3 +90,40 @@ void test('an empty JSONL response writes a valid empty export', async context =
   assert.equal(await readFile(output, 'utf8'), '');
   assert.match(result.logs, /Written 0 records/);
 });
+
+void test('CLI follows same-origin cursor pages up to the requested total and retains authorization', async context => {
+  const paths: URL[] = [];
+  const fixture = await exportFixture(context, (request, response) => {
+    assert.equal(request.headers.authorization, `Bearer ${syntheticSecret}`);
+    paths.push(new URL(request.url ?? '', 'http://fixture.invalid'));
+    response.setHeader('X-Export-Next-Cursor', paths.length === 1 ? 'opaque-page-2' : 'opaque-page-3');
+    response.end(paths.length === 1 ? '{"id":1}\n{"id":2}\n' : '{"id":3}\n{"id":4}\n');
+  });
+  const output = join(fixture.directory, 'multi.jsonl');
+  const result = await runCli(fixture.baseUrl, output, ['--limit=3', '--offset=7', '--outcome=win']);
+  assert.equal(result.code, 0, result.logs); assert.equal(paths.length, 2);
+  assert.equal(paths[0].searchParams.get('offset'), '7');
+  assert.equal(paths[1].searchParams.has('offset'), false);
+  assert.equal(paths[1].searchParams.get('cursor'), 'opaque-page-2');
+  assert.equal(paths[1].searchParams.get('limit'), '3');
+  assert.equal(paths[1].searchParams.get('outcome'), 'win');
+  assert.equal(await readFile(output, 'utf8'), '{"id":1}\n{"id":2}\n{"id":3}\n');
+  assert.equal(result.logs.includes(syntheticSecret), false);
+});
+
+for (const failure of ['oversized', 'repeated cursor']) {
+  void test(`a later ${failure} page preserves prior output and removes temporary data`, async context => {
+    let requests = 0;
+    const fixture = await exportFixture(context, (_request, response) => {
+      requests++;
+      if (failure === 'oversized' && requests === 2) { response.writeHead(413); response.end(syntheticSecret); return; }
+      response.setHeader('X-Export-Next-Cursor', 'same-cursor'); response.end('{"id":1}\n');
+    });
+    const output = join(fixture.directory, 'export.jsonl'); await writeFile(output, 'previous export');
+    const result = await runCli(fixture.baseUrl, output, ['--limit=3']);
+    assert.equal(result.code, 1); assert.equal(requests, 2);
+    assert.equal(await readFile(output, 'utf8'), 'previous export');
+    assert.deepEqual(await readdir(fixture.directory), ['export.jsonl']);
+    assert.equal(result.logs.includes(syntheticSecret), false);
+  });
+}

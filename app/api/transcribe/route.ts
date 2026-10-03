@@ -6,6 +6,12 @@ import { voiceResponse } from '@/lib/voice/receipt-types';
 import { voiceFailure } from '@/lib/voice/http';
 import { readVoiceBytes } from '@/lib/voice/bounded-body';
 import { hostedVoiceFailure } from '@/lib/voice/availability';
+import { storageBackend } from '@/lib/storage/backend';
+import { requestHostedTranscription } from '@/lib/voice/hosted-requests';
+import { HOSTED_RECORDING_BYTES } from '@/lib/config/hosted-voice';
+
+export const runtime = 'nodejs';
+export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
   const unavailable = hostedVoiceFailure();
@@ -13,8 +19,10 @@ export async function POST(request: NextRequest) {
   const budgetFailure = await requestBudgetFailure(getClientIp(request), 20);
   if (budgetFailure) return budgetFailure;
   try {
-    const body = await readVoiceBytes(request.body, 26 * 1024 * 1024, request.signal);
+    const hosted = storageBackend() === 'supabase';
+    const body = await readVoiceBytes(request.body, hosted ? HOSTED_RECORDING_BYTES + 64 * 1024 : 26 * 1024 * 1024, request.signal);
     const bounded = new Request(request.url, { method: 'POST', headers: request.headers, body: Buffer.from(body) });
-    return voiceResponse(await requestTranscription(await bounded.formData(), request.signal));
+    const form = await bounded.formData();
+    return voiceResponse(await (hosted ? requestHostedTranscription(form, request.signal) : requestTranscription(form, request.signal)));
   } catch (error) { return voiceFailure(error); }
 }

@@ -1,8 +1,8 @@
 # Minimum hosted storage design
 
-3 October 2026. Source review at `8eadbab`; **target design; staged implementation now has [local PostgreSQL/adapter evidence](HOSTED-STORAGE-FOUNDATION.md), with [generation/action/redemption integration](HOSTED-GENERATION-REDEMPTION.md); public route selection and deployment remain unfinished**. Preserve the working local/Codex demo. The smallest coherent hosted path uses the existing Supabase dependency for transactional Postgres state; private object storage is needed only when hosted voice is enabled. A Redis layer, background generation worker and account system are not prerequisites for a protected portfolio preview.
+3 October 2026. Source review at `8eadbab`; **target design; staged implementation now has [local PostgreSQL/adapter evidence](HOSTED-STORAGE-FOUNDATION.md), with [generation/action/redemption integration](HOSTED-GENERATION-REDEMPTION.md); [public text route selection](HOSTED-ROUTE-INTEGRATION.md) and [voice/export integration](HOSTED-VOICE-EXPORT.md) now have controlled execution evidence; live deployment remains unfinished**. Preserve the working local/Codex demo. The smallest coherent hosted path uses the existing Supabase dependency for transactional Postgres state; private object storage is needed only when hosted voice is enabled. A Redis layer, background generation worker and account system are not prerequisites for a protected portfolio preview.
 
-## Current boundaries and specific gaps
+## Original design boundaries (historical; linked implementation reports supersede these gaps)
 
 | Lifecycle | Current implementation | Required hosted change |
 |---|---|---|

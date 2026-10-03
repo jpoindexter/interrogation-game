@@ -1,0 +1,26 @@
+{
+  "capturedAt": "2026-10-03T18:06:26.636078+00:00",
+  "build": "qI-is2q0hdQ-F81AsI5pw",
+  "scope": "Local HTTP route availability only; no case generation, browser, provider, microphone or playback exercised.",
+  "responses": [
+    {
+      "route": "/cases",
+      "status": 200
+    },
+    {
+      "route": "/game?setting=startup&difficulty=easy",
+      "status": 200
+    },
+    {
+      "route": "/api/health",
+      "status": 200
+    }
+  ],
+  "configuration": {
+    "mode": "local",
+    "ai": "codex-local",
+    "storage": "local",
+    "voiceConfigured": false,
+    "maxRecordingBytes": 26214400
+  }
+}

@@ -96,3 +96,18 @@ void test('transcription sends actual MIME extension, session and abort signal',
   assert.equal(form?.get('sessionId'), 'session-1');
   assert.equal(signal, controller.signal);
 });
+
+void test('hosted recording limit is announced before capture and oversized audio never reaches transcription', async () => {
+  const sequence: string[] = [];
+  let transcriptions = 0;
+  const fixture = recorderFixture({ prepare: async () => { sequence.push('prepare'); return 3 * 1024 * 1024; },
+    transcribe: async () => { transcriptions++; return 'Must not send'; } });
+  await fixture.session.start({ ...fixture.callbacks, onStatus: text => { sequence.push('notice'); assert.match(text, /3 MiB/); } });
+  assert.deepEqual(sequence, ['prepare', 'notice']);
+  fixture.recorder.ondataavailable?.call(fixture.recorder as unknown as MediaRecorder,
+    { data: new Blob([new Uint8Array(3 * 1024 * 1024 + 1)]) } as BlobEvent);
+  await flushAudio();
+  assert.equal(transcriptions, 0);
+  assert.match(fixture.errors[0], /3 MiB/);
+  assert.equal(fixture.resources.stoppedTracks, 1);
+});
