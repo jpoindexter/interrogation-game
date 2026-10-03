@@ -2,6 +2,8 @@
 
 3 October 2026. Migration 018 adds an operator-invoked payload cleanup batch. It does not install a scheduler or erase all game data. No live project migration or cleanup has been run.
 
+**Follow-up:** [Migration 019 and private-audio cleanup](HOSTED-AUDIO-RETENTION.md) now handle known-bucket TTS objects through recoverable jobs. The migration 018 behavior below remains the SQL-only payload command.
+
 ## Operator contract
 
 The command defaults to a preview, takes a batch limit of 1–100 (default 25), and performs exactly one service-role RPC. It never loops or automatically retries an uncertain result. `--apply` also requires the exact configured project hostname, so a command copied from another project fails before network access. Credentials come only from the existing trusted Supabase server environment; output contains the project hostname and aggregate counts, not transcripts, capabilities, tokens or provider error bodies.

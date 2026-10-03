@@ -35,7 +35,7 @@ export async function requestHostedSpeech(body: Record<string, unknown>, signal:
   const authorized = withSessionWorkspace({ record }, () => authorizeSpeech(body));
   const fingerprint = hash(JSON.stringify({ text: authorized.text, role: authorized.role,
     model: speechModel(), voiceId: speechSettings(authorized).voiceId, bucket: configuration.bucket }));
-  return runHostedVoice({ sessionId: record.session.id, requestId: id, kind: 'tts', fingerprint,
+  return runHostedVoice({ sessionId: record.session.id, requestId: id, kind: 'tts', fingerprint, bucket: configuration.bucket,
     revision: record.revision, signal, reservation: { deployment: configuration.deployment,
       units: authorized.text.length, policy: configuration.policies.tts },
     work: deadline => observeProvider('voice', 'speech', async () => {

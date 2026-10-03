@@ -102,11 +102,11 @@ See the [current architecture](docs/ARCHITECTURE.md) and [local rehearsal runboo
 
 Local session snapshots, score receipts and exports are private files under the data directory. They may include full transcripts, case secrets and private redemption data. Keep them out of version control and screen sharing. One-hour session expiry and 24-hour generation/voice receipt expiry limit availability; they do not erase the stored files. Custom data directories are not automatically covered by this repository’s `.gitignore`. Review/archive data only while the demo server is stopped, and do not retry archived request IDs against a fresh store. Database migrations and the distinct local/remote/shared storage modes are documented in [database/README.md](database/README.md).
 
-For an explicitly approved shared database, [hosted payload retention](docs/audit/HOSTED-RETENTION.md) provides a bounded preview/apply operator command. It preserves retry identities and usage; exports, score-backed sessions and audio objects remain deferred. It does not alter local demo files or run automatically.
+For an explicitly approved shared database, [hosted payload retention](docs/audit/HOSTED-RETENTION.md) provides a bounded preview/apply operator command. It preserves retry identities and usage; exports and score-backed sessions remain deferred. [Private audio cleanup](docs/audit/HOSTED-AUDIO-RETENTION.md) now uses persisted bucket identity and recoverable deletion jobs; legacy audio with unknown buckets stays deferred. It does not alter local demo files or run automatically.
 
 ### Opt-in shared text mode
 
-The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–017 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
+The application can select shared generation, sessions, actions, result recovery, canonical exports, score redemption and endpoint admission. Apply migrations **001, 004, then 006–019 in numeric order** to the intended database before enabling this path. Shared mode requires all of:
 
 - `SESSION_STORAGE=supabase`, `HOSTED_TEXT_ENABLED=true`, `AI_PROVIDER=openai` and `AI_RAG_ENABLED=false`.
 - `LEADERBOARD_STORAGE=supabase`, `EXPORT_STORAGE=supabase`, a managed `SUPABASE_URL`, server-only `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY`.

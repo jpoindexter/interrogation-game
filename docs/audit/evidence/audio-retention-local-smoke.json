@@ -1,0 +1,21 @@
+{
+  "build": "33AfbtvgKqE9p1PtczvPo",
+  "capturedAt": "2026-10-03T18:29:06.194766+00:00",
+  "scope": "Local HTTP availability after preview restart; no provider, browser or voice execution.",
+  "responses": [
+    {
+      "path": "/cases",
+      "status": 200
+    },
+    {
+      "path": "/game?setting=startup&difficulty=easy",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "mode": "local",
+      "voiceConfigured": false
+    }
+  ]
+}

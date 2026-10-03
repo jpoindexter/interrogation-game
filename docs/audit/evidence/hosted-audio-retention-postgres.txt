@@ -1,0 +1,13 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx tests/hosted-audio-retention-postgres.ts
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+Runtime: v24.21.0; PostgreSQL: 14.18 (Homebrew)
+PASS provenance: first-claim bucket persisted atomically; exact replay; mismatched/legacy buckets rejected; immutable binding; STT null; invalid names; binding failure rolls back allowances
+PASS eligibility: receipt or parent expiry; live receipt/voice lease/parent lease skipped; five-minute grace boundary; preview unchanged; no payload restoration or new paid claim; budgets unchanged
+PASS jobs: concurrent claim once; active cleanup lease exclusive; expired/mismatched owner/fence rejected; uncertain removal retries same job/bucket/key with higher fence; confirmed finish replays; tombstones retained
+PASS locking/bounds: actual parent row lock skipped; available rows bounded at 1 and 100; null/out-of-range arguments rejected
+PASS production worker + actual PostgreSQL: controlled object removal followed by interrupted completion stays pending; explicit later batch confirms absence and finishes higher fence; no paid retry or budget refund
+PASS roles: old claim revoked from service role; anon/authenticated cannot execute new RPCs; direct private rows/helpers denied; PUBLIC execute absent; worker receives only object/job metadata
+Scope: actual disposable PostgreSQL migration/RPC execution; synthetic receipts only. Network/provider/storage calls: 0. No live migration, cleanup or actual object deletion claimed.
+CLEANUP isolated cluster stopped and temporary directory removed

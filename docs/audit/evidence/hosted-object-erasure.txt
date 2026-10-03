@@ -1,0 +1,52 @@
+Hosted private object erasure — 2026-10-03
+
+Scope
+src/lib/voice/hosted-object-erasure.ts exports eraseHostedAudio(bucket, objectKey, signal).
+No existing file was changed by this adapter task. No live network, provider call,
+production deletion, browser action, commit, or push was performed.
+
+Executed: actual installed Supabase SDK with controlled global fetch responses
+Command: node --import tsx --test tests/hosted-object-erasure.test.ts
+Result: 5 tests, 5 passed, 0 failed.
+1. Exact private bucket read; exact object HEAD; one awaited DELETE containing
+   { prefixes: [objectKey] }; exact object HEAD returns 404. A later invocation
+   observes the missing object and succeeds without another DELETE.
+2. Invalid keys/buckets make no HTTP requests. Public, mismatched and missing
+   bucket responses never reach object requests.
+3. Actual SDK HEAD 400, 403, 500 and transport failures reject. A successful
+   DELETE followed by HEAD 200 rejects because the object remains present.
+4. DELETE transport failure, malformed JSON and HTTP 503 reject even when the
+   simulated object disappeared. A later invocation confirms absence and succeeds.
+5. Pre-aborted signals make no requests. Abort during an in-flight DELETE does
+   not detach the operation: settlement waits for DELETE, then fails without
+   starting an absence read. Exported failures use sanitized VoiceError 503
+   VOICE_STORAGE_UNAVAILABLE, never upstream metadata or cancellation reasons.
+
+Executed: focused lint/code-size gate
+Command: npx --no-install eslint --config eslint.size.config.mjs src/lib/voice/hosted-object-erasure.ts tests/hosted-object-erasure.test.ts
+Result: exit 0, no diagnostics.
+
+Executed: focused TypeScript check
+Command: npx --no-install tsc --ignoreConfig --noEmit --incremental false --target ES2017 --lib dom,dom.iterable,esnext --module esnext --moduleResolution bundler --esModuleInterop --skipLibCheck --strict src/lib/voice/hosted-object-erasure.ts tests/hosted-object-erasure.test.ts
+Result: exit 0, no diagnostics. The initial invocation without --ignoreConfig
+hit TypeScript 6 TS5112; the corrected invocation above passed.
+
+Code-path evidence / limits
+- Uses getSupabaseClient, whose databaseFetch constrains requests to the configured
+  trusted origin, rejects redirects, and supplies a 20,000ms per-request deadline.
+  Four sequential SDK calls mean up to approximately 80s of request budgets;
+  the tests do not wait for a real 20s network timeout.
+- Installed SDK exists() returns false plus StorageApiError for both HEAD 400
+  and 404. This adapter accepts only data===false with actual HTTP status 404.
+  HTTP 400 is intentionally fail-closed even if a deployment uses it for missing
+  objects. The inspected SDK converts empty-body HEAD failures into typed errors.
+- SDK remove() and exists() do not accept caller signals. The adapter checks
+  cancellation before and after each awaited SDK operation and uses the existing
+  bounded database fetch; it never starts a detached deletion.
+- Bucket privacy and absence are point-in-time observations. Successful absence
+  does not prove an external actor cannot recreate the object later, or change
+  bucket state after its read. No object listing, bucket creation, inferred
+  destination, global deletion, or signed URL is used.
+- Controlled HTTP proves this adapter's actual SDK protocol and decisions. It
+  does not establish production credentials, live Supabase behavior, retention
+  worker integration, deletion of versions/backups/caches, or future nonexistence.

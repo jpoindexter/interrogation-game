@@ -1,0 +1,15 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx --test tests/hosted-voice-service.test.ts
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+✔ expired voice claim performs no provider, object or completion work (1.301958ms)
+✔ missing saved audio records interruption without another provider call (0.35425ms)
+✔ saved audio recovery completes metadata and signs delivery without provider work (0.219291ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 242.30525

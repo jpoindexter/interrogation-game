@@ -28,12 +28,12 @@ class ControlledObjects extends HostedVoiceObjects {
 
 function fixture(kind: 'claimed' | 'recover', expired: boolean, saved: boolean) {
   const counts: Counts = { work: 0, recover: 0, save: 0, sign: 0, finish: 0 };
-  const identity = { sessionId: 'a'.repeat(48), requestId: 'voice-service-001', kind: 'tts' as const,
+  const identity = { sessionId: 'a'.repeat(48), requestId: 'voice-service-001', kind: 'tts' as const, bucket: 'fixture-voice',
     fingerprint: 'b'.repeat(64), revision: 0 };
   const metadata: HostedAudioObject = { objectKey: voiceObjectKey(identity), bytes: 3, sha256: 'c'.repeat(64) };
   const completed: HostedVoiceResponse[] = [];
   const receipts = new HostedVoiceStorage(async (name, parameters) => {
-    if (name === 'interrogation_voice_claim') return { kind, fence: 2,
+    if (name === 'interrogation_voice_claim_in_bucket') return { kind, fence: 2,
       leaseUntil: Date.now() + (expired ? -1 : 90_000), objectKey: metadata.objectKey };
     assert.equal(name, 'interrogation_voice_finish');
     counts.finish++;

@@ -8,6 +8,12 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Private-audio retention checkpoint
+
+[Migration 019 and its operator worker](HOSTED-AUDIO-RETENTION.md) bind new TTS receipts to a bucket before synthesis, then use recoverable deletion jobs for eligible expired audio. The worker checks private bucket identity and exact-object absence before fenced completion. Legacy receipts with unknown buckets remain deferred; no bucket is inferred from current configuration. Paid-work and request tombstones remain intact.
+
+Executed: actual PostgreSQL with production adapters/worker, controlled SDK deletion, existing voice SQL/service checks and production build. Two production Next workers also passed public voice replay/recovery with migration 019 and controlled transport. Strict lint, module sizes and types passed. No live migration, object deletion or voice credits. **Next:** export/score-backed session retention and safe namespace capacity; legacy bucket reconciliation remains an explicit operator gap. All live voice/browser/hosted acceptance gates remain open. The full goal is active.
+
 ## Bounded payload retention checkpoint
 
 The voice/export checkpoint is committed and pushed as `8421488`; the local preview runs its tested production build. Cases, game and health returned HTTP 200. This confirms availability, not a new provider playthrough. Health still reports no app ElevenLabs key.

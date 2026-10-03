@@ -27,7 +27,7 @@ async function fixture(db: Database) {
   const snapshot: HostedSnapshot = { ...seed, requests: {}, session: { ...seed.session } };
   const rpc = adapterRpc(db), storage = new HostedVoiceStorage(rpc);
   assert.equal((await new HostedSessionStorage(rpc).create(snapshot)).kind, 'created');
-  const request = (requestId: string, kind: VoiceIdentity['kind'] = 'tts') => ({ sessionId, requestId, kind,
+  const request = (requestId: string, kind: VoiceIdentity['kind'] = 'tts') => ({ sessionId, requestId, kind, bucket: kind === 'tts' ? 'fixture-voice' : undefined,
     fingerprint: hashKey(`${kind}:${requestId}`), revision: 0, reservation: { deployment: 'voice-fixture',
       units: kind === 'tts' ? 20 : 1024, policy: { sessionCalls: kind === 'tts' ? 256 : 100,
         sessionUnits: kind === 'tts' ? 60_000 : 100 * 3 * 1024 * 1024,
@@ -182,7 +182,7 @@ async function main() {
   globalThis.fetch = async () => { networkCalls++; throw new Error('No network permitted'); };
   try {
     console.log(`Database: ${await db.sql('SHOW server_version;')}`);
-    for (const file of ['006_hosted_sessions', '007_hosted_budgets', '009_hosted_claimed_work', '017_hosted_voice']) await db.migrate(`database/migrations/${file}.sql`);
+    for (const file of ['006_hosted_sessions', '007_hosted_budgets', '009_hosted_claimed_work', '017_hosted_voice', '019_hosted_audio_retention']) await db.migrate(`database/migrations/${file}.sql`);
     const f = await fixture(db);
     await synthesis(db, f); await recovery(db, f); await recording(db, f);
     await rollbackAndPrivacy(db, f); await limits(db); await queuedDeadline(db);

@@ -1,0 +1,55 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- npm run build
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+
+> interrogation@0.1.0 build
+> next build
+
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 11ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 733ms
+  Running TypeScript ...
+  Finished TypeScript in 970ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/25) ...
+  Generating static pages using 11 workers (6/25)
+  Generating static pages using 11 workers (12/25)
+  Generating static pages using 11 workers (18/25)
+✓ Generating static pages using 11 workers (25/25) in 162ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /about-game
+├ ƒ /api/accuse
+├ ƒ /api/evaluate
+├ ƒ /api/export
+├ ƒ /api/gameplay
+├ ƒ /api/generate-case
+├ ƒ /api/generate-case/status
+├ ƒ /api/health
+├ ƒ /api/hint
+├ ƒ /api/interrogate
+├ ƒ /api/leaderboard
+├ ƒ /api/patterns
+├ ƒ /api/session
+├ ƒ /api/session/end
+├ ƒ /api/transcribe
+├ ƒ /api/tts
+├ ○ /cases
+├ ○ /game
+├ ○ /game/lose
+├ ○ /game/win
+├ ○ /help
+├ ○ /leaderboard
+├ ○ /rehearsal
+└ ○ /settings
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

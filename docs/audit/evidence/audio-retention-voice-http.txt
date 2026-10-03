@@ -1,0 +1,11 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node tests/hosted-voice-http.mjs
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+Actual Next production voice HTTP acceptance; build=33AfbtvgKqE9p1PtczvPo; two independent processes.
+PASS public HTTP: authorization rejects before reservations/providers; TTS immutable object and fresh signing replay; STT exact replay; 3MiB recording limit.
+PASS saved-object recovery after lost SQL finish and worker shutdown: original request ID retrieves exact audio; no repeated TTS or upload.
+PASS exactly 2 controlled TTS calls, 1 STT call, 2 uploads, 1 recovery download; no local fallback files.
+Scope: actual Next production HTTP and PostgreSQL019; controlled ElevenLabs and Supabase SDK Storage/RPC transport. Not live account, Vercel, real bucket, audio decoding or browser microphone proof.
+Fault injection: SQL finish delivery dropped before commit after immutable upload; first process stopped; pending lease advanced without sleeping.
+CLEANUP production servers, isolated PostgreSQL and temporary directory removed.

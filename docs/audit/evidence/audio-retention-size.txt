@@ -1,0 +1,7 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- npm run check:size
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+
+> interrogation@0.1.0 check:size
+> eslint --config eslint.size.config.mjs app src scripts

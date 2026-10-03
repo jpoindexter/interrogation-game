@@ -1,0 +1,13 @@
+Command: npm exec --yes --package=node@24.21.0 --package=npm@11.21.0 -- node --import tsx tests/hosted-voice-postgres.ts
+Exit code: 0
+Metadata header added after execution; terminal whitespace normalized.
+
+Database: 14.18 (Homebrew)
+PASS TTS: concurrent claim once; exact replay; changed content/response conflict; stale revision denied; verified metadata shrinks cache reservation; expired receipt never spends again
+PASS voice recovery: TTS changes owner/fence without new work, late writer rejected; unknown audio keeps full cap; interrupted STT permanently refuses provider replay
+PASS STT: exact JSON transcript replay; malformed/empty/oversize body rejected; active action lease blocks new voice; SQL deadline boundaries match every TS difficulty
+PASS voice transaction/privacy: receipt insert failure rolls back work reservation; anon/authenticated RPC and all direct table access denied
+PASS cache bounds: pending TTS reserves maximum; confirmed small object frees cache bytes only; 256 expired tombstones still consume admission slots
+PASS queued STT: actual deployment lock wait crosses game deadline; no receipt/provider allowance is consumed
+Scope: actual disposable PostgreSQL + TS voice adapters; metadata fixtures only, not audio storage/playback/live ElevenLabs. Provider/network calls: 0.
+CLEANUP isolated cluster stopped and temporary directory removed

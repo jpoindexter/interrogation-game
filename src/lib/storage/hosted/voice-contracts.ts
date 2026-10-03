@@ -4,6 +4,8 @@ import { integer, invalidResponse, object, requireInput } from './rpc';
 
 export interface VoiceIdentity {
   sessionId: string; requestId: string; kind: 'tts' | 'stt'; fingerprint: string; revision: number;
+  /** Required for TTS claims; absent for STT. Bound before any audio upload. */
+  bucket?: string;
 }
 export type VoiceReservation = Pick<WorkReservation, 'deployment' | 'units' | 'policy'>;
 export interface HostedVoiceClaim extends Omit<VoiceIdentity, 'kind'> {

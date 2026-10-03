@@ -46,10 +46,12 @@ export class HostedVoiceStorage {
   constructor(private readonly rpc: HostedRpc = supabaseRpc) {}
 
   async claim(input: VoiceIdentity & { owner?: string; reservation: VoiceReservation }): Promise<VoiceClaimResult> {
+    requireInput(input.kind === 'tts' ? typeof input.bucket === 'string' && /^[a-z0-9][a-z0-9-]{2,62}$/.test(input.bucket)
+      : input.bucket === undefined);
     const owner = input.owner ?? randomUUID();
     const identity: VoiceIdentity = { sessionId: input.sessionId, requestId: input.requestId,
-      kind: input.kind, fingerprint: input.fingerprint, revision: input.revision };
-    return parseClaim(await this.rpc('interrogation_voice_claim', { ...identityParameters(identity, owner),
+      kind: input.kind, fingerprint: input.fingerprint, revision: input.revision, bucket: input.bucket };
+    return parseClaim(await this.rpc('interrogation_voice_claim_in_bucket', { ...identityParameters(identity, owner), p_bucket: input.bucket ?? null,
       p_revision: identity.revision, ...workParameters(identity, input.reservation) }), identity, owner);
   }
 

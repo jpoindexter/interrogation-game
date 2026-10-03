@@ -10,7 +10,8 @@ import { fixtureOptions, voiceTransport } from './hosted-voice-http-fixture.mjs'
 const migrations = ['001_private_leaderboard', '004_leaderboard_play_mode', '006_hosted_sessions',
   '007_hosted_budgets', '008_hosted_terminal_export', '009_hosted_claimed_work', '010_hosted_redemption',
   '011_hosted_generation', '012_hosted_generation_finish', '013_hosted_endpoint_limits',
-  '014_hosted_reads', '015_hosted_request_identity', '016_hosted_export_page', '017_hosted_voice'];
+  '014_hosted_reads', '015_hosted_request_identity', '016_hosted_export_page', '017_hosted_voice',
+  '018_hosted_retention', '019_hosted_audio_retention'];
 
 async function transcribe(server, sessionId, requestId, size = 30, expected = 200) {
   const form = new FormData();
@@ -79,7 +80,7 @@ async function main() {
     assert.equal(transport.base.calls(), 0, 'authored opening needs no OpenAI call');
     assert.deepEqual(await readdir(directory), [], 'no local voice or session fallback');
     console.log('PASS exactly 2 controlled TTS calls, 1 STT call, 2 uploads, 1 recovery download; no local fallback files.');
-    console.log('Scope: actual Next production HTTP and PostgreSQL017; controlled ElevenLabs and Supabase SDK Storage/RPC transport. Not live account, Vercel, real bucket, audio decoding or browser microphone proof.');
+    console.log('Scope: actual Next production HTTP and PostgreSQL019; controlled ElevenLabs and Supabase SDK Storage/RPC transport. Not live account, Vercel, real bucket, audio decoding or browser microphone proof.');
     console.log('Fault injection: SQL finish delivery dropped before commit after immutable upload; first process stopped; pending lease advanced without sleeping.');
   } finally {
     await Promise.allSettled(servers.map(server => server.stop()));
