@@ -63,7 +63,7 @@ Voice retries use private local receipts to avoid repeating provider work. The b
 New-case preparation shows server-reported drafting/review stages and elapsed wait time. It does not display a fabricated completion percentage. A failed request explains recovery and offers the authored evidence case; it never silently substitutes a different case or starts another model attempt.
 
 1. Choose a case and difficulty; read the briefing before beginning.
-2. Ask questions using text or, when configured, voice. The accepted transcript is the source for the case file.
+2. Ask questions using text or, when configured, voice. The accepted transcript is the source for the case file. In generated cases, open a clue’s recorded exchange and explicitly add its quote to your question draft. Older clues without a recorded source say so; clues use numbered notes rather than arbitrary object pictures.
 3. In the reviewed evidence challenge, pin an exact statement, attach a disclosed exhibit, edit the question and explicitly send it. Clarify and Leave space offer different editable approaches.
 4. Compare the cited result with the source. An irrelevant exhibit does not establish a contradiction, and repeating an established pair does not earn more progress.
 5. Write the accusation yourself. The game freezes its accepted terminal result; a later debrief must not reverse it.

@@ -24,6 +24,7 @@ function showRecoveredResult(context: Context, snapshot: SessionSnapshot) {
 function restoreProgress(state: Context['state'], snapshot: SessionSnapshot) {
   state.setConversationHistory(snapshot.conversationHistory);
   state.setClues(snapshot.clues.map(clue => clue.text));
+  state.setClueRecords(snapshot.clues);
   state.setAccusationsLeft(snapshot.accusationsLeft);
   state.setHintsUsed(snapshot.hintsUsed);
   state.setHintTexts(snapshot.hintTexts ?? []);

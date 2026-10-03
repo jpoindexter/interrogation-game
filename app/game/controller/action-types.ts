@@ -1,3 +1,4 @@
+import type { PublicClue } from '@/lib/clue-contract';
 import type { RuntimeOptions, GameRuntime } from './useGameRuntime';
 import type { PublicGameplayProjection } from '../playbook/types';
 
@@ -13,7 +14,7 @@ interface ResponseProjection {
 export interface TurnResponse extends ResponseProjection {
   spoken_response: string;
   stress_level: number;
-  clues: { id: string; text: string }[];
+  clues: PublicClue[];
   lawyered_up?: boolean;
   timeExpired?: boolean;
 }

@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import type { PublicClue } from '@/lib/clue-contract';
+import ClueSource from './ClueSource';
+import { useCaseFileNavigation, type CaseFilePage as Page } from './useCaseFileNavigation';
 import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/game-ai';
 import { motion, slideRight, smooth } from '../../components/motion';
@@ -11,30 +13,19 @@ const playPaper = () => playSfx('/efx/paper.mp3', 0.3);
 
 interface CaseFileProps {
   caseData: Case;
-  clues: string[];
-  clueIcons: string[];
+  clues: PublicClue[];
+  questionDraft: string;
+  onReference: (reference: string) => void;
   cluesNeeded: number;
   hintsUsed: number;
   hintTexts?: string[];
   conversationHistory: ConversationMessage[];
 }
 
-type Page = 'case' | 'evidence' | 'log';
-
 export default function CaseFile({
-  caseData, clues, clueIcons, cluesNeeded, hintsUsed, hintTexts = [], conversationHistory,
+  caseData, clues, questionDraft, onReference, cluesNeeded, hintsUsed, hintTexts = [], conversationHistory,
 }: CaseFileProps) {
-  const [page, setPage] = useState<Page>('case');
-  const logEndRef = useRef<HTMLDivElement | null>(null);
-  const [seenEvidence, setSeenEvidence] = useState({ hints: hintTexts.length, clues: clues.length });
-  if (seenEvidence.hints !== hintTexts.length || seenEvidence.clues !== clues.length) {
-    if (hintTexts.length > seenEvidence.hints || clues.length > seenEvidence.clues) setPage('evidence');
-    setSeenEvidence({ hints: hintTexts.length, clues: clues.length });
-  }
-
-  useEffect(() => {
-    if (page === 'log') logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversationHistory, page]);
+  const { page, source, logEndRef, changePage, openSource, onScroll } = useCaseFileNavigation(clues, hintTexts.length, conversationHistory);
 
   const filtered = conversationHistory.filter(m => m.content && !m.content.startsWith('*'));
 
@@ -44,7 +35,7 @@ export default function CaseFile({
       className="relative h-full min-h-0"
       initial="hidden" animate="visible" variants={slideRight} transition={smooth}
     >
-      <CaseTabs page={page} setPage={setPage} clueCount={clues.length} messageCount={filtered.length} />
+      <CaseTabs page={page} setPage={changePage} clueCount={clues.length} messageCount={filtered.length} />
 
       <div data-surface="paper" className="flex flex-col h-full border-l border-surface-darker relative overflow-hidden"
         style={{ background: '#F0EDE6' }}
@@ -60,13 +51,17 @@ export default function CaseFile({
           background: 'linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 3%, transparent 97%, rgba(0,0,0,0.02) 100%)',
         }} />
 
-        <div className="relative z-10 flex-1 min-h-0 overflow-y-auto paper-scroll">
+        <div onScroll={onScroll} className="relative z-10 flex-1 min-h-0 overflow-y-auto paper-scroll">
           {page === 'case' && <CasePage caseData={caseData} />}
           {page === 'evidence' && (
-            <EvidencePage clues={clues} clueIcons={clueIcons} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} />
+            <EvidencePage clues={clues} onOpenSource={openSource} cluesNeeded={cluesNeeded} hintsUsed={hintsUsed} hintTexts={hintTexts} />
           )}
           {page === 'log' && (
-            <LogPage conversationHistory={filtered} suspectName={caseData.suspect_name} logEndRef={logEndRef} />
+            <>
+              {source && <ClueSource source={source} draft={questionDraft} onReference={onReference}
+                onBack={() => changePage('evidence')} />}
+              <LogPage conversationHistory={filtered} suspectName={caseData.suspect_name} logEndRef={logEndRef} />
+            </>
           )}
         </div>
       </div>

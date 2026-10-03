@@ -1,0 +1,166 @@
+TAP version 13
+# Subtest: malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement
+ok 1 - malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement
+  ---
+  duration_ms: 14.834041
+  type: 'test'
+  ...
+# Subtest: invalid accusation count retains draft, attempts and history, then recovers one valid judgment
+ok 2 - invalid accusation count retains draft, attempts and history, then recovers one valid judgment
+  ---
+  duration_ms: 0.552708
+  type: 'test'
+  ...
+# Subtest: invalid hint cannot consume hints or append partial text; retry recovers same receipt
+ok 3 - invalid hint cannot consume hints or append partial text; retry recovers same receipt
+  ---
+  duration_ms: 0.352084
+  type: 'test'
+  ...
+# Subtest: validated expired turn ends once without adding the unaccepted question
+ok 4 - validated expired turn ends once without adding the unaccepted question
+  ---
+  duration_ms: 0.192875
+  type: 'test'
+  ...
+# Subtest: final wrong accusation ends exactly once without an active-phase flicker
+ok 5 - final wrong accusation ends exactly once without an active-phase flicker
+  ---
+  duration_ms: 0.710167
+  type: 'test'
+  ...
+# Subtest: cancelled confession cannot trigger late handcuffs or win navigation
+ok 6 - cancelled confession cannot trigger late handcuffs or win navigation
+  ---
+  duration_ms: 0.304166
+  type: 'test'
+  ...
+# Subtest: cancelled final rejection does not start a delayed ending after exit
+ok 7 - cancelled final rejection does not start a delayed ending after exit
+  ---
+  duration_ms: 0.7035
+  type: 'test'
+  ...
+# Subtest: an already terminal win response recovers the result without a fabricated conversation turn
+ok 8 - an already terminal win response recovers the result without a fabricated conversation turn
+  ---
+  duration_ms: 0.243041
+  type: 'test'
+  ...
+# Subtest: malformed expiry response cannot change timing or trigger an ending
+ok 9 - malformed expiry response cannot change timing or trigger an ending
+  ---
+  duration_ms: 0.403
+  type: 'test'
+  ...
+# Subtest: generated accusations are judged on the claim without requiring stress-unlocked clue markers
+ok 10 - generated accusations are judged on the claim without requiring stress-unlocked clue markers
+  ---
+  duration_ms: 25.931625
+  type: 'test'
+  ...
+# Subtest: clue repeats and filtered leaks do not create invisible progress; transcript matches display
+ok 11 - clue repeats and filtered leaks do not create invisible progress; transcript matches display
+  ---
+  duration_ms: 20.528083
+  type: 'test'
+  ...
+# Subtest: all difficulty countdowns expire exactly at shared boundary; unlimited does not
+ok 12 - all difficulty countdowns expire exactly at shared boundary; unlimited does not
+  ---
+  duration_ms: 198.459458
+  type: 'test'
+  ...
+# Subtest: malformed or failed judgments spend no attempts or question count
+ok 13 - malformed or failed judgments spend no attempts or question count
+  ---
+  duration_ms: 36.676542
+  type: 'test'
+  ...
+# Subtest: a correct verdict freezes facts, time and score; later play cannot change result
+ok 14 - a correct verdict freezes facts, time and score; later play cannot change result
+  ---
+  duration_ms: 111.696958
+  type: 'test'
+  ...
+# Subtest: early evaluation is rejected and expired accusation cannot call judge
+ok 15 - early evaluation is rejected and expired accusation cannot call judge
+  ---
+  duration_ms: 30.957792
+  type: 'test'
+  ...
+# Subtest: provider response after deadline is discarded without consuming accusation
+ok 16 - provider response after deadline is discarded without consuming accusation
+  ---
+  duration_ms: 35.031292
+  type: 'test'
+  ...
+# Subtest: session lock prevents simultaneous finalize or question, releases for next action
+ok 17 - session lock prevents simultaneous finalize or question, releases for next action
+  ---
+  duration_ms: 80.31175
+  type: 'test'
+  ...
+# Subtest: briefing time is excluded and loss reasons are immutable
+ok 18 - briefing time is excluded and loss reasons are immutable
+  ---
+  duration_ms: 20.0505
+  type: 'test'
+  ...
+# Subtest: generated case structural gate rejects blank facts, invalid difficulty and empty triggers
+ok 19 - generated case structural gate rejects blank facts, invalid difficulty and empty triggers
+  ---
+  duration_ms: 0.585834
+  type: 'test'
+  ...
+# Subtest: all difficulties can collect their distinct clue quota
+ok 20 - all difficulties can collect their distinct clue quota
+  ---
+  duration_ms: 78.430916
+  type: 'test'
+  ...
+# Subtest: lawyer-up response is the persisted, speakable text and retains precise outcome
+ok 21 - lawyer-up response is the persisted, speakable text and retains precise outcome
+  ---
+  duration_ms: 18.777792
+  type: 'test'
+  ...
+# Subtest: three valid wrong accusations produce exhausted-attempt outcome once
+ok 22 - three valid wrong accusations produce exhausted-attempt outcome once
+  ---
+  duration_ms: 25.016708
+  type: 'test'
+  ...
+# Subtest: legacy unlimited sessions remain relaxed without hidden lawyer escalation
+ok 23 - legacy unlimited sessions remain relaxed without hidden lawyer escalation
+  ---
+  duration_ms: 22.2795
+  type: 'test'
+  ...
+# Subtest: session route response passes the same recovery parser for briefing, active and terminal states
+ok 24 - session route response passes the same recovery parser for briefing, active and terminal states
+  ---
+  duration_ms: 290.546792
+  type: 'test'
+  ...
+# Subtest: malformed successful recovery payloads fail before client state can be restored
+ok 25 - malformed successful recovery payloads fail before client state can be restored
+  ---
+  duration_ms: 33.262708
+  type: 'test'
+  ...
+# Subtest: terminal recovery rejects mismatched result cause and retains accepted message metadata
+ok 26 - terminal recovery rejects mismatched result cause and retains accepted message metadata
+  ---
+  duration_ms: 45.685125
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 981.478542

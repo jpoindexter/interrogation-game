@@ -1,16 +1,5 @@
-export const EVIDENCE_ICONS = [
-  '/clues/folder.png', '/clues/recorder.png', '/clues/recorder2.png', '/clues/coffee.png',
-  '/clues/clue1.png', '/clues/clue2.png', '/clues/clue3.png', '/clues/notepad_pl.png',
-  '/clues/magnifying_glass.png', '/clues/handcuffs.png', '/clues/key.png', '/clues/flashlight.png',
-  '/clues/walkie_talkie.png',
-];
-
 import { DIFFICULTY_CLUES } from '@/lib/game-state';
 export { DIFFICULTY_CLUES };
-
-export function pickRandomIcons(count: number): string[] {
-  return [...EVIDENCE_ICONS].sort(() => Math.random() - 0.5).slice(0, count);
-}
 
 const SCENE_KEYWORDS: [string, string[]][] = [
   ['medical', ['hospital', 'medical', 'clinic', 'doctor', 'pharma']],

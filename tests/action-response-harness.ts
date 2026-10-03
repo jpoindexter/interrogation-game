@@ -17,7 +17,7 @@ export const validAccusation = {
 function stateHarness() {
   const state: Record<string, unknown> = {
     caseData: { sessionId: 'test-session', suspect_name: 'Casey' }, phase: 'active',
-    stressLevel: 0, maxStress: 0, clues: [], conversationHistory: [], accusationsLeft: 3,
+    stressLevel: 0, maxStress: 0, clues: [], clueRecords: [], conversationHistory: [], accusationsLeft: 3,
     hintsUsed: 0, hintTexts: [], lastResponse: '', lastTranscript: '', isAccusing: false,
   };
   const mutations: string[] = [];

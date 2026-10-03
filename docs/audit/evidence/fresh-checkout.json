@@ -1,0 +1,100 @@
+{
+  "executedAt": "2026-10-03T13:54:16.319051+00:00",
+  "commit": "8779a9b94567848d63fa7aa177ff386acb507ecc",
+  "source": "Fresh remote single-branch clone, no copied node_modules, local environment files, or application data",
+  "runtime": {
+    "node": "24.21.0",
+    "npm": "11.21.0",
+    "next": "16.3.8"
+  },
+  "install": {
+    "command": "npm ci",
+    "exitCode": 0,
+    "packagesAdded": 382,
+    "auditPackages": 383,
+    "highAdvisories": 5,
+    "warning": "eslint@9.39.5 is no longer supported"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "configuration": {
+    "copiedExample": true,
+    "AI_WORK_ENABLED": false,
+    "dataDirectoryIsolated": true,
+    "agentControlDirectoryIsolated": true,
+    "loopbackPort": 3194,
+    "providerCallsRequested": 0,
+    "voiceCallsRequested": 0
+  },
+  "commands": [
+    {
+      "command": "discover",
+      "exitCode": 0,
+      "httpStatus": null,
+      "elapsedMs": 1376
+    },
+    {
+      "command": "start",
+      "exitCode": 0,
+      "httpStatus": 200,
+      "elapsedMs": 876
+    },
+    {
+      "command": "opening",
+      "exitCode": 0,
+      "httpStatus": 200,
+      "elapsedMs": 875
+    },
+    {
+      "command": "giveup",
+      "exitCode": 0,
+      "httpStatus": 200,
+      "elapsedMs": 819
+    },
+    {
+      "command": "result",
+      "exitCode": 0,
+      "httpStatus": 200,
+      "elapsedMs": 863
+    },
+    {
+      "command": "state",
+      "exitCode": 0,
+      "httpStatus": 200,
+      "elapsedMs": 801
+    }
+  ],
+  "outcome": "lose_giveup",
+  "terminalStatus": "lost",
+  "conversationEntries": 3,
+  "conversationPathSteps": 1,
+  "export": {
+    "state": "saved",
+    "destination": "local",
+    "attempts": 1
+  },
+  "restartRecovery": [
+    {
+      "command": "state",
+      "status": 200,
+      "exactPublicDataMatch": true
+    },
+    {
+      "command": "result",
+      "status": 200,
+      "exactPublicDataMatch": true
+    }
+  ],
+  "dev": {
+    "command": "npm run dev -- --port 3194",
+    "healthHTTP": 200,
+    "casesHTTP": 200,
+    "trackedFilesUnchanged": true
+  },
+  "limits": [
+    "No browser, keyboard, microphone, audio playback, live model, hosted or newcomer usability acceptance.",
+    "No full regression suite rerun; this check targets clean setup, authored game and durable restart."
+  ]
+}

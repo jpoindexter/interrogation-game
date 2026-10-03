@@ -12,6 +12,7 @@ function acceptEvidenceUpdate({ state, runtime, settings }: Options, update: Gam
     { role: 'user' as const, content: turn.question }, { role: 'assistant' as const, content: turn.answer },
   ])]);
   state.setClues(update.clues.map(clue => clue.text));
+  state.setClueRecords(update.clues);
   state.setStressLevel(update.stressLevel);
   state.setMaxStress(previous => Math.max(previous, update.stressLevel));
   state.setLastResponse(update.response);

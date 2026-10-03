@@ -1,0 +1,78 @@
+{
+  "executedAt": "2026-10-03T13:52:41.702Z",
+  "scope": "Actual route modules, isolated real filesystem, controlled provider transport; server-rendered result components. No network/provider calls or browser interaction.",
+  "checks": [
+    {
+      "name": "LOGIC-06 malformed",
+      "pass": true,
+      "status": 502,
+      "attemptsUsed": 0,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-06 empty",
+      "pass": true,
+      "status": 502,
+      "attemptsUsed": 0,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-06 null",
+      "pass": true,
+      "status": 502,
+      "attemptsUsed": 0,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-06 timeout",
+      "pass": true,
+      "status": 502,
+      "attemptsUsed": 0,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-06 provider-error",
+      "pass": true,
+      "status": 502,
+      "attemptsUsed": 0,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-06 incorrect",
+      "pass": true,
+      "status": 200,
+      "attemptsUsed": 1,
+      "replayCalls": 0
+    },
+    {
+      "name": "LOGIC-03 early win refused",
+      "pass": true
+    },
+    {
+      "name": "LOGIC-03 expired accusation",
+      "pass": true
+    },
+    {
+      "name": "LOGIC-03 interrogation after win",
+      "pass": true
+    },
+    {
+      "name": "LOGIC-03 interrogation after lose_lawyer",
+      "pass": true
+    },
+    {
+      "name": "LOGIC-03 concurrent question/finalize and repeated finalize",
+      "pass": true,
+      "acceptedQuestions": 1,
+      "terminalOutcome": "lose_giveup"
+    },
+    {
+      "name": "LOGIC-19 loss facts and exact transcript rendered with provider unavailable",
+      "pass": true
+    },
+    {
+      "name": "LOGIC-19 accepted win immutable and canonical facts rendered with provider unavailable",
+      "pass": true
+    }
+  ]
+}

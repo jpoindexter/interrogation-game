@@ -1,3 +1,5 @@
+import { publicClues } from '../src/lib/session/clue-sources';
+import { parsePublicClue } from '../src/lib/clue-contract';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createSession, getSession, deleteSession, acquireSessionLock, releaseSessionLock } from '../src/lib/session/store';
@@ -56,6 +58,15 @@ test('clue repeats and filtered leaks do not create invisible progress; transcri
   const first = commitTurn(session, 'What happened near the locked door?', response);
   const repeat = commitTurn(session, 'What happened near the locked door?', { ...response, clue_unlocked: 'A CARD was used!' });
   assert.equal(first.clue_unlocked, 'A card was used.');
+  const source = first.clues[0].source!;
+  assert.deepEqual(source, { turnId: 'accepted-turn:0', messageIndex: 0,
+    question: 'What happened near the locked door?', answer: 'I remember hearing a noise.' });
+  assert.deepEqual(parsePublicClue(JSON.parse(JSON.stringify(first.clues[0]))).source, source);
+  assert.deepEqual(publicClues(session)[0].source, source, 'later repeated clue does not move its source');
+  assert.equal('provenance' in source, false);
+  const legacy = { ...session, acceptedTurns: undefined };
+  assert.equal(publicClues(legacy)[0].source, null, 'legacy sources must not be guessed');
+  assert.throws(() => parsePublicClue({ ...first.clues[0], source: { ...source, messageIndex: -1 } }));
   assert.equal(repeat.clue_unlocked, null);
   assert.equal(session.cluesCollected, 1);
   const blocked = commitTurn(session, 'What happened near the locked door?', { ...response, spoken_response: facts.the_truth, clue_unlocked: 'Secret admission' });

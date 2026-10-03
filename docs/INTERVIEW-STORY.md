@@ -1,6 +1,6 @@
 # Interrogation: making AI dialogue playable
 
-Interview draft for a 3–5 minute walkthrough. The role and interview format are not yet specified. Ownership framing: Jason made the original hackathon game; this revision uses AI-assisted implementation and evaluation. Do not imply every asset or line was personally authored, or that player research occurred.
+Interview draft for a 3–5 minute walkthrough, to sit within the requested 15-minute Interrogation story. [The current user brief](INTERVIEW-BRIEF.md) supplies the framing, adaptation limits, breadth overview and collaboration requirement. The specific role/interview logistics remain unspecified. Ownership framing: Jason made the original hackathon game; this revision uses AI-assisted implementation and evaluation. Do not imply every asset or line was personally authored, or that player research occurred.
 
 ## Spoken narrative
 

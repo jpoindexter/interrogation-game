@@ -1,3 +1,4 @@
+import { commitTurn } from '../src/lib/session/turn';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { NextRequest } from 'next/server';
@@ -16,6 +17,17 @@ test('session route response passes the same recovery parser for briefing, activ
   assert.equal((await recoverSession(sessionId, new AbortController().signal)).status, 'briefing');
   beginSession(session);
   assert.equal((await recoverSession(sessionId, new AbortController().signal)).status, 'active');
+  session.questionsAsked = 8;
+  session.currentStress = 8;
+  const turn = commitTurn(session, 'Who can confirm your account of the noise?', {
+    spoken_response: 'The porter heard it too.', stress_level: 8, clue_unlocked: 'Ask the porter about the noise.', caught: false,
+  });
+  const active = await recoverSession(sessionId, new AbortController().signal);
+  assert.deepEqual(active.clues[0].source, turn.clues[0].source);
+  assert.equal(active.clues[0].source?.answer, 'The porter heard it too.');
+  const source = active.clues[0].source!;
+  assert.throws(() => parseSessionSnapshot({ ...publicSessionStatus(session),
+    clues: [{ ...active.clues[0], source: { ...source, answer: 'An invented quote.' } }] }, sessionId), /does not match/);
   finishSession(session, 'lose_giveup');
   const recovered = await recoverSession(sessionId, new AbortController().signal);
   assert.equal(recovered.outcome, 'lose_giveup');

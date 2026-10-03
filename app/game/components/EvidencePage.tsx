@@ -1,11 +1,12 @@
-import AssetImage from '../../components/AssetImage';
+import type { PublicClue, ClueSource } from '@/lib/clue-contract';
+import ClueMarker from './ClueMarker';
 import { motion } from '../../components/motion';
 import { SECTION_HEADER } from './CaseFilePage';
 
 const EVIDENCE_HEADER_BG = { background: '#a0c4d4' };
 
-export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed, hintTexts }: {
-  clues: string[]; clueIcons: string[]; cluesNeeded: number;
+export default function EvidencePage({ clues, cluesNeeded, hintsUsed, hintTexts, onOpenSource }: {
+  clues: PublicClue[]; cluesNeeded: number; onOpenSource: (source: ClueSource) => void;
   hintsUsed: number; hintTexts: string[];
 }) {
   return (
@@ -16,21 +17,22 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
       <p className="text-sm text-black/70 mb-3">Clues suggest what to investigate. They are not proof, and you do not need every clue to accuse.</p>
       <hr className="border-black/20 mb-3" />
 
-      <EvidenceIcons clues={clues} clueIcons={clueIcons} />
 
       {clues.length > 0 && (
         <>
           <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Clue Notes</div>
           {clues.map((clue, i) => (
             <motion.div
-              key={i}
+              key={clue.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
               className={`py-2 ${i < clues.length - 1 ? 'border-b border-black/10' : ''}`}
             >
-              <p className="text-[11px] uppercase tracking-wider font-bold text-black/50 underline mb-0.5">Clue #{i + 1}</p>
-              <p className="text-sm leading-relaxed">{clue}</p>
+              <div className="flex items-center gap-2 mb-1"><ClueMarker number={i + 1} /><p className="text-xs uppercase tracking-wider font-bold text-black/70">Clue #{i + 1}</p></div>
+              <p className="text-sm leading-relaxed">{clue.text}</p>
+              {clue.source ? <button type="button" onClick={() => onOpenSource(clue.source!)} className="mt-2 min-h-11 border border-black/60 px-3 text-sm">View source exchange</button>
+                : <p className="mt-2 text-xs text-black/70">Source exchange unavailable for this saved clue.</p>}
             </motion.div>
           ))}
         </>
@@ -56,20 +58,4 @@ export default function EvidencePage({ clues, clueIcons, cluesNeeded, hintsUsed,
       )}
     </div>
   );
-}
-
-
-function EvidenceIcons({ clues, clueIcons }: { clues: string[]; clueIcons: string[] }) {
-  return (<>
-      <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Clue Markers</div>
-      <div className="py-3 flex items-center gap-3 justify-center flex-wrap">
-        {clueIcons.map((icon, i) => (
-          <div key={i} className={`w-20 h-20 border border-black/40 flex items-center justify-center transition-all duration-700 ${
-            clues.length >= i + 1 ? 'bg-white' : 'grayscale opacity-30'
-          }`}>
-            <AssetImage src={icon} alt="" className="w-14 h-14 object-contain" style={{ imageRendering: 'pixelated' }} />
-          </div>
-        ))}
-      </div>
-  </>);
 }

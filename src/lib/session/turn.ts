@@ -1,3 +1,4 @@
+import { publicClues } from './clue-sources';
 import type { AiProvenance } from '../ai/contracts';
 import { turnSnapshot, recordTurnEvent } from './turn-events';
 import { allowsLawyerEscalation } from './play-mode';
@@ -33,7 +34,7 @@ export function validateSuspectResponse(raw: Record<string, unknown>): SuspectRe
 
 export function sessionProjection(session: GameSession) {
   return {
-    gameplay: gameplayProjection(session), clues: session.clues, cluesCollected: session.clues.length, status: session.status,
+    gameplay: gameplayProjection(session), clues: publicClues(session), cluesCollected: session.clues.length, status: session.status,
     outcome: session.outcome, startedAt: session.startTime, endedAt: session.endedAt,
     timerMode: session.timerMode, timeLimit: session.timerMode === 'unlimited' ? null : TIME_LIMITS[String(session.caseData.difficulty)],
     timeElapsed: getSessionStats(session.id)?.timeElapsed ?? 0,

@@ -1,3 +1,4 @@
+import { parsePublicClue, type PublicClue } from '@/lib/clue-contract';
 import { parseGameplayProjection } from '../playbook/response-parser';
 import type { AccusationResponse, HintResponse, TurnResponse } from './action-types';
 
@@ -28,9 +29,9 @@ function boolean(value: unknown): boolean {
 function flag(value: unknown): boolean | undefined {
   return value === undefined ? undefined : boolean(value);
 }
-function clues(value: unknown): { id: string; text: string }[] {
+function clues(value: unknown): PublicClue[] {
   if (!Array.isArray(value)) throw new Error(INVALID);
-  const parsed = value.map(raw => { const item = record(raw); return { id: text(item.id), text: text(item.text) }; });
+  const parsed = value.map(parsePublicClue);
   if (new Set(parsed.map(clue => clue.id)).size !== parsed.length) throw new Error(INVALID);
   return parsed;
 }

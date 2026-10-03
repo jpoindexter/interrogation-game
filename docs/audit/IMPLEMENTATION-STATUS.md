@@ -8,6 +8,14 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Latest acceptance and interview capture
+
+LOGIC-03, LOGIC-06, LOGIC-17 and LOGIC-19 now join ARCH-01 in Done. Their original criteria were executed through actual route/result modules and filesystem persistence with controlled provider transport; see [BACKEND-ACCEPTANCE.md](BACKEND-ACCEPTANCE.md). This closes those bounded rules, not browser, voice or hosted acceptance.
+
+[CLUE-SOURCES.md](CLUE-SOURCES.md) records exact source exchanges, draft quote actions and neutral numbered clue markers. Focused checks, lint, size and production build passed; UX-06/12 stay in Verify for user-owned browser/comprehension review. [FRESH-CHECKOUT.md](FRESH-CHECKOUT.md) records an actual clean remote clone at `8779a9b`, installation, build, authored CLI/HTTP path and process-restart recovery; it does not cover later source changes or browser presentation.
+
+The user's interview framing is captured in [INTERVIEW-BRIEF.md](../INTERVIEW-BRIEF.md) and the existing story, portfolio and gameplay-evaluation cards: adversarial conversational design, bounded adaptation claims, the four-app breadth overview, two 15-minute stories and a real collaboration example. These are preparation tasks, not completed presentation evidence.
+
 ## Executed evidence
 
 - A clean `npm ci` in a separate temporary directory succeeds with Node 24.21.0 / npm 11.21.0. Its ESLint deprecation warning and development advisories remain explicit.

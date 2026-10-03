@@ -16,6 +16,7 @@ function acceptTurn(context: GameActionsContext, question: string, data: TurnRes
   const clues = data.clues.map(clue => clue.text);
   if (clues.length > state.clues.length) runtime.sfx('papershuffle');
   state.setClues(clues);
+  state.setClueRecords(data.clues);
   state.setClueNotification(clues.length > state.clues.length ? clues.length : null);
 }
 

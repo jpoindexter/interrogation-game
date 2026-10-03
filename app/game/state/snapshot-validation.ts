@@ -1,3 +1,4 @@
+import { parsePublicClue } from '@/lib/clue-contract';
 import type { ConversationMessage } from '@/lib/ai/types';
 import { parseGameplayProjection } from '../playbook/response-parser';
 import { validateEvaluation } from '../result/validation';
@@ -32,10 +33,6 @@ function message(value: unknown): ConversationMessage {
     ...(item.timestamp === undefined ? {} : { timestamp: integer(item.timestamp) }),
     ...(item.kind === undefined ? {} : { kind: choice(item.kind, ['question', 'accusation', 'terminal'] as const) }),
     ...(item.accusationAttempt === undefined ? {} : { accusationAttempt: integer(item.accusationAttempt, 3) }) };
-}
-function clue(value: unknown) {
-  const item = record(value);
-  return { id: text(item.id), text: text(item.text) };
 }
 function pending(value: unknown) {
   const item = record(value);
@@ -74,12 +71,25 @@ export function parseSessionSnapshot(value: unknown, id: string): SessionSnapsho
   const startedAt = integer(data.startedAt);
   validateTiming(caseData, timerMode, startedAt);
   const state = lifecycle(data);
+  const conversationHistory = list(data.conversationHistory, message);
+  const clues = list(data.clues, parsePublicClue);
+  validateClueSources(clues, conversationHistory);
   if (state.status === 'active' && startedAt === 0) throw new Error('The recovered timer has no start. Please retry.');
   return { ...state, caseData: { ...caseData, timerMode, startedAt }, timerMode, startedAt,
-    conversationHistory: list(data.conversationHistory, message), clues: list(data.clues, clue),
+    conversationHistory, clues,
     accusationsLeft: integer(data.accusationsLeft, 3), hintsUsed: integer(data.hintsUsed),
     hintTexts: data.hintTexts === undefined ? [] : list(data.hintTexts, text),
     stressLevel: integer(data.stressLevel, 10), pendingRequests: list(data.pendingRequests, pending),
     ...(data.winToken === undefined || data.winToken === null ? {} : { winToken: text(data.winToken) }),
     ...(data.gameplay === undefined ? {} : { gameplay: parseGameplayProjection(data.gameplay) }) };
+}
+
+function validateClueSources(clues: ReturnType<typeof parsePublicClue>[], conversationHistory: ConversationMessage[]) {
+  for (const { source } of clues) {
+    if (!source) continue;
+    const question = conversationHistory[source.messageIndex];
+    const answer = conversationHistory[source.messageIndex + 1];
+    if (question?.role !== 'user' || question.content !== source.question
+      || answer?.role !== 'assistant' || answer.content !== source.answer) throw new Error('The clue source does not match its recovered exchange. Please retry.');
+  }
 }

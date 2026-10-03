@@ -1,3 +1,4 @@
+import type { PublicClue } from '@/lib/clue-contract';
 import type { Case } from '@/lib/game-state';
 import type { ConversationMessage } from '@/lib/game-ai';
 import { parseSessionSnapshot } from './snapshot-validation';
@@ -6,7 +7,7 @@ export interface SessionSnapshot {
   gameplay?: import('../playbook/types').PublicGameplayProjection;
   caseData: Case;
   conversationHistory: ConversationMessage[];
-  clues: { id: string; text: string }[];
+  clues: PublicClue[];
   status: 'briefing' | 'active' | 'won' | 'lost';
   outcome: string | null;
   result?: unknown;

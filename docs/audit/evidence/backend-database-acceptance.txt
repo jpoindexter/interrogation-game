@@ -1,0 +1,13 @@
+✔ hosted storage requires explicit configuration and rejects a local filesystem backend (0.633ms)
+✔ request-controlled database headers cannot replace trusted server configuration (4.730209ms)
+✔ Supabase adapter uses conflict-ignore persistence and removes private fields from reads (54.039125ms)
+✔ database configuration rejects private, local and lookalike targets without outbound calls (0.56225ms)
+✔ database transport blocks changed destinations and rejects redirect responses (0.896667ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 313.256416

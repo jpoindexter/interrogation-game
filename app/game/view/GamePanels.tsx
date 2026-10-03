@@ -34,15 +34,15 @@ function UtilityPanels(m: GameController) {
     <SettingsPanel show={m.showSettings} settings={m.settings} pos={m.settingsPos}
       onSettingsChange={m.updateSettings} onClose={() => m.setShowSettings(false)} onPosChange={m.setSettingsPos} />
     <HelpPanel authored={m.caseData?.mode === 'redteam' || Boolean(m.gameplay)} playMode={m.caseData?.playMode} show={m.showHelp} pos={m.helpPos} cluesNeeded={m.cluesNeeded}
-      clueIcons={m.clueIcons} isUnlimited={m.isUnlimited} difficulty={m.difficulty}
+      isUnlimited={m.isUnlimited} difficulty={m.difficulty}
       onClose={() => m.setShowHelp(false)} onPosChange={m.setHelpPos} />
   </>;
 }
 
 export function GamePanels(m: GameController) {
   return <>
-    <ClueNotification authored={m.caseData?.mode === 'redteam' || Boolean(m.gameplay)} clueNumber={m.clueNotification} clueIcons={m.clueIcons} cluesNeeded={m.cluesNeeded} />
-    <TextInputPanel show={m.showTextInput} disabled={m.phase !== 'active' || m.isSpeaking || m.isAccusing}
+    <ClueNotification authored={m.caseData?.mode === 'redteam' || Boolean(m.gameplay)} clueNumber={m.clueNotification} cluesNeeded={m.cluesNeeded} />
+    <TextInputPanel value={m.questionDraft} setValue={m.setQuestionDraft} show={m.showTextInput} disabled={m.phase !== 'active' || m.isSpeaking || m.isAccusing}
       onSubmit={text => { m.sfx('click_short'); return m.sendQuestion(text); }}
       onMic={() => { m.setShowTextInput(false); m.startListening(); }}
       onClickOutside={() => m.setShowTextInput(false)} />

@@ -22,7 +22,11 @@ function CaseLayout(model: GameController) {
     {model.gameplay ? <div className="shrink-0 lg:col-span-1 lg:min-h-0 lg:overflow-y-auto">
       <EvidenceWorkbench publicProjection={model.gameplay} onPin={model.evidenceGameplay.onPin}
         onAction={model.evidenceGameplay.onAction} disabled={model.phase !== 'active' || model.isSpeaking || model.isListening} />
-    </div> : <div className="shrink-0 min-h-96 h-[60dvh] pl-8 lg:pl-0 lg:min-h-0 lg:h-full"><CaseFile caseData={model.caseData} clues={model.clues} clueIcons={model.clueIcons}
+    </div> : <div className="shrink-0 min-h-96 h-[60dvh] pl-8 lg:pl-0 lg:min-h-0 lg:h-full"><CaseFile key={model.caseData.sessionId} caseData={model.caseData} clues={model.clueRecords}
+      questionDraft={model.questionDraft} onReference={reference => {
+        model.setQuestionDraft(current => current ? `${current}\n\n${reference}` : reference);
+        model.setShowTextInput(true);
+      }}
       cluesNeeded={model.cluesNeeded} hintsUsed={model.hintsUsed} hintTexts={model.hintTexts}
       conversationHistory={model.conversationHistory} /></div>}
   </div>;

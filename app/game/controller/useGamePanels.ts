@@ -8,6 +8,7 @@ export function useGamePanels() {
   const [helpPos, setHelpPos] = useState<{ x: number; y: number } | null>(null);
   const [notes, setNotes] = useState('');
   const [showNotes, setShowNotes] = useState(false);
+  const [questionDraft, setQuestionDraft] = useState('');
   const [showTextInput, setShowTextInput] = useState(false);
   const [notesPos, setNotesPos] = useState<{ x: number; y: number } | null>(null);
   const [showSettings, setShowSettings] = useState(false);
@@ -21,7 +22,7 @@ export function useGamePanels() {
     showExitConfirm, setShowExitConfirm, showGiveUpConfirm, setShowGiveUpConfirm,
     showHelp, setShowHelp, helpPos, setHelpPos,
     notes, setNotes, showNotes, setShowNotes,
-    showTextInput, setShowTextInput, notesPos, setNotesPos,
+    questionDraft, setQuestionDraft, showTextInput, setShowTextInput, notesPos, setNotesPos,
     showSettings, setShowSettings, settingsPos, setSettingsPos,
     showMicHint, setShowMicHint, showOnboarding, setShowOnboarding,
     fadingOut, setFadingOut, toast, setToast

@@ -1,9 +1,11 @@
 import { useSfx } from '../hooks/useSfx';
-import { useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import QuestionForm from './QuestionForm';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
 
 interface TextInputPanelProps {
+  value: string;
+  setValue: Dispatch<SetStateAction<string>>;
   show: boolean;
   disabled: boolean;
   onSubmit: (v: string) => boolean | Promise<boolean>;
@@ -11,8 +13,7 @@ interface TextInputPanelProps {
   onClickOutside?: () => void;
 }
 
-export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClickOutside }: TextInputPanelProps) {
-  const [value, setValue] = useState('');
+export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClickOutside, value, setValue }: TextInputPanelProps) {
   const sfx = useSfx();
   const playKeystroke = () => sfx('typewriter');
 
