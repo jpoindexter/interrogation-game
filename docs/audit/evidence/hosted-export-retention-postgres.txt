@@ -1,0 +1,9 @@
+Runtime: v24.21.0; PostgreSQL: 14.18 (Homebrew)
+PASS real terminal export/redemption -> preview unchanged -> atomic retention -> exact credential-bound receipt replay; tombstones/scores/budgets preserved; no recreate, late action, duplicate score or repeat cleanup
+PASS eligibility: days threshold, active sessions, live parent and voice leases; expired voice lease admits retention; late voice claim/finish blocked; actual allowances unchanged; active hosted immutability and legacy upsert/delete preserved
+PASS invalid/missing canonical score token bindings deferred unchanged; capped deferred count; malformed oldest rows do not starve later valid score-only cleanup/replay
+PASS real concurrency: parent SKIP LOCKED; competing retention batches clean once; concurrent redemption returns original receipt; export/score inserts waiting behind cleanup cannot recreate erased data
+PASS failure atomicity and limits: receipt creation/parent scrub/export delete rollback together; default preview; 1/100 limits; 1/3650 days; null/out-of-range SQL arguments rejected
+PASS privacy: new RPCs service-only; renamed legacy RPC inaccessible directly; private compact receipts/helpers inaccessible to all client roles; PUBLIC execute revoked; batch outputs aggregates only
+Scope: full-chain disposable PostgreSQL plus production session/redemption/retention adapters; synthetic game data only; network/provider/storage calls: 0. No live migration, live cleanup, browser or deployment claimed.
+CLEANUP isolated cluster stopped and temporary directory removed

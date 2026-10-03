@@ -80,7 +80,7 @@ Supported by saved evidence: modular Next/React implementation; server-owned out
 
 Not yet established: actual current browser/audio/video rehearsal, broad accessibility compatibility, generated-case solvability, statistically reliable judging, live OpenAI API/ElevenLabs/Supabase, hosted Vercel sessions, player enjoyment or measured product impact. Production dependency audit reports zero findings in its saved snapshot; development advisories remain. Keep hackathon history distinct from this revision and verify biography/date claims with the user.
 
-The full portfolio case study is now built and pushed as [596306a](https://github.com/jpoindexter/portfolio-site/commit/596306a), alongside game work. Its local route is `/v8/work/interrogation`; build and HTTP checks passed, while visual review and publication remain pending. It cites game snapshot `ea703ca`, so newer disclosure/review behavior is not presented there as already proven. The separate game website is deferred.
+The full portfolio case study is now built and pushed as [6f5b52f](https://github.com/jpoindexter/portfolio-site/commit/6f5b52f), alongside game work. Its local route is `/v8/work/interrogation`; build and HTTP checks passed, while visual review and publication remain pending. It cites game snapshot `63e98d4`, including the public actor and source-reference review; later hosted delivery/retention behavior is outside that evidence snapshot. The separate game website is deferred.
 
 Use [acceptance coverage](audit/ACCEPTANCE-COVERAGE.md), [architecture](ARCHITECTURE.md) and [private storage details](../database/LOCAL-DEMO.md) as the handoff. No credentials or private session files belong in presentation materials.
 

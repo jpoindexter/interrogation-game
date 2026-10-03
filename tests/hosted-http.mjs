@@ -11,7 +11,8 @@ const hash = value => createHash('sha256').update(value).digest('hex');
 const migrations = ['001_private_leaderboard', '004_leaderboard_play_mode', '006_hosted_sessions',
   '007_hosted_budgets', '008_hosted_terminal_export', '009_hosted_claimed_work', '010_hosted_redemption',
   '011_hosted_generation', '012_hosted_generation_finish', '013_hosted_endpoint_limits',
-  '014_hosted_reads', '015_hosted_request_identity'];
+  '014_hosted_reads', '015_hosted_request_identity', '016_hosted_export_page', '017_hosted_voice',
+  '018_hosted_retention', '019_hosted_audio_retention', '020_hosted_export_retention'];
 
 async function interruptAndRecover(first, second, sessionId, database, transport) {
   const held = transport.holdNext();
@@ -91,6 +92,14 @@ async function main() {
     assert.equal(await database.sql('SELECT count(*) FROM public.leaderboard;'), '1');
     assert.equal(await database.sql(`SELECT record#>>'{token,consumed}' FROM interrogation_private.game_sessions WHERE session_key=${literal(hash(sessionId))};`), 'true');
     console.log('PASS public HTTP: authored case, evidence/replay, wrong/right accusations, exact result/map recovery, single export and score across workers.');
+    await database.sql(`UPDATE interrogation_private.game_sessions SET expires_at=clock_timestamp()-interval '31 days'
+      WHERE session_key=${literal(hash(sessionId))};`);
+    const cleanup = await database.rpc('interrogation_export_retention_batch', ['true', '25', '30']);
+    assert.deepEqual(cleanup, { kind: 'applied', sessions: 1, exports: 1, scoreReceipts: 1, deferred: 0 });
+    assert.deepEqual(await http(third, 'leaderboard', submission), score, 'public score retry survives private payload removal');
+    assert.equal(await database.sql('SELECT count(*) FROM public.game_exports;'), '0');
+    assert.equal(await database.sql('SELECT count(*) FROM public.leaderboard;'), '1');
+    console.log('PASS public HTTP after retention: expired private snapshot/export removed; original authorized score retry returns the same receipt without another score.');
     await assertSharedAdmission(second, third);
     assert.equal(transport.calls(), 5, 'one interrupted suspect, two evidence responses and two judgments only');
     assert.equal(transport.errors.length, 0, transport.errors[0]?.message);

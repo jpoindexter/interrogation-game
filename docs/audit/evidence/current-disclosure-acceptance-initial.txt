@@ -1,0 +1,33 @@
+TAP version 13
+# Subtest: current disclosure policy: labeled route observations and authoritative evidence release
+not ok 1 - current disclosure policy: labeled route observations and authoritative evidence release
+  ---
+  duration_ms: 101.942
+  type: 'test'
+  location: '/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/current-disclosure-acceptance.test.ts:2:1933'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    502 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    turn (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/current-disclosure-acceptance.test.ts:49:12)
+    async TestContext.<anonymous> (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/current-disclosure-acceptance.test.ts:75:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 550.32

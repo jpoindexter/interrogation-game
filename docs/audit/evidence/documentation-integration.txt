@@ -1,0 +1,8 @@
+2026-10-03 current integration, before Git checkpoint
+Executed Markdown target check: 12 current documents, 403 local links, zero broken targets.
+Executed diff against 8779a9b: package.json, package-lock.json, .node-version, .npmrc unchanged. Prior fresh-checkout proof reused only for unchanged install/runtime configuration.
+GET http://127.0.0.1:3187/api/health succeeded: local mode, Codex configured/unchecked, local storage configured/unchecked, app ElevenLabs configured=false. No inference or speech probe.
+Strict lint, size and TypeScript outputs: export-retention-{lint,size,types}.txt.
+Public HTTP and SQL behavior: export-retention-http.txt and hosted-export-retention-postgres.txt. Controlled provider transport, isolated PostgreSQL; no live hosted or browser/voice acceptance.
+No full suite or new production build: changes add SQL/operator commands, tests and documentation; application runtime source unchanged.
+Staged checkpoint review: 37 reviewed files; no .env.local/.local paths and no private-key, long sk-/GitHub-token or JWT-pattern matches in staged additions. This is a bounded pattern check, not a repository-history secret-free guarantee. Evidence whitespace normalized without changing diagnostics.

@@ -1,0 +1,11 @@
+Runtime: Node v24.21.0; PostgreSQL 14.18 (Homebrew)
+Fixture: fresh Unix-socket-only cluster; synthetic Supabase-style service_role BYPASSRLS, unprivileged anon/authenticated
+PASS leaderboard: anon/authenticated direct insert, conflict retry, update, select and delete denied
+PASS game_exports: anon/authenticated direct insert, conflict retry, update, select and delete denied
+PASS core: migrations001/004 apply fresh; trusted role writes/reads/upserts; duplicate sessions rejected; one row per session; RLS enabled
+Runtime vector extension available: false
+BLOCKED optional002/003/005: psql:database/migrations/002_optional_legacy_patterns.sql:3: ERROR:  could not open extension control file "/opt/homebrew/share/postgresql@14/extension/vector.control": No such file or directory
+PASS failed optional migration rolled back; no replacement vector type or extension installation attempted
+RESULT core SQL permission acceptance executed; optional vector/pattern acceptance BLOCKED
+Scope: actual isolated PostgreSQL roles and fresh migrations. No live Supabase/PostgREST, credentials, provider, browser or deployment proof.
+CLEANUP isolated cluster stopped and its temporary directory removed

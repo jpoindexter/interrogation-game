@@ -1,0 +1,8 @@
+Actual Next production HTTP acceptance; build=33AfbtvgKqE9p1PtczvPo; independent worker processes started.
+PASS killed production worker: another process recovers the original pending ID and refuses paid replay.
+PASS public HTTP: authored case, evidence/replay, wrong/right accusations, exact result/map recovery, single export and score across workers.
+PASS public HTTP after retention: expired private snapshot/export removed; original authorized score retry returns the same receipt without another score.
+PASS shared HTTP admission: ten alternating-worker submissions admitted; eleventh denied. Reads consume no action IDs; no local fallback files.
+Scope: actual Next production HTTP servers and PostgreSQL; Supabase SDK transport bridged via IPC, OpenAI responses controlled. Not live provider, hosted Supabase/PostgREST, Vercel, browser or voice proof.
+Fault injection: SIGKILL during held provider response; abandoned SQL lease advanced to test recovery without a three-minute wait.
+CLEANUP Next worker processes, isolated PostgreSQL and temporary fixture directory removed.
