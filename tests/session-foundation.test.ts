@@ -49,31 +49,29 @@ test('generated accusations are judged on the claim without requiring stress-unl
   deleteSession(session.id);
 });
 
-test('clue repeats and filtered leaks do not create invisible progress; transcript matches display', () => {
+test('case evidence releases once; blocked answers add no progress and source preserves the accompanying exchange', () => {
   const session = makeSession();
   beginSession(session);
-  session.questionsAsked = 3;
-  session.currentStress = 8;
-  const response = { spoken_response: 'I remember hearing a noise.', stress_level: 8, clue_unlocked: 'A card was used.', caught: false };
-  const first = commitTurn(session, 'What happened near the locked door?', response);
-  const repeat = commitTurn(session, 'What happened near the locked door?', { ...response, clue_unlocked: 'A CARD was used!' });
-  assert.equal(first.clue_unlocked, 'A card was used.');
-  const source = first.clues[0].source!;
-  assert.deepEqual(source, { turnId: 'accepted-turn:0', messageIndex: 0,
-    question: 'What happened near the locked door?', answer: 'I remember hearing a noise.' });
-  assert.deepEqual(parsePublicClue(JSON.parse(JSON.stringify(first.clues[0]))).source, source);
-  assert.deepEqual(publicClues(session)[0].source, source, 'later repeated clue does not move its source');
-  assert.equal('provenance' in source, false);
-  const legacy = { ...session, acceptedTurns: undefined };
-  assert.equal(publicClues(legacy)[0].source, null, 'legacy sources must not be guessed');
-  assert.throws(() => parsePublicClue({ ...first.clues[0], source: { ...source, messageIndex: -1 } }));
-  assert.equal(repeat.clue_unlocked, null);
-  assert.equal(session.cluesCollected, 1);
-  const blocked = commitTurn(session, 'What happened near the locked door?', { ...response, spoken_response: facts.the_truth, clue_unlocked: 'Secret admission' });
-  assert.equal(blocked.clue_unlocked, null);
-  assert.equal(session.cluesCollected, 1);
+  const response = { spoken_response: 'I remember hearing a noise.', stress_level: 0, clue_unlocked: 'Invented model clue', caught: false };
+  commitTurn(session, 'Who heard the sound at the office?', response);
+  commitTurn(session, 'What happened near the locked door?', response);
+  const blocked = commitTurn(session, 'When did the sound occur near the office?', { ...response, spoken_response: facts.the_truth });
+  assert.equal(blocked.clue_unlocked, null); assert.equal(session.cluesCollected, 0);
   assert.equal(session.conversationHistory.at(-1)?.content, blocked.spoken_response);
   assert.ok(!session.conversationHistory.some(message => message.content === facts.the_truth));
+  const first = commitTurn(session, 'How can we verify the office account?', response);
+  const repeat = commitTurn(session, 'How can we verify the office account!', response);
+  assert.equal(first.clue_unlocked, facts.the_contradiction);
+  assert.equal(first.clues[0].origin, 'case-record');
+  const source = first.clues[0].source!;
+  assert.deepEqual(source, { turnId: 'accepted-turn:6', messageIndex: 6,
+    question: 'How can we verify the office account?', answer: response.spoken_response });
+  assert.deepEqual(parsePublicClue(JSON.parse(JSON.stringify(first.clues[0]))).source, source);
+  assert.deepEqual(publicClues(session)[0].source, source);
+  assert.equal('provenance' in source, false);
+  assert.equal(publicClues({ ...session, acceptedTurns: undefined })[0].source, null);
+  assert.throws(() => parsePublicClue({ ...first.clues[0], source: { ...source, messageIndex: -1 } }));
+  assert.equal(repeat.clue_unlocked, null); assert.equal(session.cluesCollected, 1);
   deleteSession(session.id);
 });
 
@@ -177,24 +175,6 @@ test('generated case structural gate rejects blank facts, invalid difficulty and
   for (const patch of [{ the_lie: '  ' }, { difficulty: 'impossible' }, { stress_triggers: [''] },
     { deflection_tactics: [null] }, { the_truth: facts.the_lie }]) {
     assert.equal(validateCaseData({ ...facts, ...patch }), null);
-  }
-});
-
-test('all difficulties can collect their distinct clue quota', () => {
-  for (const [difficulty, count] of Object.entries({ easy: 2, medium: 3, hard: 4, expert: 5 })) {
-    const session = makeSession('countdown', difficulty);
-    beginSession(session);
-    session.currentStress = 9;
-    session.questionsAsked = 10;
-    for (let index = 0; index < count; index++) {
-      commitTurn(session, 'Tell me how you remember the events that evening.', {
-        spoken_response: 'I remember hearing something.', stress_level: 9,
-        clue_unlocked: `Evidence detail ${index}`, caught: false,
-      });
-    }
-    assert.equal(session.clues.length, count);
-    assert.equal(session.cluesCollected, count);
-    deleteSession(session.id);
   }
 });
 

@@ -1,0 +1,41 @@
+✔ default-off GET, POST and new-case retrieval perform no fetch or log (3.943ms)
+✔ embedding opt-in requires exact version and key before network (1.581875ms)
+✔ embedding adapter sends fixed versioned space and validates every vector (353.822792ms)
+✔ storage derives facts from terminal server session and rejects unfinished before embedding (172.732834ms)
+✔ retrieval excludes wrong versions, dimensions, models and authored fixtures (87.002583ms)
+✔ actual POST ignores spoofed client outcome and persists canonical terminal facts through mocked adapters (217.402375ms)
+✔ accepted clue and authored challenge events ground questions without attributing causality (62.104542ms)
+✔ all difficulties release the first canonical record at the accepted-question boundary even at zero stress, then judge normally (3011.214333ms)
+✔ blocked responses, opening actions, brief repeats and accusations do not manufacture release progress (19.82025ms)
+✔ authored actor sees disclosed exhibits; direct callers and legacy full-quota sessions keep private facts out (41.8105ms)
+✔ public cover story and shared vocabulary remain speakable; private facts and metadata do not (40.569584ms)
+✔ adversarial questions remain exact player intent instead of silently rewritten instructions (0.153625ms)
+✔ giveup and timeout endings become authorized transcript speech once and preserve prior substantive response (1063.336084ms)
+✔ late timeout client recovers canonical win and preserves confession, even when browser storage throws (197.867ms)
+✔ quoted internal JSON fields and direct private clues are withheld without replacing harmless spoken dialogue (30.761042ms)
+✔ canonical question and accusation timestamps use accepted elapsed whole seconds (37.212708ms)
+✔ ending before any substantive assistant reply does not fabricate a closest moment (134.029667ms)
+✔ generated accusations are judged on the claim without requiring stress-unlocked clue markers (33.222042ms)
+✔ case evidence releases once; blocked answers add no progress and source preserves the accompanying exchange (20.213916ms)
+✔ all difficulty countdowns expire exactly at shared boundary; unlimited does not (507.28725ms)
+✔ malformed or failed judgments spend no attempts or question count (80.67125ms)
+✔ a correct verdict freezes facts, time and score; later play cannot change result (218.428584ms)
+✔ early evaluation is rejected and expired accusation cannot call judge (72.508625ms)
+✔ provider response after deadline is discarded without consuming accusation (63.030583ms)
+✔ session lock prevents simultaneous finalize or question, releases for next action (134.205ms)
+✔ briefing time is excluded and loss reasons are immutable (39.80075ms)
+✔ generated case structural gate rejects blank facts, invalid difficulty and empty triggers (0.506834ms)
+✔ lawyer-up response is the persisted, speakable text and retains precise outcome (47.644125ms)
+✔ three valid wrong accusations produce exhausted-attempt outcome once (49.785583ms)
+✔ legacy unlimited sessions remain relaxed without hidden lawyer escalation (55.661ms)
+✔ session route response passes the same recovery parser for briefing, active and terminal states (673.034416ms)
+✔ malformed successful recovery payloads fail before client state can be restored (80.099541ms)
+✔ terminal recovery rejects mismatched result cause and retains accepted message metadata (85.206459ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3251.808541

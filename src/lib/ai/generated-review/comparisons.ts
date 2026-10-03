@@ -1,4 +1,5 @@
 import { objectSchema } from '../schemas';
+import { EVIDENCE_REASONING_SCHEMA, evidenceSupportsAcceptance, type EvidenceReasoning } from './evidence';
 
 export interface ClaimComparison {
   coverQuote: string; truthQuote: string; relation: 'consistent' | 'contradicted' | 'not_established';
@@ -7,6 +8,7 @@ export interface ClaimComparison {
 export interface ReviewComparisons {
   claims: ClaimComparison[];
   actors: { crimeQuote: string; canonicalQuote: string; conflict: boolean; reason: string };
+  evidenceReasoning: EvidenceReasoning;
   evidence: { claimQuote: string; evidenceQuote: string; sufficient: boolean; reason: string };
   discovery: { leadQuote: string; questionAvailableQuote: string; accessible: boolean; reason: string };
 }
@@ -19,6 +21,7 @@ export const COMPARISONS_SCHEMA = objectSchema({
     designatedLie: { type: 'boolean' }, reason,
   }) },
   actors: objectSchema({ crimeQuote: quote, canonicalQuote: quote, conflict: { type: 'boolean' }, reason }),
+  evidenceReasoning: EVIDENCE_REASONING_SCHEMA,
   evidence: objectSchema({ claimQuote: { ...quote, minLength: 1 }, evidenceQuote: quote, sufficient: { type: 'boolean' }, reason }),
   discovery: objectSchema({ leadQuote: quote, questionAvailableQuote: quote, accessible: { type: 'boolean' }, reason }),
 });
@@ -27,6 +30,7 @@ export const COMPARISONS_SCHEMA = objectSchema({
 export function comparisonsSupportAcceptance(comparisons: ReviewComparisons): boolean {
   return comparisons.claims.some(claim => claim.designatedLie && claim.relation === 'contradicted' && claim.truthQuote.trim().length > 0)
     && !comparisons.claims.some(claim => !claim.designatedLie && claim.relation === 'contradicted')
+    && evidenceSupportsAcceptance(comparisons.evidenceReasoning)
     && !comparisons.actors.conflict && comparisons.evidence.sufficient && comparisons.discovery.accessible
     && comparisons.evidence.evidenceQuote.trim().length > 0
     && comparisons.discovery.leadQuote.trim().length > 0 && comparisons.discovery.questionAvailableQuote.trim().length > 0;

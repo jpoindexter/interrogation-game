@@ -5,7 +5,7 @@ export interface ClueSource {
   question: string;
   answer: string;
 }
-export interface PublicClue { id: string; text: string; source?: ClueSource | null }
+export interface PublicClue { id: string; text: string; source?: ClueSource | null; origin?: 'case-record' }
 
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid clue.');
@@ -24,7 +24,9 @@ function parseSource(value: unknown): ClueSource {
 }
 export function parsePublicClue(value: unknown): PublicClue {
   const item = record(value);
-  const clue = { id: text(item.id), text: text(item.text) };
+  if (item.origin !== undefined && item.origin !== 'case-record') throw new Error('Invalid clue origin.');
+  const clue: PublicClue = { id: text(item.id), text: text(item.text),
+    ...(item.origin === 'case-record' ? { origin: item.origin } : {}) };
   if (item.source === undefined) return clue;
   return { ...clue, source: item.source === null ? null : parseSource(item.source) };
 }

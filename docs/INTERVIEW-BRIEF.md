@@ -40,3 +40,7 @@ Prepare one concrete collaboration example with PMs, researchers and engineers. 
 - The collaboration example has a real source and accurately attributes contributions.
 - Adaptation claims stay bounded until the retrieval loop and its claimed effects are demonstrated and measured.
 - The user reviews final role-specific framing and narrative before portfolio/interview publication.
+
+## Delivery update — 3 October
+
+The interview may be next week. Build this full case study in the existing portfolio in parallel with game fixes, updating evidence as implementation changes. The separate game website is deferred. This replaces the earlier requirement to wait for all game acceptance before starting the case study.

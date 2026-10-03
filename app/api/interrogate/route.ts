@@ -1,3 +1,4 @@
+import { actorCase } from '../../../src/lib/session/actor-context';
 import { requestBudgetFailure } from '@/lib/limits/http';
 import { ensureNotAborted } from '../../../src/lib/ai/execution';
 import { acceptAuthoredOpening } from '../../../src/lib/gameplay/session';
@@ -19,7 +20,7 @@ async function runTurn(session: GameSession, question: string, signal: AbortSign
   const opening = acceptAuthoredOpening(session, question);
   if (opening) return { status: 200, body: { spoken_response: opening, stress_level: 0, clue_unlocked: null, caught: false, ...sessionProjection(session) } };
   const sanitized = sanitizeInput(question);
-  const response = await interrogate(session.caseData as Parameters<typeof interrogate>[0], session.conversationHistory,
+  const response = await interrogate(actorCase(session), session.conversationHistory,
     sanitized, session.questionsAsked, session.currentStress, session.learnedTactics, { signal });
   ensureNotAborted(signal);
   const body = commitTurn(session, sanitized, response);

@@ -1,3 +1,4 @@
+import { actorCase } from '../session/actor-context';
 import { interrogate } from '../game-ai';
 import { requireActive, acceptClue } from '../session/transitions';
 import { commitTurn, sessionProjection } from '../session/turn';
@@ -21,7 +22,7 @@ export async function playDialogue(session: GameSession, input: unknown, signal?
   try {
     const question = [action.question, `Recorded statement: ${sourceQuote}`,
       exhibitText ? `Presented case exhibit: ${exhibitText}` : ''].filter(Boolean).join('\n');
-    const raw = await interrogate(session.caseData as Parameters<typeof interrogate>[0],
+    const raw = await interrogate(actorCase(session),
       session.conversationHistory, question, session.questionsAsked, session.currentStress, session.learnedTactics, { signal });
     signal?.throwIfAborted();
     const accepted = commitTurn(session, action.question, raw, { recordGameplay: false });

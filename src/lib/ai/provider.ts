@@ -34,7 +34,11 @@ export async function requestStructured(task: StructuredTask): Promise<Record<st
     reserveAiWork(task);
     const result = await createProvider(config, model).generate({ ...task, signal });
     ensureNotAborted(signal);
-    validateStructured(result, task.schema);
+    try { validateStructured(result, task.schema); }
+    catch (error) {
+      try { task.onInvalidResponse?.(result); } catch { /* Preserve the original validation failure. */ }
+      throw error;
+    }
     task.onProvenance?.({ provider: config.provider, model, capability: task.capability,
       promptHash: createHash('sha256').update(task.instructions).digest('hex') });
     return result;

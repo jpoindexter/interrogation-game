@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-03",
+  "focusedTests": {
+    "command": "node --import tsx --test tests/generated-review.test.ts tests/generated-case-contract.test.ts tests/generated-review-corpus.test.ts",
+    "passed": 15,
+    "failed": 0
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --noEmit",
+    "exitCode": 0
+  },
+  "scopedStrictLint": {
+    "exitCode": 0
+  },
+  "scopedSizeComplexity": {
+    "exitCode": 0
+  },
+  "harnessDryRun": {
+    "calls": 0,
+    "exitCode": 0
+  },
+  "inferenceRuntimeSourcesUnchangedAfterCapture": true,
+  "executedHarnessSnapshotMatchesManifest": true,
+  "limits": [
+    "Controlled provider tests do not establish semantic behavior.",
+    "Three live review-only calls do not establish whole-generation latency or fair player discovery."
+  ]
+}

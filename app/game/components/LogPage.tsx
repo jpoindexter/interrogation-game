@@ -3,7 +3,7 @@ import { motion } from '../../components/motion';
 import { SECTION_HEADER } from './CaseFilePage';
 
 const LOG_HEADER_BG = { background: '#d4a0a0' };
-const LABEL = 'text-[11px] uppercase tracking-wider font-bold text-black/50';
+const LABEL = 'text-[11px] uppercase tracking-wider font-bold text-black/70';
 const MONO = { fontFamily: 'var(--font-mono)' };
 
 export default function LogPage({ conversationHistory, suspectName, logEndRef }: {
@@ -17,7 +17,7 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
     <div className="text-black" style={MONO}>
       <div className="sticky top-0 z-10 px-4 pt-4 pb-0" style={{ background: '#F0EDE6' }}>
         <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Interview Transcript</p>
-        <p className="text-xs text-black/40 text-center mb-3">Subject: {suspectName}</p>
+        <p className="text-xs text-black/70 text-center mb-3">Subject: {suspectName}</p>
         <hr className="border-black/20" />
         {pairs.length > 0 && (
           <div className="pt-1 pb-1">
@@ -28,8 +28,8 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
 
       {conversationHistory.length === 0 && (
         <div className="py-8 text-center px-4">
-          <p className="text-xs italic text-black/40">No exchanges recorded.</p>
-          <p className="text-xs italic text-black/30 mt-1">Begin questioning to populate this log.</p>
+          <p className="text-xs italic text-black/70">No exchanges recorded.</p>
+          <p className="text-xs italic text-black/70 mt-1">Begin questioning to populate this log.</p>
         </div>
       )}
 
@@ -37,7 +37,7 @@ export default function LogPage({ conversationHistory, suspectName, logEndRef }:
         <ExchangeList pairs={pairs} fmt={fmt} />
       )}
 
-      <div ref={logEndRef} />
+      <div ref={logEndRef} tabIndex={-1} aria-label="Latest end of transcript" />
     </div>
   );
 }
@@ -57,11 +57,11 @@ function ExchangeList({ pairs, fmt }: { pairs: { question: string; answer: strin
                 className={`py-2.5 ${!isLatest ? 'border-b border-black/15' : 'pb-6'}`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-[10px] uppercase tracking-widest text-black/25" style={MONO}>
+                  <p className="text-[10px] uppercase tracking-widest text-black/70" style={MONO}>
                     Exchange {String(i + 1).padStart(2, '0')}
                   </p>
                   {pair.time != null && (
-                    <p className="text-[10px] tabular-nums text-black/25" style={MONO}>{fmt(pair.time)}</p>
+                    <p className="text-[10px] tabular-nums text-black/70" style={MONO}>{fmt(pair.time)}</p>
                   )}
                 </div>
                 {pair.question && (

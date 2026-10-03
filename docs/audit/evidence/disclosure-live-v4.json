@@ -1,0 +1,734 @@
+{
+  "scope": "One real generated public CLI playthrough; no private case/session reads, voice or browser.",
+  "origin": "http://127.0.0.1:3187",
+  "steps": [
+    {
+      "command": {
+        "command": "discover"
+      },
+      "startedAt": "2026-10-03T14:48:48.181355+00:00",
+      "elapsedMs": 66,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "protocol": "interrogation-agent-control-v1",
+        "usage": "Send one JSON object on stdin. One process performs one action. Use retry after an uncertain response.",
+        "commands": {
+          "discover": {},
+          "start": {
+            "case": "authored (default) | generated (uses AI)",
+            "setting": {
+              "requiredFor": "generated",
+              "choices": [
+                "startup",
+                "corporate office",
+                "hospital or medical facility",
+                "law firm",
+                "tech company",
+                "bank or financial trading firm",
+                "police precinct"
+              ]
+            },
+            "difficulty": {
+              "requiredFor": "generated",
+              "choices": [
+                "easy",
+                "medium",
+                "hard",
+                "expert"
+              ]
+            },
+            "playMode": "relaxed (default) | challenge | endurance"
+          },
+          "state": {},
+          "opening": {},
+          "ask": {
+            "question": "1\u2013500 characters; may use AI"
+          },
+          "pin": {
+            "turnId": "from state",
+            "quote": "exact recorded quote"
+          },
+          "evidence": {
+            "statementId": "from pin/state",
+            "exhibitId": "from state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "clarify": {
+            "statementId": "from pin/state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "leave_space": {
+            "statementId": "from pin/state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "accuse": {
+            "accusation": "1\u20131000 characters; may use AI"
+          },
+          "giveup": {},
+          "result": {},
+          "retry": {},
+          "discard-pending": {
+            "confirm": true,
+            "warning": "Only after checking state. Does not undo an accepted action."
+          }
+        },
+        "limits": "Local cases only. Generated start and its opening use AI. No automatic loops, AI retries, audio generation, or leaderboard submission. Evidence actions require gameplay in state."
+      }
+    },
+    {
+      "command": {
+        "command": "start",
+        "case": "generated",
+        "setting": "startup",
+        "difficulty": "easy",
+        "playMode": "relaxed"
+      },
+      "startedAt": "2026-10-03T14:48:48.274604+00:00",
+      "elapsedMs": 70667,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "case_number": "4827",
+          "setting": "Lumen Harbor",
+          "crime": "A signed customer pricing document went missing from the startup\u2019s finance office on Tuesday.",
+          "objective": "Identify the false claim",
+          "briefing": "You are investigating a missing customer pricing document at Lumen Harbor, a startup. You can question finance analyst Mira Venn. Read the Tuesday statement signed by witness Tomas Iri.",
+          "detective_leads": [
+            "Tomas Iri\u2019s Tuesday statement",
+            "Mira works in finance",
+            "Mira joined last spring"
+          ],
+          "playMode": "relaxed",
+          "portraitId": "09-m",
+          "suspect_name": "Mira Venn",
+          "suspect_gender": "woman",
+          "suspect_role": "Finance analyst",
+          "suspect_cover_story": "I work in finance. I joined last spring. I was not in the finance office at 10:20 a.m. on Tuesday.",
+          "difficulty": "easy",
+          "verbal_tics": "She says \u201cright\u201d before answering.",
+          "timerMode": "unlimited",
+          "startedAt": 0,
+          "priorGames": 0
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "opening"
+      },
+      "startedAt": "2026-10-03T14:50:10.999940+00:00",
+      "elapsedMs": 12978,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "spoken_response": "I work in finance\u2014I joined last spring. And I wasn't in the finance office at 10:20 a.m. on Tuesday, if that's what this is about.",
+          "stress_level": 0,
+          "clue_unlocked": null,
+          "caught": false,
+          "lawyered_up": false,
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791039011175,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 12.749
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "ask",
+        "question": "What does Tomas Iri\u2019s signed Tuesday statement say about where you were at 10:20 a.m.?"
+      },
+      "startedAt": "2026-10-03T14:50:31.039699+00:00",
+      "elapsedMs": 12771,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "spoken_response": "I can\u2019t confirm what Tomas\u2019s statement says without seeing it. My account is that I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday.",
+          "stress_level": 1,
+          "clue_unlocked": null,
+          "caught": false,
+          "lawyered_up": false,
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791039011175,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 32.614
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "ask",
+        "question": "You say you were not in the finance office at 10:20 on Tuesday. Where were you, and what part of your account can we compare with a recorded statement?"
+      },
+      "startedAt": "2026-10-03T14:50:52.821332+00:00",
+      "elapsedMs": 11353,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "spoken_response": "I can\u2019t confirm a location beyond my account: I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday. You can compare that claim with Tomas\u2019s signed Tuesday statement, but I can\u2019t tell you what it says without seeing it.",
+          "stress_level": 1,
+          "clue_unlocked": null,
+          "caught": false,
+          "lawyered_up": false,
+          "clues": [],
+          "cluesCollected": 0,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791039011175,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 52.978
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "ask",
+        "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?"
+      },
+      "startedAt": "2026-10-03T14:51:12.875167+00:00",
+      "elapsedMs": 13301,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "spoken_response": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office.",
+          "stress_level": 1,
+          "clue_unlocked": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+          "caught": false,
+          "lawyered_up": false,
+          "clues": [
+            {
+              "id": "clue-1",
+              "text": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+              "origin": "case-record",
+              "source": {
+                "turnId": "accepted-turn:6",
+                "messageIndex": 6,
+                "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+                "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office."
+              }
+            }
+          ],
+          "cluesCollected": 1,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791039011175,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 74.973
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "state"
+      },
+      "startedAt": "2026-10-03T14:51:35.274312+00:00",
+      "elapsedMs": 121,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "caseData": {
+            "case_number": "4827",
+            "setting": "Lumen Harbor",
+            "crime": "A signed customer pricing document went missing from the startup\u2019s finance office on Tuesday.",
+            "objective": "Identify the false claim",
+            "briefing": "You are investigating a missing customer pricing document at Lumen Harbor, a startup. You can question finance analyst Mira Venn. Read the Tuesday statement signed by witness Tomas Iri.",
+            "detective_leads": [
+              "Tomas Iri\u2019s Tuesday statement",
+              "Mira works in finance",
+              "Mira joined last spring"
+            ],
+            "playMode": "relaxed",
+            "portraitId": "09-m",
+            "suspect_name": "Mira Venn",
+            "suspect_gender": "woman",
+            "suspect_role": "Finance analyst",
+            "suspect_cover_story": "I work in finance. I joined last spring. I was not in the finance office at 10:20 a.m. on Tuesday.",
+            "difficulty": "easy",
+            "verbal_tics": "She says \u201cright\u201d before answering."
+          },
+          "conversationHistory": [
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "*Detective opens the file*",
+              "timestamp": 12
+            },
+            {
+              "role": "assistant",
+              "content": "I work in finance\u2014I joined last spring. And I wasn't in the finance office at 10:20 a.m. on Tuesday, if that's what this is about.",
+              "timestamp": 12
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "What does Tomas Iri\u2019s signed Tuesday statement say about where you were at 10:20 a.m.?",
+              "timestamp": 32
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm what Tomas\u2019s statement says without seeing it. My account is that I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday.",
+              "timestamp": 32
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "You say you were not in the finance office at 10:20 on Tuesday. Where were you, and what part of your account can we compare with a recorded statement?",
+              "timestamp": 52
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm a location beyond my account: I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday. You can compare that claim with Tomas\u2019s signed Tuesday statement, but I can\u2019t tell you what it says without seeing it.",
+              "timestamp": 52
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+              "timestamp": 74
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office.",
+              "timestamp": 74
+            }
+          ],
+          "clues": [
+            {
+              "id": "clue-1",
+              "text": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+              "origin": "case-record",
+              "source": {
+                "turnId": "accepted-turn:6",
+                "messageIndex": 6,
+                "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+                "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office."
+              }
+            }
+          ],
+          "cluesCollected": 1,
+          "status": "active",
+          "outcome": null,
+          "startedAt": 1791039011175,
+          "endedAt": null,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 84.204,
+          "accusationsLeft": 3,
+          "accusationsUsed": 0,
+          "hintsUsed": 0,
+          "hintTexts": [],
+          "questionsAsked": 3,
+          "stressLevel": 1,
+          "stats": {
+            "timeElapsed": 84.204,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 0,
+            "questionsAsked": 3,
+            "score": 1300,
+            "detectiveRating": "Veteran"
+          },
+          "pendingRequests": []
+        }
+      }
+    },
+    {
+      "command": {
+        "command": "accuse",
+        "accusation": "Your false claim is that you were not in the finance office at 10:20 a.m. on Tuesday. Tomas Iri\u2019s dated Tuesday statement says he personally saw you there at that time holding the document, directly contradicting your denial of being there. I am accusing you of that false location claim, not claiming this alone proves theft."
+      },
+      "startedAt": "2026-10-03T14:51:52.527176+00:00",
+      "elapsedMs": 13334,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "correct": true,
+          "confession": "Right, I lied when I said I wasn't in the finance office at 10:20 a.m. on Tuesday. I was there, holding the signed customer pricing document, and Tomas personally saw me. I'm ashamed I kept denying it when his statement could expose the truth.",
+          "explanation": "The accusation identifies the exact authored lie: Mira denied being in the finance office at 10:20 a.m. Tuesday, but Tomas personally saw her there holding the signed customer pricing document.",
+          "accusationsLeft": 2,
+          "clues": [
+            {
+              "id": "clue-1",
+              "text": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+              "origin": "case-record",
+              "source": {
+                "turnId": "accepted-turn:6",
+                "messageIndex": 6,
+                "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+                "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office."
+              }
+            }
+          ],
+          "cluesCollected": 1,
+          "status": "won",
+          "outcome": "win",
+          "startedAt": 1791039011175,
+          "endedAt": 1791039125832,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 114.657,
+          "stats": {
+            "timeElapsed": 114.657,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 3,
+            "score": 1300,
+            "detectiveRating": "Veteran"
+          },
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        },
+        "pending": false
+      }
+    },
+    {
+      "command": {
+        "command": "result"
+      },
+      "startedAt": "2026-10-03T14:52:17.091370+00:00",
+      "elapsedMs": 203,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "outcome": "win",
+          "stats": {
+            "timeElapsed": 114.657,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 3,
+            "score": 1300,
+            "detectiveRating": "Veteran"
+          },
+          "detective_rating": "Veteran",
+          "correct": true,
+          "explanation": "The accusation identifies the exact authored lie: Mira denied being in the finance office at 10:20 a.m. Tuesday, but Tomas personally saw her there holding the signed customer pricing document.",
+          "reveal_the_lie": "I was not in the finance office at 10:20 a.m. on Tuesday.",
+          "reveal_the_truth": "Mira was in the finance office at 10:20 a.m. on Tuesday, where she held the signed customer pricing document.",
+          "reveal_the_clue": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+          "conversationPath": [
+            {
+              "id": "conversation-0",
+              "kind": "dialogue",
+              "question": "*Detective opens the file*",
+              "answer": "I work in finance\u2014I joined last spring. And I wasn't in the finance office at 10:20 a.m. on Tuesday, if that's what this is about.",
+              "status": "neutral"
+            },
+            {
+              "id": "conversation-2",
+              "kind": "dialogue",
+              "question": "What does Tomas Iri\u2019s signed Tuesday statement say about where you were at 10:20 a.m.?",
+              "answer": "I can\u2019t confirm what Tomas\u2019s statement says without seeing it. My account is that I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday.",
+              "status": "neutral"
+            },
+            {
+              "id": "conversation-4",
+              "kind": "dialogue",
+              "question": "You say you were not in the finance office at 10:20 on Tuesday. Where were you, and what part of your account can we compare with a recorded statement?",
+              "answer": "I can\u2019t confirm a location beyond my account: I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday. You can compare that claim with Tomas\u2019s signed Tuesday statement, but I can\u2019t tell you what it says without seeing it.",
+              "status": "neutral"
+            },
+            {
+              "id": "conversation-6",
+              "kind": "dialogue",
+              "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+              "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office.",
+              "status": "neutral"
+            },
+            {
+              "id": "conversation-8",
+              "kind": "accusation",
+              "question": "Your false claim is that you were not in the finance office at 10:20 a.m. on Tuesday. Tomas Iri\u2019s dated Tuesday statement says he personally saw you there at that time holding the document, directly contradicting your denial of being there. I am accusing you of that false location claim, not claiming this alone proves theft.",
+              "answer": "Right, I lied when I said I wasn't in the finance office at 10:20 a.m. on Tuesday. I was there, holding the signed customer pricing document, and Tomas personally saw me. I'm ashamed I kept denying it when his statement could expose the truth.",
+              "status": "supported",
+              "explanation": "The accusation identifies the exact authored lie: Mira denied being in the finance office at 10:20 a.m. Tuesday, but Tomas personally saw her there holding the signed customer pricing document."
+            }
+          ],
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        }
+      }
+    },
+    {
+      "command": {
+        "command": "state"
+      },
+      "startedAt": "2026-10-03T14:52:17.321892+00:00",
+      "elapsedMs": 124,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "status": 200,
+        "data": {
+          "caseData": {
+            "case_number": "4827",
+            "setting": "Lumen Harbor",
+            "crime": "A signed customer pricing document went missing from the startup\u2019s finance office on Tuesday.",
+            "objective": "Identify the false claim",
+            "briefing": "You are investigating a missing customer pricing document at Lumen Harbor, a startup. You can question finance analyst Mira Venn. Read the Tuesday statement signed by witness Tomas Iri.",
+            "detective_leads": [
+              "Tomas Iri\u2019s Tuesday statement",
+              "Mira works in finance",
+              "Mira joined last spring"
+            ],
+            "playMode": "relaxed",
+            "portraitId": "09-m",
+            "suspect_name": "Mira Venn",
+            "suspect_gender": "woman",
+            "suspect_role": "Finance analyst",
+            "suspect_cover_story": "I work in finance. I joined last spring. I was not in the finance office at 10:20 a.m. on Tuesday.",
+            "difficulty": "easy",
+            "verbal_tics": "She says \u201cright\u201d before answering."
+          },
+          "conversationHistory": [
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "*Detective opens the file*",
+              "timestamp": 12
+            },
+            {
+              "role": "assistant",
+              "content": "I work in finance\u2014I joined last spring. And I wasn't in the finance office at 10:20 a.m. on Tuesday, if that's what this is about.",
+              "timestamp": 12
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "What does Tomas Iri\u2019s signed Tuesday statement say about where you were at 10:20 a.m.?",
+              "timestamp": 32
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm what Tomas\u2019s statement says without seeing it. My account is that I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday.",
+              "timestamp": 32
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "You say you were not in the finance office at 10:20 on Tuesday. Where were you, and what part of your account can we compare with a recorded statement?",
+              "timestamp": 52
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm a location beyond my account: I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday. You can compare that claim with Tomas\u2019s signed Tuesday statement, but I can\u2019t tell you what it says without seeing it.",
+              "timestamp": 52
+            },
+            {
+              "role": "user",
+              "kind": "question",
+              "content": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+              "timestamp": 74
+            },
+            {
+              "role": "assistant",
+              "content": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office.",
+              "timestamp": 74
+            },
+            {
+              "role": "user",
+              "kind": "accusation",
+              "accusationAttempt": 1,
+              "content": "[ACCUSATION] Your false claim is that you were not in the finance office at 10:20 a.m. on Tuesday. Tomas Iri\u2019s dated Tuesday statement says he personally saw you there at that time holding the document, directly contradicting your denial of being there. I am accusing you of that false location claim, not claiming this alone proves theft.",
+              "timestamp": 114
+            },
+            {
+              "role": "assistant",
+              "content": "Right, I lied when I said I wasn't in the finance office at 10:20 a.m. on Tuesday. I was there, holding the signed customer pricing document, and Tomas personally saw me. I'm ashamed I kept denying it when his statement could expose the truth.",
+              "timestamp": 114
+            }
+          ],
+          "clues": [
+            {
+              "id": "clue-1",
+              "text": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+              "origin": "case-record",
+              "source": {
+                "turnId": "accepted-turn:6",
+                "messageIndex": 6,
+                "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+                "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office."
+              }
+            }
+          ],
+          "cluesCollected": 1,
+          "status": "won",
+          "outcome": "win",
+          "startedAt": 1791039011175,
+          "endedAt": 1791039125832,
+          "timerMode": "unlimited",
+          "timeLimit": null,
+          "timeElapsed": 114.657,
+          "accusationsLeft": 2,
+          "accusationsUsed": 1,
+          "hintsUsed": 0,
+          "hintTexts": [],
+          "questionsAsked": 3,
+          "stressLevel": 1,
+          "stats": {
+            "timeElapsed": 114.657,
+            "difficulty": "easy",
+            "playMode": "relaxed",
+            "ranked": false,
+            "hintsUsed": 0,
+            "accusationsUsed": 1,
+            "questionsAsked": 3,
+            "score": 1300,
+            "detectiveRating": "Veteran"
+          },
+          "result": {
+            "outcome": "win",
+            "stats": {
+              "timeElapsed": 114.657,
+              "difficulty": "easy",
+              "playMode": "relaxed",
+              "ranked": false,
+              "hintsUsed": 0,
+              "accusationsUsed": 1,
+              "questionsAsked": 3,
+              "score": 1300,
+              "detectiveRating": "Veteran"
+            },
+            "detective_rating": "Veteran",
+            "correct": true,
+            "explanation": "The accusation identifies the exact authored lie: Mira denied being in the finance office at 10:20 a.m. Tuesday, but Tomas personally saw her there holding the signed customer pricing document.",
+            "reveal_the_lie": "I was not in the finance office at 10:20 a.m. on Tuesday.",
+            "reveal_the_truth": "Mira was in the finance office at 10:20 a.m. on Tuesday, where she held the signed customer pricing document.",
+            "reveal_the_clue": "Tomas Iri\u2019s dated Tuesday statement says he personally saw Mira Venn in the finance office at 10:20 a.m. holding the exact document. This directly contradicts her claim that she was not there then.",
+            "conversationPath": [
+              {
+                "id": "conversation-0",
+                "kind": "dialogue",
+                "question": "*Detective opens the file*",
+                "answer": "I work in finance\u2014I joined last spring. And I wasn't in the finance office at 10:20 a.m. on Tuesday, if that's what this is about.",
+                "status": "neutral"
+              },
+              {
+                "id": "conversation-2",
+                "kind": "dialogue",
+                "question": "What does Tomas Iri\u2019s signed Tuesday statement say about where you were at 10:20 a.m.?",
+                "answer": "I can\u2019t confirm what Tomas\u2019s statement says without seeing it. My account is that I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday.",
+                "status": "neutral"
+              },
+              {
+                "id": "conversation-4",
+                "kind": "dialogue",
+                "question": "You say you were not in the finance office at 10:20 on Tuesday. Where were you, and what part of your account can we compare with a recorded statement?",
+                "answer": "I can\u2019t confirm a location beyond my account: I wasn\u2019t in the finance office at 10:20 a.m. on Tuesday. You can compare that claim with Tomas\u2019s signed Tuesday statement, but I can\u2019t tell you what it says without seeing it.",
+                "status": "neutral"
+              },
+              {
+                "id": "conversation-6",
+                "kind": "dialogue",
+                "question": "How do you know Tomas Iri, and what should we check in his Tuesday statement to distinguish a personal observation from an assumption about your location?",
+                "answer": "I can\u2019t confirm how I know Tomas from the information here. Check whether his statement says he personally saw me at 10:20 a.m. on Tuesday or merely inferred my location\u2014my account remains that I wasn\u2019t in the finance office.",
+                "status": "neutral"
+              },
+              {
+                "id": "conversation-8",
+                "kind": "accusation",
+                "question": "Your false claim is that you were not in the finance office at 10:20 a.m. on Tuesday. Tomas Iri\u2019s dated Tuesday statement says he personally saw you there at that time holding the document, directly contradicting your denial of being there. I am accusing you of that false location claim, not claiming this alone proves theft.",
+                "answer": "Right, I lied when I said I wasn't in the finance office at 10:20 a.m. on Tuesday. I was there, holding the signed customer pricing document, and Tomas personally saw me. I'm ashamed I kept denying it when his statement could expose the truth.",
+                "status": "supported",
+                "explanation": "The accusation identifies the exact authored lie: Mira denied being in the finance office at 10:20 a.m. Tuesday, but Tomas personally saw her there holding the signed customer pricing document."
+              }
+            ]
+          },
+          "pendingRequests": [],
+          "export": {
+            "state": "saved",
+            "destination": "local",
+            "attempts": 1
+          }
+        }
+      }
+    }
+  ],
+  "status": "completed_public_cli_path",
+  "finishedAt": "2026-10-03T14:53:07.003515+00:00",
+  "reviewVersion": "generated-consistency-v4-source-references",
+  "runtimeSourcesMatchedFrozenContract": true,
+  "sourceContract": "generated-review-v4-contract.json",
+  "observed": {
+    "generatedStarts": 1,
+    "generationElapsedMs": 70667,
+    "openingCalls": 1,
+    "substantiveQuestions": 3,
+    "questionCounter": 3,
+    "cluesAfterEachQuestion": [
+      0,
+      0,
+      1
+    ],
+    "releasedClueOrigin": "case-record",
+    "sourceExchangeMatchesAcceptedTranscript": true,
+    "accusationCalls": 1,
+    "outcome": "win",
+    "resultAndRecoveredStateMatch": true,
+    "score": 1300,
+    "conversationPathEntries": 5,
+    "export": "saved-local",
+    "unresolvedRequests": 0,
+    "automaticRetries": 0,
+    "voiceCalls": 0,
+    "browserInteractions": 0,
+    "privateAnswerReads": 0
+  },
+  "limits": [
+    "One successful generated easy case is not a reliability/fairness estimate.",
+    "70.667s startup and 11\u201313s dialogue remain noticeable waits.",
+    "Dialogue is fact-bounded but repetitive and includes out-of-character phrasing.",
+    "Judge explanation says authored lie for a generated case.",
+    "No browser, audio, hostile prompt, hosted runtime or server-restart recovery executed.",
+    "Per-request provider/model provenance is not exposed in public CLI; billing and tokens were not measured."
+  ]
+}

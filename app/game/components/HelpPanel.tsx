@@ -1,3 +1,4 @@
+import { recordReleaseProgress } from '@/lib/case-disclosure-policy';
 import FloatingPanel from './panels/FloatingPanel';
 import { motion, fadeUp, stagger, smooth } from '../../components/motion';
 
@@ -20,7 +21,7 @@ export default function HelpPanel({ show, pos, authored, cluesNeeded, isUnlimite
   </FloatingPanel>;
 }
 
-function HelpInstructions({ authored, isUnlimited, playMode, difficulty, cluesNeeded }: { authored: boolean; playMode?: 'challenge' | 'relaxed' | 'endurance'; isUnlimited: boolean | undefined; difficulty: string | undefined; cluesNeeded: number }) {
+function HelpInstructions({ authored, isUnlimited, playMode, difficulty }: { authored: boolean; playMode?: 'challenge' | 'relaxed' | 'endurance'; isUnlimited: boolean | undefined; difficulty: string | undefined; cluesNeeded: number }) {
   return (
 <motion.div
             className="p-4 space-y-4 overflow-y-auto min-h-0"
@@ -38,8 +39,8 @@ function HelpInstructions({ authored, isUnlimited, playMode, difficulty, cluesNe
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>
               <span className="text-sm font-bold text-accent shrink-0">02</span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider mb-1">{authored ? 'Establish a contradiction' : `Explore up to ${cluesNeeded} clues`}</p>
-                <p className="text-sm text-gray-400 leading-relaxed">{authored ? 'Pin a recorded statement, select a disclosed exhibit, and present it to establish the contradiction.' : 'Clues are optional investigation leads. Compare them with the case record and suspect statements; collecting every clue is not required to accuse.'} Stress is a fictional game response, not proof of a lie.</p>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1">{authored ? 'Establish a contradiction' : 'Compare the case record'}</p>
+                <p className="text-sm text-gray-400 leading-relaxed">{authored ? 'Pin a recorded statement, select a disclosed exhibit, and present it to establish the contradiction.' : `The case record becomes available after ${recordReleaseProgress([], difficulty ?? 'medium').required} distinct questions of at least 15 letters. Opening actions and accusations do not count. Stress does not control release. You can accuse before the record arrives.`} Stress is a fictional game response, not proof of a lie.</p>
               </div>
             </motion.div>
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>

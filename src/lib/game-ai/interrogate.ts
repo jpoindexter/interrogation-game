@@ -3,12 +3,12 @@ import type { AiProvenance } from '../ai/contracts';
 import { executionOptions, type AiExecution } from '../ai/execution';
 import { requestStructured } from '../ai/provider';
 import { SUSPECT_SCHEMA } from '../ai/schemas';
-import { buildSuspectPrompt } from '../ai/prompts/suspect';
+import { buildSuspectPrompt, type ActorCase } from '../ai/prompts/suspect';
 import { sanitizeInterrogationResponse } from './sanitize-response';
-import type { ConversationMessage, SuspectCase } from '../ai/types';
+import type { ConversationMessage } from '../ai/types';
 
 type InterrogationArguments = [
-  caseData: SuspectCase, conversationHistory: ConversationMessage[], playerQuestion: string,
+  caseData: ActorCase, conversationHistory: ConversationMessage[], playerQuestion: string,
   questionCount?: number, currentStress?: number, learnedTactics?: string[], execution?: AiExecution | string,
 ];
 

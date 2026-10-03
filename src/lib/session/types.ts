@@ -4,7 +4,7 @@ import type { ConversationMessage } from '../game-ai';
 import type { GameplayState } from '../gameplay/types';
 
 export type Outcome = 'win' | 'lose_accusations' | 'lose_time' | 'lose_giveup' | 'lose_lawyer';
-export interface Clue { id: string; text: string }
+export interface Clue { id: string; text: string; origin?: 'case-record' }
 export interface GameSession {
   gameplay?: GameplayState;
   acceptedTurns?: AcceptedTurnEvent[];

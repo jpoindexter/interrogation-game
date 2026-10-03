@@ -1,0 +1,46 @@
+{
+  "capturedAt": "2026-10-03T14:48:19.372Z",
+  "version": "generated-consistency-v4-source-references",
+  "inferenceCalls": 0,
+  "templateSchemaHash": "436edd42cb4eb6cfc491690844a87fdc5114211e9d1e458ee9e7f70d96d6453f",
+  "sources": {
+    "src/lib/ai/generated-review/prompt.ts": "bc131b5411def0282ff7e2b31e683a0db199d4e1c65ce6695bbb922f405b9177",
+    "src/lib/ai/generated-review/contract.ts": "875c5f7125c763a9f5f5c3a67376e5387dff39d6ffb8463f501e4e10c86c9772",
+    "src/lib/ai/generated-review/comparisons.ts": "739ac95250cbe7928fd8418f9eeaf482e2f1b4ec16fd0563df5e28905b3c6f09",
+    "src/lib/ai/generated-review/evidence.ts": "f21c524ea1817e2007f70f06c3082cdc9bf1b24648449e67d2bbd2bbcdd7a16d",
+    "src/lib/ai/generated-review/quotes.ts": "1a8837a46be38075b4cb1e13ac2e0149784c439725fd2d0b56d783eaf5402d28",
+    "src/lib/ai/generated-review/review.ts": "dd902cc0dab4fadba908d47d7fcc37a721ad51206893349f6aea24189a45a596",
+    "src/lib/ai/generated-review/sources.ts": "9f2ab24142a3ac667f7f31b28094ae0ab93e29fd8f00090f02e52dae38802e45",
+    "src/lib/ai/generated-review/references.ts": "41daab3c45207f7a2f9d6b53b0cee2307b3a45156f2b9642d4201ebf1ad8ff5d",
+    "src/lib/ai/generated-review/diagnostics.ts": "9d25109398e7dc8f12d10402d10912adf8096fcc83f9852f1ff37fb70ca48d7c",
+    "src/lib/ai/provider.ts": "36f243fb0b446cdde0e37e8afda8ca9d6a6ca3bbe4515c5b3c658035d9f49883",
+    "src/lib/ai/contracts.ts": "94d6f695fc3957a4cc7f498e4313eb5f0e33e9eeed8ec4cbb6f30ded1bb15a0f"
+  },
+  "sampleSchemas": [
+    {
+      "id": "v2-law-device-attribution",
+      "catalogHash": "b4bf63d9e900ed055bdf18823ada4e9c49649ca4d16034dc0de2db53eb11a4fa",
+      "schemaHash": "bd6c6b566747122a97380379e31ae10c06a364820b793f789896328265d57a63",
+      "sourceCount": 24
+    },
+    {
+      "id": "v1-bank-extra-lie",
+      "catalogHash": "765ed8353837c6ee34165739a41a506c6da40421d282c05b05a3ab2e9fb40dcf",
+      "schemaHash": "f7ca88274da0bd563c4fc659d20d98a43b007d0bba3afc47e418d39a93d2e8a5",
+      "sourceCount": 21
+    },
+    {
+      "id": "heldout-authored-door-control",
+      "catalogHash": "13143afe1f30416b79d76bbd51711e80734fe099539fd5e43f3e85769b0348ab",
+      "schemaHash": "5cff8f0de8308fc3e5559b80052e171d89ce1f4dfe2477dea4af4989866e9d4b",
+      "sourceCount": 17
+    }
+  ],
+  "verification": {
+    "focusedChecks": 17,
+    "failed": 0,
+    "typecheck": "passed",
+    "scopedStrictLint": "passed",
+    "scopedSize": "passed"
+  }
+}

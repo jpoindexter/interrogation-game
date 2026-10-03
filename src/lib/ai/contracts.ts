@@ -9,6 +9,8 @@ export interface StructuredTask {
   schema: Record<string, unknown>;
   signal?: AbortSignal;
   onProvenance?: (provenance: AiProvenance) => void;
+  /** Internal, best-effort diagnostic only; never called for transport failures. */
+  onInvalidResponse?: (response: Record<string, unknown>) => void;
 }
 export interface AiProvider {
   generate(task: StructuredTask): Promise<Record<string, unknown>>;

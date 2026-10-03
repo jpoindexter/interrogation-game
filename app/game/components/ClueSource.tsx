@@ -17,7 +17,7 @@ export default function ClueSource({ source, draft, onReference, onBack }: {
     <h2 tabIndex={-1} ref={heading} className="text-sm font-bold uppercase">Clue source · transcript entry {source.messageIndex + 1}</h2>
     <p className="mt-2 text-xs font-bold">Detective</p><p className="text-sm whitespace-pre-wrap">{source.question}</p>
     <p className="mt-2 text-xs font-bold">Subject</p><blockquote className="text-sm whitespace-pre-wrap">{source.answer}</blockquote>
-    <p className="mt-3 text-xs">This answer accompanied the clue. It is not independent proof.</p>
+    <p className="mt-3 text-xs">This exchange accompanied the release of the note. The suspect’s words are not the source of a case record or independent proof.</p>
     <p className="mt-2 text-xs">Add {source.answer.length > 240 ? 'a quoted excerpt' : 'this quote'} to your question draft. Nothing is sent.</p>
     <div className="mt-2 flex flex-wrap gap-2">
       <button type="button" disabled={!fits} onClick={() => onReference(reference)} className="min-h-11 border border-black/60 px-3 text-sm disabled:opacity-50">Add quote to question</button>

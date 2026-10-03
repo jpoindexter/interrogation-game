@@ -1,7 +1,7 @@
 import { objectSchema } from '../schemas';
 import { COMPARISONS_SCHEMA, comparisonsSupportAcceptance, type ReviewComparisons } from './comparisons';
 
-export const REVIEW_VERSION = 'generated-consistency-v2.1-guard';
+export const REVIEW_VERSION = 'generated-consistency-v4-source-references';
 export const REVIEW_CHECKS = ['singleFalseClaim', 'canonicalConsistency', 'evidenceSufficiency',
   'publicDiscoverability', 'completeReasoning'] as const;
 export type ReviewCheck = typeof REVIEW_CHECKS[number];

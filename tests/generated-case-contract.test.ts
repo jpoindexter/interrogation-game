@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { generationFixture } from './generation-fixtures';
-import { passingReview } from './generated-review-fixtures';
+import { passingReview, referencedReviewFixture } from './generated-review-fixtures';
 import { CASE_SCHEMA } from '../src/lib/ai/schemas';
 import { generateCase } from '../src/lib/game-ai/generate-case';
 import { authoredCaseData } from '../src/lib/gameplay/session';
@@ -17,7 +17,7 @@ test('generated objective follows runtime win contract even when provider suppli
   globalThis.fetch = async (_url, init) => {
     const request = JSON.parse(String(init?.body));
     const output = request.text.format.name === 'interrogation_case-review'
-      ? passingReview(fixture)
+      ? referencedReviewFixture(passingReview(fixture), fixture)
       : Object.fromEntries(Object.keys(CASE_SCHEMA.properties).map(key => [key, fixture[key]]));
     return Response.json({ status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text',
     text: JSON.stringify(output) }] }] });

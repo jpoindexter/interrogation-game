@@ -1,6 +1,6 @@
 # Local demo rehearsal
 
-Reviewed against source on 3 October 2026. Target: a fictional noir game shown locally over video. The role, interview format and allotted slot are still unspecified. Start with a 3–5 minute rehearsal target; change it when the actual slot is known. This runbook is not a claim that the browser/audio rehearsal has occurred.
+Reviewed against source on 3 October 2026. Target: a fictional noir game shown locally over video. The role, interview format and allotted slot are still unspecified. The requested interview preparation uses a 15-minute Interrogation story, with a 3–5 minute live walkthrough inside it; confirm the actual slot before presenting. See the [interview brief](INTERVIEW-BRIEF.md). This runbook is not a claim that the browser/audio rehearsal has occurred.
 
 ## Prepare privately
 
@@ -11,6 +11,8 @@ Reviewed against source on 3 October 2026. Target: a fictional noir game shown l
    New-case drafting uses `CODEX_CASE_MODEL=gpt-6-luna`; independent review and conversation use `CODEX_MODEL=gpt-6.1-sol`. The loading strip reports actual stages. Overall preparation defaults to a 120-second limit, with an explicit failure/recovery screen. Prefer the authored evidence case for a predictable interview opening; later dialogue is still live.
 4. After code changes, run the relevant check once. Use `npm run typecheck` for type changes and a focused behavior check for the affected flow; reserve `npm run verify` for an integration checkpoint. Do not rerun the full suite for documentation edits or each rehearsal. A green build is not a browser rehearsal.
 5. Start `npm run dev -- --port 3187`. If the port is occupied, choose another unused port; do not terminate unrelated apps. Open `http://127.0.0.1:3187` manually when browser access is authorized. Check Settings before screen sharing. Health/configuration indicators do not verify sign-in, quota or voice playback.
+
+For a production rehearsal, run `npm run build`, then `npm run start -- --hostname 127.0.0.1 --port 3187`. The explicit hostname keeps the local demo on loopback. A fresh clone executed these install/build/start commands and an authored start/end/recovery path; see [fresh-checkout evidence](audit/FRESH-CHECKOUT.md) for the tested commit and limits. This is setup evidence, not browser/audio acceptance.
 
 ## Repeatable server rehearsal
 
@@ -46,6 +48,12 @@ These are **acceptance steps to perform**, not checked-off results. Use text fir
 
 Run a separate relaxed case and give up to inspect the loss map and absence of ranking. Test challenge expiry, three wrong accusations and endurance lawyer pressure separately; do not force all failure paths into the presentation narrative.
 
+## Generated-case rehearsal boundary
+
+Current generated cases release a case-file evidence summary after 3 / 5 / 7 / 9 distinct substantive accepted questions on Easy / Medium / Hard / Expert. A substantive question contains at least 15 letters; opening actions, accusations and normalized repeats do not count. The count advances independently of stress, including zero. The actor initially receives only public case information and disclosed evidence. The released note comes from the canonical case record; its accompanying exchange is a timing/source link, not a claim that the suspect authored the note. Legacy dialogue clues remain distinct. Accusations are available from the beginning of the active interview, with no note quota.
+
+This new disclosure path has controlled-route evidence, not a completed live rehearsal. The latest single live generated start stopped at HTTP 502 / `INVALID_REVIEW_EVIDENCE` after 77.144 seconds; no opening or questions followed. A v4 source-ID review correction has focused checks, but no live provider proof yet. Preserve this failed result; do not count the earlier generated win as acceptance of the new policy. See [failed live check](audit/DISCLOSURE-LIVE.md) and [review correction](audit/GENERATED-REVIEW-V4.md).
+
 ## Actual desktop/voice acceptance
 
 Before calling the demonstration ready, record a complete run on the intended video-call setup. Check readable dialogue/evidence at 1280×720 and the receiver's display size; repeat at 200% zoom and a small window. Traverse all dialogs with Tab/Shift-Tab/Escape, inspect focus return and selected settings, and check reduced motion and contrast using the rendered interface.
@@ -61,7 +69,7 @@ Perform three timed rehearsals; record total duration, inference wait, interrupt
 - **In-progress or uncertain storage:** retry the same request. The client retains its generation receipt; do not click a new attempt merely because a response is slow.
 - **Interrupted before checkpoint / known failure:** review the message before choosing an explicit new attempt. The app cannot know whether an external provider finished before a process died.
 - **Interrupted after generation checkpoint:** same-ID retry restores the reserved case and session. It does not generate again.
-- **Active or terminal session:** preserve `/game?session=…` or the result URL and restart the same local server with the same data directory. Refresh should recover accepted state. Idle session availability expires after one hour; files are not automatically erased.
+- **Active or terminal session:** preserve `/game?session=…` or the result URL and restart the same local server with the same data directory. Refresh should recover accepted state. Idle session availability expires after one hour, including result recovery through the session API; files and completed exports are not automatically erased. Keep a private export if you need an enduring review record.
 - **Blocked browser storage:** expect the explicit recovery/error path; do not claim browser success from fixtures. Use the server-backed result URL rather than fabricating a new result.
 - **Fresh rehearsal without deleting history:** stop only this demo server with Ctrl-C and restart it with a new private directory, for example `INTERROGATION_DATA_DIR=.local/rehearsal-02 npm run dev -- --port 3187`. Start a new case rather than opening a resume URL from the old directory. Keep the earlier directory until its evidence is no longer needed.
 - **Receipt cap or stale recovery lock:** stop the demo server and review/archive local data deliberately. Never delete live locks or retry old request IDs against a freshly emptied receipt store.
@@ -71,6 +79,8 @@ Perform three timed rehearsals; record total duration, inference wait, interrupt
 Supported by saved evidence: modular Next/React implementation; server-owned outcome; local durable recovery and idempotent receipts tested with real processes; real HTTP/Codex authored win/loss paths and small predeclared authored/generated judge samples. Generated-v1 review found case-coherence defects despite passing judge probes; its evidence is retained while the prompt/objective revision is tested. Say which parts are scripted and which are live.
 
 Not yet established: actual current browser/audio/video rehearsal, broad accessibility compatibility, generated-case solvability, statistically reliable judging, live OpenAI API/ElevenLabs/Supabase, hosted Vercel sessions, player enjoyment or measured product impact. Production dependency audit reports zero findings in its saved snapshot; development advisories remain. Keep hackathon history distinct from this revision and verify biography/date claims with the user.
+
+The full portfolio case study is now built and pushed as [596306a](https://github.com/jpoindexter/portfolio-site/commit/596306a), alongside game work. Its local route is `/v8/work/interrogation`; build and HTTP checks passed, while visual review and publication remain pending. It cites game snapshot `ea703ca`, so newer disclosure/review behavior is not presented there as already proven. The separate game website is deferred.
 
 Use [acceptance coverage](audit/ACCEPTANCE-COVERAGE.md), [architecture](ARCHITECTURE.md) and [private storage details](../database/LOCAL-DEMO.md) as the handoff. No credentials or private session files belong in presentation materials.
 

@@ -1,0 +1,133 @@
+{
+  "scope": "One real generated public CLI attempt, stopped at generation failure; no private case/session reads, voice or browser.",
+  "origin": "http://127.0.0.1:3187",
+  "steps": [
+    {
+      "command": {
+        "command": "discover"
+      },
+      "startedAt": "2026-10-03T14:34:49.236303+00:00",
+      "elapsedMs": 69,
+      "exitCode": 0,
+      "response": {
+        "ok": true,
+        "protocol": "interrogation-agent-control-v1",
+        "usage": "Send one JSON object on stdin. One process performs one action. Use retry after an uncertain response.",
+        "commands": {
+          "discover": {},
+          "start": {
+            "case": "authored (default) | generated (uses AI)",
+            "setting": {
+              "requiredFor": "generated",
+              "choices": [
+                "startup",
+                "corporate office",
+                "hospital or medical facility",
+                "law firm",
+                "tech company",
+                "bank or financial trading firm",
+                "police precinct"
+              ]
+            },
+            "difficulty": {
+              "requiredFor": "generated",
+              "choices": [
+                "easy",
+                "medium",
+                "hard",
+                "expert"
+              ]
+            },
+            "playMode": "relaxed (default) | challenge | endurance"
+          },
+          "state": {},
+          "opening": {},
+          "ask": {
+            "question": "1\u2013500 characters; may use AI"
+          },
+          "pin": {
+            "turnId": "from state",
+            "quote": "exact recorded quote"
+          },
+          "evidence": {
+            "statementId": "from pin/state",
+            "exhibitId": "from state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "clarify": {
+            "statementId": "from pin/state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "leave_space": {
+            "statementId": "from pin/state",
+            "question": "1\u2013500 characters; uses AI"
+          },
+          "accuse": {
+            "accusation": "1\u20131000 characters; may use AI"
+          },
+          "giveup": {},
+          "result": {},
+          "retry": {},
+          "discard-pending": {
+            "confirm": true,
+            "warning": "Only after checking state. Does not undo an accepted action."
+          }
+        },
+        "limits": "Local cases only. Generated start and its opening use AI. No automatic loops, AI retries, audio generation, or leaderboard submission. Evidence actions require gameplay in state."
+      }
+    },
+    {
+      "command": {
+        "command": "start",
+        "case": "generated",
+        "setting": "startup",
+        "difficulty": "easy",
+        "playMode": "relaxed"
+      },
+      "startedAt": "2026-10-03T14:34:56.062236+00:00",
+      "elapsedMs": 77144,
+      "exitCode": 1,
+      "response": {
+        "ok": false,
+        "status": 502,
+        "data": {
+          "error": "The evidence review could not be verified. It has not been opened for play.",
+          "code": "INVALID_REVIEW_EVIDENCE"
+        },
+        "pending": true
+      }
+    }
+  ],
+  "status": "stopped_after_generation_failure",
+  "finishedAt": "2026-10-03T14:37:09.332086+00:00",
+  "observed": {
+    "generatedAttempts": 1,
+    "generationStatus": 502,
+    "generationErrorCode": "INVALID_REVIEW_EVIDENCE",
+    "generationElapsedMs": 77144,
+    "cliPending": true,
+    "openingCalls": 0,
+    "questionCalls": 0,
+    "accusationCalls": 0,
+    "retries": 0,
+    "newCasesAfterFailure": 0,
+    "playableSessionReturned": false,
+    "disclosureObserved": false,
+    "resultRecoveryObserved": false
+  },
+  "sourceHashes": {
+    "src/lib/ai/generated-review/prompt.ts": "ff406d942d97b57a9889b8bdc1aaa8c6c42c5f5870cefa0c49169d8eddfe5672",
+    "src/lib/ai/generated-review/contract.ts": "772cc5cf00bcf19e90c4468e68c79b33e9103a078f1c67821d4a1b2bd72c3ba5",
+    "src/lib/ai/generated-review/quotes.ts": "5b12553ac19c64aaa9dee56bd06acad615dd1a7c8a0e5978d44f894a791c39b0",
+    "src/lib/ai/generated-review/evidence.ts": "f21c524ea1817e2007f70f06c3082cdc9bf1b24648449e67d2bbd2bbcdd7a16d",
+    "src/lib/game-ai/generate-case.ts": "08ab26687d1153a9df7a6a510952bfd1cfaed355bc3262f717afdcd14e104e44",
+    "src/lib/session/case-disclosure.ts": "6b4d18a019a08950e96ecc494b57bfd5edc911acd80fe21e7343e756eca33705",
+    "src/lib/case-disclosure-policy.ts": "8a5ccca5af6d5c2a85f26dee2beb5bc4019112b9b6292d9cd2e6cba77606a982"
+  },
+  "limits": [
+    "Public CLI response does not identify which review quote failed validation or expose model provenance.",
+    "The accepted-turn disclosure and accusation path were not reached.",
+    "This failed generation does not establish browser behavior, voice, fair outcomes or recovery.",
+    "Private pending intent retained; no automatic retry or fresh generation."
+  ]
+}

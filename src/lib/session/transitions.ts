@@ -1,5 +1,5 @@
 import { DIFFICULTY_CLUES, TIME_LIMITS } from '../game-state';
-import type { GameSession, Outcome } from './types';
+import type { Clue, GameSession, Outcome } from './types';
 
 export function beginSession(session: GameSession, now = Date.now()): void {
   if (session.status !== 'briefing') return;
@@ -33,12 +33,14 @@ function clueKey(text: string): string {
   return text.normalize('NFKC').toLocaleLowerCase('en').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
 }
 
-export function acceptClue(session: GameSession, text: string): string | null {
+export function acceptClue(session: GameSession, text: string, origin?: Clue['origin']): string | null {
   const key = clueKey(text);
   const max = DIFFICULTY_CLUES[String(session.caseData.difficulty)] ?? 3;
-  if (!key || session.clues.length >= max || session.clues.some(clue => clueKey(clue.text) === key)) return null;
+  // Legacy sessions may already have their old model-clue quota; allow one canonical record without deleting history.
+  if (!key || (session.clues.length >= max && origin !== 'case-record')
+    || session.clues.some(clue => clueKey(clue.text) === key || (origin === 'case-record' && clue.origin === origin))) return null;
   const id = `clue-${session.clues.length + 1}`;
-  session.clues.push({ id, text: text.trim() });
+  session.clues.push({ id, text: text.trim(), ...(origin ? { origin } : {}) });
   session.cluesCollected = session.clues.length;
   return id;
 }

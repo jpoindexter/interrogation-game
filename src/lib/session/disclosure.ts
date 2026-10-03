@@ -1,3 +1,4 @@
+import { hasReleasedCaseRecord } from './case-disclosure';
 import type { GameSession } from './types';
 
 const PRIVATE_FACTS = ['the_truth', 'the_contradiction', 'suspect_true_story'] as const;
@@ -16,7 +17,7 @@ function publicFacts(session: GameSession): string[] {
 
 /** A literal disclosure guard, not a claim to detect arbitrary semantic prompt attacks.
  * Public claims remain discussable. Hidden metadata and verbatim private facts are withheld
- * until the authoritative outcome reveals them; the actor never awards factual progress.
+ * until the case evidence note or terminal outcome reveals them; the actor never awards factual progress.
  */
 export function inspectDisclosure(session: GameSession, text: string): 'allowed' | 'private_fact' | 'internal_metadata' {
   if (session.outcome) return 'allowed';
@@ -24,6 +25,7 @@ export function inspectDisclosure(session: GameSession, text: string): 'allowed'
   const response = normalize(text);
   const disclosed = publicFacts(session);
   for (const key of PRIVATE_FACTS) {
+    if (hasReleasedCaseRecord(session) && key !== 'suspect_true_story') continue;
     const privateFact = normalize(String(session.caseData[key] ?? ''));
     if (!privateFact || disclosed.some(fact => fact.includes(privateFact))) continue;
     if (response.includes(privateFact)) return 'private_fact';

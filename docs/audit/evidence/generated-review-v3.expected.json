@@ -1,0 +1,136 @@
+{
+  "startedAt": "2026-10-03T14:14:35.722Z",
+  "version": "generated-consistency-v3-evidence-obligations",
+  "provider": "codex-local",
+  "model": "gpt-6.1-sol",
+  "maxCalls": 3,
+  "generationCalls": 0,
+  "maxParallel": 1,
+  "corpus": [
+    {
+      "id": "v2-law-device-attribution",
+      "source": "docs/audit/evidence/generated-cases-v2.json#results/1",
+      "candidate": {
+        "case_number": "6831",
+        "setting": "Meridian Law",
+        "crime": "A sealed client escrow account is short by $18,400 after an internal transfer was recorded.",
+        "objective": "Identify the false claim",
+        "briefing": "You are investigating a shortfall in a sealed client escrow account at Meridian Law. An $18,400 transfer was recorded during the week the account was reconciled. Ask the records clerk about the transfer and test one specific claim in his account.",
+        "detective_leads": [
+          "A calendar invite was rescheduled",
+          "Escrow transfer has a second-factor trail",
+          "Client complained about delayed copies"
+        ],
+        "suspect_name": "Julian Mercer",
+        "suspect_gender": "male",
+        "suspect_role": "Trust Accounts Clerk",
+        "suspect_true_story": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials. He left the office before the transfer completed and later approved it remotely using his registered phone. The firm system requires a separate second-factor approval; a later log entry alone does not establish approval, and leaving the building does not exclude remote access.",
+        "suspect_cover_story": "I processed the transfer as part of the reconciliation, and the account was already short when I checked it. I left the office before the transfer completed. I did not approve it remotely after I left.",
+        "the_lie": "I did not approve it remotely after I left.",
+        "the_truth": "He approved the transfer remotely on his registered phone after leaving the office.",
+        "the_contradiction": "If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+        "stress_triggers": [
+          "Whether his registered phone received the approval code",
+          "Why he left before the transfer completed",
+          "How he knew the account was already short"
+        ],
+        "deflection_tactics": [
+          "Blames a reconciliation delay without naming evidence",
+          "Redirects questions to the client’s late paperwork",
+          "Insists the transfer was routine",
+          "Asks whether anyone else had access"
+        ],
+        "verbal_tics": "Says “to be precise” before correcting small details; becomes unusually formal under pressure.",
+        "difficulty": "medium"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "evidenceSufficiency"
+      ],
+      "criterion": "Phone attribution lacks exclusive possession or observed actor identity; do not reject merely because of missing final punctuation."
+    },
+    {
+      "id": "v1-bank-extra-lie",
+      "source": "docs/audit/evidence/generated-cases-v1.json#results/0",
+      "candidate": {
+        "case_number": "6381",
+        "setting": "Meridian Bank",
+        "crime": "A treasury analyst diverted $84,000 through a fraudulent vendor payment and concealed the transfer in a reconciliation file.",
+        "objective": "Prove the payment was fraudulent",
+        "briefing": "You are investigating an $84,000 payment sent from Meridian Bank to a newly added vendor. The treasury analyst says the payment was approved and entered during her shift, but the vendor has no bank account on file. Review the records and question her about the approval timeline.",
+        "detective_leads": [
+          "Vendor file added the day before",
+          "Her access card failed at lunch",
+          "Reconciliation saved before approval logged"
+        ],
+        "suspect_name": "Nina Alvarez",
+        "suspect_gender": "female",
+        "suspect_role": "Treasury Analyst",
+        "suspect_true_story": "She created a fake vendor, routed $84,000 to an account she controlled, and altered the reconciliation file to hide it. She initiated the payment before her shift ended, then claimed it had been approved afterward.",
+        "suspect_cover_story": "She says the vendor was legitimate and the payment was approved by her manager during her shift. She claims she entered it only after receiving that approval and altered the reconciliation file to correct a routine coding error.",
+        "the_lie": "She claims she entered the payment after her manager approved it.",
+        "the_truth": "She entered the payment before approval; the approval record was created later, after her manager had left the bank for the day.",
+        "the_contradiction": "Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.",
+        "stress_triggers": [
+          "Ask why the payment predates approval",
+          "Ask who controlled the vendor account"
+        ],
+        "deflection_tactics": [
+          "Blames a confusing approval workflow",
+          "Offers to discuss the coding error instead",
+          "Says the vendor setup was another team's job"
+        ],
+        "verbal_tics": "Says “just to be clear” before answers; starts giving exact times when nervous.",
+        "difficulty": "easy"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim",
+        "evidenceSufficiency"
+      ],
+      "criterion": "Legitimate vendor conflicts with fake vendor; recorded approval and physical departure do not establish actual authorization time."
+    },
+    {
+      "id": "heldout-authored-door-control",
+      "source": "authored v2 control, written before inference",
+      "expected": true,
+      "requiredFailures": [],
+      "criterion": "One false opening claim; a personally recognizing observer directly saw the action. No proof of taking documents is required.",
+      "candidate": {
+        "case_number": "REVIEW-CONTROL-3",
+        "setting": "Fictional archive office",
+        "suspect_name": "Lena Sol",
+        "suspect_role": "Archive assistant",
+        "crime": "An archive door was found open during the afternoon shift.",
+        "objective": "Identify the false claim",
+        "briefing": "Question Lena about the archive door and compare the account with the observer report.",
+        "detective_leads": [
+          "Ask what the desk observer saw."
+        ],
+        "suspect_cover_story": "I worked in the archive office that afternoon. I did not open the archive door.",
+        "suspect_true_story": "Lena worked in the archive office that afternoon and opened the archive door at 14:05. The desk observer knows Lena personally and saw Lena turn the handle and open that door. No claim is made that Lena removed documents.",
+        "the_lie": "I did not open the archive door.",
+        "the_truth": "Lena opened the archive door at 14:05.",
+        "the_contradiction": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05. Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.",
+        "difficulty": "easy"
+      }
+    }
+  ],
+  "sources": {
+    "src/lib/ai/generated-review/prompt.ts": "ff406d942d97b57a9889b8bdc1aaa8c6c42c5f5870cefa0c49169d8eddfe5672",
+    "src/lib/ai/generated-review/contract.ts": "772cc5cf00bcf19e90c4468e68c79b33e9103a078f1c67821d4a1b2bd72c3ba5",
+    "src/lib/ai/generated-review/comparisons.ts": "739ac95250cbe7928fd8418f9eeaf482e2f1b4ec16fd0563df5e28905b3c6f09",
+    "src/lib/ai/generated-review/evidence.ts": "f21c524ea1817e2007f70f06c3082cdc9bf1b24648449e67d2bbd2bbcdd7a16d",
+    "src/lib/ai/generated-review/quotes.ts": "5b12553ac19c64aaa9dee56bd06acad615dd1a7c8a0e5978d44f894a791c39b0",
+    "src/lib/ai/generated-review/review.ts": "ab95184280501837945885f48a8d8183ffeeb2f2206e66ce808c24800d4e7034",
+    "src/lib/ai/provider.ts": "97e0f8afd6b5cf58864da776d25d716eec8bddb155f102901eb621cb2e20c8e1",
+    "scripts/evaluation/generated-review-v3-smoke.ts": "24e4d8f67463ab29e494edb2b3de72320db1219524764666d456b0546c884d07"
+  },
+  "limits": "Three known calibration cases, not a blind or general fairness evaluation. Different model from v2: no isolated prompt-effect claim.",
+  "cost": {
+    "billingPath": "Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed",
+    "monetaryCost": "unmeasured"
+  }
+}

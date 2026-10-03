@@ -194,3 +194,7 @@ Enforcing-code-size, dec-software-principles, dec-quality-testing, and openai-do
 - Eight expansion cards are saved in `evidence/expansion-cards.json` (70 total cards including the original 62). Website and portfolio work depend on completed game acceptance; they remain part of the full objective.
 
 - Jason added a compact conversation flowchart to both win and loss results. Show the actual path, supported evidence challenges and correct/incorrect accusations in the existing noir style; keep unevaluated questions neutral. Track as [GAMEPLAY-MAP](https://trello.com/c/LHeOgx1c). The board now contains 70 cards (62 original + 8 expansions).
+
+## Scope revision — portfolio in parallel, 3 October 2026
+
+Jason expects the interview possibly next week and now authorizes building the full Interrogation case study in the existing local source for jason.theft.studio **in parallel with game fixes**. This supersedes the earlier game-acceptance dependency for case-study implementation. Update its evidence as fixes land; preserve explicit unfinished verification. The separate game website is deferred for now. Find and verify the current portfolio repository/design before editing, preserve other work and track its changes in Git. Publication is distinct from building the local case-study artifact.

@@ -1,7 +1,7 @@
 import { DIFFICULTY_CLUES } from '../../game-state';
 import type { SuspectCase } from '../types';
 
-export function difficultyContext(caseData: SuspectCase) {
+export function difficultyContext(caseData: Pick<SuspectCase, 'difficulty'>) {
   const difficulty = caseData.difficulty || 'medium';
   const clueCount = DIFFICULTY_CLUES[difficulty] || 3;
 

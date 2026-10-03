@@ -17,13 +17,15 @@ test('session route response passes the same recovery parser for briefing, activ
   assert.equal((await recoverSession(sessionId, new AbortController().signal)).status, 'briefing');
   beginSession(session);
   assert.equal((await recoverSession(sessionId, new AbortController().signal)).status, 'active');
-  session.questionsAsked = 8;
-  session.currentStress = 8;
+  for (let index = 0; index < 4; index++) commitTurn(session, `Explain the office detail number ${index}.`, {
+    spoken_response: 'I remember the office.', stress_level: 0, clue_unlocked: null, caught: false,
+  });
   const turn = commitTurn(session, 'Who can confirm your account of the noise?', {
     spoken_response: 'The porter heard it too.', stress_level: 8, clue_unlocked: 'Ask the porter about the noise.', caught: false,
   });
   const active = await recoverSession(sessionId, new AbortController().signal);
   assert.deepEqual(active.clues[0].source, turn.clues[0].source);
+  assert.equal(active.clues[0].origin, 'case-record');
   assert.equal(active.clues[0].source?.answer, 'The porter heard it too.');
   const source = active.clues[0].source!;
   assert.throws(() => parseSessionSnapshot({ ...publicSessionStatus(session),

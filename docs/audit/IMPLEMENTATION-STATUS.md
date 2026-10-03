@@ -4,17 +4,25 @@ This is the current implementation ledger. The original audit documents preserve
 
 ## Outcome and authority
 
-Build a reliable local interview demo and portfolio project, with a modern modular stack, Codex subscription dialogue, ElevenLabs voice, richer evidence-led play and truthful documentation. The private Trello board now contains 70 cards: 62 original tasks and eight accepted expansions. The latest expansion is the win/loss conversation map. Website and case study integration into https://jason.theft.studio follow game acceptance.
+Build a reliable local interview demo and portfolio project, with a modern modular stack, Codex subscription dialogue, ElevenLabs voice, richer evidence-led play and truthful documentation. The private Trello board now contains 70 cards: 62 original tasks and eight accepted expansions. The latest expansion is the win/loss conversation map. The full case study for https://jason.theft.studio was built and pushed in parallel with game fixes, per the user’s revised direction; delivery and remaining review are recorded below. The separate game website is deferred. The interview may be next week.
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `e84f614` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
 ## Latest acceptance and interview capture
 
-LOGIC-03, LOGIC-06, LOGIC-17 and LOGIC-19 now join ARCH-01 in Done. Their original criteria were executed through actual route/result modules and filesystem persistence with controlled provider transport; see [BACKEND-ACCEPTANCE.md](BACKEND-ACCEPTANCE.md). This closes those bounded rules, not browser, voice or hosted acceptance.
+LOGIC-03, LOGIC-06, LOGIC-14, LOGIC-17 and LOGIC-19 now join ARCH-01 in Done. Their original criteria were executed through actual route/result modules and filesystem persistence with controlled provider transport; see [BACKEND-ACCEPTANCE.md](BACKEND-ACCEPTANCE.md). This closes those bounded rules, not browser, voice or hosted acceptance. [RULE-ACCEPTANCE.md](RULE-ACCEPTANCE.md) supplies the actual controlled TTS route/cache evidence for LOGIC-14.
 
 [CLUE-SOURCES.md](CLUE-SOURCES.md) records exact source exchanges, draft quote actions and neutral numbered clue markers. Focused checks, lint, size and production build passed; UX-06/12 stay in Verify for user-owned browser/comprehension review. [FRESH-CHECKOUT.md](FRESH-CHECKOUT.md) records an actual clean remote clone at `8779a9b`, installation, build, authored CLI/HTTP path and process-restart recovery; it does not cover later source changes or browser presentation.
 
 The user's interview framing is captured in [INTERVIEW-BRIEF.md](../INTERVIEW-BRIEF.md) and the existing story, portfolio and gameplay-evaluation cards: adversarial conversational design, bounded adaptation claims, the four-app breadth overview, two 15-minute stories and a real collaboration example. These are preparation tasks, not completed presentation evidence.
+
+## Current actor policy, live failure and parallel portfolio delivery
+
+The actor now receives public case fields and already disclosed evidence; it does not receive the private answer at the start. Model-authored clue text cannot award progress. Generated cases release the canonical case-file evidence summary after 3 / 5 / 7 / 9 distinct substantive accepted questions on Easy / Medium / Hard / Expert. Substantive means at least 15 letters; openings, accusations and normalized repeats do not count. Zero stress does not prevent release. The note has `origin: case-record`; its accompanying exchange records when it became public, not a claim that the suspect supplied a witness record. Legacy dialogue clues remain distinct. Generated accusations stay available from the beginning of the active interview while attempts remain; the note is not a new gate. Authored evidence rules are unchanged. [ACTOR-DISCLOSURE.md](ACTOR-DISCLOSURE.md) records the implemented boundary and controlled-route proof.
+
+The first combined full generated start failed with HTTP 502 / `INVALID_REVIEW_EVIDENCE` after 77.144 seconds; no opening, question, accusation or retry followed. [DISCLOSURE-LIVE.md](DISCLOSURE-LIVE.md) preserves that failure and its diagnostic limits. The subsequent v4 correction replaces model-retyped quotations with field-restricted source IDs resolved by the server. Seventeen focused checks, TypeScript, integrated [lint](evidence/integrated-v4-lint.txt), [size](evidence/integrated-v4-size.txt) and [production build](evidence/integrated-v4-build.txt) passed. After rebuilding/restarting the preview, one real generated startup/easy relaxed public CLI path succeeded: generation in 70.667s → opening → three distinct substantive questions → case-record release on question three → one correct false-claim accusation → result/state recovery. The opening was excluded from the question counter; recovered outcome, score1300, five conversation-path entries and saved local export matched. [GENERATED-REVIEW-V4.md](GENERATED-REVIEW-V4.md) and [public run evidence](evidence/disclosure-live-v4.json) retain the exact scope. No private answer reads, retries, additional cases, voice or browser calls occurred. This is one executed discovery-to-win path, not broad fairness/reliability or browser acceptance. The actor's repetitive/out-of-character phrasing, the judge's “authored lie” wording for a generated case and the over-one-minute preparation remain limitations.
+
+The full portfolio case study was built in parallel in the existing V8 design, integrated into homepage/build discovery, and pushed to `codex/interrogation-case-study` as [596306a](https://github.com/jpoindexter/portfolio-site/commit/596306a). Production build, scoped lint and actual local HTTP page/assets/redirect checks passed. Preview: `http://127.0.0.1:3287/v8/work/interrogation`. No deployment, mobile visual or keyboard acceptance is claimed. The case study pins game evidence to `ea703ca`, preserving its limits while the game changes. The separate game website is deferred; portfolio visual review and publication are still open.
 
 ## Executed evidence
 
@@ -28,7 +36,7 @@ The user's interview framing is captured in [INTERVIEW-BRIEF.md](../INTERVIEW-BR
 
 ## Progression and modularity follow-up
 
-A real generated-case follow-up exposed a specific evidence-based accusation blocked by the stress-based clue counter. Generated-case clues are now optional investigation hints; the authored evidence requirement and server judge/attempt rules remain. The CLI supports explicitly selected generated cases and validated picker settings. One real startup/easy relaxed case completed generation → question → accepted accusation with zero clues → saved local export → matching result recovery, including its conversation path. See [GENERATED-ACCUSATION-ACCESS.md](GENERATED-ACCUSATION-ACCESS.md). This is actual CLI/HTTP/provider evidence, not browser or audio acceptance.
+A real generated-case follow-up exposed a specific evidence-based accusation blocked by the stress-based clue counter. At that checkpoint, generated-case clues became optional investigation hints; the current canonical evidence-release policy is described above. The authored evidence requirement and server judge/attempt rules remain. The CLI supports explicitly selected generated cases and validated picker settings. One real startup/easy relaxed case completed generation → question → accepted accusation with zero clues → saved local export → matching result recovery, including its conversation path. See [GENERATED-ACCUSATION-ACCESS.md](GENERATED-ACCUSATION-ACCESS.md). This is actual CLI/HTTP/provider evidence, not browser or audio acceptance.
 
 Live orchestration is now under `src/lib/game-ai`, with old unused Mistral facades removed. Pattern storage records accepted per-turn changes and execution-time provenance, and selects example questions only from accepted clue or authored evidence events. Migration005 separates the new embedding input; live DB/retrieval quality remains open. Lint, size and production build passed, with limited affected checks instead of a full-suite repeat. The latest dependency check still reports five high development findings and zero production findings; a tested replacement changed Next lint behavior and was rejected. Reports: [PROVIDER-NAMESPACE.md](PROVIDER-NAMESPACE.md), [EVENT-GROUNDED-PATTERNS.md](EVENT-GROUNDED-PATTERNS.md), [DEPENDENCY-FOLLOWUP.md](DEPENDENCY-FOLLOWUP.md).
 
@@ -40,7 +48,7 @@ The first real check after the timing change reached review but was rejected aft
 
 The accompanying changes add editable evidence-question starters and clearer action consequences, correct outdated Relaxed-mode guidance, restrict optional Supabase traffic to configured managed project origins without redirects, and add an evidence-grounded interview narrative. Targeted checks and the latest production build passed; the full 297-test suite was not repeated. Jason continues the actual visual/audio review.
 
-## Latest portfolio checkpoint
+## Earlier demo and voice checkpoint
 
 The local JSON agent-control CLI now supports one action at a time through the canonical HTTP routes. Its actual authored start/state/opening/pin/give-up/result/recovery path ran with AI disabled. One additional real `gpt-6.1-sol` question succeeded through the signed-in Codex adapter in 10.197 seconds including CLI startup; the result retained both turns. See [agent control](../AGENT-CONTROL.md) and `evidence/agent-control-live.json`. The local model default is now `gpt-6.1-sol`; the future API adapter default remains `gpt-6-luna`. Earlier Luna evaluation evidence is not reattributed to Sol.
 
@@ -48,9 +56,9 @@ The bounded design pass improves home entry/setup wording, multiline question an
 
 Exactly one live ElevenLabs plugin sample completed at a reported 12.5 credits. The game server still has no configured ElevenLabs API key. See [connector check](ELEVENLABS-LIVE-CHECK.md). Plugin generation does not prove in-game voice.
 
-## Current work
+## Earlier integration checkpoints
 
-The latest agent-control scope has executed its bounded local start/read/action/result path: authored start, state, opening, pin, give-up, result and recovery ran with AI disabled; one additional Sol question ran live. The scoped UI checks and combined build passed, while actual visual/browser inspection and a complete video demo remain pending. See the latest portfolio checkpoint above; the earlier 297-test gate was not rerun for this increment.
+The latest agent-control scope has executed its bounded local start/read/action/result path: authored start, state, opening, pin, give-up, result and recovery ran with AI disabled; one additional Sol question ran live. The scoped UI checks and combined build passed, while actual visual/browser inspection and a complete video demo remain pending. See the earlier demo and voice checkpoint above; the earlier 297-test gate was not rerun for this increment.
 
 The latest integration adds durable local endpoint, voice and aggregate AI work budgets, an operator stop switch, replay-safe voice receipts, an independent structured preflight for generated cases, and response validation before gameplay state changes. `SHARED-BUDGETS.md` records real concurrent-process and restart evidence. Every rate-limited API now distinguishes exhausted allowance (429) from unavailable budget storage (503) before work starts. Independent test files use private roots; explicit cross-process fixtures continue sharing their chosen root.
 
@@ -75,7 +83,7 @@ The independent review fixes and their regression checks are recorded in `INTEGR
 
 `evidence/local-http-gameplay-map.json` records a subsequent real HTTP/Codex win and relaxed give-up loss. The win path is neutral dialogue → unsupported challenge → supported challenge → rejected accusation → accepted accusation. Both result paths survive server recovery; actual model calls took 8.6–9.8 seconds. The loss opening is authored rather than an inference call. This is server behavior evidence, not browser or microphone proof.
 
-The literal disclosure guard now preserves public cover-story dialogue and exact player wording instead of stripping adversarial questions. It blocks internal metadata and verbatim undisclosed facts. It does not claim to detect all semantic paraphrases; authoritative evidence progress and outcome rules remain separate from actor prose.
+The earlier literal disclosure guard preserved public cover-story dialogue and exact player wording, and blocked internal metadata and verbatim undisclosed facts. It did not detect all semantic paraphrases. The current public-only actor projection and server-owned evidence release above supersede unrestricted actor access; no universal semantic secrecy claim is made.
 
 ## Remaining acceptance gaps
 
@@ -84,16 +92,16 @@ The literal disclosure guard now preserves public cover-story dialogue and exact
 - Hosted path: server OpenAI adapter exists, but no API key/live API proof. Shared durable session backend and live database migrations/RLS/delivery are incomplete. Vercel session requests fail explicitly until that dependency is implemented.
 - Dependencies: production audit reports 0 advisories. Five high development-chain findings remain from braces 3.0.3 through the current Next ESLint configuration. Registry reports no newer braces release. ESLint 10 is outside the current React/import/accessibility plugin peer ranges. Do not hide these findings or force a framework downgrade.
 - Wider generated-case solvability, broader fairness evaluation and real player feedback are not established by the authored sample.
-- Website, portfolio publication and evidence-backed case study remain required after game acceptance. No invented outcomes, user research or metrics.
+- Portfolio: the complete case-study implementation and branch push are recorded above. User visual review and any later publication remain open; the separate game website is deferred. No invented outcomes, user research or metrics.
 
 ## Working constraints
 
-- **Outcome:** finish a convincing, reliable local game demo, then portfolio/site work grounded in its executed behavior.
+- **Outcome:** finish a convincing, reliable local game demo while building the portfolio case study in parallel from executed evidence; defer the separate game website.
 - **Target:** this repository and the existing 70-card Trello board; root coordinates Git checkpoints and pushes.
 - **Must:** use parallel work where useful; keep the portfolio/interview outcome central; run only tests needed to verify meaningful behavior or a changed risk. The recorded 297-test full gate is existing evidence, not a reason to repeat it for documentation edits.
 - **Must not:** claim browser, audio, hosted, billing or semantic reliability from fixtures; consume ElevenLabs credits with broad or redundant testing; claim a push before root confirms its commit and remote result.
 - **Authority:** implementation, Trello updates, Git pushes and necessary sparing voice checks are user-authorized. The user owns the later live check; browser automation remains restricted unless explicitly reauthorized.
-- **Done evidence:** actual required game paths and demo rehearsal, truthful residual limits, followed by the authorized portfolio/site deliverable. The overall goal remains active.
+- **Done evidence:** actual required game paths and demo rehearsal, truthful residual limits, and the authorized parallel portfolio deliverable. The separate game website is deferred. The overall goal remains active.
 
 ## Re-entry
 

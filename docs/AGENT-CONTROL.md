@@ -19,7 +19,7 @@ printf '%s\n' '{"command":"start","case":"generated","setting":"startup","diffic
 
 Use a separate `AGENT_CONTROL_DIR` if a case is already saved. `discover` lists the same setting and difficulty choices as the case picker. Generated cases require AI for preparation/review and their opening; authored practice starts without inference. Invalid case kinds, settings, or difficulties are rejected before a request. Setting or difficulty on an authored start is rejected instead of silently ignored. Generated preparation can take a minute or longer; its transport allows up to 210 seconds and never retries automatically.
 
-For a custom local port, set `AGENT_CONTROL_ORIGIN=http://127.0.0.1:3191`. Only HTTP loopback IP origins are accepted; redirects are refused. The CLI does not expose a network listener or connect to hosted deployments.
+For a custom local port, set `AGENT_CONTROL_ORIGIN=http://127.0.0.1:3187` in the terminal running the CLI; its default is `http://127.0.0.1:3000`. The CLI reads terminal environment variables, not `.env.local`. Only HTTP loopback IP origins are accepted; redirects are refused. The CLI does not expose a network listener or connect to hosted deployments.
 
 ## Agent instructions
 
@@ -42,7 +42,7 @@ The CLI's JSON response has `ok`, HTTP `status`, and `data`; mutation responses 
 
 ## Recovery and private files
 
-Credentials and unresolved intent live in `.local/agent-control/session.json`, under a directory with mode `0700` and a file with mode `0600`. `.local/` is Git-ignored. The file contains the session bearer capability and may contain your last question; do not share or commit it. Set `AGENT_CONTROL_DIR` to a separate private directory for another case. One directory holds one case, preventing an accidental `start` from replacing an active session.
+Credentials and unresolved intent live in `.local/agent-control/session.json`, under a directory with mode `0700` and a file with mode `0600`. `.local/` is Git-ignored. The file contains the session bearer capability and may contain your last question; do not share or commit it. Set `AGENT_CONTROL_DIR` to a separate private directory for another case. This client directory is independent of the server’s `INTERROGATION_DATA_DIR`; changing the server directory does not clear or migrate the CLI’s saved capability. Custom directories outside `.local/` need their own exclusion from version control. One directory holds one case, preventing an accidental `start` from replacing an active session.
 
 A mutation is saved with a stable request ID **before** network delivery. After a timeout or lost response, read `state`, then use `retry`. If the unresolved request is the initial case generation, no local session capability is available yet: use `retry` directly to recover that same generation receipt. The CLI makes no automatic retry and does not invent a fresh ID for uncertain work. Completed receipts clear the local pending request. An interrupted server receipt can remain unresolved; after reviewing the returned error/state, `{"command":"discard-pending","confirm":true}` clears only the local intent. It does not cancel, reverse, or erase an accepted server action, and a new attempt may consume additional AI usage.
 

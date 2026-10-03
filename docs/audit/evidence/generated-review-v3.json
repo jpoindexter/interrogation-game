@@ -1,0 +1,448 @@
+{
+  "startedAt": "2026-10-03T14:14:35.722Z",
+  "version": "generated-consistency-v3-evidence-obligations",
+  "provider": "codex-local",
+  "model": "gpt-6.1-sol",
+  "maxCalls": 3,
+  "generationCalls": 0,
+  "maxParallel": 1,
+  "corpus": [
+    {
+      "id": "v2-law-device-attribution",
+      "source": "docs/audit/evidence/generated-cases-v2.json#results/1",
+      "candidate": {
+        "case_number": "6831",
+        "setting": "Meridian Law",
+        "crime": "A sealed client escrow account is short by $18,400 after an internal transfer was recorded.",
+        "objective": "Identify the false claim",
+        "briefing": "You are investigating a shortfall in a sealed client escrow account at Meridian Law. An $18,400 transfer was recorded during the week the account was reconciled. Ask the records clerk about the transfer and test one specific claim in his account.",
+        "detective_leads": [
+          "A calendar invite was rescheduled",
+          "Escrow transfer has a second-factor trail",
+          "Client complained about delayed copies"
+        ],
+        "suspect_name": "Julian Mercer",
+        "suspect_gender": "male",
+        "suspect_role": "Trust Accounts Clerk",
+        "suspect_true_story": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials. He left the office before the transfer completed and later approved it remotely using his registered phone. The firm system requires a separate second-factor approval; a later log entry alone does not establish approval, and leaving the building does not exclude remote access.",
+        "suspect_cover_story": "I processed the transfer as part of the reconciliation, and the account was already short when I checked it. I left the office before the transfer completed. I did not approve it remotely after I left.",
+        "the_lie": "I did not approve it remotely after I left.",
+        "the_truth": "He approved the transfer remotely on his registered phone after leaving the office.",
+        "the_contradiction": "If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+        "stress_triggers": [
+          "Whether his registered phone received the approval code",
+          "Why he left before the transfer completed",
+          "How he knew the account was already short"
+        ],
+        "deflection_tactics": [
+          "Blames a reconciliation delay without naming evidence",
+          "Redirects questions to the client’s late paperwork",
+          "Insists the transfer was routine",
+          "Asks whether anyone else had access"
+        ],
+        "verbal_tics": "Says “to be precise” before correcting small details; becomes unusually formal under pressure.",
+        "difficulty": "medium"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "evidenceSufficiency"
+      ],
+      "criterion": "Phone attribution lacks exclusive possession or observed actor identity; do not reject merely because of missing final punctuation."
+    },
+    {
+      "id": "v1-bank-extra-lie",
+      "source": "docs/audit/evidence/generated-cases-v1.json#results/0",
+      "candidate": {
+        "case_number": "6381",
+        "setting": "Meridian Bank",
+        "crime": "A treasury analyst diverted $84,000 through a fraudulent vendor payment and concealed the transfer in a reconciliation file.",
+        "objective": "Prove the payment was fraudulent",
+        "briefing": "You are investigating an $84,000 payment sent from Meridian Bank to a newly added vendor. The treasury analyst says the payment was approved and entered during her shift, but the vendor has no bank account on file. Review the records and question her about the approval timeline.",
+        "detective_leads": [
+          "Vendor file added the day before",
+          "Her access card failed at lunch",
+          "Reconciliation saved before approval logged"
+        ],
+        "suspect_name": "Nina Alvarez",
+        "suspect_gender": "female",
+        "suspect_role": "Treasury Analyst",
+        "suspect_true_story": "She created a fake vendor, routed $84,000 to an account she controlled, and altered the reconciliation file to hide it. She initiated the payment before her shift ended, then claimed it had been approved afterward.",
+        "suspect_cover_story": "She says the vendor was legitimate and the payment was approved by her manager during her shift. She claims she entered it only after receiving that approval and altered the reconciliation file to correct a routine coding error.",
+        "the_lie": "She claims she entered the payment after her manager approved it.",
+        "the_truth": "She entered the payment before approval; the approval record was created later, after her manager had left the bank for the day.",
+        "the_contradiction": "Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.",
+        "stress_triggers": [
+          "Ask why the payment predates approval",
+          "Ask who controlled the vendor account"
+        ],
+        "deflection_tactics": [
+          "Blames a confusing approval workflow",
+          "Offers to discuss the coding error instead",
+          "Says the vendor setup was another team's job"
+        ],
+        "verbal_tics": "Says “just to be clear” before answers; starts giving exact times when nervous.",
+        "difficulty": "easy"
+      },
+      "expected": false,
+      "requiredFailures": [
+        "singleFalseClaim",
+        "evidenceSufficiency"
+      ],
+      "criterion": "Legitimate vendor conflicts with fake vendor; recorded approval and physical departure do not establish actual authorization time."
+    },
+    {
+      "id": "heldout-authored-door-control",
+      "source": "authored v2 control, written before inference",
+      "expected": true,
+      "requiredFailures": [],
+      "criterion": "One false opening claim; a personally recognizing observer directly saw the action. No proof of taking documents is required.",
+      "candidate": {
+        "case_number": "REVIEW-CONTROL-3",
+        "setting": "Fictional archive office",
+        "suspect_name": "Lena Sol",
+        "suspect_role": "Archive assistant",
+        "crime": "An archive door was found open during the afternoon shift.",
+        "objective": "Identify the false claim",
+        "briefing": "Question Lena about the archive door and compare the account with the observer report.",
+        "detective_leads": [
+          "Ask what the desk observer saw."
+        ],
+        "suspect_cover_story": "I worked in the archive office that afternoon. I did not open the archive door.",
+        "suspect_true_story": "Lena worked in the archive office that afternoon and opened the archive door at 14:05. The desk observer knows Lena personally and saw Lena turn the handle and open that door. No claim is made that Lena removed documents.",
+        "the_lie": "I did not open the archive door.",
+        "the_truth": "Lena opened the archive door at 14:05.",
+        "the_contradiction": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05. Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.",
+        "difficulty": "easy"
+      }
+    }
+  ],
+  "sources": {
+    "src/lib/ai/generated-review/prompt.ts": "ff406d942d97b57a9889b8bdc1aaa8c6c42c5f5870cefa0c49169d8eddfe5672",
+    "src/lib/ai/generated-review/contract.ts": "772cc5cf00bcf19e90c4468e68c79b33e9103a078f1c67821d4a1b2bd72c3ba5",
+    "src/lib/ai/generated-review/comparisons.ts": "739ac95250cbe7928fd8418f9eeaf482e2f1b4ec16fd0563df5e28905b3c6f09",
+    "src/lib/ai/generated-review/evidence.ts": "f21c524ea1817e2007f70f06c3082cdc9bf1b24648449e67d2bbd2bbcdd7a16d",
+    "src/lib/ai/generated-review/quotes.ts": "5b12553ac19c64aaa9dee56bd06acad615dd1a7c8a0e5978d44f894a791c39b0",
+    "src/lib/ai/generated-review/review.ts": "ab95184280501837945885f48a8d8183ffeeb2f2206e66ce808c24800d4e7034",
+    "src/lib/ai/provider.ts": "97e0f8afd6b5cf58864da776d25d716eec8bddb155f102901eb621cb2e20c8e1",
+    "scripts/evaluation/generated-review-v3-smoke.ts": "24e4d8f67463ab29e494edb2b3de72320db1219524764666d456b0546c884d07"
+  },
+  "limits": "Three known calibration cases, not a blind or general fairness evaluation. Different model from v2: no isolated prompt-effect claim.",
+  "cost": {
+    "billingPath": "Codex subscription",
+    "apiKeyUsed": false,
+    "tokens": "not exposed",
+    "monetaryCost": "unmeasured"
+  },
+  "status": "finished",
+  "finishedAt": "2026-10-03T14:17:47.074Z",
+  "sourcesAfter": {
+    "src/lib/ai/generated-review/prompt.ts": "ff406d942d97b57a9889b8bdc1aaa8c6c42c5f5870cefa0c49169d8eddfe5672",
+    "src/lib/ai/generated-review/contract.ts": "772cc5cf00bcf19e90c4468e68c79b33e9103a078f1c67821d4a1b2bd72c3ba5",
+    "src/lib/ai/generated-review/comparisons.ts": "739ac95250cbe7928fd8418f9eeaf482e2f1b4ec16fd0563df5e28905b3c6f09",
+    "src/lib/ai/generated-review/evidence.ts": "f21c524ea1817e2007f70f06c3082cdc9bf1b24648449e67d2bbd2bbcdd7a16d",
+    "src/lib/ai/generated-review/quotes.ts": "5b12553ac19c64aaa9dee56bd06acad615dd1a7c8a0e5978d44f894a791c39b0",
+    "src/lib/ai/generated-review/review.ts": "ab95184280501837945885f48a8d8183ffeeb2f2206e66ce808c24800d4e7034",
+    "src/lib/ai/provider.ts": "97e0f8afd6b5cf58864da776d25d716eec8bddb155f102901eb621cb2e20c8e1",
+    "scripts/evaluation/generated-review-v3-smoke.ts": "24e4d8f67463ab29e494edb2b3de72320db1219524764666d456b0546c884d07"
+  },
+  "results": [
+    {
+      "id": "v2-law-device-attribution",
+      "elapsedMs": 62219,
+      "accepted": false,
+      "criteriaMatched": true,
+      "passed": true,
+      "review": {
+        "comparisons": {
+          "claims": [
+            {
+              "coverQuote": "I processed the transfer as part of the reconciliation",
+              "truthQuote": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials.",
+              "relation": "consistent",
+              "designatedLie": false,
+              "reason": "suspect_true_story supports processing the transfer; the reconciliation purpose is not independently established but is not contradicted."
+            },
+            {
+              "coverQuote": "the account was already short when I checked it.",
+              "truthQuote": "",
+              "relation": "not_established",
+              "designatedLie": false,
+              "reason": "Neither suspect_true_story nor the_truth establishes the balance when he checked it. This is not an established second falsehood."
+            },
+            {
+              "coverQuote": "I left the office before the transfer completed.",
+              "truthQuote": "He left the office before the transfer completed",
+              "relation": "consistent",
+              "designatedLie": false,
+              "reason": "suspect_cover_story and suspect_true_story agree on departure preceding completion."
+            },
+            {
+              "coverQuote": "I did not approve it remotely after I left.",
+              "truthQuote": "He approved the transfer remotely on his registered phone after leaving the office.",
+              "relation": "contradicted",
+              "designatedLie": true,
+              "reason": "the_truth explicitly contradicts the personal, post-departure approval denial in suspect_cover_story."
+            }
+          ],
+          "actors": {
+            "crimeQuote": "A sealed client escrow account is short by $18,400 after an internal transfer was recorded.",
+            "canonicalQuote": "Julian Mercer initiated the $18,400 transfer from the escrow account to an outside account using his assigned credentials.",
+            "conflict": false,
+            "reason": "crime names no culprit, so it does not assign wrongdoing to a different actor. Its internal-transfer description does, however, differ from the outside-account destination in suspect_true_story."
+          },
+          "evidenceReasoning": {
+            "claimRequires": "The player must establish that Julian personally approved this transfer remotely after leaving the office.",
+            "recordEstablishes": "The audit record reports that the one-time code sent to Julian's registered phone was entered from that phone after his office badge-out time. The system requires separate approval to complete a transfer.",
+            "obligations": {
+              "actor": {
+                "status": "missing",
+                "supportQuote": "",
+                "reason": "the_contradiction identifies a registered phone, not its operator. Neither registration nor suspect_true_story's assertion of guilt supplies exclusive possession or witnessed use."
+              },
+              "time": {
+                "status": "direct",
+                "supportQuote": "the audit record shows that code was entered from that phone after his office badge-out time.",
+                "reason": "the_contradiction explicitly dates code entry after badge-out, rather than merely dating later recording or discovery."
+              },
+              "meaning": {
+                "status": "linked",
+                "supportQuote": "ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+                "reason": "the_contradiction connects code entry to the required separate transfer approval. This establishes the approval mechanism, but not who operated the phone."
+              }
+            },
+            "alternative": {
+              "possible": true,
+              "explanation": "Another operator could have used Julian's registered phone to enter the code after badge-out while Julian did not personally approve the transfer. No stated possession rule or personally recognizing observation excludes this ordinary alternative; the_truth cannot independently resolve it."
+            }
+          },
+          "evidence": {
+            "claimQuote": "I did not approve it remotely after I left.",
+            "evidenceQuote": "If asked to pin down how approval worked, Julian says he had no firm token with him after leaving. The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone, and the audit record shows that code was entered from that phone after his office badge-out time. The system requires this separate approval to complete a transfer",
+            "sufficient": false,
+            "reason": "the_contradiction supports post-badge-out approval through the registered phone but lacks the essential actor link needed to disprove the_lie's personal denial."
+          },
+          "discovery": {
+            "leadQuote": "Escrow transfer has a second-factor trail",
+            "questionAvailableQuote": "The public lead about the second-factor trail points to the escrow audit record; ordinary follow-up questions about the approval method and registered device reveal that the transfer required a one-time code sent to his registered phone",
+            "accessible": true,
+            "reason": "detective_leads supplies a plausible questioning path to the audit and approval facts stated in the_contradiction, without requiring an unstated external tool."
+          }
+        },
+        "singleFalseClaim": {
+          "pass": true,
+          "reason": "suspect_cover_story's \"I did not approve it remotely after I left.\" contradicts the_truth's \"He approved the transfer remotely on his registered phone after leaving the office.\" No other independent cover assertion is contradicted; \"the account was already short when I checked it.\" remains unestablished."
+        },
+        "canonicalConsistency": {
+          "pass": false,
+          "reason": "Although actors do not conflict and remote approval is permitted, crime describes \"an internal transfer\" while suspect_true_story describes \"the $18,400 transfer from the escrow account to an outside account\". These descriptions conflict over the same transfer's destination, with no stated reconciliation."
+        },
+        "evidenceSufficiency": {
+          "pass": false,
+          "reason": "the_contradiction's \"code was entered from that phone after his office badge-out time\" identifies device activity, not Julian's personal action. The essential actor link is missing, so it does not establish the falsity of the_lie's \"I did not approve it remotely after I left.\""
+        },
+        "publicDiscoverability": {
+          "pass": true,
+          "reason": "detective_leads provides \"Escrow transfer has a second-factor trail\", and the_contradiction states \"The public lead about the second-factor trail points to the escrow audit record\". This is a plausible ordinary questioning route, not a guarantee of reliable disclosure."
+        },
+        "completeReasoning": {
+          "pass": true,
+          "reason": "the_contradiction ends with the complete sentence \"The system requires this separate approval to complete a transfer\". Missing final punctuation is not truncation; the evidentiary actor gap is assessed separately."
+        }
+      }
+    },
+    {
+      "id": "v1-bank-extra-lie",
+      "elapsedMs": 79186,
+      "accepted": false,
+      "criteriaMatched": true,
+      "passed": true,
+      "review": {
+        "comparisons": {
+          "claims": [
+            {
+              "coverQuote": "the vendor was legitimate",
+              "truthQuote": "She created a fake vendor",
+              "relation": "contradicted",
+              "designatedLie": false,
+              "reason": "suspect_cover_story asserts legitimacy; suspect_true_story explicitly establishes a fake vendor. This is an independent falsehood."
+            },
+            {
+              "coverQuote": "the payment was approved by her manager during her shift",
+              "truthQuote": "the approval record was created later, after her manager had left the bank for the day.",
+              "relation": "not_established",
+              "designatedLie": false,
+              "reason": "the_truth dates creation of the approval record, not actual managerial approval. Neither the manager's approval nor its occurrence during her shift is independently established."
+            },
+            {
+              "coverQuote": "She claims she entered it only after receiving that approval",
+              "truthQuote": "She entered the payment before approval",
+              "relation": "contradicted",
+              "designatedLie": true,
+              "reason": "suspect_cover_story reverses the sequence explicitly stated in the_truth. This is the substance of the_lie."
+            },
+            {
+              "coverQuote": "altered the reconciliation file to correct a routine coding error",
+              "truthQuote": "altered the reconciliation file to hide it.",
+              "relation": "contradicted",
+              "designatedLie": false,
+              "reason": "The alteration itself agrees across suspect_cover_story and suspect_true_story, but its asserted purpose conflicts: routine correction versus concealment. This is another independent falsehood."
+            }
+          ],
+          "actors": {
+            "crimeQuote": "A treasury analyst diverted $84,000 through a fraudulent vendor payment and concealed the transfer in a reconciliation file.",
+            "canonicalQuote": "She created a fake vendor, routed $84,000 to an account she controlled, and altered the reconciliation file to hide it.",
+            "conflict": false,
+            "reason": "crime and suspect_true_story assign the diversion and concealment to the suspect, whose suspect_role is \"Treasury Analyst\" and suspect_name is \"Nina Alvarez\"."
+          },
+          "evidenceReasoning": {
+            "claimRequires": "Establish that Nina entered the payment before her manager actually approved it, rather than after approval.",
+            "recordEstablishes": "The payment has a 4:12 p.m. timestamp, the manager's access log shows departure at 3:40 p.m., and approval was recorded at 5:06 p.m. These observations do not expressly establish the operator or the time of actual authorization.",
+            "obligations": {
+              "actor": {
+                "status": "missing",
+                "supportQuote": "",
+                "reason": "the_contradiction supplies a payment timestamp but does not identify its operator. suspect_true_story asserts her initiation without supplying an independent identity link."
+              },
+              "time": {
+                "status": "missing",
+                "supportQuote": "",
+                "reason": "the_contradiction dates approval recording, not actual approval. No rule in the_contradiction or suspect_true_story makes those times identical, and departure does not exclude remote or earlier authorization."
+              },
+              "meaning": {
+                "status": "missing",
+                "supportQuote": "",
+                "reason": "the_contradiction provides an approval record but no rule establishing that recording constitutes managerial authorization. A payment timestamp also lacks an explicit link to Nina's entry action."
+              }
+            },
+            "alternative": {
+              "possible": true,
+              "explanation": "The manager could have approved the payment before 4:12 p.m., with that approval recorded at 5:06 p.m. Nina could then have entered the payment after receiving approval. Departure at 3:40 p.m. does not exclude earlier approval or remote approval. No stated timing or workflow rule excludes this ordinary account."
+            }
+          },
+          "evidence": {
+            "claimQuote": "She claims she entered the payment after her manager approved it.",
+            "evidenceQuote": "Ask when she entered the payment, then who approved it and when. The payment timestamp is 4:12 p.m., while her manager's bank access log shows he left at 3:40 p.m.; the approval was recorded at 5:06 p.m.",
+            "sufficient": false,
+            "reason": "the_contradiction distinguishes payment time from approval-record time but does not establish actual approval time or identify Nina as the timestamped operator. The evidenceReasoning obligations remain unsupported, and delayed recording is a surviving ordinary alternative."
+          },
+          "discovery": {
+            "leadQuote": "Reconciliation saved before approval logged",
+            "questionAvailableQuote": "Ask when she entered the payment, then who approved it and when.",
+            "accessible": true,
+            "reason": "detective_leads points toward approval chronology, and the_contradiction explicitly supplies a questioning path and record contents. This supports discoverability, not reliable disclosure or evidentiary sufficiency."
+          }
+        },
+        "singleFalseClaim": {
+          "pass": false,
+          "reason": "Beyond the_lie, suspect_cover_story says \"the vendor was legitimate\" while suspect_true_story says \"She created a fake vendor\". It also asserts \"altered the reconciliation file to correct a routine coding error\" against \"altered the reconciliation file to hide it.\" These are independent contradicted assertions."
+        },
+        "canonicalConsistency": {
+          "pass": true,
+          "reason": "crime identifies \"A treasury analyst\" and suspect_role is \"Treasury Analyst\"; suspect_true_story consistently assigns the diversion and concealment to her. the_truth's \"She entered the payment before approval\" is compatible with the stated timestamps. No mandatory workflow or prohibition on remote approval is specified."
+        },
+        "evidenceSufficiency": {
+          "pass": false,
+          "reason": "the_contradiction says \"the approval was recorded at 5:06 p.m.\", not that authorization occurred then. Its \"payment timestamp is 4:12 p.m.\" does not identify Nina's action. Missing identity, timing, and record-to-authorization links leave earlier approval with later recording possible, so the_lie is not independently disproved."
+        },
+        "publicDiscoverability": {
+          "pass": true,
+          "reason": "detective_leads supplies \"Reconciliation saved before approval logged\", and the_contradiction directs \"Ask when she entered the payment, then who approved it and when.\" This is a plausible questioning route to facts expressly supplied in the case."
+        },
+        "completeReasoning": {
+          "pass": true,
+          "reason": "the_contradiction ends with the complete clause \"the approval was recorded at 5:06 p.m.\" Its explanation is intelligible and not truncated. Its evidentiary gaps are assessed separately under evidenceSufficiency."
+        }
+      }
+    },
+    {
+      "id": "heldout-authored-door-control",
+      "elapsedMs": 49944,
+      "accepted": true,
+      "criteriaMatched": true,
+      "passed": true,
+      "review": {
+        "comparisons": {
+          "claims": [
+            {
+              "coverQuote": "I worked in the archive office that afternoon.",
+              "truthQuote": "Lena worked in the archive office that afternoon and opened the archive door at 14:05.",
+              "relation": "consistent",
+              "designatedLie": false,
+              "reason": "suspect_true_story confirms the workplace and afternoon stated in suspect_cover_story."
+            },
+            {
+              "coverQuote": "I did not open the archive door.",
+              "truthQuote": "Lena opened the archive door at 14:05.",
+              "relation": "contradicted",
+              "designatedLie": true,
+              "reason": "the_truth directly contradicts this denial in suspect_cover_story, which is exactly the_lie."
+            }
+          ],
+          "actors": {
+            "crimeQuote": "An archive door was found open during the afternoon shift.",
+            "canonicalQuote": "Lena worked in the archive office that afternoon and opened the archive door at 14:05.",
+            "conflict": false,
+            "reason": "crime is a neutral incident summary assigning no culprit. suspect_true_story identifies Lena as the door opener, consistent with suspect_name and suspect_role."
+          },
+          "evidenceReasoning": {
+            "claimRequires": "To disprove the designated denial, the evidence must establish that Lena personally opened the archive door. It need not establish document removal or a particular opening time.",
+            "recordEstablishes": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05.",
+            "obligations": {
+              "actor": {
+                "status": "direct",
+                "supportQuote": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05.",
+                "reason": "the_contradiction describes personal recognition while witnessing the disputed action, not merely an account, device or registration."
+              },
+              "time": {
+                "status": "not_required",
+                "supportQuote": "",
+                "reason": "the_lie is an untimed denial of opening the door. Observing that action disproves it without a separate timing link."
+              },
+              "meaning": {
+                "status": "direct",
+                "supportQuote": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05.",
+                "reason": "the_contradiction explicitly observes opening the door itself, rather than a proxy such as presence or access."
+              }
+            },
+            "alternative": {
+              "possible": false,
+              "explanation": "An ordinary account in which Lena never opened the door is excluded by the_contradiction's personally recognized observation of Lena opening it. Another person opening it at another time would not preserve Lena's denial."
+            }
+          },
+          "evidence": {
+            "claimQuote": "I did not open the archive door.",
+            "evidenceQuote": "The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05. Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.",
+            "sufficient": true,
+            "reason": "the_contradiction directly supplies both essential links: Lena's identity and the denied action. Time is not essential to the_lie, and no ordinary alternative survives."
+          },
+          "discovery": {
+            "leadQuote": "Ask what the desk observer saw.",
+            "questionAvailableQuote": "Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.",
+            "accessible": true,
+            "reason": "detective_leads explicitly directs questioning toward the observer; the_contradiction states that ordinary questions reveal the observation. This is a plausible path, not a guarantee of reliable disclosure."
+          }
+        },
+        "singleFalseClaim": {
+          "pass": true,
+          "reason": "suspect_cover_story's \"I worked in the archive office that afternoon.\" agrees with suspect_true_story's \"Lena worked in the archive office that afternoon and opened the archive door at 14:05.\" Its only other assertion, \"I did not open the archive door.\", is the_lie and contradicts the_truth's \"Lena opened the archive door at 14:05.\""
+        },
+        "canonicalConsistency": {
+          "pass": true,
+          "reason": "crime's \"An archive door was found open during the afternoon shift.\" names no conflicting actor. suspect_true_story's \"Lena worked in the archive office that afternoon and opened the archive door at 14:05.\" agrees with the_contradiction's \"The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05.\" No incompatible workflow or capability is stated."
+        },
+        "evidenceSufficiency": {
+          "pass": true,
+          "reason": "the_contradiction's \"The desk observer personally recognized Lena turning the handle and opening the archive door at 14:05.\" directly disproves the_lie's \"I did not open the archive door.\" Personal recognition establishes identity, and witnessed opening establishes the action; proof of document removal is unnecessary."
+        },
+        "publicDiscoverability": {
+          "pass": true,
+          "reason": "detective_leads supplies \"Ask what the desk observer saw.\" and the_contradiction states \"Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.\" Together they provide a plausible questioning path to the evidence."
+        },
+        "completeReasoning": {
+          "pass": true,
+          "reason": "the_contradiction contains complete sentences, including \"Ordinary questions about the observer report reveal this action, contradicting the denial of opening the door.\" Its observation and connection to the denial are intelligible, with no cut-off words or unfinished reasoning."
+        }
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { releaseCaseClue } from './case-disclosure';
 import { publicClues } from './clue-sources';
 import type { AiProvenance } from '../ai/contracts';
 import { turnSnapshot, recordTurnEvent } from './turn-events';
@@ -5,13 +6,12 @@ import { allowsLawyerEscalation } from './play-mode';
 import { acceptedTimestamp } from './accepted-time';
 import { recordGameplayTurn } from '../gameplay/state';
 import { gameplayProjection } from '../gameplay/session';
-import { DIFFICULTY_CLUES, TIME_LIMITS } from '../game-state';
+import { TIME_LIMITS } from '../game-state';
 import { getSessionStats } from './stats';
 import { inspectDisclosure } from './disclosure';
-import { acceptClue, beginSession, expireSession, finishSession } from './transitions';
+import { beginSession, expireSession, finishSession } from './transitions';
 import type { GameSession, Outcome } from './types';
 
-const MIN_QUESTIONS: Record<string, number> = { easy: 2, medium: 4, hard: 6, expert: 8 };
 export interface SuspectResponse {
   spoken_response: string;
   stress_level: number;
@@ -60,15 +60,6 @@ export function prepareTurn(session: GameSession): Outcome | null {
   return null;
 }
 
-function canUnlock(session: GameSession, question: string, stress: number): boolean {
-  const difficulty = String(session.caseData.difficulty);
-  const maxClues = DIFFICULTY_CLUES[difficulty] ?? 3;
-  const next = session.clues.length + 1;
-  const threshold = Math.round(2 + ((next - 1) * 6) / Math.max(1, maxClues - 1));
-  return !question.startsWith('*') && session.questionsAsked >= (MIN_QUESTIONS[difficulty] ?? 4)
-    && question.replace(/[^a-zA-Z]/g, '').length >= 15 && next <= maxClues && stress >= threshold;
-}
-
 function filterResponse(session: GameSession, response: SuspectResponse): SuspectResponse {
   if (inspectDisclosure(session, response.spoken_response) === 'allowed') {
     return response.clue_unlocked && inspectDisclosure(session, response.clue_unlocked) !== 'allowed'
@@ -90,11 +81,12 @@ export function commitTurn(session: GameSession, question: string, raw: Record<s
   expireSession(session);
   if (session.outcome) return terminalResponse(session);
   const before = turnSnapshot(session);
-  const response = filterResponse(session, validateSuspectResponse(raw));
+  const validated = validateSuspectResponse(raw);
+  const allowed = inspectDisclosure(session, validated.spoken_response) === 'allowed';
+  const response = filterResponse(session, validated);
   const stress = Math.max(session.currentStress, Math.min(Math.floor(response.stress_level), session.currentStress + 1, 9));
   response.stress_level = stress;
-  const clue = session.gameplay ? null : response.clue_unlocked;
-  response.clue_unlocked = clue && canUnlock(session, question, stress) && acceptClue(session, clue) ? clue : null;
+  response.clue_unlocked = allowed ? releaseCaseClue(session, question) : null;
   session.currentStress = stress;
   applyStressConsequence(session, response, stress);
   if (!question.startsWith('*')) session.questionsAsked += 1;

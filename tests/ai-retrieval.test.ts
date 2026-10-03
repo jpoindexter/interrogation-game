@@ -148,6 +148,7 @@ test('accepted clue and authored challenge events ground questions without attri
   try {
     session.status = 'active'; session.outcome = null; session.endedAt = null;
     session.questionsAsked = 2; session.currentStress = 2;
+    session.caseData.the_contradiction = 'The visitor record identifies the return after six.';
     const provenance = { provider: 'fixture', model: 'fixture-model', capability: 'suspect' as const, promptHash: 'a'.repeat(64) };
     commitTurn(session, 'Which record confirms that you returned to the office?', {
       spoken_response: 'There was a visitor record at the desk.', stress_level: 3,

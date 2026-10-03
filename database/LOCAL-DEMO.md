@@ -27,7 +27,7 @@ Executed service verification includes separate child processes for restart, con
 
 ## Play modes and scoring
 
-Timed challenge uses the chosen difficulty's countdown and is the only ranked mode. Relaxed keeps the chosen difficulty and clue requirements, removes the countdown, and never escalates to a lawyer. Endurance is also untimed and unranked; only hard/expert endurance retains the sustained-stress lawyer rule. Both untimed modes retain actual elapsed time in stats but use zero elapsed time as the score calculation input, so waiting does not penalize the score.
+Timed challenge uses the chosen difficulty's countdown and is the only ranked mode. Relaxed keeps the chosen difficulty, removes the countdown, and never escalates to a lawyer. Generated cases permit accusation once the interview is active and attempts remain; clues are optional hints. Authored evidence practice requires an established statement-and-exhibit contradiction before accusation, in every mode. Endurance is also untimed and unranked; only hard/expert endurance retains the sustained-stress lawyer rule. Both untimed modes retain actual elapsed time in stats but use zero elapsed time as the score calculation input, so waiting does not penalize the score.
 
 Canonical stats and token snapshots record `playMode` and `ranked`. Legacy server sessions resolve countdown to challenge and unlimited to relaxed. Old result caches without mode fields remain labelled “Mode not recorded” and cannot offer a ranked submission; old leaderboard rows without verified mode fields are excluded instead of backfilled. Difficulty, clue progress, hint penalties and accusation penalties remain independent of mode.
 

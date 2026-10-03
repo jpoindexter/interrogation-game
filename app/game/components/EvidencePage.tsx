@@ -1,20 +1,28 @@
+import { recordReleaseProgress } from '@/lib/case-disclosure-policy';
+import type { ConversationMessage } from '@/lib/ai/types';
 import type { PublicClue, ClueSource } from '@/lib/clue-contract';
-import ClueMarker from './ClueMarker';
-import { motion } from '../../components/motion';
+import EvidenceNote from './EvidenceNote';
 import { SECTION_HEADER } from './CaseFilePage';
 
 const EVIDENCE_HEADER_BG = { background: '#a0c4d4' };
 
-export default function EvidencePage({ clues, cluesNeeded, hintsUsed, hintTexts, onOpenSource }: {
+export default function EvidencePage({ clues, hintsUsed, hintTexts, onOpenSource, difficulty = 'medium', history = [] }: {
+  history?: ConversationMessage[]; difficulty?: string;
   clues: PublicClue[]; cluesNeeded: number; onOpenSource: (source: ClueSource) => void;
   hintsUsed: number; hintTexts: string[];
 }) {
+  const progress = recordReleaseProgress(history, difficulty);
+  const recordReleased = clues.some(clue => clue.origin === 'case-record');
   return (
     <div className="p-4 text-black">
       <p className="text-base font-bold text-center uppercase tracking-widest mb-1">Investigation Leads</p>
-      <p className="text-xs text-black/70 text-center mb-3">{clues.length}/{cluesNeeded} Optional Clues Collected</p>
+      <p className="text-xs text-black/70 text-center mb-3">{clues.length} {clues.length === 1 ? 'Case Note' : 'Case Notes'} Collected</p>
 
-      <p className="text-sm text-black/70 mb-3">Clues suggest what to investigate. They are not proof, and you do not need every clue to accuse.</p>
+      <p className="text-sm text-black/70 mb-3">Case evidence notes summarize the case file. Earlier saved clues may be investigation suggestions. Compare each with the suspect’s claims; you can accuse at any time.</p>
+      <div role="status" className="mb-3 border border-black/30 p-2 text-xs">
+        {recordReleased ? 'Case evidence note available. Compare it with the suspect’s account.'
+          : `Case evidence check: ${Math.min(progress.asked, progress.required)}/${progress.required} questions. Ask distinct questions with at least 15 letters; opening actions and accusations do not count. The note arrives with the final qualifying answer. Stress does not affect release.`}
+      </div>
       <hr className="border-black/20 mb-3" />
 
 
@@ -22,18 +30,7 @@ export default function EvidencePage({ clues, cluesNeeded, hintsUsed, hintTexts,
         <>
           <div className={SECTION_HEADER} style={EVIDENCE_HEADER_BG}>Clue Notes</div>
           {clues.map((clue, i) => (
-            <motion.div
-              key={clue.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className={`py-2 ${i < clues.length - 1 ? 'border-b border-black/10' : ''}`}
-            >
-              <div className="flex items-center gap-2 mb-1"><ClueMarker number={i + 1} /><p className="text-xs uppercase tracking-wider font-bold text-black/70">Clue #{i + 1}</p></div>
-              <p className="text-sm leading-relaxed">{clue.text}</p>
-              {clue.source ? <button type="button" onClick={() => onOpenSource(clue.source!)} className="mt-2 min-h-11 border border-black/60 px-3 text-sm">View source exchange</button>
-                : <p className="mt-2 text-xs text-black/70">Source exchange unavailable for this saved clue.</p>}
-            </motion.div>
+            <EvidenceNote key={clue.id} clue={clue} number={i + 1} last={i === clues.length - 1} onOpenSource={onOpenSource} />
           ))}
         </>
       )}
