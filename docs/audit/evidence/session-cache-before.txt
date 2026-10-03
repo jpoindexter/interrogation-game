@@ -13,9 +13,9 @@
 test at tests/session-persistence.test.ts:2:1398
 ✖ a cached reader recovers newer activity before checking session expiry (296.8835ms)
   AssertionError [ERR_ASSERTION]: another process kept the session active within its one-hour lifetime
-  
+
   401 !== 200
-  
+
       at TestContext.<anonymous> (/Users/jasonpoindexter/Documents/GitHub/INTERIGATION/tests/session-persistence.test.ts:20:10)
       at async Test.run (node:internal/test_runner/test:1409:7)
       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
