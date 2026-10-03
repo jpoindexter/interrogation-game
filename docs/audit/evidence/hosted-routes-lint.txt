@@ -1,4 +1,4 @@
+Terminal whitespace normalized; command output content preserved.
 
 > interrogation@0.1.0 lint
 > eslint --max-warnings=0
-
