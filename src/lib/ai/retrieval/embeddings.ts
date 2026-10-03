@@ -1,6 +1,6 @@
 import { AiError } from '../contracts';
 import { EMBEDDING_SPACE, requireRetrievalConfig } from './config';
-import { reserveAiWork } from '../../limits/ai-scope';
+import { reserveAiWorkAsync } from '../../limits/ai-scope';
 
 interface EmbeddingRow { index: number; embedding: number[] }
 function parseEmbeddings(raw: { model?: unknown; data?: EmbeddingRow[] }, count: number): number[][] {
@@ -24,7 +24,7 @@ export async function embedTexts(texts: string[], options: { env?: Record<string
   if (texts.length > 32 || texts.some(text => !text.trim() || text.length > 12000)) {
     throw new AiError('EMBEDDING_INPUT', 'Embedding input must contain 1–32 nonempty texts of at most 12000 characters.');
   }
-  reserveAiWork({ instructions: '', input: JSON.stringify(texts), schema: {} });
+  await reserveAiWorkAsync({ instructions: '', input: JSON.stringify(texts), schema: {} });
   const response = await (options.fetcher ?? fetch)('https://api.openai.com/v1/embeddings', {
     method: 'POST', signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000),
     headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },

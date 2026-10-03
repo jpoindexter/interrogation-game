@@ -1,4 +1,7 @@
 import { randomUUID } from 'node:crypto';
+import type { GameExport } from '../../session/exports/storage';
+import type { RequestRecord } from '../../session/repository-types';
+import { object } from './rpc';
 import { supabaseRpc, integer, invalidResponse, requireInput, type HostedRpc } from './rpc';
 import { actionParameters, parseKind, parseResponse, parseSnapshot, sessionKey,
   type ActionClaim, type ActionIdentity, type ClaimResult, type CompleteResult, type HostedSnapshot, type StoredResponse } from './contracts';
@@ -25,6 +28,12 @@ export class HostedSessionStorage {
     return result.kind === 'loaded' ? parseSnapshot(result.record, sessionId) : null;
   }
 
+  async receipts(sessionId: string): Promise<Record<string, RequestRecord>> {
+    const result = parseKind(await this.rpc('interrogation_session_receipts', { p_key: sessionKey(sessionId) }), ['loaded', 'unavailable', 'invalid']);
+    if (result.kind !== 'loaded' || !object(result.requests) || Object.keys(result.requests).length > 500) return invalidResponse();
+    return Object.fromEntries(Object.entries(result.requests).map(([key, value]) => [key, parseRequest(key, value)]));
+  }
+
   async claim(input: Omit<ActionIdentity, 'owner'> & { owner?: string }): Promise<ClaimResult> {
     const identity = { ...input, owner: input.owner ?? randomUUID() };
     const result = parseKind(await this.rpc('interrogation_session_claim', actionParameters(identity)),
@@ -37,12 +46,12 @@ export class HostedSessionStorage {
     return { ...identity, kind: 'claimed', record, revision: result.revision, fence: result.fence, leaseUntil: result.leaseUntil };
   }
 
-  async complete(claim: ActionClaim, record: HostedSnapshot, response: StoredResponse): Promise<CompleteResult> {
+  async complete(claim: ActionClaim, record: HostedSnapshot, response: StoredResponse, terminalExport?: GameExport): Promise<CompleteResult> {
     requireInput(record.session.id === claim.sessionId && record.revision === claim.revision
       && integer(claim.fence, 1) && Object.keys(record.requests).length === 0);
     parseResponse(response);
-    const result = parseKind(await this.rpc('interrogation_session_complete', { ...actionParameters(claim),
-      p_fence: claim.fence, p_revision: claim.revision, p_record: record, p_response: response }),
+    const result = parseKind(await this.rpc('interrogation_action_commit', { ...actionParameters(claim),
+      p_fence: claim.fence, p_revision: claim.revision, p_record: record, p_response: response, p_export: terminalExport ?? null }),
     ['committed', 'replay', 'stale', 'conflict', 'unavailable', 'invalid']);
     if (result.kind === 'replay') return { kind: 'replay', response: parseResponse(result.response) };
     if (result.kind !== 'committed') return { kind: result.kind } as CompleteResult;
@@ -50,4 +59,12 @@ export class HostedSessionStorage {
     if (committed.revision !== claim.revision + 1) return invalidResponse();
     return { kind: 'committed', record: committed, response: parseResponse(result.response) };
   }
+}
+
+function parseRequest(key: string, value: unknown): RequestRecord {
+  if (!/^[a-f0-9]{64}$/.test(key) || !object(value) || typeof value.hash !== 'string'
+    || !/^[a-f0-9]{64}$/.test(value.hash) || !integer(value.startedAt)) return invalidResponse();
+  if (value.state === 'pending') return { hash: value.hash, state: 'pending', startedAt: value.startedAt };
+  if (value.state !== 'complete') return invalidResponse();
+  return { hash: value.hash, state: 'complete', startedAt: value.startedAt, response: parseResponse(value.response) };
 }

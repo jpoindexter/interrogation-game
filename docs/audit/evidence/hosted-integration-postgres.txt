@@ -1,0 +1,15 @@
+Database: 14.18 (Homebrew)
+PASS isolated Unix-socket cluster; session/budget migrations and export prerequisites apply
+PASS session transaction rollback: forced receipt-write failure preserves old record and pending request
+PASS sessions: concurrent create/claim once; load; busy/conflict; owner/revision fences; exact response replay without reset
+PASS leases/terminal state: real deadline expiry interrupts old ID; new fence rejects late writer; outcome/evaluation/token immutable
+PASS expired session: load/create/claim/complete refuse resurrection
+PASS reservation transaction rollback: forced counter-write error leaves no reservation or counters; retry reserves once
+PASS budgets: reservation replay/conflict/policy lock; concurrent deployment/session quota boundaries; same-operation reservation once
+PASS privileges: PUBLIC execute absent; anon/authenticated/unprivileged roles denied RPC and private tables; service role uses RPC only
+PASS terminal export: canonical binding, invalid/insert-failure rollback, exact replay and one immutable export, terminal read recovery, old-complete/private receipt privileges
+PASS claimed-work privileges: public/anonymous access denied; service role cannot bypass claim through original reservation RPC
+PASS queued reservation: real lease expiry while waiting on deployment lock cannot spend quota
+PASS claimed work: owner/fence/revision/request checked before spending; concurrent reservation once; ambiguous replay refuses new permission; expired lease/session denied
+Scope: actual PostgreSQL transactions and role privileges. No Supabase/PostgREST, live hosted route, provider, voice or browser proof.
+CLEANUP isolated cluster stopped and its temporary directory removed

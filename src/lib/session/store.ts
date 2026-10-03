@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from 'node:util';
 import type { GameSession } from './types';
 import type { SessionRecord } from './repository-types';
 import { getSessionRepository, sessionRepositoryKey } from './repository';
+import { workspaceRecord, requireLocalSessionMutation } from './workspace';
 
 interface RuntimeStore { records: Map<string, SessionRecord>; locks: Set<string> }
 const runtime = globalThis as typeof globalThis & { __durableSessionStores?: Map<string, RuntimeStore> };
@@ -14,6 +15,8 @@ function currentStore(): RuntimeStore {
   return stores.get(key)!;
 }
 export function getSessionRecord(id: string): SessionRecord | null {
+  const scoped = workspaceRecord(id);
+  if (scoped !== undefined) return scoped;
   if (typeof id !== 'string' || !/^[a-f0-9]{48}$/.test(id)) return null;
   const { records, locks } = currentStore();
   // An unlocked read must observe other processes before checking idle expiry.
@@ -27,6 +30,7 @@ export function getSessionRecord(id: string): SessionRecord | null {
   return records.get(id) ?? null;
 }
 export function persistSession(id: string): void {
+  requireLocalSessionMutation();
   const record = getSessionRecord(id);
   if (!record) throw new Error('Cannot persist missing session');
   record.revision += 1;
@@ -63,6 +67,7 @@ function cacheRecord(record: SessionRecord): void {
 }
 /** Materialize a reserved generation ID once; retries preserve its existing progress. */
 export function createSessionAt(options: CreateSessionOptions): string {
+  requireLocalSessionMutation();
   const id = options.sessionId;
   if (!/^[a-f0-9]{48}$/.test(id)) throw new Error('Invalid reserved session ID');
   const repository = getSessionRepository();
@@ -84,6 +89,8 @@ export function createSession(caseData: Record<string, unknown>, learnedTactics:
   return createSessionAt({ sessionId: randomBytes(24).toString('hex'), caseData, learnedTactics, totalPriorGames, timerMode });
 }
 export function getSession(id: string): GameSession | null {
+  const scoped = workspaceRecord(id);
+  if (scoped !== undefined) return scoped?.session ?? null;
   const record = getSessionRecord(id);
   if (!record) return null;
   if (Date.now() - record.session.lastActivity > SESSION_TTL && !currentStore().locks.has(id)) return null;
@@ -91,10 +98,12 @@ export function getSession(id: string): GameSession | null {
   return record.session;
 }
 export function deleteSession(id: string): void {
+  requireLocalSessionMutation();
   getSessionRepository().remove(id);
   currentStore().records.delete(id);
 }
 export function acquireSessionLock(id: string): boolean {
+  requireLocalSessionMutation();
   const store = currentStore();
   if (store.locks.has(id) || !getSessionRepository().acquire(id)) return false;
   try {
@@ -109,6 +118,7 @@ export function acquireSessionLock(id: string): boolean {
   } catch (error) { getSessionRepository().release(id); throw error; }
 }
 export function releaseSessionLock(id: string): void {
+  requireLocalSessionMutation();
   try { if (currentStore().locks.has(id)) persistSession(id); }
   catch (error) {
     const disk = getSessionRepository().load(id);

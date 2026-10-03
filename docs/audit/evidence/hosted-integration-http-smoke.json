@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-10-03T16:55:00.107788+00:00",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "bytes": 756
+    },
+    {
+      "path": "/cases",
+      "status": 200,
+      "bytes": 28034
+    },
+    {
+      "path": "/about",
+      "status": 200,
+      "bytes": 11214
+    }
+  ],
+  "scope": "Rebuilt loopback production server HTTP only. No browser, provider, voice or hosted route acceptance."
+}

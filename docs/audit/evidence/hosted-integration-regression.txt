@@ -1,0 +1,29 @@
+✔ operator stop reaches the real turn route, blocks the adapter and permits a new explicit attempt (726.145541ms)
+✔ the actual provider gateway denies exhausted and oversized inputs before entering an adapter (9046.70075ms)
+✔ a completed budget failure advances the client ID only when it matches this receipt (8.327125ms)
+✔ generation work denial is a stable failed receipt with no case and an explicit new-attempt path (241.959375ms)
+✔ optional embeddings obey the same operator stop and aggregate reservation before fetch (5655.6315ms)
+✔ actual simultaneous AI callers share a durable call allowance across restart (13170.241375ms)
+✔ aggregate input budget is conservative and errors do not refund reservations (4104.478458ms)
+✔ overlapping async scopes stay isolated and direct operator calls get their own durable cap (7418.81925ms)
+✔ operator stop and oversized inputs deny before reservation; restoring switch permits work (2408.452584ms)
+✔ lock errors are explicit pre-provider unavailable failures and hosted execution is unsupported (20.194375ms)
+✔ hosted parser preserves actual domain briefing, active, authored progress and frozen win token (48.781125ms)
+✔ hosted parser accepts generated case shape and every domain loss including giveup before Begin (48.002917ms)
+✔ hosted parser rejects malformed counters, times, messages, evidence, events and lifecycle fields (83.144709ms)
+✔ async session adapter binds keys and validates claim, commit, replay and storage uncertainty (19.304ms)
+✔ work adapter distinguishes reserved replay from new permission and rejects mismatched receipts (0.316666ms)
+✔ a cached reader recovers newer activity before checking session expiry (417.184625ms)
+✔ a committed request replays after a real process restart without another provider call (515.458792ms)
+✔ concurrent requests and changed-body reuse cannot call a provider twice (282.552541ms)
+✔ a crashed provider attempt survives restart as interrupted and its stale lock is recovered (348.517042ms)
+✔ failed final persistence returns no success and cannot silently replay the provider (267.548833ms)
+✔ a canonical win token grant survives a real process restart (205.68075ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27209.284667

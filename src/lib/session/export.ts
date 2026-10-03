@@ -3,6 +3,7 @@ import { getSession } from './store';
 import { getSessionStats } from './stats';
 import { readExport, saveExport, exportStorageMode, type ExportEnvelope, type GameExport } from './exports/storage';
 import type { GameSession, Outcome } from './types';
+import { currentSessionWorkspace } from './workspace';
 
 function snapshot(session: GameSession): GameExport {
   return { session_id: session.id, case_data: structuredClone(session.caseData),
@@ -35,6 +36,12 @@ export async function exportSession(sessionId: string, outcome: Outcome,
   void accusationText; void accusationCorrect;
   const session = getSession(sessionId);
   if (!session?.outcome || session.outcome !== outcome) throw new Error('Only a completed canonical session can be exported');
+  const workspace = currentSessionWorkspace();
+  if (workspace) {
+    workspace.terminalExport ??= snapshot(session);
+    // This receipt reaches the caller only after the orchestration commits both records.
+    return { state: 'saved', destination: 'supabase', attempts: 1 };
+  }
   const destination = exportStorageMode();
   const previous = readExport(sessionId);
   if (previous?.delivery.state === 'saved' && previous.delivery.destination === destination) return previous.delivery;

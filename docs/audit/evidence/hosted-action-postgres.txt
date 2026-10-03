@@ -1,0 +1,4 @@
+PASS shared orchestration: begin, question, wrong/right judged accusation, canonical win/token/export, exact replay and recovered verdict map
+PASS workspace has no local fallback; claim-bound allowance admits two controlled AI calls and denies a third before provider
+Scope: actual TS domain/orchestration/adapters and PostgreSQL via independent psql connections; controlled OpenAI HTTP. Not HTTP route selection, live OpenAI/Supabase/Vercel/browser/voice proof.
+CLEANUP isolated database and local seed directory removed

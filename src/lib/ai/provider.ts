@@ -6,7 +6,7 @@ import { CodexProvider } from './codex';
 import { OpenAIProvider } from './openai';
 import { AiError, type AiProvider, type StructuredTask } from './contracts';
 import { validateStructured } from './validate';
-import { reserveAiWork } from '../limits/ai-scope';
+import { reserveAiWorkAsync } from '../limits/ai-scope';
 import { observeProvider } from '../config/provider-observations';
 
 export function providerConfiguration() {
@@ -31,7 +31,7 @@ export async function requestStructured(task: StructuredTask): Promise<Record<st
   const model = config.provider === 'openai' ? config.openaiModel
     : task.capability === 'case' ? process.env.CODEX_CASE_MODEL ?? 'gpt-6-luna' : config.codexModel;
   const signal = executionSignal(task.signal, config.timeoutMs);
-  reserveAiWork(task);
+  await reserveAiWorkAsync(task);
   return observeProvider('ai', task.capability, async () => {
     try {
       const result = await createProvider(config, model).generate({ ...task, signal });

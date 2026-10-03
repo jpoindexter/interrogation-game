@@ -1,4 +1,4 @@
-import { hashKey, parseKind, sessionKey } from './contracts';
+import { actionParameters, hashKey, parseKind, sessionKey, type ActionClaim } from './contracts';
 import { integer, invalidResponse, requireInput, supabaseRpc, type HostedRpc } from './rpc';
 
 type Scope = 'ai' | 'tts' | 'stt';
@@ -14,6 +14,7 @@ export interface WorkReservation {
 export type ReservationResult = { kind: 'reserved' | 'already_reserved'; scope: Scope; units: number; windowStart: number; windowEnd: number }
   | { kind: 'exhausted'; scope: 'session' | 'deployment' }
   | { kind: 'invalid' | 'conflict' | 'policy_conflict' };
+export type ClaimedReservationResult = ReservationResult | { kind: 'stale' } | { kind: 'unavailable' };
 
 function reservationWindow(result: Record<string, unknown>, input: WorkReservation) {
   if (result.scope !== input.scope || result.units !== input.units || !integer(result.windowStart)
@@ -36,18 +37,34 @@ function reservationParameters(input: WorkReservation): Record<string, unknown> 
     p_window_seconds: policy.windowSeconds };
 }
 
+function parseReservation(value: unknown, input: WorkReservation): ClaimedReservationResult {
+  const result = parseKind(value,
+    ['reserved', 'already_reserved', 'exhausted', 'invalid', 'conflict', 'policy_conflict', 'stale', 'unavailable']);
+  if (result.kind === 'exhausted') {
+    if (result.scope !== 'session' && result.scope !== 'deployment') return invalidResponse();
+    return { kind: 'exhausted', scope: result.scope };
+  }
+  if (result.kind !== 'reserved' && result.kind !== 'already_reserved') return { kind: result.kind } as ClaimedReservationResult;
+  return { kind: result.kind, ...reservationWindow(result, input) };
+}
+
 /** Only `reserved` admits a new call. `already_reserved` means recover its result, never repeat paid work. */
 export class HostedWorkStorage {
   constructor(private readonly rpc: HostedRpc = supabaseRpc) {}
 
   async reserve(input: WorkReservation): Promise<ReservationResult> {
-    const result = parseKind(await this.rpc('interrogation_reserve_work', reservationParameters(input)),
-      ['reserved', 'already_reserved', 'exhausted', 'invalid', 'conflict', 'policy_conflict']);
-    if (result.kind === 'exhausted') {
-      if (result.scope !== 'session' && result.scope !== 'deployment') return invalidResponse();
-      return { kind: 'exhausted', scope: result.scope };
-    }
-    if (result.kind !== 'reserved' && result.kind !== 'already_reserved') return { kind: result.kind } as ReservationResult;
-    return { kind: result.kind, ...reservationWindow(result, input) };
+    const result = parseReservation(await this.rpc('interrogation_reserve_work', reservationParameters(input)), input);
+    if (result.kind === 'stale' || result.kind === 'unavailable') return invalidResponse();
+    return result;
+  }
+
+  async reserveForClaim(input: WorkReservation, claim: ActionClaim): Promise<ClaimedReservationResult> {
+    requireInput(input.sessionId === claim.sessionId && integer(claim.fence, 1) && integer(claim.revision));
+    const identity = actionParameters(claim);
+    return parseReservation(await this.rpc('interrogation_reserve_claimed_work', {
+      ...reservationParameters(input), p_request_key: identity.p_request_key,
+      p_action_fingerprint: identity.p_fingerprint, p_owner: identity.p_owner,
+      p_fence: claim.fence, p_revision: claim.revision,
+    }), input);
   }
 }

@@ -27,7 +27,9 @@ node --import tsx --test tests/hosted-storage-adapter.test.ts
 
 The PostgreSQL runner is explicit opt-in; it is not included in the ordinary test discovery and requires local PostgreSQL binaries. SQL files remain below300 lines; the atomic transaction functions exceed the preferred TypeScript function length because their checks/writes must commit together. They perform no provider or network calls while holding database locks.
 
-## Remaining integration, in dependency order
+## Original remaining integration, in dependency order
+
+Subsequent [action integration](HOSTED-ACTION-INTEGRATION.md) implements the workspace/domain-validation, claim-bound work and atomic terminal export portions below. Public route selection, generation, redemption and voice remain open.
 
 1. Introduce request-scoped asynchronous session orchestration with domain validation. Preserve stable create payloads, request fingerprints and public response contracts; remove process-global authority only for the explicitly selected shared adapter.
 2. Add shared generation receipts/checkpoints, endpoint admission, and binding between claimed actions and work reservations. A successful work reservation alone does not prove an action claim is still current. Persist terminal exports and score grants/redemption atomically; existing local outbox and token operations are not replaced by these migrations.
