@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: winning reveal leads with recorded reasoning, preserves missing records and opens its referenced exchange
+ok 1 - winning reveal leads with recorded reasoning, preserves missing records and opens its referenced exchange
+  ---
+  duration_ms: 15.936375
+  type: 'test'
+  ...
+# React SSR: supported accusation, canonical facts, rationale, legacy fallbacks and explanation-before-score order. Controlled ref target: open → focus summary → instant scroll. Browser hydration, actual focus and viewer comprehension unverified.
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 277.186333

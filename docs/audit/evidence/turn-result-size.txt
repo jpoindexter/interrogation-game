@@ -1,0 +1,4 @@
+
+> interrogation@0.1.0 check:size
+> eslint --config eslint.size.config.mjs app src scripts
+

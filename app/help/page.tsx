@@ -11,7 +11,7 @@ import { QUESTION_TIPS, OUTCOMES } from './guide-content';
 function QuestionGuide() {
   return <section className="space-y-4">
     <h2 className="text-lg font-bold">Question the account</h2>
-    <p>Read the briefing and objective before beginning. Use the keyboard or microphone to ask a question. If voice is unavailable, continue with text.</p>
+    <p>Read the briefing and objective before beginning. Type a question or record one with the microphone. Review the text, then choose Ask question. If voice is unavailable, continue with text.</p>
     <ul className="list-disc space-y-2 pl-5">{QUESTION_TIPS.map(tip => <li key={tip}>{tip}</li>)}</ul>
     <p>A failed request should keep your draft available for retry. Check the displayed response or error before submitting another question.</p>
   </section>;

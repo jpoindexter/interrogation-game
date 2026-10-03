@@ -1,0 +1,25 @@
+{
+  "executedAt": "2026-10-03T19:12:41.060Z",
+  "node": "v24.21.0",
+  "scope": "Actual route modules over a loopback Node HTTP bridge; actual local filesystem; controlled Responses transport.",
+  "providerDelayMs": 16003,
+  "elapsedUntilLostDeliveryMs": 16090,
+  "acceptedTurns": 1,
+  "transcriptEntries": 2,
+  "providerTransportInvocations": 1,
+  "aiReservations": 1,
+  "reservedInputCharacters": 5492,
+  "droppedResponses": 1,
+  "replayExactlyMatched": true,
+  "recoveryExactlyMatched": true,
+  "pendingRequestsAfterRecovery": 0,
+  "billingVerified": false,
+  "browserVerified": false,
+  "nextProductionServerVerified": false,
+  "sourceHashes": {
+    "tests/delayed-turn-acceptance.ts": "7fb8ccf2f4790efa6d9ea49ab950879ace969663a1cf0e5500bea8fe66558bf4",
+    "app/api/interrogate/route.ts": "fd79e01f8c1827add630cb5633e1c705c670aeb1ecfcd77f0d8270326c103b8b",
+    "src/lib/session/request-ledger.ts": "765e8ffb179c9ffbd9edaed94850457866cdc6fa5c8ac3728e1647991890fec7",
+    "src/lib/ai/provider.ts": "405dc4580c969940f0f5145f85a1fd3a2d247337532d9483a03477ff6ed17bfe"
+  }
+}

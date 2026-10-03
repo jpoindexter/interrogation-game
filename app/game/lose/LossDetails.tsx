@@ -12,7 +12,10 @@ export function LossDetails({ result, evaluation }: { result: GameResult; evalua
     <section className="bg-surface-dark/80 rounded-sm p-6 sm:p-8 mb-6">
       <h2 className="text-sm uppercase tracking-widest text-gray-200 mb-3">Case summary</h2>
       <p className="text-sm text-gray-300 mb-3">{mode.label} · {mode.ranking}</p>
-      <p className="flex justify-between gap-4"><span>Outcome</span><strong className="text-accent">{presentation.label}</strong></p>
+      <dl className="space-y-3">
+        <div className="flex justify-between gap-4"><dt>Outcome</dt><dd className="font-bold text-accent">{presentation.label}</dd></div>
+        <div className="flex justify-between gap-4"><dt>Difficulty</dt><dd className="capitalize">{evaluation.stats.difficulty}</dd></div>
+      </dl>
     </section>
     {remark && <section className="bg-surface-dark/80 rounded-sm p-6 sm:p-8 mb-6">
       <h2 className="text-sm uppercase tracking-widest text-accent mb-1">{result.caseData.suspect_name}</h2>

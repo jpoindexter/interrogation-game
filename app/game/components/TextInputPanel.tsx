@@ -2,6 +2,7 @@ import { useSfx } from '../hooks/useSfx';
 import type { Dispatch, SetStateAction } from 'react';
 import QuestionForm from './QuestionForm';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
+import type { ActionFeedback } from './ActionNotice';
 
 interface TextInputPanelProps {
   value: string;
@@ -11,9 +12,11 @@ interface TextInputPanelProps {
   onSubmit: (v: string) => boolean | Promise<boolean>;
   onMic?: () => void;
   onClickOutside?: () => void;
+  feedback?: ActionFeedback | null;
+  onDismissFeedback?: () => void;
 }
 
-export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClickOutside, value, setValue }: TextInputPanelProps) {
+export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClickOutside, value, setValue, feedback, onDismissFeedback }: TextInputPanelProps) {
   const sfx = useSfx();
   const playKeystroke = () => sfx('typewriter');
 
@@ -39,6 +42,7 @@ export default function TextInputPanel({ show, disabled, onSubmit, onMic, onClic
             playKeystroke={playKeystroke}
             onMic={onMic}
             onClose={onClickOutside}
+            feedback={feedback} onDismissFeedback={onDismissFeedback}
           />
         </motion.div>
         </>

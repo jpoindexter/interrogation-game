@@ -1,0 +1,13 @@
+✔ legacy gameResult remains readable while malformed saved content is rejected (0.669917ms)
+✔ result refresh records exactly one history entry using canonical score and difficulty (0.236208ms)
+✔ score presentation uses authoritative total and clamps zero-question efficiency (0.10625ms)
+✔ loss presentation uses canonical lawyer outcome over stale browser flags (0.065333ms)
+✔ result components show canonical difficulty and distinct loss reasons despite stale client fields (13.578792ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 389.174584

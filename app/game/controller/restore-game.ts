@@ -17,7 +17,7 @@ function showRecoveredResult(context: Context, snapshot: SessionSnapshot) {
   try {
     sessionStorage.setItem(`evaluation:v1:${snapshot.caseData.sessionId}:${kind}`, JSON.stringify(evaluation));
     sessionStorage.setItem('gameResult', JSON.stringify(result));
-  } catch { context.runtime.showToast('Your result is saved on the server. Opening its recovery link.'); }
+  } catch { context.runtime.showToast('Your result is saved on the server. Opening its recovery link.', 'info'); }
   context.runtime.router.replace(`/game/${kind}?session=${encodeURIComponent(snapshot.caseData.sessionId)}`);
 }
 

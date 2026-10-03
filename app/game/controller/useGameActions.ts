@@ -6,11 +6,15 @@ import { hintAction } from './hint-action';
 
 interface Options extends RuntimeOptions { runtime: GameRuntime }
 
-function recordingActions({ state, panels, runtime }: Options, sendQuestion: (text: string) => Promise<boolean>) {
+export function recordingActions({ state, panels, runtime }: Options) {
   const startListening = () => {
     if (state.phase !== 'active' || runtime.isSpeaking) return;
-    state.setLastTranscript('');
-    void runtime.startRecording(text => { void sendQuestion(text); }, runtime.showToast, state.setLastTranscript);
+    void runtime.startRecording(text => {
+      panels.setQuestionDraft(current => current ? `${current}\n\n${text}` : text);
+      panels.setShowTextInput(true);
+      state.setLastTranscript(text);
+      runtime.showToast('Recording transcribed. Review your question, then choose Ask question.', 'info', 'question');
+    }, runtime.showToast, state.setLastTranscript);
   };
   const startAccusation = () => {
     if (state.phase !== 'active' || runtime.isSpeaking || state.accusationsLeft <= 0) return;
@@ -38,5 +42,5 @@ export function useGameActions(options: Options) {
     if (runtime.timerRef.current) clearInterval(runtime.timerRef.current);
     runtime.router.push('/cases');
   };
-  return { sendQuestion, submitAccusation, requestHint, exitGame, ...recordingActions(options, sendQuestion) };
+  return { sendQuestion, submitAccusation, requestHint, exitGame, ...recordingActions(options) };
 }

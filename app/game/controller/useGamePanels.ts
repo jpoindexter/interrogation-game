@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ActionFeedback } from '../components/ActionNotice';
 export function useGamePanels() {
   const [showAccuseConfirm, setShowAccuseConfirm] = useState(false);
   const [accuseText, setAccuseText] = useState('');
@@ -16,7 +17,7 @@ export function useGamePanels() {
   const [showMicHint, setShowMicHint] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<ActionFeedback | null>(null);
   return {
     showAccuseConfirm, setShowAccuseConfirm, accuseText, setAccuseText,
     showExitConfirm, setShowExitConfirm, showGiveUpConfirm, setShowGiveUpConfirm,

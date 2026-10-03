@@ -72,7 +72,7 @@ async function main() {
   globalThis.fetch=async()=>{throw new Error('Provider unavailable during debrief');};
   const winData=await(await evaluate(request('evaluate',won.id,{type:'win'}))).json();
   assert.equal(winData.correct,true); assert.equal((await evaluate(request('evaluate',won.id,{type:'lose'}))).status,409);
-  const win=validateEvaluation(winData,'win'); const winHtml=renderToStaticMarkup(<CaseDetails suspectName="Casey" suspectRole="Clerk" evaluation={win}/>);
+  const win=validateEvaluation(winData,'win'); const winHtml=renderToStaticMarkup(<CaseDetails suspectName="Casey" suspectRole="Clerk" evaluation={win} onOpenExchange={()=>{}}/>);
   for(const text of [facts.the_lie,facts.the_truth,facts.the_contradiction]) assert.ok(winHtml.includes(text));
   assert.deepEqual(await(await evaluate(request('evaluate',won.id,{type:'win'}))).json(),winData);
   check('LOGIC-19 accepted win immutable and canonical facts rendered with provider unavailable');

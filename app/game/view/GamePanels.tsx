@@ -15,6 +15,7 @@ function ConfirmationPanels(m: GameController) {
     <GiveUpConfirmDialog show={m.showGiveUpConfirm} onConfirm={m.handleGiveUp}
       onCancel={() => m.setShowGiveUpConfirm(false)} />
     <AccuseConfirmDialog show={m.showAccuseConfirm} accusationsLeft={m.accusationsLeft}
+      feedback={m.toast} onDismissFeedback={m.dismissToast}
       accuseText={m.accuseText} onChange={m.setAccuseText}
       onSubmitText={text => {
         m.setShowAccuseConfirm(false);
@@ -43,6 +44,7 @@ export function GamePanels(m: GameController) {
   return <>
     <ClueNotification authored={m.caseData?.mode === 'redteam' || Boolean(m.gameplay)} clueNumber={m.clueNotification} cluesNeeded={m.cluesNeeded} />
     <TextInputPanel value={m.questionDraft} setValue={m.setQuestionDraft} show={m.showTextInput} disabled={m.phase !== 'active' || m.isSpeaking || m.isAccusing}
+      feedback={m.toast?.recovery === 'question' ? m.toast : null} onDismissFeedback={m.dismissToast}
       onSubmit={text => { m.sfx('click_short'); return m.sendQuestion(text); }}
       onMic={() => { m.setShowTextInput(false); m.startListening(); }}
       onClickOutside={() => m.setShowTextInput(false)} />

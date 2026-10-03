@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { useSfx } from '../hooks/useSfx';
 import ModalSurface from '../../components/ModalSurface';
 import { motion, AnimatePresence, fadeUp, smooth } from '../../components/motion';
+import ActionNotice, { type ActionFeedback } from './ActionNotice';
 
 interface AccuseConfirmProps {
   show: boolean;
@@ -12,6 +13,8 @@ interface AccuseConfirmProps {
   onVoice: () => void;
   onCancel: () => void;
   onClickOutside?: () => void;
+  feedback?: ActionFeedback | null;
+  onDismissFeedback?: () => void;
 }
 
 export default function AccuseConfirmDialog(props: AccuseConfirmProps) {
@@ -42,6 +45,7 @@ function AccusationForm(props: AccuseConfirmProps) {
     }} className="max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-xl border border-accent bg-surface-dark p-5 shadow-2xl">
       <h2 className="text-lg font-bold text-foreground">Make an accusation</h2>
       <p className="mt-1 text-sm text-gold">{accusationsLeft} attempt{accusationsLeft !== 1 ? 's' : ''} left</p>
+      {props.feedback && props.onDismissFeedback && <ActionNotice notice={props.feedback} onDismiss={props.onDismissFeedback} />}
       <p id={`${id}-help`} className="mt-3 text-sm text-gray-300">
         Explain what they lied about, what actually happened, and which evidence supports your accusation.
       </p>

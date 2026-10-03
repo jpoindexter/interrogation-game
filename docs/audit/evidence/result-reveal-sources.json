@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-10-03T19:12:50.633Z",
+  "node": "v22.23.2",
+  "scope": "React SSR and controlled navigation target; no browser or inference",
+  "sourceHashes": {
+    "app/game/win/page.tsx": "9e6686341419c633a1ba2f1a003f746f51489155f525cd9b0ed43aa5e558d5fb",
+    "app/game/win/CaseDetails.tsx": "e2a0ef623acf52c8c210d38c4e4c09e70854e874cde36229f2f40918f0aa80a7",
+    "app/game/win/WinReveal.tsx": "c7b00fb6776e4d5cf0e62a8a0108fa87bb2e1766d08ce85405834d2fdd659673",
+    "app/game/result/ConversationPath.tsx": "b35aa856134e073ee5fe6295d6e1a5b04bd159222f1dbdbc333ecc3d143f9b74",
+    "app/game/result/open-recorded-exchange.ts": "224ed864b7aa0fdc2bf40951bf79f43994c24d5a814a0b01eeef21b518aece27",
+    "tests/result-reveal.test.tsx": "34fb127badf595440c378b48c17f15acebf7dcd52826182c8ea7bb6df92942f9"
+  }
+}

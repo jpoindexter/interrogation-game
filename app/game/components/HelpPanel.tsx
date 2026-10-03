@@ -33,7 +33,7 @@ function HelpInstructions({ authored, isUnlimited, playMode, difficulty }: { aut
               <span className="text-sm font-bold text-accent shrink-0">01</span>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider mb-1">Ask Questions</p>
-                <p className="text-sm text-gray-400 leading-relaxed">Tap the mic or keyboard to question the suspect. {isUnlimited ? 'The countdown is off.' : 'Watch the clock \u2014 you have limited time.'}{playMode === 'endurance' && (difficulty === 'hard' || difficulty === 'expert') ? <span className="text-accent"> Four successive turns at stress 8 or higher end the interview.</span> : ''}</p>
+                <p className="text-sm text-gray-400 leading-relaxed">Type or record a question, review the text, then choose Ask question. {isUnlimited ? 'The countdown is off.' : 'Watch the clock \u2014 you have limited time.'}{playMode === 'endurance' && (difficulty === 'hard' || difficulty === 'expert') ? <span className="text-accent"> Four successive turns at stress 8 or higher end the interview.</span> : ''}</p>
               </div>
             </motion.div>
             <motion.div className="flex gap-3" variants={fadeUp} transition={smooth}>

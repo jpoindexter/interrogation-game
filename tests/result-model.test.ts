@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { LossDetails } from '../app/game/lose/LossDetails';
+import ScoreBreakdown from '../app/game/win/ScoreBreakdown';
 import { recordResult } from '../app/game/result/history';
 import { readGameResult } from '../app/game/result/validation';
 import { computeBreakdown } from '../app/game/result/score-breakdown';
@@ -35,4 +39,22 @@ void test('loss presentation uses canonical lawyer outcome over stale browser fl
   const presentation = lossPresentation({ ...result, timeUp: true }, { ...evaluation, outcome: 'lose_lawyer' });
   assert.equal(presentation.label, 'Lawyered up');
   assert.equal(presentation.artwork, '/clues/folder.png');
+});
+
+void test('result components show canonical difficulty and distinct loss reasons despite stale client fields', () => {
+  const stale = { ...result, difficulty: 'easy', timeUp: true,
+    caseData: { ...result.caseData, difficulty: 'medium' } };
+  const stats = { ...evaluation.stats, difficulty: 'expert' as const };
+  const labels = { lose_accusations: 'Out of attempts', lose_time: 'Time expired',
+    lose_giveup: 'Surrendered', lose_lawyer: 'Lawyered up' } as const;
+  for (const [outcome, label] of Object.entries(labels)) {
+    const markup = renderToStaticMarkup(createElement(LossDetails, { result: stale,
+      evaluation: { ...evaluation, stats, outcome: outcome as keyof typeof labels } }));
+    assert.match(markup, new RegExp(`<dd[^>]*>${label}</dd>`));
+    assert.match(markup, /<dt>Difficulty<\/dt><dd[^>]*>expert<\/dd>/);
+    assert.doesNotMatch(markup, /\b(?:easy|medium)\b/);
+  }
+  const win = renderToStaticMarkup(createElement(ScoreBreakdown, { stats }));
+  assert.match(win, />Expert<\/span>/);
+  assert.match(win, />876<\/p>/);
 });

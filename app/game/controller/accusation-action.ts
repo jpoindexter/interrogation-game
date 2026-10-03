@@ -21,7 +21,7 @@ async function finishWin(context: GameActionsContext, data: AccusationResponse, 
   runtime.sfx('win');
   state.setLastTranscript('');
   try { saveWin(context, data, history); }
-  catch { runtime.showToast('Your win is saved on the server. Opening the recovery link.'); }
+  catch { runtime.showToast('Your win is saved on the server. Opening the recovery link.', 'info'); }
   if (settings.ttsEnabled) {
     const result = await runtime.speakConfession(data.confession, 10, state.caseData?.suspect_name);
     if (result === 'cancelled') return;

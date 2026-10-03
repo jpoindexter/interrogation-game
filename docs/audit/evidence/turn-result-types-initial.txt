@@ -1,0 +1,7 @@
+
+> interrogation@0.1.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+docs/audit/evidence/backend-acceptance.tsx(75,84): error TS2741: Property 'onOpenExchange' is missing in type '{ suspectName: string; suspectRole: string; evaluation: Evaluation; }' but required in type '{ suspectName: string; suspectRole: string; confession?: string | undefined; evaluation: Evaluation; accepted?: ConversationPathNode | undefined; onOpenExchange: () => void; }'.

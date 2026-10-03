@@ -1,17 +1,15 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
+import type { ActionFeedback } from '../components/ActionNotice';
 import type { useGamePanels } from './useGamePanels';
 import type { useSfx } from '../hooks/useSfx';
 
 export function useGameFeedback(panels: ReturnType<typeof useGamePanels>, sfx: ReturnType<typeof useSfx>) {
   const { setToast } = panels;
-  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => { if (timeout.current) clearTimeout(timeout.current); }, []);
-  const showToast = useCallback((message: string) => {
-    sfx('error');
-    setToast(message);
-    if (timeout.current) clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => setToast(null), 4000);
+  const showToast = useCallback((message: string, tone: ActionFeedback['tone'] = 'error', recovery?: ActionFeedback['recovery']) => {
+    if (tone === 'error') sfx('error');
+    setToast({ message, tone, recovery });
   }, [setToast, sfx]);
+  const dismissToast = useCallback(() => setToast(null), [setToast]);
   const ttsErrorToast = useCallback(() => showToast('Voice unavailable — read the transcript to continue'), [showToast]);
-  return { showToast, ttsErrorToast };
+  return { showToast, dismissToast, ttsErrorToast };
 }

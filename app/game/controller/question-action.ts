@@ -34,7 +34,7 @@ function applyTurnTiming(context: GameActionsContext, data: TurnResponse) {
 
 function recoverQuestion(context: GameActionsContext, error: unknown) {
   if (error instanceof DOMException && error.name === 'AbortError') return false;
-  context.runtime.showToast(error instanceof Error ? error.message : 'Could not reach the suspect.');
+  context.runtime.showToast(error instanceof Error ? error.message : 'Could not reach the suspect.', 'error', 'question');
   context.state.setPhase('active');
   return false;
 }
@@ -49,6 +49,7 @@ export function questionAction(context: GameActionsContext) {
       const data = await context.request<TurnResponse>('/api/interrogate', {
         sessionId: state.caseData.sessionId, playerQuestion: question,
       }, parseTurnResponse);
+      runtime.dismissToast();
       if (applyTurnTiming(context, data)) return true;
       acceptTurn(context, question, data);
       if (data.lawyered_up || data.outcome === 'lose_lawyer') { void runtime.handleLawyerUp(); return true; }

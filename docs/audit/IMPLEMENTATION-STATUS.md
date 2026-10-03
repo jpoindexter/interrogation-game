@@ -8,6 +8,16 @@ Build a reliable local interview demo and portfolio project, with a modern modul
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `47e17b5` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
 
+## Turn feedback and result explanation checkpoint
+
+[Turn/result integration](TURN-RESULT-INTEGRATION.md) preserves the noir presentation while showing a pending response beside prior dialogue, keeping dictated questions editable before explicit submission, and retaining dismissible error messages inside the active composer/dialog. The win reveal now leads with recorded accusation, canonical contradiction and judge rationale before score/save; its source control targets the exact accepted exchange. Loss summaries display canonical difficulty.
+
+**Executed:** 21 integrated focused checks; strict full lint and size gates; TypeScript and production build. One obsolete verification caller initially failed types and was adapted; the successful rerun is recorded. A separate 16-second controlled route/HTTP acceptance check proved lost-response replay with one accepted turn/invocation/reservation. No real model/voice credits were spent. The owned local preview was restarted on port 3187 with build `GJXDOERSKvVaGbauzdHZa`; five pages and health returned HTTP 200, including the updated help copy. This proves serving the build, not browser interaction or live inference.
+
+**Now:** Trello and the 70-card coverage ledger are reconciled: 20 Done, 30 Verify, 10 In progress, 9 Backlog, 1 Start. LOGIC-11 meets its bounded persistence/rendered-content criterion; UX-01/02/04/27 and ARCH-11 remain Verify for their unexecuted interaction criteria. **Next:** retain source-backed proof and address remaining acceptance gaps without repeating settled suites. **Later:** user-owned browser/keyboard/VoiceOver/video rehearsal, real app voice after configuring its key, and separately authorized hosted acceptance. Health still reports missing app ElevenLabs credentials. The goal remains active.
+
+Earlier checkpoints below are historical; their former next-step statements and board counts are superseded here.
+
 ## Export retention and original-criteria checkpoint
 
 [Export retention](HOSTED-EXPORT-RETENTION.md) adds migration 020 and a small default-preview operator command. Expired transcripts can be removed while immutable compact score receipts preserve the original authorized retry. Actual full-chain PostgreSQL and three-worker public HTTP execution passed, including cleanup followed by the same score receipt, concurrency, rollback and rejection of late writes. Strict lint, sizes and integrated TypeScript passed; application runtime source and build remain unchanged from the prior checkpoint. No live migration or data cleanup ran.

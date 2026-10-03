@@ -49,7 +49,7 @@ export default function SuspectZone({
           <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
         </div>
 
-        <SuspectResponse isListening={isListening} lastTranscript={lastTranscript} caseData={caseData} lastResponse={lastResponse} phase={phase} />
+        <SuspectResponse isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} caseData={caseData} lastResponse={lastResponse} phase={phase} />
       </div>
     </motion.div>
   );
@@ -89,7 +89,7 @@ function SuspectPortrait({ caseData, stressLevel, isSpeaking, onSkipSpeech }: { 
 }
 
 
-function SuspectResponse({ isListening, lastTranscript, caseData, lastResponse, phase }: { isListening: boolean; lastTranscript: string; caseData: Case; lastResponse: string; phase: string }) {
+export function SuspectResponse({ isSpeaking, isListening, lastTranscript, caseData, lastResponse, phase }: { isSpeaking: boolean; isListening: boolean; lastTranscript: string; caseData: Case; lastResponse: string; phase: string }) {
   return (
 <div
           className="w-full max-w-xl border border-surface-darker rounded-sm p-4 space-y-3"
@@ -112,16 +112,14 @@ function SuspectResponse({ isListening, lastTranscript, caseData, lastResponse, 
           </div>
 
           <div className="border-t border-surface-darker" />
+          <p role="status" aria-live="polite" aria-atomic="true" className="text-sm text-warn">
+            {phase === 'processing' && !isSpeaking ? 'Preparing the suspect’s response…' : ''}
+          </p>
 
           <div>
             <span className="text-gold font-bold text-sm">{caseData.suspect_name}</span>
             {lastResponse ? (
               <p className="text-text-secondary text-sm leading-relaxed mt-1">{lastResponse}</p>
-            ) : phase === 'processing' ? (
-              <div className="flex items-center gap-2 mt-1">
-                <div className="w-2 h-2 bg-warn rounded-full animate-pulse" />
-                <span className="text-gray-500 text-sm">...</span>
-              </div>
             ) : (
               <p className="text-gray-600 text-sm italic mt-1">Waiting to speak...</p>
             )}

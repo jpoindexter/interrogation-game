@@ -1,0 +1,56 @@
+{
+  "executedAt": "2026-10-03T19:22:26.007Z",
+  "buildId": "GJXDOERSKvVaGbauzdHZa",
+  "scope": "Production Next server HTTP availability and updated help content; no browser/provider calls",
+  "pages": [
+    {
+      "path": "/cases",
+      "status": 200
+    },
+    {
+      "path": "/game",
+      "status": 200
+    },
+    {
+      "path": "/game/win",
+      "status": 200
+    },
+    {
+      "path": "/game/lose",
+      "status": 200
+    },
+    {
+      "path": "/help",
+      "status": 200
+    }
+  ],
+  "healthStatus": 200,
+  "health": {
+    "mode": "local",
+    "status": "configured",
+    "services": {
+      "ai": {
+        "provider": "codex-local",
+        "configured": true,
+        "status": "unchecked",
+        "detail": "CLI installation is checked. This status request does not verify sign-in, quota, model access or a game turn.",
+        "observation": null
+      },
+      "voice": {
+        "provider": "elevenlabs",
+        "configured": false,
+        "status": "missing",
+        "detail": "Speech and transcription require this server’s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.",
+        "maxRecordingBytes": 26214400,
+        "observation": null
+      },
+      "storage": {
+        "provider": "local",
+        "configured": true,
+        "status": "unchecked",
+        "detail": "Private session and leaderboard files on this machine.",
+        "observation": null
+      }
+    }
+  }
+}

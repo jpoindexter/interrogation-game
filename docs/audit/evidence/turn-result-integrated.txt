@@ -1,0 +1,30 @@
+✔ malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement (15.743917ms)
+✔ invalid accusation count retains draft, attempts and history, then recovers one valid judgment (0.539459ms)
+✔ invalid hint cannot consume hints or append partial text; retry recovers same receipt (0.337292ms)
+✔ validated expired turn ends once without adding the unaccepted question (0.176042ms)
+✔ final wrong accusation ends exactly once without an active-phase flicker (0.213416ms)
+✔ cancelled confession cannot trigger late handcuffs or win navigation (0.317042ms)
+✔ cancelled final rejection does not start a delayed ending after exit (0.170417ms)
+✔ an already terminal win response recovers the result without a fabricated conversation turn (0.144667ms)
+✔ malformed expiry response cannot change timing or trigger an ending (0.18025ms)
+✔ legacy gameResult remains readable while malformed saved content is rejected (0.714375ms)
+✔ result refresh records exactly one history entry using canonical score and difficulty (0.3125ms)
+✔ score presentation uses authoritative total and clamps zero-question efficiency (0.14675ms)
+✔ loss presentation uses canonical lawyer outcome over stale browser flags (0.072125ms)
+✔ result components show canonical difficulty and distinct loss reasons despite stale client fields (14.053ms)
+✔ winning reveal leads with recorded reasoning, preserves missing records and opens its referenced exchange (15.589208ms)
+ℹ React SSR: supported accusation, canonical facts, rationale, legacy fallbacks and explanation-before-score order. Controlled ref target: open → focus summary → instant scroll. Browser hydration, actual focus and viewer comprehension unverified.
+✔ a delayed second response retains previous dialogue and exposes an independent polite status (3.986458ms)
+✔ actual feedback hook preserves errors beyond four seconds and announces informational notices politely (2.867083ms)
+✔ dictation enters editable review; malformed reply retains exact draft and actual error; explicit retry reuses ID (15.02425ms)
+✔ a newer draft is not erased when a previous question finishes (0.276583ms)
+✔ over-limit dictated text is retained for editing and cannot be submitted (0.266166ms)
+✔ accusation error remains reachable inside its native modal and is not duplicated outside (0.904542ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 397.877292

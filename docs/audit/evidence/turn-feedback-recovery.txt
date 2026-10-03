@@ -1,0 +1,23 @@
+✔ malformed turn leaves progress untouched and retries the same saved receipt before acknowledgement (15.519875ms)
+✔ invalid accusation count retains draft, attempts and history, then recovers one valid judgment (0.484083ms)
+✔ invalid hint cannot consume hints or append partial text; retry recovers same receipt (0.319375ms)
+✔ validated expired turn ends once without adding the unaccepted question (0.164792ms)
+✔ final wrong accusation ends exactly once without an active-phase flicker (0.202917ms)
+✔ cancelled confession cannot trigger late handcuffs or win navigation (0.31025ms)
+✔ cancelled final rejection does not start a delayed ending after exit (0.178208ms)
+✔ an already terminal win response recovers the result without a fabricated conversation turn (0.147458ms)
+✔ malformed expiry response cannot change timing or trigger an ending (0.156667ms)
+✔ a delayed second response retains previous dialogue and exposes an independent polite status (3.572708ms)
+✔ actual feedback hook preserves errors beyond four seconds and announces informational notices politely (2.555875ms)
+✔ dictation enters editable review; malformed reply retains exact draft and actual error; explicit retry reuses ID (15.908792ms)
+✔ a newer draft is not erased when a previous question finishes (0.211375ms)
+✔ over-limit dictated text is retained for editing and cannot be submitted (0.229625ms)
+✔ accusation error remains reachable inside its native modal and is not duplicated outside (0.781584ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 377.694

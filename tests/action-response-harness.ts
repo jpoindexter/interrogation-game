@@ -37,6 +37,7 @@ function runtimeHarness(events: string[]) {
     sfx: (sound: string) => events.push(`sfx:${sound}`),
     synchronize: (start: number) => events.push(`timing:${start}`),
     showToast: (message: string) => events.push(`error:${message}`),
+    dismissToast: () => {},
     handleLose: async () => { events.push('lose'); },
     handleTimeUp: async () => { events.push('time'); },
     handleLawyerUp: async () => { events.push('lawyer'); },
