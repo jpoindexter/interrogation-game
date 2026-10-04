@@ -1,4 +1,4 @@
-# Implementation status — 3 October 2026
+# Implementation status — 4 October 2026
 
 This is the current implementation ledger. The original audit documents preserve the historical baseline. Work is active and the complete goal is not achieved.
 
@@ -7,6 +7,12 @@ This is the current implementation ledger. The original audit documents preserve
 Build a reliable local interview demo and portfolio project, with a modern modular stack, Codex subscription dialogue, ElevenLabs voice, richer evidence-led play and truthful documentation. The private Trello board now contains 70 cards: 62 original tasks and eight accepted expansions. The latest expansion is the win/loss conversation map. The full case study for https://jason.theft.studio was built and pushed in parallel with game fixes, per the user’s revised direction; delivery and remaining review are recorded below. The separate game website is deferred. The interview may be next week.
 
 Local implementation, necessary regression checks, parallel agent work and Trello updates are authorized. The user directs Git commits/pushes as work is completed. The prior checkpoint `dd107ff` was pushed to `origin/codex/portfolio-upgrade` and verified against the remote. The follow-up below has recorded its actual execution evidence; Git history records the corresponding implementation checkpoint. Deployment remains unperformed. The user will perform the live check later and explicitly requested continued implementation meanwhile. That live check is user-owned, not a pending approval question. Browser automation remains disabled unless explicitly reauthorized; do not bypass that restriction through another interface.
+
+## Real app voice checkpoint
+
+[Live app voice acceptance](ELEVENLABS-APP-ACCEPTANCE.md) supersedes the earlier missing-key statements below. The owner-provided key is configured in ignored local server settings. One real app synthesis took 1.455 seconds; transcription of that 3.709-second clip took 0.667 seconds and returned the exact sentence. Both original request IDs replayed identical saved responses; health recorded successful speech/transcription. The full MP3 decoded successfully. Exact credit consumption was not measured.
+
+**Now:** the app voice credentials and HTTP provider path are established. No application source changed and settled suites were not repeated. **Next:** user-owned microphone, audible playback, stop/skip/navigation and video-call rehearsal; browser automation remains unauthorized. Hosted acceptance still needs its own target and authority. ARCH-07/08 and UX-08/13 remain Verify; 20 of 70 cards remain Done. Prior missing-key statements are historical. The full goal is not achieved.
 
 ## Five-class service-error recovery checkpoint
 

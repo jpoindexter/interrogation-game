@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-10-04T14:22:18.009Z",
+  "origin": "http://127.0.0.1:3187",
+  "source": "public authored game opening",
+  "operations": [
+    {
+      "operation": "speech",
+      "status": 200,
+      "elapsedMs": 1455,
+      "bytes": 59395,
+      "contentType": "audio/mpeg",
+      "sha256": "40dd37ba71b6cc5eba21b1c251d497f91485c50d8dbf43bf9a744d8e8d4774d5"
+    },
+    {
+      "operation": "speech replay",
+      "status": 200,
+      "elapsedMs": 32,
+      "bytes": 59395,
+      "contentType": "audio/mpeg",
+      "sha256": "40dd37ba71b6cc5eba21b1c251d497f91485c50d8dbf43bf9a744d8e8d4774d5"
+    },
+    {
+      "operation": "transcription",
+      "status": 200,
+      "elapsedMs": 667,
+      "bytes": 73,
+      "contentType": "application/json",
+      "sha256": "cfa49b24eca67fd4af08769bc6b8944590fa037ff991dd1f9663e1556f92230a"
+    },
+    {
+      "operation": "transcription replay",
+      "status": 200,
+      "elapsedMs": 35,
+      "bytes": 73,
+      "contentType": "application/json",
+      "sha256": "cfa49b24eca67fd4af08769bc6b8944590fa037ff991dd1f9663e1556f92230a"
+    }
+  ],
+  "speechObservation": {
+    "provider": "elevenlabs",
+    "configured": true,
+    "status": "unchecked",
+    "detail": "Speech and transcription require this server\u2019s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.",
+    "maxRecordingBytes": 26214400,
+    "observation": {
+      "status": "succeeded",
+      "operation": "speech",
+      "observedAt": "2026-10-04T14:22:19.509Z",
+      "stale": false
+    }
+  },
+  "expectedText": "I left at six and did not return to the building that evening.",
+  "transcript": "I left at six and did not return to the building that evening.",
+  "transcriptionObservation": {
+    "provider": "elevenlabs",
+    "configured": true,
+    "status": "unchecked",
+    "detail": "Speech and transcription require this server\u2019s ElevenLabs API key; a plugin account connection alone does not configure it. Credentials and playback are not checked here; text input remains available.",
+    "maxRecordingBytes": 26214400,
+    "observation": {
+      "status": "succeeded",
+      "operation": "transcription",
+      "observedAt": "2026-10-04T14:22:20.221Z",
+      "stale": false
+    }
+  },
+  "identicalReplay": true,
+  "audioValidation": {
+    "codec": "mp3",
+    "sampleRate": 44100,
+    "channels": 1,
+    "durationSeconds": 3.709375,
+    "fullDecodeExitCode": 0
+  }
+}
