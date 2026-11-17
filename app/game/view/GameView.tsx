@@ -17,7 +17,8 @@ function CaseLayout(model: GameController) {
   if (!model.caseData) return null;
   return <div className="flex-1 min-h-0 flex flex-col overflow-y-auto lg:grid lg:grid-cols-3 lg:grid-rows-[minmax(0,1fr)] lg:overflow-hidden">
     <SuspectZone caseData={model.caseData} stressLevel={model.stressLevel}
-      isSpeaking={model.isSpeaking} isListening={model.isListening} lastTranscript={model.lastTranscript}
+      isSpeaking={model.isSpeaking} isVoicePlaying={model.isVoicePlaying}
+      isListening={model.isListening} lastTranscript={model.lastTranscript}
       lastResponse={model.lastResponse} phase={model.phase} onSkipSpeech={model.skipSpeech} />
     {model.gameplay ? <div className="shrink-0 lg:col-span-1 lg:min-h-0 lg:overflow-y-auto">
       <EvidenceWorkbench publicProjection={model.gameplay} onPin={model.evidenceGameplay.onPin}

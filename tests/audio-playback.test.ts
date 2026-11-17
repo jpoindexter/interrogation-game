@@ -16,6 +16,25 @@ void test('normal playback releases audio and URL and calls completion once', as
   assert.equal(audio.pauses, 1);
 });
 
+void test('playback start is announced only after audio actually begins', async () => {
+  const { player, audio } = speechFixture();
+  const started = deferred<void>();
+  let releasePlay!: () => void;
+  audio.play = () => new Promise<void>(resolve => { releasePlay = resolve; });
+  const outcome = player.play({ body: {}, volume: 1, onPlaybackStart: () => started.resolve() });
+  await flushAudio();
+  assert.equal(audio.onended !== null, true);
+  let announced = false;
+  void started.promise.then(() => { announced = true; });
+  await flushAudio();
+  assert.equal(announced, false);
+  releasePlay();
+  await started.promise;
+  assert.equal(announced, true);
+  audio.end();
+  assert.equal(await outcome, 'ended');
+});
+
 void test('skip during audio download aborts and suppresses later audio and duplicate completion', async () => {
   const download = deferred<Blob>();
   let signal: AbortSignal | undefined;

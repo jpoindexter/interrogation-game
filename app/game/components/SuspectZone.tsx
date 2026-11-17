@@ -9,6 +9,7 @@ interface SuspectZoneProps {
   caseData: Case;
   stressLevel: number;
   isSpeaking: boolean;
+  isVoicePlaying: boolean;
   isListening: boolean;
   lastTranscript: string;
   lastResponse: string;
@@ -20,6 +21,7 @@ export default function SuspectZone({
   caseData,
   stressLevel,
   isSpeaking,
+  isVoicePlaying,
   isListening,
   lastTranscript,
   lastResponse,
@@ -43,10 +45,11 @@ export default function SuspectZone({
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative z-10 flex flex-col items-center w-full">
-        <SuspectPortrait caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking} onSkipSpeech={onSkipSpeech} />
+        <SuspectPortrait caseData={caseData} stressLevel={stressLevel} isSpeaking={isSpeaking}
+          isVoicePlaying={isVoicePlaying} onSkipSpeech={onSkipSpeech} />
 
         <div className="w-full max-w-xl mb-2">
-          <VoiceWaveform isActive={isSpeaking} stressLevel={stressLevel} />
+          <VoiceWaveform isActive={isVoicePlaying} isLoading={isSpeaking && !isVoicePlaying} stressLevel={stressLevel} />
         </div>
 
         <SuspectResponse isSpeaking={isSpeaking} isListening={isListening} lastTranscript={lastTranscript} caseData={caseData} lastResponse={lastResponse} phase={phase} />
@@ -56,7 +59,10 @@ export default function SuspectZone({
 }
 
 
-function SuspectPortrait({ caseData, stressLevel, isSpeaking, onSkipSpeech }: { caseData: Case; stressLevel: number; isSpeaking: boolean; onSkipSpeech: (() => void) | undefined }) {
+function SuspectPortrait({ caseData, stressLevel, isSpeaking, isVoicePlaying, onSkipSpeech }: {
+  caseData: Case; stressLevel: number; isSpeaking: boolean; isVoicePlaying: boolean;
+  onSkipSpeech: (() => void) | undefined;
+}) {
   return (
 <motion.div
           className="mb-2 relative"
@@ -70,7 +76,7 @@ function SuspectPortrait({ caseData, stressLevel, isSpeaking, onSkipSpeech }: { 
             portraitId={caseData.portraitId}
             stressLevel={stressLevel}
             size="md"
-            speaking={isSpeaking}
+            speaking={isVoicePlaying}
           />
           {isSpeaking && onSkipSpeech && (
             <button

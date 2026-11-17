@@ -12,6 +12,7 @@ export interface SpeechRequest {
   volume: number;
   enabled?: boolean;
   onAudio?: (audio: AudioHandle | null) => void;
+  onPlaybackStart?: () => void;
   onDone?: () => void;
   onError?: () => void;
 }
@@ -65,7 +66,10 @@ export class SpeechPlayer {
       playback.audio.onended = () => this.finish(playback, 'ended');
       playback.audio.onerror = () => this.finish(playback, 'failed');
       request.onAudio?.(playback.audio);
-      if (!playback.finished) await playback.audio.play();
+      if (!playback.finished) {
+        await playback.audio.play();
+        if (!playback.finished) request.onPlaybackStart?.();
+      }
     } catch {
       this.finish(playback, 'failed');
     } finally {

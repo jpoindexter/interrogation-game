@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import SiriWave from 'siriwave';
 import { useMotionPreference } from '../../components/useMotionPreference';
 
-interface VoiceWaveformProps { isActive: boolean; stressLevel: number; className?: string }
-export default function VoiceWaveform({ isActive, stressLevel, className }: VoiceWaveformProps) {
+interface VoiceWaveformProps { isActive: boolean; isLoading?: boolean; stressLevel: number; className?: string }
+export default function VoiceWaveform({ isActive, isLoading = false, stressLevel, className }: VoiceWaveformProps) {
   const container = useRef<HTMLDivElement>(null);
   const reduced = useMotionPreference();
   useEffect(() => {
@@ -22,6 +22,8 @@ export default function VoiceWaveform({ isActive, stressLevel, className }: Voic
   }, [reduced, isActive, stressLevel]);
   return <div className={className}>
     <div ref={container} aria-hidden="true" className="my-2 h-11 w-full overflow-hidden" />
-    <p className="text-center text-xs text-gray-300">{isActive ? 'Spoken response playing' : 'Voice idle'}</p>
+    <p role="status" aria-live="polite" className="text-center text-xs text-gray-300">
+      {isActive ? 'Spoken response playing' : isLoading ? 'Preparing spoken response…' : 'Voice idle'}
+    </p>
   </div>;
 }
